@@ -1,0 +1,1678 @@
+<?php
+    ini_set('default_charset', 'utf-8');
+    header('Content-Type: text/html; charset=utf-8');
+    session_start();
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <?php include("modulos/head.php"); ?>
+        <title>Alunos - Homeopatias.com</title>
+        <script src="./jquery/jquery.tablesorter.min.js"></script>
+        <script src="./jquery/colResizable.min.js"></script>
+        <!-- polyfill para funcionalidades do HTML5 -->
+        <script src="./webshim-1.14.5/polyfiller.js"></script>
+
+        <script type="text/javascript">
+            // usamos um polyfill para que os campos de data e hora funcionem mesmo
+            // em navegadores que não implementem essas funcionalidades
+
+            webshims.activeLang("pt-BR");
+            webshims.setOptions('waitReady', false);
+            webshims.setOptions('forms-ext', {types: 'date', replaceUI: true});
+            webshims.polyfill('forms forms-ext');
+        </script>
+
+        <script>
+            var podeMudarPagina = true;
+            $(document).ready(function(){
+
+                $("#modal-novo-aluno #curso-novo").parent().hide(500);
+
+                // permite redimensionar as colunas da tabela
+                $("#alunos").colResizable({
+                    liveDrag: true,
+                    minWidth: 60
+                });
+
+                // torna a tabela ordenavel pelas colunas
+
+                // parser para ordenar datas
+                $.tablesorter.addParser({
+                    id: "datetime",
+                    is: function(s) {
+                        return false;
+                    },
+                    format: function(s,table) {
+                        s = s.replace(/\-/g,"/");
+                        s = s.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/, "$3/$2/$1");
+                        return $.tablesorter.formatFloat(new Date(s).getTime());
+                    },
+                    type: "numeric"
+                });
+
+                $("#alunos").tablesorter({ headers: {
+                    3 : { sorter: false },
+                    5 : { sorter: "datetime" },
+                    6 : { sorter: false },
+                    7 : { sorter: false },
+                    8 : { sorter: false },
+                    9 : { sorter: false }
+                }});
+
+                // passa os dados do href para o modal de confirmação de deleção quando
+                // necessário
+                $("#modal-confirma-deleta").on('show.bs.modal', function(e) {
+                    $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
+                    $(this).find('#nome-aluno').text(
+                        $(e.relatedTarget).parent().siblings('.nome').text()
+                    );
+                });
+
+                // passa os dados do aluno para o modal para a edição
+                $("#modal-edita-aluno").on('show.bs.modal', function(e) {
+                    $(this).find('#insc').val(
+                        $(e.relatedTarget).parent().siblings('.insc').text()
+                    );
+                    $(this).find('#id').val(
+                        $(e.relatedTarget).data('id')
+                    );
+                    var telefone = $(e.relatedTarget).data('telefone')+"";
+                    $(this).find('#telefone').val(
+                        ["(", telefone.slice(0, 2), ")", telefone.slice(2, 6), "-",
+                         telefone.slice(6)].join('')
+                    );
+
+                    //Preenche endereço----------------------
+                    $(this).find('#cep').val(
+                        $(e.relatedTarget).data('cep')
+                    );
+                    $(this).find('#rua').val(
+                        $(e.relatedTarget).data('rua')
+                    );
+                    $(this).find('#numero').val(
+                        $(e.relatedTarget).data('numero')
+                    );
+                    $(this).find('#bairro').val(
+                        $(e.relatedTarget).data('bairro')
+                    );
+                    $(this).find('#cidade').val(
+                        $(e.relatedTarget).data('cidade')
+                    );
+                    $(this).find('#estado').val(
+                        $(e.relatedTarget).data("estado")
+                    );
+                    $(this).find('#complemento').val(
+                        $(e.relatedTarget).data('complemento')
+                    );
+
+                    //------------------------
+                    $(this).find('#escolaridade').val(
+                        $(e.relatedTarget).data('escolaridade')
+                    );
+                    $(this).find('#curso').val(
+                        $(e.relatedTarget).data('curso')
+                    );
+                    if($(e.relatedTarget).data('escolaridade') === "superior incompleto" ||
+                       $(e.relatedTarget).data('escolaridade') === "superior completo"   ||
+                       $(e.relatedTarget).data('escolaridade') === "mestrado"            ||
+                       $(e.relatedTarget).data('escolaridade') === "doutorado"){
+                        $(this).find('#curso').parent().show();
+                    }else{
+                        $(this).find('#curso').parent().hide();
+                    }
+                    $(this).find('#nome').val(
+                        $(e.relatedTarget).parent().siblings('.nome').text()
+                    );
+                    $(this).find('#cpf').val(
+                        $(e.relatedTarget).parent().siblings('.cpf').text()
+                    );
+                    $(this).find('#email').val(
+                        $(e.relatedTarget).parent().siblings('.email').text()
+                    );
+                    $(this).find('#login').val(
+                        $(e.relatedTarget).parent().siblings('.login').text()
+                    );
+                    $(this).find('#status').val(
+                        $(e.relatedTarget).parent().siblings('.status').data("status")
+                    );
+                    $(this).find('#indicador').val(
+                        $(e.relatedTarget).data('indicador')
+                    );
+                });
+
+                $("#modal-novo-aluno #escolaridade-novo").change(function(){
+                    if($(this).val() === "superior incompleto" || $(this).val() === "superior completo"   ||
+                       $(this).val() === "mestrado"            || $(this).val() === "doutorado" ){
+                        $("#modal-novo-aluno #curso-novo").parent().show(500);
+                    }else{
+                        $("#modal-novo-aluno #curso-novo").parent().hide(500);
+                    }
+                });
+
+                $("#modal-edita-aluno #escolaridade").change(function(){
+                    if($(this).val() === "superior incompleto" || $(this).val() === "superior completo"   ||
+                       $(this).val() === "mestrado"            || $(this).val() === "doutorado" ){
+                        $("#modal-edita-aluno #curso").parent().show(500);
+                    }else{
+                        $("#modal-edita-aluno #curso").parent().hide(500);
+                    }
+                });
+
+                // esconde inputs de busca
+
+                $("#filtro-nome").hide();
+                $("#filtro-cpf").hide();
+                $("#ipp").hide();
+                $("#filtro-status").hide();
+                $("#filtro-numero").hide();
+                $("#div-data-min").hide();
+                $("#div-data-max").hide();
+
+
+                // alterna campos de texto com campos de input
+                $("#label-nome").click(function(){
+                    $(this).hide();
+                    $("#filtro-nome").show(300);
+                    $("#filtro-nome").focus();
+                });
+
+                $("#filtro-nome").blur(function(){
+                    if($(this).val() == ""){
+                        $(this).hide(300);
+                        $("#label-nome").show(300);   
+                    } 
+                });
+
+                $("#label-cpf").click(function(){
+                    $(this).hide();
+                    $("#filtro-cpf").show(300);
+                    $("#filtro-cpf").focus();
+                });
+
+                $("#filtro-cpf").blur(function(){
+                    if($(this).val() == ""){
+                        $(this).hide(300);
+                        $("#label-cpf").show(300);   
+                    }
+                });
+                
+
+                $("#label-status").click(function(){
+                    $(this).hide();
+                    $("#filtro-status").show(300);
+                    $("#filtro-status").focus();
+                });
+
+                $("#filtro-status").blur(function(){
+                    if($(this).val() == ""){
+                        $(this).hide(300);
+                        $("#label-status").show(300);   
+                    }
+                });
+                
+
+                $("#label-numero").click(function(){
+                    $(this).hide();
+                    $("#filtro-numero").show(300);
+                    $("#filtro-numero").focus();
+                });
+
+                $("#filtro-numero").blur(function(){
+                    if($(this).val() == ""){
+                        $(this).hide(300);
+                        $("#label-numero").show(300);   
+                    }
+                });                
+
+                $("#label-data-min").click(function(){
+                    $(this).hide();
+                    $("#div-data-min").show(300);
+                    $("#filtro-data-min").focus();
+                });
+
+                $("#filtro-data-min").focusout(function(){
+                    if($("this").val() != ""){
+                        atualizaPagina();
+                    }
+                    $("#div-data-min").hide(300);
+                    $("#label-data-min").show(300);   
+                });
+
+                
+
+                $("#label-data-max").click(function(){
+                    $(this).hide();
+                    $("#div-data-max").show(300);
+                    $("#filtro-data-max").focus();
+                });
+
+                $("#filtro-data-max").blur(function(){
+                    if($(this).val() != ""){
+                        atualizaPagina();
+                    }
+                    else{
+                        $("#div-data-max").hide(300);
+                        $("#label-data-max").show(300);   
+                    }
+                });
+                $("#label-ipp").click(function(){
+                    $(this).hide();
+                    $("#ipp").show(300);
+                    $("#ipp").focus();
+                });
+
+                $("#ipp").blur(function(){
+                    $(this).hide(300);
+                    $("#label-ipp").show(300);   
+                });
+
+                // processa envio do formulário se enter for pressionado dentro de algum campo
+                // do formulário de filtro
+
+                // filtro-data-max e filtro-data-min envia o formulário usando .onblur()
+                $("#filtro-nome").keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13'){ // enter foi pressionado
+                       atualizaPagina();
+                    }
+                });
+
+                $("#filtro-cpf").keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13'){ // enter foi pressionado
+                       atualizaPagina();
+                    }
+                });
+
+
+                $("#filtro-numero").keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13'){ // enter foi pressionado
+                       atualizaPagina();
+                    }
+                });
+
+                $("#filtro-status").change(function(){
+                    atualizaPagina();
+                });
+
+                // se clicou na lupa, envia o formulário
+                $("#busca").click(function(e){
+                    atualizaPagina();
+                });
+
+                //se mudou a quantidade de pessoas por página, atualiza
+                $("#ipp").change(function(){
+                    $("#pagina-ipp").val( $(this).val() );
+                    atualizaPagina();
+                });
+
+                // se clicou em anterior ou próxima muda a página da tabela
+                $("#anterior").click(function(e){
+                    if(!podeMudarPagina){
+                                atualizaPagina();
+                            }
+                    var paginaAnterior = $("#pagina").val()-1;
+                    if(paginaAnterior <0)
+                        paginaAnterior = 0;
+                    $("#pagina").val(paginaAnterior);
+                    $("#form-filtro").submit();
+                });
+
+                $("#proxima").click(function(e){
+                    if(!podeMudarPagina){
+                                atualizaPagina();
+                            }
+                    var proximaPagina = $("#pagina").val();
+                    proximaPagina = parseInt(proximaPagina) + 1
+                    $("#pagina").val(proximaPagina);
+                    $("#form-filtro").submit();
+                });
+
+                $("#form-filtro input").change(function(){
+                    podeMudarPagina = false;
+                });
+
+                // se clicou na borracha, apaga todos os campos e envia o formulário limpo
+                $("#limpar").click(function(e){
+                    $("#filtro-nome").val("");
+                    $("#filtro-cpf").val("");
+                    $("#filtro-status").val("");
+                    $("#filtro-numero").val("");
+                    $("#filtro-data-min").val("");
+                    $("#filtro-data-max").val("");
+                    atualizaPagina();
+                });
+
+                // ------------ Muda de página usando as setas do teclado
+                $(window).keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == "37" && possuiPaginaAnterior && 
+                    document.activeElement.tagName == "BODY" ){
+
+                        $("#anterior").trigger("click");
+                    }
+                    
+                    else if(keycode == "39" && possuiProximaPagina && 
+                         document.activeElement.tagName == "BODY" ){
+
+                            $("#proxima").trigger("click");
+                    }
+                });
+
+                //---- Passa o th que foi clicado para o form e o envia, para reformatar
+                //----  a tabela
+                $("table th.header").click(function(){
+                    var position = $("table th").index( $(this) );
+                    if( $(this).hasClass("headerSortDown") ){
+                        direcao = 1; // muda para virada para cima
+                    }
+                    else{
+                        direcao = 2;
+                    }
+                    $("#numeroTableHeader").val(position);
+                    $("#cimaOuBaixo").val(direcao);
+
+                    // Envia o formulário para atualizar a tabela com os filtros desejados
+                    atualizaPagina();
+                });
+
+                checaTamanhoTela();
+            }); 
+            
+            //atualiza formulário com a busca
+            function atualizaPagina(){
+                $("#pagina").val(0);
+                $("#form-filtro").submit();
+            }
+
+            //------------Checa se tamanho minimo da tela é o tamanho minimo do css
+            function checaTamanhoTela(){
+                tamanhoTela = $(window).width();
+
+                if (tamanhoTela < 700) {
+                    $("table").colResizable({
+                        disable:true
+                    }); 
+                    $(".flip-scroll th").css("width","150px");
+                }
+                else {
+                    $("table").colResizable({
+                        disable:false
+                    }); 
+                }
+            }
+
+            //----Checa se ao redimencionar a tela atingiu o tamanho minimo da tela
+            $(window).resize(function() {
+                checaTamanhoTela();
+            });
+
+        </script>
+    </head>
+    <body>
+        <?php
+
+            include("modulos/navegacao.php");
+
+            // mensagem a ser exibida acima da listagem de alunos, caso seja necessário
+            $mensagem = "";
+
+            if(isset($_GET["erro"])){
+                $mensagem = $_GET["erro"];
+            }
+
+            // exibe alunos apenas para administradores logados
+            if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
+               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
+
+                // lemos as credenciais do banco de dados
+                $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
+                $dados = json_decode($dados, true);
+
+                foreach($dados as $chave => $valor) {
+                    $dados[$chave] = str_rot13($valor);
+                }
+
+                $host    = $dados["host"];
+                $usuario = $dados["nome_usuario"];
+                $senhaBD = $dados["senha"];
+
+                // cria conexão com o banco para uso ao longo da página
+                $conexao = null;
+                $db      = "homeopatias";
+                try {
+                    $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
+                } catch (PDOException $e) {
+                    echo $e->getMessage();
+                }
+
+                // se o usuário chegou até aqui através de um formulário, registra o novo
+                // aluno no sistema
+                if(isset($_POST["submit"])){
+
+                    // validamos todos os dados recebidos
+                    $nome           = $_POST["nome"];
+                    $cpf            = $_POST["cpf"];
+                    $email          = $_POST["email"];
+                    $login          = $_POST["login"];
+                    $senha          = $_POST["senha"];
+                    $loginIndicador = $_POST["indicador"];
+                    $telefone       = $_POST["telefone"];
+                    $endereco       = $_POST["endereco"];
+                    $escolaridade   = $_POST["escolaridade"];
+                    $curso          = $_POST["curso-novo"];
+                    $cep            = $_POST["cep"];
+                    $rua            = $_POST["rua"];
+                    $numero         = $_POST["numero"];
+                    $complemento    = $_POST["complemento"];
+                    $bairro         = $_POST["bairro"];
+                    $cidade         = $_POST["cidade"];
+                    $estado         = $_POST["estado"];
+
+                    $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
+                                      mb_strlen($nome, 'UTF-8') <= 100;
+                    $cpfValido      = isset($cpf) &&
+                                      (preg_match("/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", $cpf) || 
+                                       preg_match("/^\d{11}$/", $cpf));
+
+                    $sucesso = false;
+                    
+                    if($cpfValido){
+                        // checamos se os dígitos verificadores do cpf conferem
+                        $cpfChecar = str_replace(".","",$cpf);
+                        $cpfChecar = str_replace("-","",$cpfChecar);
+                        $cpfChecar = str_split($cpfChecar);
+                        $somaChecagem = 0;
+                        for($i = 10; $i >= 2; $i = $i - 1){
+                            $somaChecagem += (int)($cpfChecar[10 - $i]) * $i;
+                        }
+                        $digito = ($somaChecagem % 11) < 2 ? 0 : 11 - ($somaChecagem % 11);
+                        if($digito != $cpfChecar[9]){
+                            $cpfValido = false;
+                        }else{
+                            // agora checamos o segundo dígito
+                            $somaChecagem = 0;
+                            for($i = 11; $i >= 2; $i = $i - 1){
+                                $somaChecagem += (int)($cpfChecar[11 - $i]) * $i;
+                            }
+                            $digito = floor($somaChecagem/11);
+                            $digito = ($somaChecagem % 11) < 2 ? 0 : 11 - ($somaChecagem % 11);
+                            if($digito != $cpfChecar[10]){
+                                $cpfValido = false;
+                            }
+                        }
+                    }
+
+                    $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
+                                    preg_match("/^.+\@.+\..+$/", $email);
+                    $loginValido  = isset($login) && mb_strlen($login, 'UTF-8') >= 3 &&
+                                    mb_strlen($login, 'UTF-8') <= 100;
+                    $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
+                                    mb_strlen($senha, 'UTF-8') <= 72;
+                    $loginIndicadorValido = (isset($loginIndicador) &&
+                                            mb_strlen($loginIndicador, 'UTF-8') >= 3 &&
+                                            mb_strlen($loginIndicador, 'UTF-8') <= 100)
+                                            || !isset($loginIndicador) || $loginIndicador === "";
+
+                    $idIndicador = "";
+                    if($loginIndicadorValido && isset($loginIndicador) && $loginIndicador !== ""){
+                        // conferimos se o $loginIndicador representa um aluno no sistema
+                        
+                        $textoQuery  = "SELECT A.numeroInscricao FROM Aluno A, Usuario U WHERE                 
+                                        U.login = ? AND A.idUsuario = U.id";
+
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $loginIndicador, PDO::PARAM_INT);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+
+                        if(!($linha = $query->fetch())){
+                            $loginIndicadorValido = false;
+                            $mensagem = "Não foi encontrado nos registros um aluno indicador com esse
+                                         nome de usuário";
+                        }else{
+                            $idIndicador = $linha["numeroInscricao"];
+                        }
+                    }
+
+                    $telefoneValido = isset($telefone) &&
+                                      preg_match("/^\(?\d{2}\)?\d{4}-?\d{4,7}$/", $telefone);
+                    
+                    $enderecoValido = false;
+
+                    // formata CEP
+                    $cep = str_replace(".","",$cep);
+                    $cep = str_replace("-","",$cep);
+                    
+
+                    $cepValido = (isset($cep) && mb_strlen($cep, 'UTF-8') == 8 );
+                    
+                    
+
+                    $ruaValida = (isset($rua) && mb_strlen($rua, 'UTF-8') >= 3 &&
+                                      mb_strlen($rua, 'UTF-8') <= 200);
+
+                    $numeroValido = (isset($numero) && mb_strlen($numero, 'UTF-8') >= 0 &&
+                                      mb_strlen($numero, 'UTF-8') <= 200);
+
+
+                    $bairroValido = (isset($bairro) && mb_strlen($bairro, 'UTF-8') >= 3 &&
+                                      mb_strlen($bairro, 'UTF-8') <= 200);
+
+                    $cidadeValida = (isset($cidade) && mb_strlen($cidade, 'UTF-8') >= 3 &&
+                                      mb_strlen($cidade, 'UTF-8') <= 200);
+
+                    $estadoValido = (isset($estado) && mb_strlen($estado, 'UTF-8') ==2);
+
+                    $enderecoValido = ($cepValido && $ruaValida && $numeroValido &&
+                                        $bairroValido && $cidadeValida
+                                       && $estadoValido);
+
+
+                    $escolaridadeValida = isset($escolaridade) &&
+                               ($escolaridade === "fundamental incompleto" ||
+                                $escolaridade === "fundamental completo"   ||
+                                $escolaridade === "médio incompleto"       ||
+                                $escolaridade === "médio completo"         ||
+                                $escolaridade === "superior incompleto"    ||
+                                $escolaridade === "superior completo"      ||
+                                $escolaridade === "mestrado"               ||
+                                $escolaridade === "doutorado");
+
+                    // para permitir a validação do curso, conferimos se possui curso superior
+                    $superior = ($escolaridade === "superior incompleto"    ||
+                                 $escolaridade === "superior completo"      ||
+                                 $escolaridade === "mestrado"               ||
+                                 $escolaridade === "doutorado");
+                    $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
+                                   (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
+
+                    // se todos os dados estão válidos, o aluno é cadastrado
+                    if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida &&
+                       $loginIndicadorValido && $telefoneValido && $enderecoValido &&
+                       $escolaridadeValida && $cursoValido){
+
+                        require_once("entidades/Aluno.php");
+
+                        $novo = new Aluno($login);
+                        $novo->setNome($nome);
+                        $novo->setCpf($cpf);
+                        $novo->setEmail($email);
+                        $novo->setTelefone($telefone);
+                        $novo->setEscolaridade($escolaridade);
+                        $novo->setCep($cep);
+                        $novo->setRua($rua);
+                        $novo->setNumero($numero);
+                        $novo->setComplemento($complemento);
+                        $novo->setBairro($bairro);
+                        $novo->setCidade($cidade);
+                        $novo->setEstado($estado);
+                        $novo->setPais("BRL");
+                        if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
+                           $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
+                            $novo->setCurso(isset($curso) ? $curso : null);
+                        }else{
+                            $novo->setCurso(null);
+                        }
+                        $novo->setStatus("preinscrito");
+
+                        $novo->setIdIndicador($idIndicador);
+
+                        $sucesso  = $novo->cadastrar($host, "homeopatias", $usuario, $senhaBD, $senha);
+                        $mensagem = "Usuário cadastrado com sucesso";
+                        if(!$sucesso){
+                            $mensagem = "Já existe um usuário com esse nome 
+                                         de usuário no sistema";
+                        }
+
+                    }else if(!$nomeValido){
+                        $mensagem = "Nome inválido!";
+                    }else if(!$cpfValido){
+                        $mensagem = "CPF inválido!";
+                    }else if(!$emailValido){
+                        $mensagem = "E-mail inválido!";
+                    }else if(!$loginValido){
+                        $mensagem = "Nome de usuário inválido!";
+                    }else if(!$senhaValida){
+                        $mensagem = "Senha inválida!";
+                    }else if(!$telefoneValido){
+                        $mensagem = "Telefone inválido!";
+                    }else if(!$enderecoValido){
+                        $mensagem = "Endereço inválido!";
+                    }else if(!$escolaridadeValida){
+                        $mensagem = "Escolaridade inválida!";
+                    }else if(!$cursoValido){
+                        if((!isset($curso) || $curso === "") && $superior){
+                            $mensagem = "Insira o curso superior!";
+                        }else{
+                            $mensagem = "Curso inválido!";
+                        }
+                    }
+                }
+
+                $textoQuery  = "SELECT U.id, U.cpf, U.dataInscricao, U.email,
+                                U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
+                                A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
+                                A.complemento, A.escolaridade, A.curso FROM Usuario U, 
+                                Aluno A WHERE A.idUsuario = U.id ";
+
+                // se algum filtro foi enviado, filtra os resultados da consulta
+                $filtroNome = $filtroCpf = $filtroStatus = $filtroNumero = 
+                $filtroDataMin = $filtroDataMax = false;
+
+                // como não há botão para submit, temos que checar se todas as variáveis
+                // existem
+                if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])     ||
+                   isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])  ||
+                   isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"])){
+                    $filtroNome    =  htmlspecialchars($_GET["filtro-nome"]);
+                    $filtroCpf     =  htmlspecialchars($_GET["filtro-cpf"]);
+                    $filtroStatus  =  htmlspecialchars($_GET["filtro-status"]);
+                    $filtroNumero  =  htmlspecialchars($_GET["filtro-numero"]);
+                    $filtroDataMin =  htmlspecialchars($_GET["filtro-data-min"]);
+                    $filtroDataMax =  htmlspecialchars($_GET["filtro-data-max"]);
+
+                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                        // prepara o nome para ser colocado na query
+                        $filtroNome    =  "%".$filtroNome."%";
+                        $textoQuery .= "  AND U.nome LIKE :nome";
+                    }
+                    if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
+                        $textoQuery .= "  AND U.cpf LIKE :cpf";
+                    }
+                    if(isset($filtroStatus) && mb_strlen($filtroStatus) > 0){
+                        $textoQuery .= " AND A.status LIKE :status";
+                    }
+                    if(isset($filtroNumero) && mb_strlen($filtroNumero) > 0) {
+                        if(!is_nan($filtroNumero)){
+                            $textoQuery .= " AND A.numeroInscricao = :numInsc";
+                        }
+                    }
+                    if(isset($filtroDataMin) && mb_strlen($filtroDataMin) > 0){
+                        $textoQuery .= " AND CAST(U.dataInscricao AS Date) >= ";
+                        $textoQuery .= "CAST(:dataMin as Date)";
+                    }
+                    if(isset($filtroDataMax) && mb_strlen($filtroDataMax) > 0){
+                        $textoQuery .= " AND CAST(U.dataInscricao AS Date) <= ";
+                        $textoQuery .= "CAST(:dataMax as Date)";
+                    }
+
+                }
+
+                //------- Prepara o necessário para a ordenação
+
+                // variáveis com valores defaults
+                $orderBy = " ORDER BY U.dataInscricao DESC" ;
+                $indexHeader = -1;
+                $direcao = 2;
+                //------------------
+
+                if( isset($_GET["numeroTableHeader"]) && isset($_GET["cimaOuBaixo"]) ){
+                    $indexHeader = htmlspecialchars( $_GET["numeroTableHeader"] );
+                    if( !is_nan($indexHeader) ){
+                        
+                        switch ($indexHeader) {
+                            case '0':
+                                $orderBy = " ORDER BY A.numeroInscricao " ;
+                                break;
+                            case '1':
+                                $orderBy = " ORDER BY U.nome " ;
+                                break;
+                            case '2':
+                                $orderBy = " ORDER BY U.login " ;
+                                break;
+                            case '4':
+                                $orderBy = " ORDER BY U.email " ;
+                                break;
+                            case '5':
+                                $orderBy = " ORDER BY U.dataInscricao " ;
+                                break;
+                            
+                            default:
+                                $indexHeader = -1;
+                                break;
+                        }
+                    }
+
+                    $direcao = htmlspecialchars( $_GET["cimaOuBaixo"] );
+                    if( !is_nan($direcao) ){
+
+                        switch ($direcao) {
+                            case '1':
+                                $orderBy .= " ASC " ;
+                                break;
+                            case '2':
+                                $orderBy .= " DESC " ;
+                                break;
+                            
+                            
+                            default:
+                                $orderBy .= " DESC " ;
+                                break;
+                        }
+                    }
+
+                }
+
+                //--------------------------------------------------------------------
+
+                // Prepara as variáveis necessárias para controlar a paginação
+                $pagina = isset($_GET["pagina"]) ? htmlspecialchars($_GET["pagina"]) : 0;
+                $pagina = (int)$pagina;
+
+                $itemsPorPagina = isset($_GET["pagina-ipp"]) ? 
+                                  htmlspecialchars($_GET["pagina-ipp"]) : 10;
+                $itemsPorPagina = (int)$itemsPorPagina;
+                
+                $textoQuery .= $orderBy." LIMIT ".($itemsPorPagina+1).
+                                " OFFSET ".(($pagina)*$itemsPorPagina);
+                $query = $conexao->prepare($textoQuery);
+
+                // passamos os parâmetros corretamente de acordo com os filtros passados
+                if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])     ||
+                   isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])  ||
+                   isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"])){
+                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                        $query->bindParam(":nome", $filtroNome);
+                    }
+                    if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
+                        // remove os '.' e '-' para comparar com o cpf do bd
+                        $filtroCpf = str_replace(".","",$filtroCpf);
+                        $filtroCpf = str_replace("-","",$filtroCpf);
+
+                        $query->bindParam(":cpf", $filtroCpf);
+                    }
+                    if(isset($filtroStatus) && mb_strlen($filtroStatus) > 0){
+                        $query->bindParam(":status", $filtroStatus);
+                    }
+                    if(isset($filtroNumero) && mb_strlen($filtroNumero) > 0) {
+                        if(!is_nan($filtroNumero)){
+                            $query->bindParam(":numInsc", $filtroNumero);
+                        }
+                    }
+                    if(isset($filtroDataMin) && mb_strlen($filtroDataMin)){
+                        $query->bindParam(":dataMin" , $filtroDataMin);
+                    }
+                    if(isset($filtroDataMax) && mb_strlen($filtroDataMax)){
+                        $query->bindParam(":dataMax" , $filtroDataMax);
+                    }
+                }
+
+                $query->setFetchMode(PDO::FETCH_ASSOC);
+                $query->execute();
+
+                $numeroRegistros = $query->rowCount();
+
+                $possuiProximaPagina = false;
+                $contador = 0;
+                $tabela = "";
+
+                while ($linha = $query->fetch()){
+                    if($contador != $itemsPorPagina){
+                    // formatando o texto do cpf
+                    $cpfOriginal = str_split($linha["cpf"]);
+                    $cepOriginal = str_split($linha["cep"]);
+
+                    $cpf  = implode("", array_slice($cpfOriginal, 0, 3)) . ".";
+                    $cpf .= implode("", array_slice($cpfOriginal, 3, 3)) . ".";
+                    $cpf .= implode("", array_slice($cpfOriginal, 6, 3)) . "-";
+                    $cpf .= implode("", array_slice($cpfOriginal, 9, 2));
+                    $cpf  = htmlspecialchars($cpf);
+
+                    $cep  = implode("", array_slice($cepOriginal, 0, 5)) . "-"; ;
+                    $cep .= implode("", array_slice($cepOriginal, 5, 8));
+
+                    // listamos os dados de cada usuário
+                    $tabela .= "<tr>";
+                    $tabela .= "    <td class=\"insc\">";
+                    $tabela .= htmlspecialchars($linha["numeroInscricao"])  ."</td>";
+                    $tabela .= "    <td class=\"nome\">";
+                    $tabela .= htmlspecialchars($linha["nome"])             ."</td>";
+                    $tabela .= "    <td class=\"login\">";
+                    $tabela .= htmlspecialchars($linha["login"])            ."</td>";
+                    $tabela .= "    <td class=\"cpf\">";
+                    $tabela .= $cpf                                     ."</td>";
+                    $tabela .= "    <td class=\"email\">";
+                    $tabela .= htmlspecialchars($linha["email"])            ."</td>";
+                    $tabela .= "    <td class=\"datainsc\">";
+                    $tabela .= date("d/m/Y H:i:s",
+                               strtotime(htmlspecialchars($linha["dataInscricao"])))    ."</td>";
+                    $tabela .= "    <td class=\"status\" data-status=\"";
+                    $tabela .= htmlspecialchars($linha["status"]). "\">";
+                    if($linha["status"] === "inscrito"){
+                        $tabela .= "Inscrito";
+                    }else if($linha["status"] === "preinscrito"){
+                        $tabela .= "Pré-inscrito";
+                    }else if($linha["status"] === "desistente"){
+                        $tabela .= "Desistente";
+                    }else if($linha["status"] === "formado"){
+                        $tabela .= "Formado";
+                    }
+                    $tabela .= "</td>";
+
+                    $sql  = "SELECT U.login FROM Usuario U, Aluno A WHERE A.idUsuario = U.id ";
+                    $sql .= "AND A.numeroInscricao = ?";
+
+                    $res = $conexao->prepare($sql);
+                    $res->bindParam(1, $linha["idIndicador"], PDO::PARAM_INT);
+                    $res->setFetchMode(PDO::FETCH_ASSOC);
+                    $res->execute();
+                    $linhaIndicador = $res->fetch();
+
+                    $tabela .= "    <td><a href=\"visualizar_aluno.php?id=";
+                    $tabela .= $linha["numeroInscricao"] . "\">";
+                    $tabela .= "<i class=\"fa fa-eye\"></i></a></td>";
+
+                    $tabela .= "    <td><a data-indicador=\"";
+                    $tabela .= $linhaIndicador["login"];
+                    $tabela .= "\" data-id=\"";
+                    $tabela .= $linha["id"];
+                    $tabela .= "\" data-telefone=\"";
+                    $tabela .= $linha["telefone"];
+                    $tabela .= "\" data-escolaridade=\"";
+                    $tabela .= $linha["escolaridade"];
+                    $tabela .= "\" data-curso=\"";
+                    $tabela .= $linha["curso"];
+                    $tabela .= "\" data-cep=\"";
+                    $tabela .= $cep;
+                    $tabela .= "\" data-rua=\"";
+                    $tabela .= $linha["rua"];
+                    $tabela .= "\" data-numero=\"";
+                    $tabela .= $linha["numero"];
+                    $tabela .= "\" data-bairro=\"";
+                    $tabela .= $linha["bairro"];
+                    $tabela .= "\" data-cidade=\"";
+                    $tabela .= $linha["cidade"];
+                    $tabela .= "\" data-estado=\"";
+                    $tabela .= $linha["estado"];
+                    $tabela .= "\" data-complemento=\"";
+                    $tabela .= $linha["complemento"];
+                    $tabela .= "\" href=\"#\" data-toggle=\"modal\"";
+                    $tabela .= " data-target=\"#modal-edita-aluno\">";
+                    $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
+                    $tabela .= "    <td><a data-href=\"rotinas/aluno/";
+                    $tabela .= "remover_aluno.php?id=";
+                    $tabela .= $linha["id"];
+                    $tabela .= "\" href=\"#\" data-toggle=\"modal\"";
+                    $tabela .= " data-target=\"#modal-confirma-deleta\">";
+                    $tabela .= "<i class=\"fa fa-trash-o\"></i></a></td>";
+                    $tabela .= "</tr>";
+                    }
+                    else{
+                        $possuiProximaPagina = true;
+                    }
+                    $contador++;
+
+                }
+        ?>
+        <div class="col-sm-12">
+            <div class="center-block col-sm-12 no-float">
+                <section class="conteudo">
+                    <h1>Alunos</h1>
+                    <?php 
+                        if(isset($_GET["sucesso"])){
+                            $sucesso = htmlspecialchars($_GET["sucesso"]);
+                            $mensagem = isset($_GET["mensagem"]) ? htmlspecialchars($_GET["mensagem"]):
+                                "";
+                        }
+                        if(mb_strlen($mensagem, 'UTF-8') !== 0 && !$sucesso){
+                            echo "<p class=\"warning\">$mensagem</p>";
+                        }
+                        if($sucesso){
+                            echo "<p class=\"sucesso\">$mensagem</p>";
+                        }
+                    ?>
+                    <a href="#" class="btn" data-toggle="modal" data-target="#modal-novo-aluno">
+                        <i href="#" class="fa fa-plus"></i>
+                        <p style="display:inline">Novo aluno</p>
+                    </a>
+                    <!-- formulario para implementar filtros -->
+                    <form method="GET" action="gerenciar_alunos.php" id="form-filtro">
+                        <div class="form-group">
+                            <br/>
+                            <p>
+                                <b>Buscar por:</b>
+                            </p>
+                            <a id="label-nome" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-nome"]) && 
+                                        mb_strlen(($_GET["filtro-nome"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >
+                                Nome
+                            </a>
+                            <input  type="text" name="filtro-nome" id="filtro-nome"
+                                    placeholder="Nome" class="form-control" autocomplete="off"
+                                    style="display:inline;width:205px"
+                                    value= <?= isset($_GET["filtro-nome"]) ? 
+                                        htmlspecialchars($_GET["filtro-nome"]) : "" ?> >
+                                    
+                            <a id="label-cpf" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-cpf"]) && 
+                                        mb_strlen(($_GET["filtro-cpf"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >CPF
+                            </a>
+
+                            <input type="text" name="filtro-cpf" id="filtro-cpf"
+                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
+                                       placeholder="xxx.xxx.xxx-xx" class="form-control"
+                                       style="display:inline;width:120px"
+                                       value= <?= isset($_GET["filtro-cpf"]) ? 
+                                        htmlspecialchars($_GET["filtro-cpf"]) : "" ?> >
+
+                            <a id="label-status" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-status"]) && 
+                                        mb_strlen(($_GET["filtro-status"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Status
+                            </a>
+
+                                <select name="filtro-status" id="filtro-status" class="form-control"
+                                        style="display:inline;width:120px">
+                                        <option value="" 
+                                            <?=isset($_GET["filtro-status"]) &&
+                                                htmlspecialchars($_GET["filtro-status"]) == "" ?
+                                                'selected="selected"': '' ;?> >Nenhum
+                                        </option>
+                                        <option value="preinscrito"
+                                            <?=isset($_GET["filtro-status"]) &&
+                                                htmlspecialchars($_GET["filtro-status"]) == "preinscrito"?
+                                            'selected="selected"':'';?> >
+                                        Pré-inscrito</option>
+                                        <option value="inscrito"
+                                            <?=isset($_GET["filtro-status"]) &&
+                                                htmlspecialchars($_GET["filtro-status"]) == "inscrito"?
+                                            'selected="selected"':'';?> >
+                                        Inscrito</option>
+                                        <option value="desistente"
+                                           <?=isset($_GET["filtro-status"]) &&
+                                                htmlspecialchars($_GET["filtro-status"]) == "desistente"?
+                                           'selected="selected"':'';?> >
+                                        Desistente</option>
+                                        <option value="formado"
+                                            <?=isset($_GET["filtro-status"]) &&
+                                                htmlspecialchars($_GET["filtro-status"]) == "formado"?
+                                           'selected="selected"':'';?> >
+                                        Formado</option>
+                                    </select>
+
+                            <a id="label-numero" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-numero"]) && 
+                                        mb_strlen(($_GET["filtro-numero"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Numero
+                            </a>
+
+                            <input type="text" name="filtro-numero"
+                                       id="filtro-numero"
+                                       placeholder="xx" class="form-control"
+                                       style="display:inline;width:75px"
+                                       value= <?= isset($_GET["filtro-numero"]) ? 
+                                        htmlspecialchars($_GET["filtro-numero"]) : "" ?> >
+
+                            <a id="label-data-min" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-data-min"]) && 
+                                        mb_strlen(($_GET["filtro-data-min"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >Data minima de inscrição
+                            </a>
+                            <div id="div-data-min" style="display: inline">
+                                <input type="date" name="filtro-data-min" id="filtro-data-min"
+                                       placeholder="dd/mm/aaaa" class="form-control"
+                                       style="display:inline;width:150px"
+                                       value =<?= isset($_GET["filtro-data-min"]) ?
+                                                htmlspecialchars($_GET["filtro-data-min"]) : "" ?> >
+                            </div>
+                            <a id="label-data-max" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-data-max"]) && 
+                                        mb_strlen(($_GET["filtro-data-max"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >Data máxima de inscrição
+                            </a>
+                            <div id="div-data-max" style="display: inline">
+                            <input type="date" name="filtro-data-max" id="filtro-data-max"
+                                       placeholder="dd/mm/aaaa" class="form-control"
+                                       style="display:inline;width:150px"
+                                       value =<?= isset($_GET["filtro-data-max"]) ?
+                                                htmlspecialchars($_GET["filtro-data-max"]) : "" ?> >
+                            </div>
+                            <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
+                            </a>
+                            <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
+                                Limpar
+                                <i href="#" class="fa fa-eraser"></i>
+                            </a>
+
+                            <!-- controle de pagina da paginação -->
+                            <input type="hidden" id="pagina" name="pagina" 
+                                value=<?= isset($_GET["pagina"]) ? 
+                                    htmlspecialchars($_GET["pagina"]) : 0 ?> />
+                            
+                            <input type="hidden" id="pagina-ipp" name="pagina-ipp" 
+                                value=<?= isset($_GET["pagina-ipp"]) ? 
+                                    htmlspecialchars($_GET["pagina-ipp"]) : 10 ?> />
+
+                            <!-- controle de ordenação da tabela -->
+                            <input type="hidden" name ="numeroTableHeader" 
+                                id="numeroTableHeader" 
+                                value =<?= isset($_GET["numeroTableHeader"])? 
+                                    htmlspecialchars($_GET["numeroTableHeader"]) :
+                                    "0" ?> >
+
+                            <!-- passar 1 para ser crescente ou 2 para decrescente -->
+                            <input type="hidden" name="cimaOuBaixo" 
+                                id="cimaOuBaixo" 
+                                value =<?= isset($_GET["cimaOuBaixo"])? 
+                                    htmlspecialchars($_GET["cimaOuBaixo"]) :
+                                    "2" ?>>
+                        </div>
+                    </form>
+                    <!-- fim dos filtros -->
+                    <br>
+                    <?php if($numeroRegistros !== 0){ ?>
+                    <div class="flip-scroll">
+                        <div class="wrapper-scroll">
+                            <table class="table table-bordered table-striped" id="alunos">
+                                <thead style="background-color: #AAA">
+                                    <tr>
+                                        <th width="100px" <?= $indexHeader == 0 ? 
+                                            ($direcao == 1? "class =\"headerSortUp\"" : 
+                                                "class =\"headerSortDown\"") : "" ?> >Nº inscrição</th>
+                                        <th width="160px"
+                                            <?= $indexHeader == 1 ? 
+                                            ($direcao == 1? "class =\"headerSortUp\"" : 
+                                                "class =\"headerSortDown\"") : "" ?> >Nome</th>
+                                        <th width="100px" 
+                                            <?= $indexHeader == 2 ? 
+                                            ($direcao == 1? "class =\"headerSortUp\"" : 
+                                                "class =\"headerSortDown\"") : "" ?> >Nome de usuário</th>
+                                        <th width="110px">CPF</th>
+                                        <th width="150px"
+                                            <?= $indexHeader == 4 ? 
+                                            ($direcao == 1? "class =\"headerSortUp\"" : 
+                                                "class =\"headerSortDown\"") : "" ?> >E-mail</th>
+                                        <th width="130px"
+                                            <?= $indexHeader == 5 ? 
+                                            ($direcao == 1? "class =\"headerSortUp\"" : 
+                                                "class =\"headerSortDown\"") : "" ?> >Data e hora de inscrição</th>
+                                        <th width="100px">Status</th>
+                                        <th width="60px">Visualizar</th>
+                                        <th width="60px">Editar</th>
+                                        <th width="60px">Excluir</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?= $tabela ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        //pequeno script somente para passar se existe proxima pagina e página
+                        //anterior
+
+                        possuiProximaPagina = <?= $possuiProximaPagina == 1 ? 1 : 0 ?>;
+                        possuiPaginaAnterior = <?= (!(isset($_GET["pagina"])) ||
+                                                       ($_GET["pagina"] == 0)) ? 0 : 1  ?>;
+
+                    </script>
+                    <div align="center">
+                        <a href="#" id="anterior" class="btn btn-info"
+                            <?php if(!isset($_GET["pagina"]) || $_GET["pagina"] == 0){
+                                    echo "disabled name=\"desativado\"";
+                                } ?>
+                            >
+                            <i href="#" class="fa fa-arrow-circle-o-left"></i>
+                         Anterior
+                        </a>
+                        <a id="label-ipp" href="#" class="btn" 
+                                style= "display:inline;color:#215F89"
+                                >Linhas por página
+                            </a>
+
+                                <select name="ipp" id="ipp" class="form-control"
+                                        style="display:inline;width:120px">
+
+                                        <option value="10"
+                                            <?=isset($_GET["pagina-ipp"]) &&
+                                                htmlspecialchars($_GET["pagina-ipp"]) == "10"?
+                                            "selected='selected'":'';?> >
+                                        10</option>
+                                        <option value="25"
+                                            <?=isset($_GET["pagina-ipp"]) &&
+                                                htmlspecialchars($_GET["pagina-ipp"]) == "25"?
+                                            "selected='selected'":'';?> >
+                                        25</option>
+                                        <option value="50"
+                                           <?=isset($_GET["pagina-ipp"]) &&
+                                                htmlspecialchars($_GET["pagina-ipp"]) == "50"?
+                                           "selected='selected'":'';?> >
+                                        50</option>
+                                        <option value="100"
+                                            <?=isset($_GET["pagina-ipp"]) &&
+                                                htmlspecialchars($_GET["pagina-ipp"]) == "100"?
+                                           "selected='selected'":'';?> >
+                                        100</option>
+                                    </select>
+                        <a href="#" id="proxima" class="btn btn-info" 
+                            <?php if(!$possuiProximaPagina){
+                                    echo 'disabled';
+                                } ?>>
+                            Próxima
+                            <i href="#" class="fa fa-arrow-circle-o-right"></i>
+                        </a>
+                    </div>
+                    <div align="center">
+                        <p>Página <?= isset($_GET["pagina"]) ?
+                                 (int)(htmlspecialchars($_GET["pagina"])) +1 :
+                                 1 ?> </p>
+                    </div>
+                    <?php } 
+                        
+                    ?>
+                    
+                </section>
+            </div>
+        </div>
+        <!-- popup "modal" do bootstrap para inserção de novo aluno -->
+        <div class="modal fade" id="modal-novo-aluno" tabindex="-1" role="dialog" 
+             aria-labelledby="modal-novo-aluno" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- colocamos a tag form aqui para que possamos enviar o formulário
+                        no rodapé do modal -->
+                    <form method="POST" action="gerenciar_alunos.php ">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                X
+                            </button>
+                            <h4 class="modal-title">Novo aluno</h4>
+                        </div>
+                        <div class="modal-body" style="padding-bottom: 0px">
+                            <!-- o formulário em si fica dentro dessa div -->
+                            <div class="form-group">
+                                <label for="nome-novo">Nome do aluno:</label>
+                                <input type="text" name="nome" id="nome-novo" required
+                                       pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
+                                       placeholder="Nome" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="cpf-novo">CPF do aluno:</label>
+                                <input type="text" name="cpf" id="cpf-novo" required
+                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
+                                       placeholder="xxx.xxx.xxx-xx" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="email-novo">E-mail do aluno:</label>
+                                <input type="email" name="email" id="email-novo" required
+                                       placeholder="E-mail"
+                                       title="Insira um e-mail válido"
+                                       class="form-control">
+                            </div>
+
+                            <div class="form-group col-sm-12" >
+                                <label for="">Endereço do aluno:</label>
+                                    <div style="display:block">
+            
+                                        <div  class="col-sm-6 col-md-4 " 
+                                            style="padding-top:10px;padding-bot:10px">
+                                            <label for="cep-novo" style="display:inline">CEP :</label>
+                                            <input type="text" name="cep" id="cep-novo"
+                                                pattern="^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$" 
+                                                placeholder="xxxxx-xxx"
+                                                title="Insira um CEP válido"
+                                                class="form-control"
+                                                style="width:90px" required>
+                                        </div>
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="rua-novo">Rua :</label>
+                                            <input type="text" name="rua" id="rua-novo"
+                                                pattern="^.{0,200}$" placeholder="Rua"
+                                                title="A rua deve ter no máximo 200 caracteres"
+                                                class="form-control"
+                                                style="width:150px " required>
+                                        </div>
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="numero-novo">
+                                                Numero :</label>
+                                            <input type="text" name="numero" id="numero-novo"
+                                                placeholder="xx"
+                                                title="Insira o numero da residência do aluno"
+                                                class="form-control"
+                                                style="width:80px ;" required>
+                                        </div>
+            
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="bairro-novo" >
+                                                Bairro :</label>
+                                            <input type="text" name="bairro" id="bairro-novo"
+                                                placeholder="Bairro"
+                                                title="Insira o bairro da residência do aluno"
+                                                class="form-control"
+                                                style="width:120px ;" required>
+                                        </div>
+            
+                                        
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="cidade-novo" >
+                                                Cidade :</label>
+                                            <input type="text" name="cidade" id="cidade-novo"
+                                                placeholder="Cidade"
+                                                title="Insira o nome da cidade do aluno"
+                                                class="form-control"
+                                                style="width:150px ;" required>
+                                        </div>
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="estado-novo">
+                                                Estado :</label>
+                                            <select name="estado" id="estado-novo" class="form-control"
+                                            style="width:120px">
+                                                <option value="AC">Acre</option>
+                                                <option value="AL">Alagoas</option>
+                                                <option value="AM">Amazonas</option>
+                                                <option value="AP">Amapá</option>
+                                                <option value="BA">Bahia</option>
+                                                <option value="CE">Ceará</option>
+                                                <option value="DF">Distrito Federal</option>
+                                                <option value="ES">Espírito Santo</option>
+                                                <option value="GO">Goiás</option>
+                                                <option value="MA">Maranhão</option>
+                                                <option value="MT">Mato Grosso</option>
+                                                <option value="MS">Mato Grosso do Sul</option>
+                                                <option value="MG">Minas Gerais</option>
+                                                <option value="PA">Pará</option>
+                                                <option value="PB">Paraíba</option>
+                                                <option value="PR">Paraná</option>
+                                                <option value="PE">Pernambuco</option>
+                                                <option value="PI">Piauí</option>
+                                                <option value="RJ">Rio de Janeiro</option>
+                                                <option value="RN">Rio Grande do Norte</option>
+                                                <option value="RO">Rondônia</option>
+                                                <option value="RS">Rio Grande do Sul</option>
+                                                <option value="RR">Roraima</option>
+                                                <option value="SC">Santa Catarina</option>
+                                                <option value="SE">Sergipe</option>
+                                                <option value="SP">São Paulo</option>
+                                                <option value="TO">Tocantins</option>
+                                            </select>
+                                        </div>
+            
+            
+                                        <div  class="col-sm-6 col-md-12"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="complemento-novo">
+                                                Complemento :</label>
+                                            <input type="text" name="complemento" id="complemento-novo"
+                                                placeholder="Complemento"
+                                                title="Insira o complemento da residência do aluno"
+                                                class="form-control"
+                                                style="width:200px" >
+                                        </div>
+            
+                                    </div>
+                                
+                                </div>
+                            <div class="form-group">
+                                <label for="telefone-novo">Telefone do aluno:</label>
+                                <input type="tel" name="telefone" id="telefone-novo" required
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       title="Insira um telefone válido"
+                                       class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="escolaridade-novo">Nível de escolaridade:</label>
+                                <select name="escolaridade" id="escolaridade-novo" class="form-control">
+                                    <option value="fundamental incompleto" selected>
+                                        Ensino Fundamental Incompleto
+                                    </option>
+                                    <option value="fundamental completo">
+                                        Ensino Fundamental Completo
+                                    </option>
+                                    <option value="médio incompleto">
+                                        Ensino Médio Incompleto
+                                    </option>
+                                    <option value="médio completo">
+                                        Ensino Médio Completo
+                                    </option>
+                                    <option value="superior incompleto">
+                                        Ensino Superior Incompleto
+                                    </option>
+                                    <option value="superior completo">
+                                        Ensino Superior Completo
+                                    </option>
+                                    <option value="mestrado">
+                                        Mestrado
+                                    </option>
+                                    <option value="doutorado">
+                                        Doutorado
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="curso-novo">Curso superior cursado:</label>
+                                <input type="text" name="curso-novo" id="curso-novo"
+                                       pattern="^.{0,200}$" placeholder="Curso superior cursado"
+                                       title="O curso deve ter no máximo 200 caracteres"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="login-novo">Nome de usuário:</label>
+                                <input type="text" name="login" id="login-novo" required
+                                       pattern="^.{3,100}$" placeholder="Nome de usuário"
+                                       title="O login deve ter de 3 a 100 caracteres"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="senha-novo">Senha:</label>
+                                <input type="password" name="senha" id="senha-novo" required
+                                       pattern="^.{6,72}$" placeholder="Senha"
+                                       title="A senha deve ter de 6 a 72 caracteres"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="indicador-novo">
+                                    Foi indicado por alguém?
+                                    Em caso afirmativo, insira o nome de usuário do
+                                    indicador:
+                                </label>
+                                <input type="text" name="indicador" id="indicador-novo"
+                                       pattern="^.{3,100}$"
+                                       placeholder="Nome de usuário do indicador, se existir"
+                                       title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
+                                       class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Cancelar
+                            </button>
+                            <button type="submit" name="submit" value="submit" class="btn btn-primary">
+                                Inserir aluno
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- popup "modal" do bootstrap para edição de aluno -->
+        <div class="modal fade" id="modal-edita-aluno" tabindex="-1" role="dialog" 
+             aria-labelledby="modal-edita-aluno" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- colocamos a tag form aqui para que possamos enviar o formulário
+                        no rodapé do modal -->
+                    <form method="POST" action="rotinas/aluno/editar_aluno.php">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                X
+                            </button>
+                            <h4 class="modal-title">Editar aluno</h4>
+                        </div>
+                        <div class="modal-body" style="padding-bottom: 0px">
+                            <!-- o formulário em si fica dentro dessa div -->
+                            <input type="hidden" name="insc" id="insc" value="">
+                            <input type="hidden" name="id" id="id" value="">
+                            <div class="form-group">
+                                <label for="nome">Nome do aluno:</label>
+                                <input type="text" name="nome" id="nome" required
+                                       pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
+                                       placeholder="Nome" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="cpf">CPF do aluno:</label>
+                                <input type="text" name="cpf" id="cpf" required
+                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
+                                       placeholder="xxx.xxx.xxx-xx" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-mail do aluno:</label>
+                                <input type="email" name="email" id="email" required
+                                       placeholder="E-mail"
+                                       title="Insira um e-mail válido"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefone">Telefone do aluno:</label>
+                                <input type="tel" name="telefone" id="telefone" required
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       title="Insira um telefone válido"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group col-sm-12" >
+                                <label for="">Endereço do aluno:</label>
+                                    <div style="display:block">
+            
+                                        <div  class="col-sm-6 col-md-4 " 
+                                            style="padding-top:10px;padding-bot:10px">
+                                            <label for="cep" style="display:inline">CEP :</label>
+                                            <input type="text" name="cep" id="cep"
+                                                pattern="^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$" 
+                                                placeholder="xxxxx-xxx"
+                                                title="Insira um CEP válido"
+                                                class="form-control"
+                                                style="width:90px" required>
+                                        </div>
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="rua">Rua :</label>
+                                            <input type="text" name="rua" id="rua"
+                                                pattern="^.{0,200}$" placeholder="Rua"
+                                                title="A rua deve ter no máximo 200 caracteres"
+                                                class="form-control"
+                                                style="width:150px " required>
+                                        </div>
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="numero">
+                                                Numero :</label>
+                                            <input type="text" name="numero" id="numero"
+                                                placeholder="xx"
+                                                title="Insira o numero da residência do aluno"
+                                                class="form-control"
+                                                style="width:80px ;" required>
+                                        </div>
+            
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="bairro" >
+                                                Bairro :</label>
+                                            <input type="text" name="bairro" id="bairro"
+                                                placeholder="Bairro"
+                                                title="Insira o bairro da residência do aluno"
+                                                class="form-control"
+                                                style="width:120px ;" required>
+                                        </div>
+            
+                                        
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="cidade" >
+                                                Cidade :</label>
+                                            <input type="text" name="cidade" id="cidade"
+                                                placeholder="Cidade"
+                                                title="Insira o nome da cidade do aluno"
+                                                class="form-control"
+                                                style="width:150px ;" required>
+                                        </div>
+                                        <div  class="col-sm-6 col-md-4"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="estado">
+                                                Estado :</label>
+                                            <select name="estado" id="estado" class="form-control"
+                                            style="width:120px">
+                                                <option value="AC">Acre</option>
+                                                <option value="AL">Alagoas</option>
+                                                <option value="AM">Amazonas</option>
+                                                <option value="AP">Amapá</option>
+                                                <option value="BA">Bahia</option>
+                                                <option value="CE">Ceará</option>
+                                                <option value="DF">Distrito Federal</option>
+                                                <option value="ES">Espírito Santo</option>
+                                                <option value="GO">Goiás</option>
+                                                <option value="MA">Maranhão</option>
+                                                <option value="MT">Mato Grosso</option>
+                                                <option value="MS">Mato Grosso do Sul</option>
+                                                <option value="MG">Minas Gerais</option>
+                                                <option value="PA">Pará</option>
+                                                <option value="PB">Paraíba</option>
+                                                <option value="PR">Paraná</option>
+                                                <option value="PE">Pernambuco</option>
+                                                <option value="PI">Piauí</option>
+                                                <option value="RJ">Rio de Janeiro</option>
+                                                <option value="RN">Rio Grande do Norte</option>
+                                                <option value="RO">Rondônia</option>
+                                                <option value="RS">Rio Grande do Sul</option>
+                                                <option value="RR">Roraima</option>
+                                                <option value="SC">Santa Catarina</option>
+                                                <option value="SE">Sergipe</option>
+                                                <option value="SP">São Paulo</option>
+                                                <option value="TO">Tocantins</option>
+                                            </select>
+                                        </div>
+            
+            
+                                        <div  class="col-sm-6 col-md-12"
+                                        style="padding-top:10px;padding-bot:10px">
+                                            <label for="complemento">
+                                                Complemento :</label>
+                                            <input type="text" name="complemento" id="complemento"
+                                                placeholder="Complemento"
+                                                title="Insira o complemento da residência do aluno"
+                                                class="form-control"
+                                                style="width:200px" >
+                                        </div>
+            
+                                    </div>
+                                
+                                </div>
+                            <div class="form-group">
+                                <label for="escolaridade">Nível de escolaridade:</label>
+                                <select name="escolaridade" id="escolaridade" class="form-control">
+                                    <option value="fundamental incompleto" selected>
+                                        Ensino Fundamental Incompleto
+                                    </option>
+                                    <option value="fundamental completo">
+                                        Ensino Fundamental Completo
+                                    </option>
+                                    <option value="médio incompleto">
+                                        Ensino Médio Incompleto
+                                    </option>
+                                    <option value="médio completo">
+                                        Ensino Médio Completo
+                                    </option>
+                                    <option value="superior incompleto">
+                                        Ensino Superior Incompleto
+                                    </option>
+                                    <option value="superior completo">
+                                        Ensino Superior Completo
+                                    </option>
+                                    <option value="mestrado">
+                                        Mestrado
+                                    </option>
+                                    <option value="doutorado">
+                                        Doutorado
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="display:none">
+                                <label for="curso">Curso superior cursado:</label>
+                                <input type="text" name="curso" id="curso"
+                                       pattern="^.{0,200}$" placeholder="Curso superior cursado"
+                                       title="O curso deve ter no máximo 200 caracteres"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="login">Nome de usuário:</label>
+                                <input type="text" name="login" id="login" required
+                                       pattern="^.{3,100}$" placeholder="Nome de usuário"
+                                       title="O login deve ter de 3 a 100 caracteres"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="status">Status do aluno:</label>
+                                <select name="status" id="status" class="form-control">
+                                    <option value="preinscrito" selected>Pré-inscrito</option>
+                                    <option value="inscrito">Inscrito</option>
+                                    <option value="desistente">Desistente</option>
+                                    <option value="formado">Formado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="indicador">
+                                    Foi indicado por alguém?
+                                    Em caso afirmativo, insira o nome de usuário do
+                                    indicador:
+                                </label>
+                                <input type="text" name="indicador" id="indicador"
+                                       pattern="^.{3,100}$"
+                                       placeholder="Nome de usuário do indicador, se existir"
+                                       title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
+                                       class="form-control" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Cancelar
+                            </button>
+                            <button type="submit" name="submit" value="submit" class="btn btn-primary">
+                                Editar aluno
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- popup "modal" do bootstrap para confirmação de remoção de aluno -->
+        <div class="modal fade" id="modal-confirma-deleta" tabindex="-1" role="dialog"
+             aria-labelledby="modal-confirma-deleta" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        X
+                    </button>
+                    <h4 class="modal-title">Remoção de aluno</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Tem certeza que deseja remover <span id="nome-aluno"></span>?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Não</button>
+                        <a href="#" class="btn btn-danger danger">Sim</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <?php
+            }else{
+        ?>
+        <!-- redireciona o usuário para o index.php -->
+        <meta http-equiv="refresh" content="0; url=index.php">
+        <script type="text/javascript">
+            window.location = "index.php";
+        </script>
+        <?php
+                die();
+            }
+            include("modulos/rodape.php");
+        ?>
+    </body>
+</html>

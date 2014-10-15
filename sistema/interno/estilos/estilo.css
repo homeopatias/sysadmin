@@ -1,0 +1,117 @@
+html, body {
+    font-family: "Liberation Serif", "Times New Roman", serif;
+}
+body {
+    background-color: #CCC;
+}
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+textarea{
+    resize: none;
+}
+table {
+    width: 99.8% !important;
+}
+th, td {
+    text-align: center;
+}
+footer > div {
+    width: 100% !important;
+}
+
+/* aqui fazemos com que a barra de navegação tenha uma largura mínima,
+   para evitar visualizações estranhas em telas pequenas */
+
+.navbar {
+    min-width: 270px;
+}
+
+/* classe que adiciona uma borda inferior ao elemento */
+
+.bottom-border {
+    border-bottom: solid 1px #AAA;
+}
+
+/* aumentando o tamanho do item no menu de navegação */
+
+.dropdown-menu li {
+    height: 2em;
+}
+
+/* area central de conteúdo das páginas */
+
+.conteudo {
+    padding: 3em;
+    padding-top: 2em;
+    border: solid 5px #AAA;
+    background-color: #EEE;
+    margin-bottom: 100px;
+
+    -webkit-box-shadow: 17px 17px 8px 0px rgba(86, 86, 82, 1);
+    -moz-box-shadow:    17px 17px 8px 0px rgba(86, 86, 82, 1);
+    box-shadow:         17px 17px 8px 0px rgba(86, 86, 82, 1);
+}
+
+/* limitando as tabelas a uma região, fazendo com que usem scroll */
+
+.wrapper-scroll {
+    height: 10%;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+/* mensagem de erro */
+.warning {
+	color: #B00;
+}
+
+/* mensagem de sucesso */
+.sucesso {
+    color: #090;
+}
+
+
+/* adicionando as setas ao lado das colunas de tabelas ordenáveis */
+
+th.header:after {
+    font-family: FontAwesome;
+    padding-left: 1em;
+    content: "\f0dc";
+}
+th.headerSortUp:after {
+    font-family: FontAwesome;
+    padding-left: 1em;
+    content: "\f0de";
+}
+th.headerSortDown:after {
+    font-family: FontAwesome;
+    padding-left: 1em;
+    content: "\f0dd";
+}
+
+/* classe do container de algo a ser centralizado verticalmente */
+
+.container-vertical-center {
+    display: table;
+    vertical-align: middle;
+    height: 60%;
+    padding-bottom: 0px;
+}
+
+/* classe que centraliza verticalmente */
+
+.vertical-center {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+/* classe que evita que os elementos tenham a propriedade float
+   diferente de none (usada para resolver problemas de centralização) */
+
+.no-float {
+    float: none;
+}
+
