@@ -147,11 +147,12 @@
                                         ON C.idCidade = M.chaveCidade INNER JOIN Aluno A ON 
                                         M.chaveAluno = A.numeroInscricao INNER JOIN Usuario U ON 
                                         U.id = A.idUsuario WHERE A.status = 'inscrito' AND 
-                                        C.idCidade = ? AND M.etapa = ?";
+                                        C.idCidade = ? AND M.etapa = ? AND C.idCoordenador = ?";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $idCidade, PDO::PARAM_INT);
                         $query->bindParam(2, $etapa, PDO::PARAM_INT);
+                        $query->bindParam(3, $coordenadorId, PDO::PARAM_INT);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 

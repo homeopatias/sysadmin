@@ -395,7 +395,8 @@
             }
 
             // exibe aulas apenas para alunos logados
-            if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Aluno){
+            if(isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof Aluno &&
+                unserialize($_SESSION['usuario'])->getStatus() === 'inscrito'){
 
                 $textoQuery  = "SELECT A.chaveCidade, A.etapa, A.data, A.descricao,
                                 P.nome FROM Aula A INNER JOIN Administrador Ad
@@ -886,7 +887,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location = "index.php?mensagem=Apenas alunos inscritos podem ver as aulas";
         </script>
         <?php
                 die();

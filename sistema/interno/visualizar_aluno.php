@@ -429,6 +429,10 @@
                         <p style="display:inline" class="col-sm-3">
                             <b>Matriculado no período atual</b>
                         </p>
+                        <a href=  
+                                <?= "visualizar_aluno.php?id=". $idAluno ?>>
+                                Visualizar pagamentos do ano atual
+                            </a>
                         <p class="col-sm-2" id="cancelar-mat">
                             <a style="cursor: pointer" data-target="#modal-confirma-deleta"
                                data-toggle="modal"
@@ -634,6 +638,10 @@
                                            "<i class=\"fa fa-times warning\"></i>";
                             }
                             $tabela .= "</td>";
+                            $tabela .= "    <td><a href=\"visualizar_aluno.php?id=".$idAluno.
+                                       "&ano=".$linha["ano"]."\" >
+                                        <i class=\"fa fa-money\"></i>
+                                        </a></td>";
                             $tabela .= "</tr>";
                         }
 
@@ -647,6 +655,7 @@
                                 <th>Etapa</th>
                                 <th>Cidade</th>
                                 <th>Aprovado?</th>
+                                <th style="width:50px">Visualizar Pagamentos</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -673,15 +682,22 @@
 
                         // procuramos os pagamentos desse ano, tanto pendentes
                         // como efetuados
+
+                        $anoPagamento = date("Y");
+                        if( isset($_GET["ano"]) ){
+                            $anoPagamento = $_GET["ano"];
+                        }
+
                         $textoQuery  = "SELECT P.valorPago, P.valorTotal, P.data, P.desconto,
                                         P.ano, P.numParcela FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
                                         AND P.chaveMatricula = M.idMatricula
-                                        AND P.ano = YEAR(CURDATE())
+                                        AND P.ano = ?
                                         ORDER BY P.data DESC";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $idAluno, PDO::PARAM_INT);
+                        $query->bindParam(2, $anoPagamento, PDO::PARAM_STR);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
@@ -698,7 +714,16 @@
                         if($query->rowCount() != 0) {
                     ?>
 
-                    <h3>Pagamentos desse ano</h3>
+                    <?php if($anoPagamento == date("Y")){ ?>
+
+                        <h3>Pagamentos do ano atual</h3>
+
+                    <?php }else{ ?>
+
+                        <h3>Pagamentos do ano de <?= $anoPagamento ?></h3>
+
+                    <?php } ?>
+
                     <table class="table table-bordered table-striped" id="alunos">
                         <thead style="background-color: #AAA">
                             <tr>
@@ -717,20 +742,20 @@
                     <?php
                         for($i = 0; $i < 12; $i ++) {
                             echo "<td>R$ " . 
-                                 number_format($pagamentos[date("Y")][$i]['valor'], 2)
+                                 number_format($pagamentos[$anoPagamento][$i]['valor'], 2)
                                  . "</td>";
                         }
                         echo "</tr><tr>";
                         echo "<td style='background-color: #AAA'><b>Valor pago</b></td>";
                         for($i = 0; $i < 12; $i ++) {
                             echo "<td>R$ " .
-                                 number_format($pagamentos[date("Y")][$i]['pago'], 2)
+                                 number_format($pagamentos[$anoPagamento][$i]['pago'], 2)
                                  . "</td>";
                         }
                         echo "</tr><tr>";
                         echo "<td style='background-color: #AAA'><b>Data do pagamento</b></td>";
                         for($i = 0; $i < 12; $i ++) {
-                            $data = $pagamentos[date("Y")][$i]['data'];
+                            $data = $pagamentos[$anoPagamento][$i]['data'];
                             $data =  $data ? date("d/m/Y", strtotime($data)) : 'N/A';
                             echo "<td>" . $data . "</td>";
                         }
@@ -738,7 +763,7 @@
                         echo "<td style='background-color: #AAA'><b>Desconto</b></td>";
                         for($i = 0; $i < 12; $i ++) {
                             echo "<td>" .
-                                 number_format($pagamentos[date("Y")][$i]['desconto'], 2)
+                                 number_format($pagamentos[$anoPagamento][$i]['desconto'], 2)
                                  . "%</td>";
                         }
                     ?>
