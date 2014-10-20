@@ -42,7 +42,7 @@
         <?php
             include("modulos/navegacao.php");
 
-            //Checa se foi passado um aluno corretamente, caso contrário, retorna a lista de alunos
+            // Checa se foi passado um aluno corretamente, caso contrário, retorna a lista de alunos
             require_once("entidades/Aluno.php");
 
             $idAluno = $_GET["id"];
@@ -258,6 +258,11 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <?php
+
+                        
+                    ?>
 
                     <?php
                         }
