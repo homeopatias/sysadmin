@@ -607,7 +607,8 @@
 
             // exibe aulas apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
-               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
+               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" && 
+               2 & unserialize($_SESSION["usuario"])->getPermissoes() ){
                 // se o usuário chegou até aqui através de um formulário, registra a nova
                 // aula no sistema
                 if(isset($_POST["submit"])){

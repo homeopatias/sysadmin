@@ -76,6 +76,12 @@
                             <p style="display:inline">Frequência de alunos</p>
                         </a>
                     </li>
+                    <li>
+                        <a href="busca_alunos.php">
+                            <i class="fa fa-fw fa-list-ul"></i>
+                            <p style="display:inline">Informacoes Aluno</p>
+                        </a>
+                    </li>
                     <?php
                         } // Fim das opções para coordenadores
 
@@ -97,12 +103,14 @@
                         </a>
                         <ul class="dropdown-menu drop">
                             <!-- dropdown de gerenciamento de pessoas -->
+                            <?php if(16 & $permissoes){ ?>
                             <li>
                                 <a href="gerenciar_administradores.php">
                                     <i class="fa fa-fw fa-key"></i>
                                     <p style="display:inline">Administradores</p>
                                 </a>
                             </li>
+                            <?php } ?>
                             <li>
                                 <a href="gerenciar_alunos.php">
                                     <i class="fa fa-fw fa-graduation-cap"></i>

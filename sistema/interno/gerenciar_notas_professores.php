@@ -82,7 +82,8 @@
 
             // exibe notícias apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
-               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
+               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" && 
+               2 & unserialize($_SESSION["usuario"])->getPermissoes() ){
             
                 // lemos as credenciais do banco de dados
                 $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");

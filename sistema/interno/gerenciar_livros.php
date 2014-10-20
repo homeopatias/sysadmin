@@ -399,7 +399,8 @@
 
             // exibe livros apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
-               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
+               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" && 
+               8 & unserialize($_SESSION["usuario"])->getPermissoes()){
 
                 // se o usuário chegou até aqui através de um formulário, registra o novo
                 // livro no sistema

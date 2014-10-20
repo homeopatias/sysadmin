@@ -317,7 +317,8 @@
 
             // exibe Eventos apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
-               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
+               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" && 
+               4 & unserialize($_SESSION["usuario"])->getPermissoes() ){
                 // lemos as credenciais do banco de dados
                 $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
                 $dados = json_decode($dados, true);
