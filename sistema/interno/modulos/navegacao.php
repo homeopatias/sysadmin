@@ -78,7 +78,7 @@
                     </li>
                     <li>
                         <a href="busca_alunos.php">
-                            <i class="fa fa-fw fa-list-ul"></i>
+                            <i class="fa fa-fw fa-info-circle"></i>
                             <p style="display:inline">Informações de alunos</p>
                         </a>
                     </li>

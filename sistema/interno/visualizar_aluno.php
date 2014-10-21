@@ -429,10 +429,16 @@
                         <p style="display:inline" class="col-sm-3">
                             <b>Matriculado no período atual</b>
                         </p>
-                        <a href=  
+                        <?php
+                            if( isset($_GET["ano"]) && $_GET["ano"] != date("Y") ){ ?>
+
+                            <a href=  
                                 <?= "visualizar_aluno.php?id=". $idAluno ?>>
                                 Visualizar pagamentos do ano atual
                             </a>
+                            
+                        <?php } ?>
+
                         <p class="col-sm-2" id="cancelar-mat">
                             <a style="cursor: pointer" data-target="#modal-confirma-deleta"
                                data-toggle="modal"

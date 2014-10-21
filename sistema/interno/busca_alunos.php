@@ -109,7 +109,7 @@
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
-                    <h2 style="font-weight:bold; display:inline">Lista de chamada</h2>
+                    <h2 style="font-weight:bold; display:inline">Informações do aluno</h2>
                     <a href=<?= "\"impressao_chamada.php?cidade=". $idCidade . "&etapa=" . $etapa ."\"" ?>
                        target="_blank" class="pull-right" style="text-decoration:none" id="btn-imprimir">
                         <b>Versão para impressão &nbsp;</b>
