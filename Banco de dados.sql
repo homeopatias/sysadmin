@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 15, 2014 at 02:01 PM
--- Server version: 5.5.38-0ubuntu0.14.04.1
+-- Generation Time: Oct 21, 2014 at 05:22 PM
+-- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -107,24 +107,24 @@ INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `t
 (11, 23, 'inscrito', 4, '2121212121', 'saddsasdsdadsaasdadssda', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (12, 24, 'inscrito', NULL, '9999999999', 'sadkfçlfjçlk', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (13, 25, 'inscrito', NULL, '2222222222', 'テストテストテストテスト', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
-(14, 29, 'inscrito', NULL, '3199887766', 'Avenida B, 303, Apto 400, Belo Horizonte, Minas Gerais', 'fundamental incompleto', NULL, '30880420', 'Avenida B', 303, 'Um bairro random', 'Apto 400', 'MG', 'Belo Horizonte', 'BRL'),
-(15, 33, 'inscrito', NULL, '3189987777', 'saddsaadsdsa', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
-(16, 34, 'inscrito', NULL, '3199887766', 'teste ende', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
+(14, 29, 'preinscrito', NULL, '3199887766', 'Avenida B, 303, Apto 400, Belo Horizonte, Minas Gerais', 'fundamental incompleto', NULL, '30880420', 'Avenida B', 303, 'Um bairro random', 'Apto 400', 'MG', 'Belo Horizonte', 'BRL'),
+(15, 33, 'preinscrito', NULL, '3189987777', 'saddsaadsdsa', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
+(16, 34, 'preinscrito', NULL, '3199887766', 'teste ende', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (18, 36, 'preinscrito', NULL, '3199887766', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (19, 37, 'inscrito', 4, '3199999999', 'Mão', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (20, 38, 'preinscrito', NULL, '3112345432', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (21, 39, 'preinscrito', NULL, '3199887766', 'Rua da rua da', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
-(22, 47, 'inscrito', 14, '3199887766', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
+(22, 47, 'preinscrito', 14, '3199887766', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (23, 49, 'preinscrito', NULL, '3199887766', 'itamanai yo', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (24, 50, 'preinscrito', NULL, '3199887766', 'Saiba que o problema é seu (I pray for children down in Aaaaaaaaaaafricaaaaaaaaaaaa)', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (25, 51, 'preinscrito', NULL, '3188776655', 'Haaa dsadkjaskda', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (26, 53, 'preinscrito', NULL, '3199887766', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
-(27, 62, 'inscrito', NULL, '3199887766', 'asdfsjhgffds', 'superior completo', 'Ciência da Computação', '0', '', 0, '', '', '', '', ''),
+(27, 62, 'preinscrito', NULL, '3199887766', 'asdfsjhgffds', 'superior completo', 'Ciência da Computação', '30880420', 'adfasdf', 12, 'asdfasdf', 'apt 101', 'MG', 'asdfasdf', 'BRL'),
 (28, 63, 'preinscrito', NULL, '3199887766', 'asdfasdf', 'mestrado', 'asdfasd', '0', '', 0, '', '', '', '', ''),
 (29, 64, 'preinscrito', NULL, '3134737678', 'asdfasdf', 'médio incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (30, 65, 'preinscrito', NULL, '3199999999', 'saddsasdsdadsaasdadssda', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (31, 66, 'preinscrito', NULL, '3199887766', 'asdfsjhgffds', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
-(32, 69, 'inscrito', NULL, '3199887766', 'asdfsasdf sa 21', 'fundamental incompleto', NULL, '12312123', 'LET THE SKY FALLLL', 203, 'SKYFAALLL', 'WHEN IT CRUM-BLEEES', 'AL', 'WHEN IT CRUMBLESSSS', 'BRL'),
+(32, 69, 'preinscrito', NULL, '3199887766', 'asdfsasdf sa 21', 'fundamental incompleto', NULL, '12312123', 'LET THE SKY FALLLL', 203, 'SKYFAALLL', 'WHEN IT CRUM-BLEEES', 'AL', 'WHEN IT CRUMBLESSSS', 'BRL'),
 (38, 78, 'preinscrito', NULL, '3199887766', '', 'fundamental incompleto', NULL, '0', '', -1, '', '', '', '', ''),
 (39, 79, 'preinscrito', NULL, '3199887766', '', 'fundamental incompleto', NULL, '30880420', 'adfasdf', 12, 'fadsfa', 'adfasdf', 'AC', 'asdfads', 'BRL'),
 (40, 80, 'preinscrito', NULL, '3199887766', '', 'fundamental incompleto', NULL, '30880420', 'Treze', 13, 'Cruz das Treze', 'ap 1313', 'AP', 'Treze Marias', 'BRL'),
@@ -215,7 +215,7 @@ INSERT INTO `Associado` (`idAssoc`, `idUsuario`, `instituicao`, `formacaoTerapeu
 (7, 52, 'atenemg', '', '3199884433', 'Rua da rua da', 'Hyrule', 'RO', NULL, NULL, 1, '0', '', 0, '', NULL, ''),
 (9, 55, 'atenemg', '', '3112345432', 'asdfsasdf sa 21', 'Pallet', 'AC', NULL, NULL, 0, '0', '', 0, '', NULL, ''),
 (10, 70, 'atenemg', 'santos dumont (quê?)', '3199999999', 'fdsafa', 'Tocagado', 'AC', '', '0000-00-00', 1, '0', '', 0, '', NULL, ''),
-(11, 75, 'conahom', 'formado0 em honomatopoiea', '3132323232', 'sdfghçljk', 'çljkçkljçlkjkçl', 'AC', NULL, NULL, 0, '0', '', 0, '', NULL, ''),
+(11, 75, 'conahom', 'formado0 em honomatopoiea', '3132323232', 'sdfghçljk', 'çljkçkljçlkjkçl', 'AC', '', '1971-07-12', 0, '12321231', 'adfadsf', 231, 'asdfasdf', 'asdfadf', 'BRL'),
 (12, 76, 'atenemg', 'I didn''nt ask for this pain', '3113311991', 'asdlçd', 'asdsad', 'AC', NULL, NULL, 0, '0', '', 0, '', NULL, ''),
 (13, 77, 'conahom', 'eu amo uma tempestade mas eu não amo iluminamento', '3166666666', 'Rua dos Tra-sadfjhfbdfvdwaefr', 'I LAIAL', 'AC', '', '0000-00-00', 0, '0', '', 0, '', NULL, ''),
 (14, 81, 'atenemg', 'Formação em terapia para terapeutas', '3199887766', '', 'fasdf', 'AC', NULL, NULL, 0, '0', '', 0, '', NULL, ''),
@@ -349,7 +349,7 @@ CREATE TABLE IF NOT EXISTS `Evento` (
 --
 
 INSERT INTO `Evento` (`idEvento`, `dataPublic`, `dataEvento`, `titulo`, `local`, `descricao`) VALUES
-(1, '2014-07-28 08:40:23', '2011-08-20 14:00:00', 'sdadsdsasad', 'abcdefé', 'adsadsadssdasadsadasdsdasad'),
+(1, '2014-07-28 08:40:23', '2011-08-20 14:00:00', 'teste sql', 'abcdefé', 'adsadsadssdasadsadasdsdasad'),
 (2, '2014-07-28 08:40:44', '2010-07-15 10:00:00', 'sadadsdsasdasda', 'abcdefe', 'dsadadsadssad'),
 (3, '2014-07-28 08:42:58', '2010-07-15 10:00:00', 'sadadsdsasdasda', 'abcdefe', 'dsadadsadssad'),
 (4, '2014-07-28 08:43:10', '2010-07-15 10:00:00', 'sadadsdsasdasda', 'abcdefe', 'dsadadsadssad'),
@@ -453,7 +453,7 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   PRIMARY KEY (`idMatricula`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveCidade` (`chaveCidade`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=100 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=117 ;
 
 --
 -- Dumping data for table `Matricula`
@@ -462,8 +462,6 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
 INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chaveCidade`) VALUES
 (64, 19, 1, NULL, 4),
 (65, 18, 1, NULL, 4),
-(66, 16, 2, NULL, 4),
-(68, 14, 3, NULL, 9),
 (69, 13, 1, NULL, 9),
 (70, 12, 2, NULL, 9),
 (71, 11, 1, NULL, 3),
@@ -475,19 +473,27 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (77, 3, 3, NULL, 9),
 (78, 21, 3, NULL, 10),
 (79, 14, 2, 1, 2),
-(80, 22, 3, NULL, 13),
-(81, 15, 3, NULL, 4),
 (82, 26, 1, NULL, 20),
 (83, 14, 3, NULL, 21),
 (85, 27, 1, NULL, 21),
-(87, 27, 1, NULL, 4),
 (88, 23, 1, NULL, 21),
 (89, 31, 1, NULL, 20),
-(90, 32, 1, NULL, 22),
-(94, 14, 3, NULL, 11),
 (95, 14, 3, NULL, 11),
-(97, 41, 1, NULL, 21),
-(99, 41, 1, NULL, 4);
+(100, 42, 1, NULL, 11),
+(101, 14, 1, NULL, 12),
+(103, 32, 1, NULL, 22),
+(105, 22, 1, NULL, 13),
+(106, 15, 3, NULL, 4),
+(107, 16, 2, NULL, 4),
+(108, 42, 1, NULL, 12),
+(109, 42, 4, NULL, 2),
+(110, 42, 1, NULL, 4),
+(111, 42, 1, NULL, 21),
+(112, 27, 1, NULL, 4),
+(113, 41, 1, NULL, 4),
+(114, 14, 1, NULL, 4),
+(115, 41, 1, NULL, 11),
+(116, 41, 1, NULL, 12);
 
 -- --------------------------------------------------------
 
@@ -567,37 +573,73 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagMensalidade`),
   KEY `chaveAluno` (`chaveMatricula`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=85 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=61 ;
 
 --
 -- Dumping data for table `PgtoMensalidade`
 --
 
 INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela`, `valorTotal`, `valorPago`, `desconto`, `metodo`, `data`, `ano`, `fechado`) VALUES
-(49, 97, 0, 75, 0, 0, '', NULL, 2015, 0),
-(50, 97, 1, 125, 0, 0, '', NULL, 2015, 0),
-(51, 97, 2, 125, 0, 0, '', NULL, 2015, 0),
-(52, 97, 3, 125, 0, 0, '', NULL, 2015, 0),
-(53, 97, 4, 125, 0, 0, '', NULL, 2015, 0),
-(54, 97, 5, 125, 0, 0, '', NULL, 2015, 0),
-(55, 97, 6, 125, 0, 0, '', NULL, 2015, 0),
-(56, 97, 7, 125, 0, 0, '', NULL, 2015, 0),
-(57, 97, 8, 125, 0, 0, '', NULL, 2015, 0),
-(58, 97, 9, 125, 0, 0, '', NULL, 2015, 0),
-(59, 97, 10, 125, 0, 0, '', NULL, 2015, 0),
-(60, 97, 11, 125, 0, 0, '', NULL, 2015, 0),
-(73, 99, 0, 6500, 6500, 0, 'Money', '2014-10-15 11:32:29', 2014, 1),
-(74, 99, 1, 150, 0, 0, '', NULL, 2014, 0),
-(75, 99, 2, 150, 0, 0, '', NULL, 2014, 0),
-(76, 99, 3, 150, 0, 0, '', NULL, 2014, 0),
-(77, 99, 4, 150, 0, 0, '', NULL, 2014, 0),
-(78, 99, 5, 150, 0, 0, '', NULL, 2014, 0),
-(79, 99, 6, 150, 0, 0, '', NULL, 2014, 0),
-(80, 99, 7, 150, 0, 0, '', NULL, 2014, 0),
-(81, 99, 8, 150, 0, 0, '', NULL, 2014, 0),
-(82, 99, 9, 150, 0, 0, '', NULL, 2014, 0),
-(83, 99, 10, 150, 0, 0, '', NULL, 2014, 0),
-(84, 99, 11, 150, 0, 0, '', NULL, 2014, 0);
+(1, 112, 0, 6500, 0, 0, '', NULL, 2014, 0),
+(2, 112, 1, 150, 0, 0, '', NULL, 2014, 0),
+(3, 112, 2, 150, 0, 0, '', NULL, 2014, 0),
+(4, 112, 3, 150, 0, 0, '', NULL, 2014, 0),
+(5, 112, 4, 150, 0, 0, '', NULL, 2014, 0),
+(6, 112, 5, 150, 0, 0, '', NULL, 2014, 0),
+(7, 112, 6, 150, 0, 0, '', NULL, 2014, 0),
+(8, 112, 7, 150, 0, 0, '', NULL, 2014, 0),
+(9, 112, 8, 150, 0, 0, '', NULL, 2014, 0),
+(10, 112, 9, 150, 0, 0, '', NULL, 2014, 0),
+(11, 112, 10, 150, 0, 0, '', NULL, 2014, 0),
+(12, 112, 11, 150, 0, 0, '', NULL, 2014, 0),
+(13, 113, 0, 6500, 6500, 0, 'teste', '2014-10-21 00:00:00', 2014, 1),
+(14, 113, 1, 150, 150, 0, 'teste', '2014-10-21 00:00:00', 2014, 1),
+(15, 113, 2, 150, 150, 0, 'cheque', '2014-10-21 00:00:00', 2014, 1),
+(16, 113, 3, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(17, 113, 4, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(18, 113, 5, 150, 0, 0, '', NULL, 2014, 0),
+(19, 113, 6, 150, 0, 0, '', NULL, 2014, 0),
+(20, 113, 7, 150, 0, 0, '', NULL, 2014, 0),
+(21, 113, 8, 150, 0, 0, '', NULL, 2014, 0),
+(22, 113, 9, 150, 0, 0, '', NULL, 2014, 0),
+(23, 113, 10, 150, 0, 0, '', NULL, 2014, 0),
+(24, 113, 11, 150, 0, 0, '', NULL, 2014, 0),
+(25, 114, 0, 6500, 6500, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(26, 114, 1, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(27, 114, 2, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(28, 114, 3, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(29, 114, 4, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(30, 114, 5, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(31, 114, 6, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(32, 114, 7, 150, 100, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 0),
+(33, 114, 8, 150, 0, 0, '', NULL, 2014, 0),
+(34, 114, 9, 150, 0, 0, '', NULL, 2014, 0),
+(35, 114, 10, 150, 0, 0, '', NULL, 2014, 0),
+(36, 114, 11, 150, 0, 0, '', NULL, 2014, 0),
+(37, 115, 0, 123, 123, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(38, 115, 1, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(39, 115, 2, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(40, 115, 3, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(41, 115, 4, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(42, 115, 5, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(43, 115, 6, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(44, 115, 7, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(45, 115, 8, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(46, 115, 9, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(47, 115, 10, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(48, 115, 11, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
+(49, 116, 0, 122, 0, 0, '', NULL, 2005, 0),
+(50, 116, 1, 44, 0, 0, '', NULL, 2005, 0),
+(51, 116, 2, 44, 0, 0, '', NULL, 2005, 0),
+(52, 116, 3, 44, 0, 0, '', NULL, 2005, 0),
+(53, 116, 4, 44, 0, 0, '', NULL, 2005, 0),
+(54, 116, 5, 44, 0, 0, '', NULL, 2005, 0),
+(55, 116, 6, 44, 0, 0, '', NULL, 2005, 0),
+(56, 116, 7, 44, 0, 0, '', NULL, 2005, 0),
+(57, 116, 8, 44, 0, 0, '', NULL, 2005, 0),
+(58, 116, 9, 44, 0, 0, '', NULL, 2005, 0),
+(59, 116, 10, 44, 0, 0, '', NULL, 2005, 0),
+(60, 116, 11, 44, 0, 0, '', NULL, 2005, 0);
 
 -- --------------------------------------------------------
 
@@ -774,7 +816,7 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (68, '99999999999', '2014-09-29 10:36:10', 'fsdaasd@saf.cini', 'ProfessorExemplar', '$2a$08$0thoEX7el9cVaMaL2oYRYemkZn/qn8scaCilMfjUJCnByAQMTCwWu', 'Professor Teste'),
 (69, '99999999999', '2014-09-29 10:39:53', 'test@faslsad.ksda', 'AlunoExemplar', '$2a$08$FtpNc4zP4YbKFYAc4ZPbtu6hWVYG72wGSL2bKEmBeBl./KkT8o5xu', 'SALGADO de Jimon'),
 (70, '99999999999', '2014-09-29 10:41:33', 'kdaosasdok@dsok.sad', 'AssociadoExplorer', '$2a$08$cU7wsy0fTSpIMiHw5aeMYOwRjt8jHaBfbSwUmLuYbYZmRAyzE/A8u', 'Associadaço'),
-(75, '99999999999', '2014-10-01 15:15:16', 'ldas@sda.adscoasd', 'lol', '$2a$08$fo6Mwkd4TJ/qbgS340BZHesPN5k6/oDhGa9qpzgx862nfCQ/0IMG2', 'Testinha'),
+(75, '99999999999', '2014-10-01 15:15:16', 'ldas@sda.adscoasd', 'lores', '$2a$08$fo6Mwkd4TJ/qbgS340BZHesPN5k6/oDhGa9qpzgx862nfCQ/0IMG2', 'Testinha'),
 (76, '99999999999', '2014-10-01 15:22:07', 'sustenido@fi.com', 'it just came over me', '$2a$08$chK7PU7pzBOpFF6s8RpJbes6VdsucWnGsLp1xtTx/HI.YWzrYzD02', 'Atenemangão'),
 (77, '99999999999', '2014-10-01 15:51:38', 'iliketr@in.s', 'moco', '$2a$08$DpbFQ8IWyCrbmAgNPXURuu/wgyxwVRl1jEXsZYyHOdbWpRwau9e/S', 'asdf'),
 (78, '99999999999', '2014-10-02 11:32:45', 'asdf@fdsa.com', 'testestestesa', '$2a$08$fJd0hl/PKd7IVlXK9gveFesXjK/4rJHl7bkni.KXZwjOlbBydThoe', 'asdfas dasdf'),
