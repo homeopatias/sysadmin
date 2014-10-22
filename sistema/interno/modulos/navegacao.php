@@ -281,7 +281,7 @@
 
                     <?php 
                             }
-                        } // Fim das opções para alunos
+                        } // Fim das opções para alunos inscritos
                     ?>
 
                     <li>
