@@ -38,18 +38,15 @@
                 echo $e->getMessage();
             }
 
-
-
-
             // se o usuario chegou aqui atraves de um formulário, tenta fazer login
             if (isset($_POST["submit"])){
                 // executa a função importada
-                $mensagem = processaLogin();
+                $mensagem = processaLogin($_POST["login"], $_POST["senha"]);
 
                 $sucesso = isset($_SESSION['usuario']);
 
                 // caso o login tenha sido bem sucedido e tenha sido de um aluno, ele é
-                // redirecionado para a tela de avaliação de professores, caso ele já tenha
+                // redirecionado para a tela de avaliação de professores caso ele já tenha
                 // feito uma aula e não tenha avaliado ainda (e caso o professor dessa aula
                 // já tenha sido definido)
 
@@ -92,7 +89,8 @@
         <div class="col-xs-12 vertical-center" style="height:50%">
             <div class="center-block col-sm-6 no-float"
                  style="max-width: 300px">
-                <form method="POST" class="conteudo" id="form-login" action="index.php ">
+                <form method="POST" class="conteudo" id="form-login" action="index.php "
+                      style="margin-top: 50%">
                 	<?php
                     	if(mb_strlen($mensagem, 'UTF-8') !== 0){
                     		echo "<p class=\"warning\">$mensagem</p>";
@@ -115,17 +113,8 @@
         	                   title="A senha deve ter de 6 a 72 caracteres"
         	                   placeholder="Senha">
         	        </div>
-                    <div class="form-group">
-                        <label for="tipoLogin">Fazer login como: </label>
-                        <select name="tipoLogin" id="tipoLogin" class="form-control">
-                            <option value="1" selected>Aluno</option>
-                            <option value="2">Associado</option>
-                            <option value="3">Administrador</option>
-                            <option value="4">Professor</option>
-                            <option value="5">Coordenador</option>
-                        </select>
-                    </div>
                     <input type="submit" name="submit" value="Login" class="btn btn-primary pull-right">
+                    <br>
                 </form>
             </div>
         </div>

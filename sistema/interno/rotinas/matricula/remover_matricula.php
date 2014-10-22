@@ -30,19 +30,35 @@ if($adminValido){
         echo $e->getMessage();
     }
 
+    // Usamos as TRANSACTIONs do MySql para garantir que caso haja
+    // algum erro, as tabelas continuem consistentes
+    $conexao->beginTransaction();
+
     $sql    = "DELETE FROM Matricula WHERE idMatricula = ?";
     $dados  = array($_GET["id"]);
     $query  = $conexao->prepare($sql);
-    $sucesso = $query->execute($dados);
+    $sucessoMat = $query->execute($dados);
+
+    /*$sql    = "DELETE FROM PgtoMensalidade WHERE chaveMatricula = ?
+               AND valorPago = 0 AND fechado = 0";
+    $dados  = array($_GET["id"]);
+    $query  = $conexao->prepare($sql);
+    $sucessoPgto = $query->execute($dados);
+    */
+
+    if(!$sucessoMat) {
+        $conexao->rollBack();
+        $mensagem = "Erro na remoção de matrícula";
+    } /*else if(!$sucessoPgto){
+        $conexao->rollBack();
+        $mensagem = "Erro na remoção dos pagamentos referentes a essa matrícula";
+    } */else {
+        $conexao->commit();  
+        $mensagem = "";
+    }
 
     // Fecha a conexão
     $conexao = null;
-
-    if($sucesso) {
-        $mensagem = "";
-    } else {
-        $mensagem = "Erro na remoção de matrícula";
-    }
 }
 
 if($mensagem !== ""){

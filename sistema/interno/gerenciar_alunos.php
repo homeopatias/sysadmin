@@ -912,7 +912,8 @@
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
                     <h1>Alunos</h1>
-                    <?php 
+                    <?php
+                        $sucesso = "";
                         if(isset($_GET["sucesso"])){
                             $sucesso = htmlspecialchars($_GET["sucesso"]);
                             $mensagem = isset($_GET["mensagem"]) ? htmlspecialchars($_GET["mensagem"]):

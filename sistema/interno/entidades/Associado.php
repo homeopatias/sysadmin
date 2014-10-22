@@ -84,8 +84,9 @@ class Associado extends Usuario{
 
         $textoQuery = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
                        U.senha, U.nome, A.idAssoc, A.instituicao, A.formacaoTerapeutica, 
-                       A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado, 
-                       A.pais, A.enviouDocumentos, A.numObjeto, A.dataEnvioCarteirinha 
+                       A.telefone, A.cep, A.rua, A.numero, A.complemento, A.bairro,
+                       A.cidade, A.estado, A.pais, A.enviouDocumentos, A.numObjeto,
+                       A.dataEnvioCarteirinha
                        FROM Usuario U, Associado A
                        WHERE U.login=? AND A.idUsuario = U.id";
 

@@ -189,6 +189,11 @@
                         $anoValido = false;
                     }
 
+                    if($ano < date("Y")) {
+                        // caso o ano seja anterior ao atual
+                        $anoValido = false;
+                    }
+
                     if($idValido && $idCidadeValido && $etapaValida && $anoValido){
 
                         // Usamos as TRANSACTIONs do MySql para garantir que caso haja
@@ -281,7 +286,7 @@
                     }else if(!$etapaValida){
                         $mensagem = "Etapa inválida!";
                     }else if(!$anoValido){
-                        $mensagem = "Esse aluno já está matriculado nesse ano!";
+                        $mensagem = "Não é possível matricular o aluno nesse ano!";
                     }
                 }
         ?>
@@ -660,8 +665,8 @@
                                 <th>Ano</th>
                                 <th>Etapa</th>
                                 <th>Cidade</th>
-                                <th>Aprovado?</th>
-                                <th style="width:50px">Visualizar Pagamentos</th>
+                                <th width="100px">Aprovado?</th>
+                                <th width="200px">Visualizar Pagamentos</th>
                             </tr>
                         </thead>
                         <tbody>

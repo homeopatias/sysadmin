@@ -11,7 +11,7 @@
             
         ?>
 
-        <nav class="navbar navbar-default navbar-static-top bottom-border">
+        <nav class="navbar navbar-default navbar-fixed-top bottom-border">
             <div class="navbar-header">
                 <a href="index.php" class="navbar-brand">
                     Homeopatias.com - Sistema

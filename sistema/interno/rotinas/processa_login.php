@@ -6,27 +6,19 @@
 //
 // Retorna: Uma mensagem de erro, se houver
 
-function processaLogin(){
-    $login     = $_POST["login"];
-    $senha     = $_POST["senha"];
-    $tipoLogin = $_POST["tipoLogin"];
+function processaLogin($login, $senha){
 
-    // checa se os dados sao validos:
-    // primeiro checa a existencia e validade do login (atraves do tamanho)
+    // checa se os dados sao válidos:
+    // primeiro checa a existência e validade do login (através do tamanho)
     // depois faz o mesmo para a senha
-    // e por fim faz o mesmo para o tipoLogin, conferindo se e um valor dentro dos
-    // especificados
 
     $loginValido     = isset($login) && mb_strlen($login, 'UTF-8') >= 3 &&
                        mb_strlen($login, 'UTF-8') <= 100;
     $senhaValida     = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                        mb_strlen($senha, 'UTF-8') <= 72;
-    $tipoLoginValido = isset($tipoLogin) && ($tipoLogin == 1 || $tipoLogin == 2 || $tipoLogin == 3
-                       || $tipoLogin == 4 || $tipoLogin == 5);
 
-    if($loginValido && $senhaValida && $tipoLoginValido){
-        // se os dados sao validos, descobre que tipo de login deve ser feito e
-        // tenta faze-lo
+    if($loginValido && $senhaValida){
+        // se os dados sao validos, tenta fazer o login para cada caso possível
 
         // lemos as credenciais do banco de dados
         $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -38,68 +30,41 @@ function processaLogin(){
         $usuario = $dados["nome_usuario"];
         $senhaBD = $dados["senha"];
 
-        if($tipoLogin == 1){
-            // login de aluno
-            require_once("entidades/Aluno.php");
+        // login de aluno
+        require_once("entidades/Aluno.php");
 
-            $aluno = new Aluno($login);
-            $sucesso = $aluno->autenticaSessao($host, "homeopatias",
-                                               $usuario, $senhaBD, $senha);
-            
-            // caso nao tenha encontrado esse aluno, exibe uma mensagem de erro
-            if(!$sucesso){
-                return "Nome de usuário ou senha incorretos";
-            }
-        }else if($tipoLogin == 2){
-            // login de associado
-            require_once("entidades/Associado.php");
+        $aluno = new Aluno($login);
+        $sucesso = $aluno->autenticaSessao($host, "homeopatias",
+                                           $usuario, $senhaBD, $senha);
+        
+        // caso o login tenha sido bem sucedido, a função terminou seu trabalho
+        if($sucesso){
+            return;
+        }
 
-            $assoc = new Associado($login);
-            $sucesso = $assoc->autenticaSessao($host, "homeopatias",
-                                               $usuario, $senhaBD, $senha);
+        // login de associado
+        require_once("entidades/Associado.php");
 
-            // caso nao tenha encontrado esse associado, exibe uma mensagem de erro
-            if(!$sucesso){
-                return "Nome de usuário ou senha incorretos";
-            }
-        }else if($tipoLogin == 3){
-            // login de administrador
-            require_once("entidades/Administrador.php");
+        $assoc = new Associado($login);
+        $sucesso = $assoc->autenticaSessao($host, "homeopatias",
+                                           $usuario, $senhaBD, $senha);
 
-            $admin = new Administrador($login);
-            $sucesso = $admin->autenticaSessao($host, "homeopatias",
-                                               $usuario, $senhaBD, $senha, "administrador");
-            
-            // caso nao tenha encontrado esse administrador, exibe uma mensagem de erro
-            if(!$sucesso){
-                return "Nome de usuário ou senha incorretos";
-            }
-        }else if($tipoLogin == 4){
-            // login de professor
-            require_once("entidades/Administrador.php");
+        // caso o login tenha sido bem sucedido, a função terminou seu trabalho
+        if($sucesso){
+            return;
+        }
 
-            $admin = new Administrador($login);
-            $sucesso = $admin->autenticaSessao($host, "homeopatias",
-                                               $usuario, $senhaBD, $senha, "professor");
-            
-            // caso nao tenha encontrado esse professor, exibe uma mensagem de erro
-            if(!$sucesso){
-                return "Nome de usuário ou senha incorretos";
-            }
-        }else if($tipoLogin == 5){
-            // login de coordenador
-            require_once("entidades/Administrador.php");
+        // login de administrador/coordenador/professor
+        require_once("entidades/Administrador.php");
 
-            $admin = new Administrador($login);
-            $sucesso = $admin->autenticaSessao($host, "homeopatias",
-                                               $usuario, $senhaBD, $senha, "coordenador");
-            
-            // caso nao tenha encontrado esse coordenador, exibe uma mensagem de erro
-            if(!$sucesso){
-                return "Nome de usuário ou senha incorretos";
-            }
-        }else{
-            return "Dados inconsistentes";
+        $admin = new Administrador($login);
+        $sucesso = $admin->autenticaSessao($host, "homeopatias",
+                                           $usuario, $senhaBD, $senha);
+        
+        // caso ainda não tenhamos obtido sucesso no login após tentar as
+        // três possibilidades existentes, os dados estão incorretos
+        if(!$sucesso){
+            return "Nome de usuário ou senha incorretos";
         }
     }else{
         // algum valor invalido foi enviado
@@ -107,7 +72,5 @@ function processaLogin(){
             return "Nome de usuário inválido";
         else if(!$senhaValida)
             return "Senha inválida";
-        else
-            return "Tipo de login inválido";
     }
 }

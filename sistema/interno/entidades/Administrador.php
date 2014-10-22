@@ -54,10 +54,9 @@ class Administrador extends Usuario{
     // $usuario:      nome de usuário a ser usado para acesso ao bd
     // $senha:        senha a ser usada para acesso ao bd
     // $senhaUsuario: senha do usuario que tentaremos autenticar
-    // $tipoAdmin:    nivel de admin que deve ser procurado no banco de dados
     //
     // Retorna: true caso os dados confiram, do contrário, false
-    public function autenticaSessao($host, $bd, $usuario, $senha, $senhaUsuario, $tipoAdmin){
+    public function autenticaSessao($host, $bd, $usuario, $senha, $senhaUsuario){
         $conexao = null;
         try{
             $conexao = new PDO("mysql:host=$host;dbname=$bd;charset=utf8", $usuario, $senha);
@@ -68,11 +67,10 @@ class Administrador extends Usuario{
         $textoQuery  = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
                         U.senha, U.nome, A.idAdmin, A.nivel, A.corrigeTrabalho, A.permissoes
                         FROM Usuario U,
-                        Administrador A WHERE U.login=? AND A.idUsuario = U.id AND A.nivel = ?";
+                        Administrador A WHERE U.login=? AND A.idUsuario = U.id";
 
         $query = $conexao->prepare($textoQuery);
         $query->bindParam(1, $this->login, PDO::PARAM_STR);
-        $query->bindParam(2, $tipoAdmin, PDO::PARAM_STR);
         $query->setFetchMode(PDO::FETCH_ASSOC);
         $query->execute();
 
