@@ -297,11 +297,40 @@
                                                     SET valorTotal = ?, valorPago = ?,
                                                     fechado = ? , data = CURDATE(), metodo = ?
                                                     WHERE idPagMensalidade = ?";
+
+                                        $metodosList= array();
+                                        if(strrpos($pagamentos[$anoPagamento][$i]['metodo'], "|") ){
+
+                                            $metodosList = explode("|", strtolower($pagamentos[$anoPagamento][$i]['metodo']));
+                                        }else{
+                                            $metodosList = array( $pagamentos[$anoPagamento][$i]['metodo']) ;
+                                        }
+                                        
+                                        //Se o método passado não está na lista de métodos , adiciona ele
+                                        if(!in_array(strtolower($metodo), $metodosList ) ){
+                                            $metodosList[] = $metodo;
+                                        }
+
+                                        $metodoUpdate = "";
+                                        //Separa os métodos por '|' no bd
+                                        foreach ($metodosList as $metodo) {
+                                            $metodo = ucfirst($metodo);
+                                            if(strlen($metodoUpdate) == 0){
+                                                $metodoUpdate = $metodo;
+                                            }
+                                            else{
+                                                $append = "|".$metodo;
+                                                $metodoUpdate = $metodoUpdate.$append; 
+                                            }
+
+                                        }
+                                        $pagamentos[$anoPagamento][$i]['metodo'] = $metodoUpdate;
+
                                         $queryArray = array(
                                             $pagamentos[$anoPagamento][$i]['valor'],
                                             $pagamentos[$anoPagamento][$i]['pago'],
                                             $pagamentos[$anoPagamento][$i]['fechado'],
-                                            $metodo,
+                                            $pagamentos[$anoPagamento][$i]['metodo'],
                                             $pagamentos[$anoPagamento][$i]['id'],
                                             );
                                         $query = $conexao->prepare($textoQuery);
@@ -407,14 +436,13 @@
                                  . "%</td>";
                         }
                         echo "</tr><tr>";
-                        echo "<td style='background-color: #AAA'><b>Metodo</b></td>";
+                        echo "<td style='background-color: #AAA'><b>Metodo(s)</b></td>";
                         for($i = 0; $i < 12; $i ++) {
                             $metodo = $pagamentos[$anoPagamento][$i]['metodo'];
                             echo "<td> ";
 
-                            echo $pagamentos[$anoPagamento][$i]['metodo'] 
-                                 ? htmlspecialchars($pagamentos[$anoPagamento][$i]['metodo'])
-
+                            echo $metodo
+                                 ? htmlspecialchars(str_replace("|", " , ", $metodo))
                                  : "N/A";
                             echo "</td>";
                         }
