@@ -355,7 +355,6 @@
                             }else if(!$sucesso){
                                 $mensagem = "Erro: falha ao atualizar pagamentos";
                             }
-                            var_dump("irrit");
                             
                         }
 
