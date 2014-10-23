@@ -65,9 +65,9 @@
 
                     ?>
                     <li>
-                        <a href="lista_chamada.php">
+                        <a href="visualizar_turmas.php">
                             <i class="fa fa-fw fa-list-alt"></i>
-                            <p style="display:inline">Lista de chamada</p>
+                            <p style="display:inline">Visualizar turmas</p>
                         </a>
                     </li>
                     <li>

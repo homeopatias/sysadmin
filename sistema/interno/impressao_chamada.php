@@ -9,6 +9,9 @@
         <?php include("modulos/head.php"); ?>
         <title>Lista de chamada</title>
         <style>
+            body {
+                padding-top: 0px;
+            }
             td {
                 line-height: 5px !important;
             }

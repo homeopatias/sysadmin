@@ -32,14 +32,14 @@
             // cria conexão com o banco para uso ao longo da página
             $conexao = null;
             $db      = "homeopatias";
-            try{
+            try {
                 $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
-            }catch (PDOException $e){
+            } catch (PDOException $e) {
                 echo $e->getMessage();
             }
 
             // se o usuario chegou aqui atraves de um formulário, tenta fazer login
-            if (isset($_POST["submit"])){
+            if (isset($_POST["submit"])) {
                 // executa a função importada
                 $mensagem = processaLogin($_POST["login"], $_POST["senha"]);
 

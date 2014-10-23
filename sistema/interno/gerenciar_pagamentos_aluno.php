@@ -160,11 +160,11 @@
                             //exibido
     
                             $textoQuery = "SELECT C.ano 
-                                         FROM Cidade C, Aluno A, Matricula M
-                                         WHERE C.idCidade = M.chaveCidade 
-                                         AND M.chaveAluno =     :chaveAluno AND
-                                            C.ano <= YEAR(CURDATE()) 
-                                         ORDER BY C.ano desc";
+                                           FROM Cidade C, Aluno A, Matricula M
+                                           WHERE C.idCidade = M.chaveCidade 
+                                           AND M.chaveAluno =     :chaveAluno AND
+                                              C.ano <= YEAR(CURDATE()) 
+                                           ORDER BY C.ano desc";
     
                             $query = $conexao->prepare($textoQuery);
                             $query->bindParam(":chaveAluno",
@@ -182,7 +182,11 @@
                                 $ano = $_GET["ano"];
                             }
                             if($matriculas){
-                                $select = "<select id='ano' name='ano'>";
+                                $select = "<select id='ano' name='ano'
+                                            class='form-control input-sm'
+                                            style='display:inline;
+                                                   width: 100px !important;
+                                                   margin-left: 10px;'>";
             
                                 while($linha = $query->fetch()){
                                     if(!in_array($linha["ano"], $anos)){
@@ -486,16 +490,11 @@
                             </tr>
                         </tbody>
                     </table>
-                    <a href="#" class="btn btn-info" data-toggle="modal" data-target="#modal-lanca-pagamento">
-                                Lançar Pagamento
-                                <i href="#" class="fa fa-search"></i>
-                            </a>
-
-                    <?php
-
-                        
-                    ?>
-
+                    <a href="#" class="btn btn-info pull-right" data-toggle="modal"
+                       data-target="#modal-lanca-pagamento">
+                        Lançar Pagamento
+                    </a>
+                    <br>
                     <?php
                         }
 

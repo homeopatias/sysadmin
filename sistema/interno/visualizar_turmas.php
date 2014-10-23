@@ -7,7 +7,7 @@
 <html>
     <head>
         <?php include("modulos/head.php"); ?>
-        <title>Lista de chamada - Homeopatias.com</title>
+        <title>Visualização de turmas - Homeopatias.com</title>
         <script>
             $(document).ready(function(){
                 // pequeno script para que o envio do formulário de ano seja feito assim
@@ -23,7 +23,7 @@
 
             $mensagem = "";
 
-            // exibe listas de alunos relacionados a cidades coordenadas apenas para coordenadores logados
+            // exibe listas de chamada apenas para coordenadores logados
             if(isset($_SESSION["usuario"]) &&
                unserialize($_SESSION["usuario"]) instanceof Administrador &&
                unserialize($_SESSION["usuario"])->getNivelAdmin() === "coordenador"){
@@ -109,17 +109,17 @@
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
-                    <h2 style="font-weight:bold; display:inline">Informações do aluno</h2>
+                    <h2 style="font-weight:bold; display:inline">Turmas de <?= date("Y") ?></h2>
                     <a href=<?= "\"impressao_chamada.php?cidade=". $idCidade . "&etapa=" . $etapa ."\"" ?>
                        target="_blank" class="pull-right" style="text-decoration:none" id="btn-imprimir">
-                        <b>Versão para impressão &nbsp;</b>
+                        <b>Lista de chamada para impressão &nbsp;</b>
                         <i class="fa fa-lg fa-print"></i>
                     </a>
                     <br><br>
                     <label for="ano">
                         Selecione a cidade e a etapa:
                     </label><br>
-                    <form style="width: 300px" method="GET" action="busca_alunos.php ">
+                    <form style="width: 300px" method="GET" action="visualizar_turmas.php ">
                         <select style="display:inline; width: 200px !important"
                                 class="form-control input-sm" id="cidade" name="cidade">
                             <?php foreach ($cidades as $cidade) {
@@ -143,7 +143,7 @@
                     <br><br>
                     <?php
 
-                        $textoQuery  = "SELECT U.nome, U.cpf, A.numeroInscricao
+                        $textoQuery  = "SELECT U.nome, U.cpf, A.numeroInscricao, M.idMatricula
                                         FROM Matricula M INNER JOIN Cidade C 
                                         ON C.idCidade = M.chaveCidade INNER JOIN Aluno A ON 
                                         M.chaveAluno = A.numeroInscricao INNER JOIN Usuario U ON 
@@ -158,6 +158,8 @@
                         $query->execute();
 
                         $resultado = '<div class="flip-table"> <table class="table">
+                            <th style="font-weight: bold">Registro do aluno</th>
+                            <th style="font-weight: bold">Número de matrícula</th>
                             <th style="font-weight: bold">Nome do aluno</th>
                             <th style="font-weight: bold">CPF do aluno</th>
                             <th style="font-weight: bold">Visualizar pagamentos</th>';
@@ -176,7 +178,9 @@
 
                             $resultado .= '
                         <tr>
-                            <td>' . $linha["nome"] .'</td>
+                            <td>' . $linha['numeroInscricao'] . '</td>
+                            <td>' . $linha['idMatricula'] . '</td>
+                            <td>' . $linha['nome'] .'</td>
                             <td>' . $cpf .'</td>
                             <td>
                                 <a href="gerenciar_pagamentos_aluno.php?id='.$linha["numeroInscricao"].'" >
