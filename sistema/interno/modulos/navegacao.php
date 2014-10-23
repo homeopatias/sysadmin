@@ -76,12 +76,6 @@
                             <p style="display:inline">Frequência de alunos</p>
                         </a>
                     </li>
-                    <li>
-                        <a href="busca_alunos.php">
-                            <i class="fa fa-fw fa-info-circle"></i>
-                            <p style="display:inline">Informações de alunos</p>
-                        </a>
-                    </li>
                     <?php
                         } // Fim das opções para coordenadores
 

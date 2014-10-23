@@ -252,7 +252,9 @@
 
                             
                             if(!$pagamentos[$anoPag][$numParcela]['fechado']){
-                                $pagamentos[$anoPag]['divida'] += ($linha['valorTotal'] - $linha['valorPago']);
+                                $pagamentos[$anoPag]['divida'] += $linha['valorTotal'] -
+                                ( ($linha['valorTotal'] * ($linha['desconto']/100) )
+                                    - $linha['valorPago']);
                             }
                         }
 
@@ -268,6 +270,7 @@
                                              );
                             
                             if($valorValido && $metodoValido){
+                                $pagamentos[$anoPagamento]['divida'] = 0;
                                 for ($i = 0 ; $i < 12 && $valor > 0; $i++) {
                                     if(!$pagamentos[$anoPagamento][$i]['fechado']){
                                         // Valor é o que sobrar do pagamento, ja que ele pode terminar de pagar, e caso não feche o pagamento, retornará um valor negativo
@@ -287,6 +290,17 @@
                                             $pagamentos[$anoPagamento][$i]['fechado'] = "1";
                                         }
                                     }
+                                    if(!$pagamentos[$anoPagamento][$i]['fechado']){
+                                    $pagamentos[$anoPagamento]['divida'] +=
+                                        ($pagamentos[$anoPagamento][$i]['valor'] -
+                                         (
+                                            //desconto
+                                            $pagamentos[$anoPagamento][$i]['valor'] *
+                                            $pagamentos[$anoPag][$numParcela]['desconto'] /100
+                                         )
+                                        )
+                                        - $pagamentos[$anoPagamento][$i]['pago'];
+                            }
                                 }   
                                 $conexao->beginTransaction();
                                 $sucesso = 1;
@@ -301,10 +315,15 @@
                                         $metodosList= array();
                                         if(strrpos($pagamentos[$anoPagamento][$i]['metodo'], "|") ){
 
-                                            $metodosList = explode("|", strtolower($pagamentos[$anoPagamento][$i]['metodo']));
+                                            $metodosList = explode("|", 
+                                            strtolower($pagamentos[$anoPagamento][$i]['metodo']));
                                         }else{
-                                            $metodosList = array( $pagamentos[$anoPagamento][$i]['metodo']) ;
+                                            $metodosList = array( 
+                                                strtolower( 
+                                                    $pagamentos[$anoPagamento][$i]['metodo'])
+                                                    );
                                         }
+
                                         
                                         //Se o método passado não está na lista de métodos , adiciona ele
                                         if(!in_array(strtolower($metodo), $metodosList ) ){
@@ -336,6 +355,23 @@
                                         $query = $conexao->prepare($textoQuery);
                                         $sucesso = $query->execute($queryArray);
 
+                                    }
+
+                                }
+                                // se conseguiu lançar o pagamento da inscrição do ano 
+                                // atual e
+                                // ela fechou, muda o status do aluno para inscrito
+                                if($sucesso && $pagamentos[date("Y")][0]['editado']){
+                                    
+                                    if($pagamentos[date("Y")][0]['fechado']){
+                                        
+                                        $textoQueryUpdate = "UPDATE Aluno 
+                                                             SET status = 'inscrito'
+                                                             WHERE numeroInscricao = ?";
+                                        
+                                        $query = $conexao->prepare($textoQueryUpdate);
+                                        $query->bindParam(1, $idAluno, PDO::PARAM_INT);
+                                        $sucesso = $query->execute();
                                     }
 
                                 }

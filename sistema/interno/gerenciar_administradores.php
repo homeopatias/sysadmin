@@ -256,6 +256,9 @@
                         if( $(this).find("#miscelanea").is(':checked') ){
                             permissoes += 8;
                         }
+                        if( $(this).find("#financeiro").is(':checked') ){
+                            permissoes += 32;
+                        }
 
                         $(this).find("#permissoes").val( permissoes );
 
@@ -808,7 +811,7 @@
                             </div>
                             <div style="display:block col-sm-12">
                                 <p> Permissões de administração:</p>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="pessoas">Usuários :</label>
                                     <input type="checkbox" name="pessoas" id="pessoas"
@@ -816,7 +819,7 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="curso">Curso :</label>
                                     <input type="checkbox" name="curso" id="curso"
@@ -824,7 +827,7 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="site">Site :</label>
                                     <input type="checkbox" name="site" id="site"
@@ -833,6 +836,14 @@
                                         style="display:inline">
                                 </div>
                                 <div  class="col-sm-3" 
+                                    style="padding-top:10px;padding-bot:10px">
+                                    <label for="financeiro">Financeiro :</label>
+                                    <input type="checkbox" name="financeiro" id="financeiro"
+                                        title="Permite acesso a edição de informações financeiras"
+                                        class="form-control"
+                                        style="display:inline">
+                                </div>
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="miscelanea">Outros :</label>
                                     <input type="checkbox" name="miscelanea" id="miscelanea"
@@ -925,6 +936,14 @@
                                     <label for="site">Site :</label>
                                     <input type="checkbox" name="site" id="site"
                                         title="Permite acesso a edição de informações do site"
+                                        class="form-control"
+                                        style="display:inline">
+                                </div>
+                                <div  class="col-sm-3" 
+                                    style="padding-top:10px;padding-bot:10px">
+                                    <label for="financeiro">Financeiro :</label>
+                                    <input type="checkbox" name="financeiro" id="financeiro"
+                                        title="Permite acesso a edição de informações financeiras"
                                         class="form-control"
                                         style="display:inline">
                                 </div>

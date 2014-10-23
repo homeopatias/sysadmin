@@ -143,10 +143,11 @@
                     <br><br>
                     <?php
 
-                        $textoQuery  = "SELECT U.nome, U.cpf FROM Matricula M INNER JOIN Cidade C 
+                        $textoQuery  = "SELECT U.nome, U.cpf, A.numeroInscricao
+                                        FROM Matricula M INNER JOIN Cidade C 
                                         ON C.idCidade = M.chaveCidade INNER JOIN Aluno A ON 
                                         M.chaveAluno = A.numeroInscricao INNER JOIN Usuario U ON 
-                                        U.id = A.idUsuario WHERE A.status = 'inscrito' AND 
+                                        U.id = A.idUsuario WHERE 
                                         C.idCidade = ? AND M.etapa = ? AND C.idCoordenador = ?";
 
                         $query = $conexao->prepare($textoQuery);
@@ -158,7 +159,8 @@
 
                         $resultado = '<div class="flip-table"> <table class="table">
                             <th style="font-weight: bold">Nome do aluno</th>
-                            <th style="font-weight: bold">CPF do aluno</th>';
+                            <th style="font-weight: bold">CPF do aluno</th>
+                            <th style="font-weight: bold">Visualizar pagamentos</th>';
 
                         $numAlunos = 0;
 
@@ -176,6 +178,11 @@
                         <tr>
                             <td>' . $linha["nome"] .'</td>
                             <td>' . $cpf .'</td>
+                            <td>
+                                <a href="gerenciar_pagamentos_aluno.php?id='.$linha["numeroInscricao"].'" >
+                                    <i class="fa fa-money sucesso"></i>
+                                </a>
+                            </td>
                         </tr>
                             ';
                             $numAlunos++;

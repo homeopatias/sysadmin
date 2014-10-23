@@ -475,10 +475,16 @@
                             <b>Matriculado no período atual</b>
                         </p>
                         <p style="display:inline" class="col-sm-3">
-                            <a href=  
-                                <?= "visualizar_informacoes_curso.php?id=". $numeroInscricao ?>>
-                                Visualizar pagamentos do ano atual
-                            </a>
+                            <?php 
+                                if( isset($_GET["ano"]) && $_GET["ano"] != date("Y") ){ ?>
+    
+                                    <a href=  
+                                        <?= "visualizar_informacoes_curso.php?id=". $idAluno ?>>
+                                        Visualizar pagamentos do ano atual
+                                    </a>
+                            <?php
+                                }
+                            ?>
                     </div>
                     <div class="row">
                         <p style="display:inline" class="col-sm-3">
