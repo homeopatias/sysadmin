@@ -156,7 +156,7 @@
                     </div>
 
                     <?php
-                        //Lê os anos das mariculas que o usuário possui para permitir selecionar o ano a ser
+                            //Lê os anos das mariculas que o usuário possui para permitir selecionar o ano a ser
                             //exibido
     
                             $textoQuery = "SELECT C.ano 
@@ -202,7 +202,6 @@
     
                     }
                     ?>
-
                     <!-- //////////////////////////////////////////////////////////////////////
                          //////////////////////////////////////////////////////////////////////
                          //////////////////////////////////////////////////////////////////////
@@ -211,6 +210,7 @@
                          //////////////////////////////////////////////////////////////////////
                          //////////////////////////////////////////////////////////////////////
                          //////////////////////////////////////////////////////////////////////
+                         
                          Pagamentos efetuados e pendentes desse aluno -->
                     <?php
                         // procuramos os pagamentos desse ano, tanto pendentes

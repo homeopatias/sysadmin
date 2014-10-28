@@ -295,6 +295,10 @@ class Administrador extends Usuario{
             echo $e->getMessage();
         }
 
+        if($this->login === "admin"){
+            return false;
+        }
+
         $comando = "UPDATE Usuario SET nome = :nome, cpf = :cpf, email = :email,
                     login = :login WHERE id = :id";
         $query = $conexao->prepare($comando);

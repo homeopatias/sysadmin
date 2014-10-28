@@ -528,6 +528,7 @@
                         $cpfChecar = str_replace("-","",$cpfChecar);
                         $cpfChecar = str_split($cpfChecar);
                         $somaChecagem = 0;
+
                         for($i = 10; $i >= 2; $i = $i - 1){
                             $somaChecagem += (int)($cpfChecar[10 - $i]) * $i;
                         }
@@ -546,10 +547,65 @@
                                 $cpfValido = false;
                             }
                         }
+
+                        $todosZero = true;
+                        $todosNove = true;
+                        for($i = 0; $i <11; $i++){
+                            if($cpfChecar[$i] != '0'){
+                                $todosZero = false;
+                            }
+                            if($cpfChecar[$i] != '9'){
+                                $todosNove = false;
+                            }
+                        }
+
+                        if($todosZero || $todosNove){
+                            $cpfValido = false;
+                        }
+
                     }
 
-                    $emailValido       = isset($email) && mb_strlen($email,'UTF-8') <= 100 &&
-                                         preg_match("/^.+\@.+\..+$/", $email);
+                    $cpfExistente = false;
+                    if($cpfValido){
+                        //Checa se ja existe este cpf no sistema cadastrado como associado
+                        $cpfNumerico = str_replace(".","",$cpf);
+                        $cpfNumerico = str_replace("-","",$cpfNumerico);
+                        $textoQuery = "SELECT U.cpf
+                                       FROM Usuario U , Associado A
+                                       WHERE U.id = A.idUsuario AND U.cpf = ?";
+        
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $cpfNumerico, PDO::PARAM_STR);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+    
+                        if($linha = $query->fetch()){
+                            $cpfValido = false;
+                            $cpfExistente = true;
+                        }
+                    }
+
+
+                    $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
+                                    preg_match("/^.+\@.+\..+$/", $email);
+    
+                    $emailExistente = false;
+                    if($emailValido){
+                        //Checa se ja existe este email no sistema cadastrado como associado
+                        $textoQuery = "SELECT U.email
+                                       FROM Usuario U , Associado A
+                                       WHERE U.id = A.idUsuario AND U.email = ?";
+        
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1,$email, PDO::PARAM_STR);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+    
+                        if($linha = $query->fetch()){
+                            $emailValido = false;
+                            $emailExistente = true;
+                        }
+                    }
                     $loginValido       = isset($login) && mb_strlen($login, 'UTF-8') >= 3 &&
                                          mb_strlen($login, 'UTF-8') <= 100;
                     $senhaValida       = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
@@ -643,10 +699,14 @@
                         }
                     } else if (!$nomeValido){
                         $mensagem = "Nome inválido!";
-                    } else if (!$cpfValido){
+                    }else if(!$cpfValido && !$cpfExistente){
                         $mensagem = "CPF inválido!";
-                    } else if (!$emailValido){
+                    }else if($cpfExistente){
+                        $mensagem = "CPF ja cadastrado!";
+                    }else if(!$emailValido && !$emailExistente){
                         $mensagem = "E-mail inválido!";
+                    }else if($emailExistente){
+                        $mensagem = "E-mail ja cadastrado!";
                     } else if (!$loginValido){
                         $mensagem = "Nome de usuário inválido!";
                     } else if (!$senhaValida){
