@@ -295,7 +295,7 @@ class Administrador extends Usuario{
             echo $e->getMessage();
         }
 
-        if($this->login === "admin"){
+        if($this->idAdmin === 1){
             return false;
         }
 
