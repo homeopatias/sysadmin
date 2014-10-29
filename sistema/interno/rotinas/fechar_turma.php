@@ -7,8 +7,8 @@ require("../entidades/Administrador.php");
 
 if(!isset($_SESSION['usuario']) || 
    !(unserialize($_SESSION['usuario']) instanceof Administrador &&
-     unserialize($_SESSION['usuario'])->getNivelAdmin === "coordenador")){
-    header('Location: ../index.php'.$sucesso, true, "302");
+     unserialize($_SESSION['usuario'])->getNivelAdmin() === "coordenador")){
+    header('Location: ../index.php', true, "302");
     die();
 }
 
@@ -43,6 +43,8 @@ if($idCidadeValido && $etapaValida){
         echo $e->getMessage();
     }
 
+    $coordenadorId = unserialize($_SESSION['usuario'])->getIdAdmin();
+
     // Confere os dados de cada aluno para determinar
     // quem está aprovado e quem está reprovado
     $textoQuery  = "SELECT AVG(IFNULL(T.nota, 0)) as mediaTrabalhos,
@@ -57,7 +59,6 @@ if($idCidadeValido && $etapaValida){
                     F.chaveAluno = M.chaveAluno AND F.chaveAula = Au.idAula WHERE 
                     C.idCidade = ? AND M.etapa = ? AND C.idCoordenador = ?
                     GROUP BY T.chaveAluno, F.chaveAluno";
-
     $query = $conexao->prepare($textoQuery);
     $query->bindParam(1, $idCidade, PDO::PARAM_INT);
     $query->bindParam(2, $etapa, PDO::PARAM_INT);
@@ -68,11 +69,11 @@ if($idCidadeValido && $etapaValida){
     $numAlunos = 0;
 
     // Usamos as transactions do MySQL para garantir a integridade do código
-    $conexao->beginTransaction():
+    $conexao->beginTransaction();
     $sucesso = true;
 
-    while ($linha = $query->fetch() && $sucesso){
-        $aprovado = $linha['mediaTrabalhos'] >= 70 && $linha['mediaFrequencia'] >= 80;
+    while (($linha = $query->fetch()) && $sucesso){
+        $aprovado = $linha['mediaTrabalhos'] >= 70 && $linha['frequenciaMedia'] >= 0.80;
         $fechaAluno = $conexao->prepare("UPDATE Matricula SET aprovado = ? WHERE idMatricula = ?");
         $fechaAluno->bindParam(1, $aprovado, PDO::PARAM_INT);
         $fechaAluno->bindParam(2, $linha['idMatricula'], PDO::PARAM_INT);
@@ -94,8 +95,9 @@ if($idCidadeValido && $etapaValida){
     if(!$idCidadeValido)
         $mensagem = "Cidade inválida!";
     else if(!$etapaValida)
-        $mensagem = "Etapa inválida!"
+        $mensagem = "Etapa inválida!";
 }
 
-header('Location: ../visualizar_turmas.php?mensagem='.$mensagem.'&sucesso='.$sucesso, true, "302");
+header('Location: ../visualizar_turmas.php?cidade='.$idCidade.
+       '&etapa='.$etapa.'&mensagem='.$mensagem.'&sucesso='.$sucesso, true, "302");
 die();

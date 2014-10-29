@@ -117,13 +117,13 @@
                 <section class="conteudo">
                     <h2 style="font-weight:bold; display:inline">Turmas de <?= date("Y") ?></h2>
                     <?php
-                        $mensagem = $_GET['mensagem'];
-                        $sucesso  = $_GET['sucesso'];
+                        $mensagem = isset($_GET['mensagem']) ? $_GET['mensagem'] : false;
+                        $sucesso  = isset($_GET['sucesso']) ? $_GET['sucesso'] : false;
                         if(mb_strlen($mensagem, 'UTF-8') !== 0 && !$sucesso){
-                            echo '<p class="warning">$mensagem</p>';
+                            echo "<br><br><p class=\"warning\">$mensagem</p>";
                         }
                         if($sucesso){
-                            echo '<p class="sucesso">$mensagem</p>';
+                            echo "<br><br><p class=\"sucesso\">$mensagem</p>";
                         }
                     ?>
                     <a href=<?= "\"impressao_chamada.php?cidade=". $idCidade . "&etapa=" . $etapa ."\"" ?>
@@ -191,7 +191,7 @@
                         while ($linha = $query->fetch()){
                             if(!is_null($linha['aprovado'])) {
                     ?>
-                    <script> $("#btn-fechar").prop("disabled",true); </script>
+                    <script> $("#btn-fechar").prop("disabled",true).toggleClass('disabled'); </script>
                     <?php
                             }
 
@@ -230,10 +230,6 @@
 
                     <?php
                             $resultado = "<b>Nenhum aluno matrículado nessa cidade nessa etapa.</b>";
-                        }
-
-                        if(mb_strlen($mensagem, 'UTF-8') !== 0){
-                            echo "            <p class=\"warning\">$mensagem</p>";
                         }
                         echo $resultado;
                     ?>
