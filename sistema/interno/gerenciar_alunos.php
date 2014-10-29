@@ -1114,7 +1114,6 @@
 
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute();
-                var_dump($textoQuery);
 
                 $numeroRegistros = $query->rowCount();
 
