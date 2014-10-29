@@ -921,20 +921,28 @@
                                 A.complemento, A.escolaridade, A.curso FROM Usuario U, 
                                 Aluno A ";
 
-                $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]))
+                $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
+                                 && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
+                                 && $filtroAnoCidade != "0")
                                             ? ", Cidade C, Matricula M "
                                             : "";
 
                 $textoQuery .=  " WHERE A.idUsuario = U.id ";
 
-                $textoQuery .= mb_strlen($filtroCidade)  > 0  
-                                                    ? "AND M.chaveAluno = A.numeroInscricao 
-                                                        AND M.chaveCidade = C.idCidade 
+                $textoQuery .= ( mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
+                                 && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
+                                 && $filtroAnoCidade != "0" )
+                                            ?"AND M.chaveAluno = A.numeroInscricao  
+                                              AND M.chaveCidade = C.idCidade "
+                                            : "";
+                $textoQuery .= mb_strlen($filtroCidade)  > 0 && $filtroCidade != "0"
+                                                    ? "
                                                         AND C.nome = :filtrocidade
                                                         AND C.uf = :filtrouf "
                                                     : "" ;
 
-                $textoQuery .= mb_strlen($filtroAnoCidade) > 0 ? " AND C.ano = :anoCidade"
+                $textoQuery .= mb_strlen($filtroAnoCidade) > 0 && $filtroAnoCidade != "0" 
+                                                       ? " AND C.ano = :anoCidade"
                                                        : "" ;
 
                 // se algum filtro foi enviado, filtra os resultados da consulta
@@ -1100,12 +1108,13 @@
                     }
                     if(isset($filtroEtapa) && mb_strlen($filtroEtapa) > 0  &&
                          $filtroEtapa != "0"){
-                        $query->bindParam(":filtroetapa",$filtroEtapa);
+                         $query->bindParam(":filtroetapa",$filtroEtapa);
                     }
                 }
 
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute();
+                var_dump($textoQuery);
 
                 $numeroRegistros = $query->rowCount();
 
