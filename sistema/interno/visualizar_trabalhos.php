@@ -140,8 +140,38 @@
                         $query->bindParam(3, $idTrabalho);
                         $sucesso = $query->execute();
 
+                        $textoQuery = "SELECT U.email, TD.titulo FROM Aluno A INNER JOIN Usuario U ON
+                                       A.idUsuario = U.id INNER JOIN Trabalho T ON T.chaveAluno =
+                                       A.numeroInscricao INNER JOIN TrabalhoDefinicao TD ON
+                                       T.chaveDefinicao = TD.idDefTrabalho WHERE T.idTrabalho = ?";
+
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $idTrabalho);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+
+                        $resultado = $query->fetch();
+                        $emailAluno = $resultado['email'];
+                        $nomeTrabalho = $resultado['titulo'];
+
                         if(!$sucesso) {
                             $mensagem = "Falha na avaliação de trabalho";
+                        } else {
+                            // enviamos um email avisando o aluno do trabalho corrigido
+                            $assunto = "Homeopatias.com - Trabalho corrigido: " . $nomeTrabalho;
+                            $msg = "Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la";
+                            $msg .= "<br><br><b>Trabalho \"" . $nomeTrabalho . "\"</b>";
+                            $msg .= "<br>Corrigido dia " . date("d/m/Y, à\s H:i");
+                            $msg .= "<br>Nota: " . $nota;
+                            $msg .= "<br>" . (mb_strlen($comentario, 'UTF-8') != 0 ? "\"" . $comentario . "\"" :
+                                              "O professor não fez nenhum comentário em relação ao trabalho.");
+                            $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
+                            $headers = "Content-type: text/html; charset=utf-8 " .
+                                "From: Sistema Financeiro Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+                                "Reply-To: noreply@homeopatias.com" . "\r\n" .
+                                "X-Mailer: PHP/" . phpversion();
+
+                            mail($emailAluno, $assunto, $msg, $headers);
                         }
 
                     } else if(!$idTrabalhoValido) {
