@@ -204,13 +204,13 @@
                     ?>
 
                     <!-- //////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////
-                    ////////////////////////// PAGAMENTOS ////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////
+                         //////////////////////////////////////////////////////////////////////
+                         //////////////////////////////////////////////////////////////////////
+                         ////////////////////////// PAGAMENTOS ////////////////////////////////
+                         //////////////////////////////////////////////////////////////////////
+                         //////////////////////////////////////////////////////////////////////
+                         //////////////////////////////////////////////////////////////////////
+                         //////////////////////////////////////////////////////////////////////
                          Pagamentos efetuados e pendentes desse aluno -->
                     <?php
                         // procuramos os pagamentos desse ano, tanto pendentes
@@ -379,8 +379,25 @@
                                     }
 
                                 }
-                                //se todos os pagamentos foram atualizados, confirma a  atualização , se não, da rollback
+                                //se todos os pagamentos foram atualizados confirma a 
+                                // atualização , se não, da rollback
                                 if($sucesso){
+                                    // enviamos um email confirmando o envio do pagamento
+                                    $quantiaPaga = htmlspecialchars($_POST["valor-pagamento"]);
+                                    $quantiaPaga = number_format($quantiaPaga, 2);
+                                    $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
+                                    $msg = "Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la";
+                                    $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
+                                    $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
+                                    $msg .= "<br><b>Método:</b> " . $metodo;
+                                    $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
+                                    $headers = "Content-type: text/html; charset=utf-8 " .
+                                        "From: Sistema Financeiro Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+                                        "Reply-To: noreply@homeopatias.com" . "\r\n" .
+                                        "X-Mailer: PHP/" . phpversion();
+
+                                    mail($aluno->getEmail(), $assunto, $msg, $headers);
+
                                     $conexao->commit(); 
                                 }
                                 else{
@@ -399,7 +416,7 @@
                         }
 
                         echo "<form id='busca-ano' name='busca-ano' 
-                                    action='gerenciar_pagamentos_aluno.php?id=method='GET'>
+                                    action='gerenciar_pagamentos_aluno.php' method='GET'>
                                     Ano letivo:".$select."
                                     <input type='hidden' name='id' id='id' value='".$idAluno."'>
                                     </form>
@@ -524,7 +541,7 @@
                         <div class="btn col-sm-12">
                             <div class="col-sm-12">
                                 <p> 
-                                Lançamento de nota para o aluno  <?= $aluno->getNome() ?> para o ano : <?= isset($_GET["ano"]) 
+                                Lançamento de pagamento para o aluno  <?= $aluno->getNome() ?> para o ano : <?= isset($_GET["ano"]) 
                                                 ? htmlspecialchars($_GET["ano"]) 
                                                 : date("Y")  ?>
                                 </p>

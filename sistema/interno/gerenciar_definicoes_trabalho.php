@@ -50,7 +50,8 @@
                 $("#defs-trabalho").tablesorter({ headers: {
                     2 : { sorter: "datetime" },
                     3 : { sorter: false },
-                    4 : { sorter: false }
+                    4 : { sorter: false },
+                    5 : { sorter: false }
                 }});
                 // passa os dados do href para o modal de confirmação de deleção quando
                 // necessário
@@ -355,11 +356,11 @@
                     if($tituloValido && $etapaValida && $dataValida && $descricaoValida){
 
                         $comando  = "INSERT INTO TrabalhoDefinicao (titulo, etapa, descricao,";
-                        $comando .= " dataLimite) VALUES (?, ?, ?, ?)";
+                        $comando .= " dataLimite, ano) VALUES (?, ?, ?, ?, ?)";
                         $query = $conexao->prepare($comando);
 
                         $data = date("Y-m-d H:i:s", strtotime($data));
-                        $dados  = array($titulo, $etapa, $descricao, $data);
+                        $dados  = array($titulo, $etapa, $descricao, $data, date("Y"));
                         $sucesso = $query->execute($dados);
 
                         if($sucesso){
@@ -379,7 +380,7 @@
                 }
 
                 $textoQuery  = "SELECT idDefTrabalho, titulo, etapa, descricao, dataLimite,
-                                UNIX_TIMESTAMP(dataLimite) as data FROM TrabalhoDefinicao"; 
+                                UNIX_TIMESTAMP(dataLimite) as data, ano FROM TrabalhoDefinicao"; 
                 
                 // Se algum filtro foi repassado, altera o query para filtrar
                 $filtroTitulo = $filtroEtapa = $filtroDataMin = $filtroDataMax = false;
@@ -541,6 +542,7 @@
                         $tabela .= "    <td class=\"data\" data-data-html=\"";
                         $tabela .= date("Y-m-d", $linha["data"]) . "\">";
                         $tabela .= date("d/m/Y", $linha["data"])    ."</td>";
+                        $tabela .= "<td>" . htmlspecialchars($linha["ano"]) . "</td>";
 
                         if(unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
                             // dá ao admin as opções de editar e excluir
@@ -731,6 +733,7 @@
                                         <th width="120px" <?= $indexHeader == 2 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Data de entrega</th>
+                                        <th width="60px">Ano</th>
                                         <?php
                                             // dá ao admin as opções de editar e excluir
                                             if(unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){

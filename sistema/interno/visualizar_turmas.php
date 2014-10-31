@@ -14,6 +14,12 @@
                 // que a cidade ou a etapa for mudada
                 $("#cidade").change( function(){ $(this).parent().submit() });
                 $("#etapa").change( function(){ $(this).parent().submit() });
+
+                // passa os dados do href para o modal de confirmação de fechamento
+                // de turma quando necessário
+                $("#modal-fecha-turma").on('show.bs.modal', function(e) {
+                    $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
+                });
             });
         </script>
     </head>
@@ -110,12 +116,28 @@
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
                     <h2 style="font-weight:bold; display:inline">Turmas de <?= date("Y") ?></h2>
+                    <?php
+                        $mensagem = isset($_GET['mensagem']) ? $_GET['mensagem'] : false;
+                        $sucesso  = isset($_GET['sucesso']) ? $_GET['sucesso'] : false;
+                        if(mb_strlen($mensagem, 'UTF-8') !== 0 && !$sucesso){
+                            echo "<br><br><p class=\"warning\">$mensagem</p>";
+                        }
+                        if($sucesso){
+                            echo "<br><br><p class=\"sucesso\">$mensagem</p>";
+                        }
+                    ?>
                     <a href=<?= "\"impressao_chamada.php?cidade=". $idCidade . "&etapa=" . $etapa ."\"" ?>
                        target="_blank" class="pull-right" style="text-decoration:none" id="btn-imprimir">
                         <b>Lista de chamada para impressão &nbsp;</b>
                         <i class="fa fa-lg fa-print"></i>
                     </a>
                     <br><br>
+                    <a class="pull-right btn btn-primary" id="btn-fechar" data-toggle="modal"
+                       data-target="#modal-fecha-turma"
+                       data-href=<?= "\"rotinas/fechar_turma.php?idCidade=" .
+                                     $idCidade . "&etapa=" . $etapa . "\""?>>
+                        Fechar turma
+                    </a>
                     <label for="ano">
                         Selecione a cidade e a etapa:
                     </label><br>
@@ -143,8 +165,8 @@
                     <br><br>
                     <?php
 
-                        $textoQuery  = "SELECT U.nome, U.cpf, A.numeroInscricao, M.idMatricula
-                                        FROM Matricula M INNER JOIN Cidade C 
+                        $textoQuery  = "SELECT U.nome, U.cpf, A.numeroInscricao, M.idMatricula,
+                                        M.aprovado FROM Matricula M INNER JOIN Cidade C 
                                         ON C.idCidade = M.chaveCidade INNER JOIN Aluno A ON 
                                         M.chaveAluno = A.numeroInscricao INNER JOIN Usuario U ON 
                                         U.id = A.idUsuario WHERE 
@@ -167,6 +189,12 @@
                         $numAlunos = 0;
 
                         while ($linha = $query->fetch()){
+                            if(!is_null($linha['aprovado'])) {
+                    ?>
+                    <script> $("#btn-fechar").prop("disabled",true).toggleClass('disabled'); </script>
+                    <?php
+                            }
+
                             // formatamos o CPF para exibição
                             $cpfOriginal = str_split($linha["cpf"]);
         
@@ -197,15 +225,11 @@
                         if($numAlunos == 0){
                     ?>
 
-                    <!-- removemos a opção de imprimir a lista de chamada -->
-                    <script> $("#btn-imprimir").remove(); </script>
+                    <!-- removemos a opção de imprimir a lista de chamada e fechar turma -->
+                    <script> $("#btn-imprimir").remove(); $("#btn-fechar").remove(); </script>
 
                     <?php
                             $resultado = "<b>Nenhum aluno matrículado nessa cidade nessa etapa.</b>";
-                        }
-
-                        if(mb_strlen($mensagem, 'UTF-8') !== 0){
-                            echo "            <p class=\"warning\">$mensagem</p>";
                         }
                         echo $resultado;
                     ?>
@@ -213,7 +237,30 @@
                 </section>
             </div>
         </div>
-
+        <div class="modal fade" id="modal-fecha-turma" tabindex="-1" role="dialog"
+             aria-labelledby="modal-fecha-turma" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        X
+                    </button>
+                    <h4 class="modal-title">Fechar turma</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Tem certeza que deseja fechar essa turma?
+                            <br><span style="color: #F00; font-weight: bold">Não será
+                                possível modificar os dados dessa turma após esse
+                                processo!</span>
+                    </h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Não</button>
+                        <a href="#" class="btn btn-danger danger">Sim</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <?php
             }else{
         ?>

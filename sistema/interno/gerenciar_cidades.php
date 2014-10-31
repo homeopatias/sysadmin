@@ -331,7 +331,7 @@
                     echo $e->getMessage();
                 }
 
-                $textoQuery  = "SELECT ano FROM Cidade";
+                $textoQuery  = "SELECT ano FROM Cidade ORDER BY ano DESC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);

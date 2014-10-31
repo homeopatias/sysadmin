@@ -34,8 +34,8 @@
                     echo $e->getMessage();
                 }
 
-                $textoQuery  = "SELECT idCidade, UF, nome, ano FROM Cidade 
-                                ORDER BY ano DESC, nome ASC";
+                $textoQuery  = "SELECT idCidade, UF, nome, ano FROM Cidade WHERE
+                                CURDATE() < limiteInscricao ORDER BY ano DESC, nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -78,7 +78,7 @@
                     var ano  = $(this).val();
 
                     var date = new Date();
-                    if(cidades[ano] && cidades[ano] >= date.getFullYear() ){
+                    if(cidades[ano]){
                         cidades[ano].forEach(function(cidade){
                             $("form #cidade")
                                 .append('<option value="' + cidade.id + '">' + cidade.nome + "/"
@@ -88,7 +88,7 @@
                 });
 
                 // abrimos o menu de nova matrícula quando o botão de nova matrícula é pressionado
-                $("#efetuar-mat").click(function(){
+                $("#renovar-mat").click(function(){
                     $("#form-mat").toggle(500);
                 });
 
@@ -155,17 +155,16 @@
                 // caso o usuário tenha chegado aqui através de um formulário, cria a nova
                 // matrícula
                 if(isset($_POST["submit"])){
-                    // validamos os dados recebidos
-                    $id       = $_GET["id"];
-                    $idCidade = $_POST["cidade"];
-                    $etapa    = $_POST["etapa"];
+                    // inscrição do aluno logado atualmente
+                    $id = unserialize($_SESSION["usuario"])->getNumeroInscricao();
 
-                    $idValido       = isset($id) && preg_match("/^\d+$/", $id);
+                    // validamos os dados recebidos
+                    $idCidade = $_POST["cidade"];
+
                     $idCidadeValido = isset($idCidade) && preg_match("/^\d*$/", $idCidade);
-                    $etapaValida    = isset($etapa) && preg_match("/^[1-4]$/", $etapa);
 
                     $anoValido = true;
-                    // checamos se o aluno já está matrículado no ano recebido
+                    // checamos se o ano no qual o aluno quer se matricular é permitido
 
                     // primeiro descobrimos o ano dessa cidade
                     $ano = 0;
@@ -176,11 +175,13 @@
                     $query->execute(array($idCidade));
                     if($linha = $query->fetch()){
                         $ano = intval($linha["ano"]);
+                        $anoValido = $ano >= date('Y');
                     }else{
                         // essa cidade não existe
                         $idCidadeValido = false;
                     }
 
+                    // checamos se o aluno já está matrículado no ano recebido
                     $textoQuery  = "SELECT C.idCidade, C.nome FROM Cidade C, Matricula M 
                                     WHERE M.chaveCidade = C.idCidade AND 
                                     M.chaveAluno = ? AND C.ano = ?";
@@ -188,18 +189,37 @@
                     $query = $conexao->prepare($textoQuery);
                     $query->setFetchMode(PDO::FETCH_ASSOC);
                     $query->execute(array($id, $ano));
-
                     if($linha = $query->fetch()){
                         $anoValido = false;
                     }
 
-                    if($idValido && $idCidadeValido && $etapaValida && $anoValido){
+                    // por fim, verificamos se o aluno terminou o período referente à
+                    // sua última matrícula, e caso tenha, avalia qual a próxima etapa
+                    // na qual ele deve se matricular
+                    $textoQuery  = "SELECT M.aprovado, M.etapa
+                                    FROM Matricula M, Cidade C 
+                                    WHERE M.chaveAluno = ? AND M.chaveCidade = C.idCidade 
+                                    ORDER BY M.etapa, C.ano DESC LIMIT 1";
+
+                    $query = $conexao->prepare($textoQuery);
+                    $query->bindParam(1, $id, PDO::PARAM_INT);
+                    $query->setFetchMode(PDO::FETCH_ASSOC);
+                    $query->execute();
+
+                    $fechado = true;
+                    $proximaEtapa = 1;
+                    if ($linha = $query->fetch()) {
+                        $fechado = !is_null($linha['aprovado']);
+                        $proximaEtapa = $linha['aprovado'] ? $linha['etapa'] + 1 : $linha['etapa'];
+                    }
+
+                    if($idCidadeValido && $anoValido && $fechado){
 
                         // Usamos as TRANSACTIONs do MySql para garantir que caso haja
                         // algum erro, as tabelas continuem consistentes
                         $conexao->beginTransaction();
 
-                        $dadosMatricula  = array($id, $etapa, $idCidade);
+                        $dadosMatricula  = array($id, $proximaEtapa, $idCidade);
                         $queryMatricula  = "INSERT INTO Matricula (chaveAluno, etapa, chaveCidade) 
                                             VALUES (?,?,?)";
                         $query  = $conexao->prepare($queryMatricula);
@@ -278,14 +298,12 @@
                             $conexao->commit();                            
                         }
 
-                    }else if(!$idValido){
-                        $mensagem = "Dados inconsistentes";
-                    }else if(!$idCidadeValido){
+                    } else if (!$idCidadeValido) {
                         $mensagem = "Cidade inválida!";
-                    }else if(!$etapaValida){
-                        $mensagem = "Etapa inválida!";
-                    }else if(!$anoValido){
+                    } else if (!$anoValido && $ano >= date('Y')) {
                         $mensagem = "Esse aluno já está matriculado nesse ano!";
+                    } else if (!$anoValido) {
+                        $mensagem = "Você não pode matricular o aluno em um ano anterior!";
                     }
                 }
         ?>
@@ -421,16 +439,17 @@
                         $etapa = -1;
                         $idCidade = -1;
                         $idMatricula = -1;
-                        $numeroInscricao = unserialize( $_SESSION["usuario"] )->getNumeroInscricao();
+                        $aprovado = null;
+                        $numeroInscricao = unserialize( $_SESSION['usuario'] )->getNumeroInscricao();
 
-                        $textoQuery  = "SELECT M.idMatricula, M.etapa, M.chaveCidade 
+                        $textoQuery  = "SELECT M.idMatricula, M.etapa, M.chaveCidade, M.aprovado 
                                         FROM Matricula M, Cidade C 
                                         WHERE M.chaveAluno = ? AND M.chaveCidade = C.idCidade 
                                         AND C.ano = ?";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $idAluno, PDO::PARAM_INT);
-                        $query->bindParam(2, date("Y"), PDO::PARAM_INT);
+                        $query->bindParam(2, date('Y'), PDO::PARAM_INT);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
@@ -438,20 +457,21 @@
                             // foi encontrada uma matrícula desse aluno no
                             // período atual
 
-                            $etapa = $linha["etapa"];
-                            $idCidade = $linha["chaveCidade"];
-                            $idMatricula = $linha["idMatricula"];
+                            $etapa = $linha['etapa'];
+                            $idCidade = $linha['chaveCidade'];
+                            $idMatricula = $linha['idMatricula'];
+                            $aprovado = $linha['aprovado'];
                             $matriculado = true;
 
 
-                            //Agora checamos o desconto do aluno neste ano, para isso veremos os
-                            //alunos matriculados no ano atual e que tenham sido indicados por ele
+                            // Agora checamos o desconto do aluno neste ano, para isso veremos os
+                            // alunos matriculados no ano atual e que tenham sido indicados por ele
 
                             $textoQuery = "SELECT A.numeroInscricao
-                                            FROM Aluno A, Matricula M, Cidade C
-                                            WHERE A.idIndicador = ? AND 
-                                            M.chaveAluno = A.numeroInscricao AND
-                                            M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())";
+                                           FROM Aluno A, Matricula M, Cidade C
+                                           WHERE A.idIndicador = ? AND 
+                                           M.chaveAluno = A.numeroInscricao AND
+                                           M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())";
 
                             $query = $conexao->prepare($textoQuery);
 
@@ -474,6 +494,9 @@
                         <p style="display:inline" class="col-sm-3">
                             <b>Matriculado no período atual</b>
                         </p>
+                        <p class=<?= "\"" . ($aprovado ? "sucesso" : "warning") . "\"" ?>><b>
+                            Aluno <?= $aprovado ? "aprovado" : "reprovado" ?> no ano atual
+                        </b></p> 
                         <p style="display:inline" class="col-sm-3">
                             <?php 
                                 if( isset($_GET["ano"]) && $_GET["ano"] != date("Y") ){ ?>
@@ -515,34 +538,37 @@
                     </div>
                     <?php } 
 
-                        // agora checamos se o aluno está matrículado no ano seguinte
-                        $matriculadoProxAno = false;
-
-                        $textoQuery  = "SELECT M.idMatricula FROM Matricula M, Cidade C ";
-                        $textoQuery .= "WHERE M.chaveAluno = ? AND M.chaveCidade = C.idCidade ";
-                        $textoQuery .= "AND C.ano = ?";
+                        // descobrimos se o aluno já terminou a parte do
+                        // curso referente à sua última matrícula (passando ou não)
+                        $textoQuery  = "SELECT M.aprovado, M.etapa
+                                        FROM Matricula M, Cidade C 
+                                        WHERE M.chaveAluno = ? AND M.chaveCidade = C.idCidade 
+                                        ORDER BY C.ano DESC, M.etapa DESC LIMIT 1";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $idAluno, PDO::PARAM_INT);
-                        $query->bindValue(2, date("Y")+1, PDO::PARAM_INT);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
-                        if($linha = $query->fetch()){
-                            $matriculadoProxAno = true;
+                        $fechado = true;
+                        $proximaEtapa = 1;
+                        if ($linha = $query->fetch()) {
+                            $fechado = !is_null($linha['aprovado']);
+                            $proximaEtapa = $linha['aprovado'] ? $linha['etapa'] + 1 : $linha['etapa'];
                         }
 
-                        // damos a opção de criação de nova matrícula caso o aluno
-                        // não esteja matriculado no ano atual ou no seguinte
+                        // damos a opção de rematrícula caso o aluno
+                        // não esteja matriculado no ano seguinte e já tenha concluído
+                        // a parte do curso referente à sua úiltima matrícula
 
                         $anoAtual = date("Y"); // ano atual para uso na nova matrícula 
-                        if((!$matriculado || !$matriculadoProxAno) &&
+                        if($fechado &&
                             $aluno->getStatus() !== "desistente" &&
                             $aluno->getStatus() !== "formado"){
                     ?>
                     <div class="row">
-                        <a style="cursor: pointer" class="col-sm-2" id="efetuar-mat">
-                            Efetuar matrícula
+                        <a style="cursor: pointer" class="col-sm-2" id="renovar-mat">
+                            Renovar matrícula
                         </a>
                     </div>
                     <div class="row">
@@ -553,20 +579,18 @@
                             <div class="form-group" style="margin-left: 20px">
                                 <label for="ano">Ano:</label>
                                 <select name="ano" id="ano" class="form-control" required>
-                                    <?php if(!$matriculado){ // permitimos matrícula no ano atual ?>
-
-                                    <option value=<?= $anoAtual ?> >
-                                        <?= $anoAtual ?>
-                                    </option>
-                                    <?php }
-                                        if(!$matriculadoProxAno){ // permitimos matrícula no ano seguinte
-                                    ?>
-
+                                    <?php if(in_array($anoAtual + 1, $anos)) { ?>
                                     <option value=<?= $anoAtual + 1 ?> >
                                         <?= $anoAtual + 1 ?>
                                     </option>
+                                    <?php
+                                        }
+                                        if(in_array($anoAtual, $anos)) {
+                                    ?>
+                                    <option value=<?= $anoAtual ?> >
+                                        <?= $anoAtual ?>
+                                    </option>
                                     <?php } ?>
-
                                 </select>
                             </div>
                             <div class="form-group" style="margin-left: 20px">
@@ -577,13 +601,7 @@
                                 </select>
                             </div>
                             <div class="form-group" style="margin-left: 20px">
-                                <label for="etapa">Etapa:</label>
-                                <select name="etapa" id="etapa" class="form-control" required>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
+                                <label><?= $proximaEtapa ?>ª etapa</label>
                             </div>
                             <button type="submit" name="submit" value="submit"
                                     class="btn btn-primary pull-right">
@@ -831,7 +849,29 @@
 
                 </section>
             </div>
-        </div>        
+        </div>
+
+        <!-- popup "modal" do bootstrap para confirmação de cancelamento de matrícula -->
+        <div class="modal fade" id="modal-confirma-deleta" tabindex="-1" role="dialog"
+             aria-labelledby="modal-confirma-deleta" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        X
+                    </button>
+                    <h4 class="modal-title">Cancelamento de matrícula</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Tem certeza que deseja cancelar essa matrícula?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Não</button>
+                        <a href="#" class="btn btn-danger danger">Sim</a>
+                    </div>
+                </div>
+            </div>
+        </div> 
         <?php
             }else{
         ?>

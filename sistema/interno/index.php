@@ -193,7 +193,7 @@
                         // agora vamos mostrar os dados de matrícula do aluno, para isso
                         // descobrimos se o aluno está matriculado atualmente
 
-                        $textoQuery  = "SELECT M.idMatricula, M.etapa, C.nome 
+                        $textoQuery  = "SELECT M.idMatricula, M.etapa, M.aprovado, C.nome 
                                         FROM Matricula M, Cidade C 
                                         WHERE M.chaveAluno = ? AND M.chaveCidade = C.idCidade 
                                         AND C.ano = YEAR(CURDATE())";
@@ -208,6 +208,15 @@
                             $matriculado = true;
                 ?>
             <br>
+                <?php
+                        if(!is_null($linha["aprovado"])) {
+                ?>
+            <p class=<?= "\"" . ($linha["aprovado"] ? "sucesso" : "warning") . "\"" ?>><b>
+                Aluno <?= $linha["aprovado"] ? "aprovado" : "reprovado" ?> no ano atual
+            </b></p> 
+                <?php
+                        }
+                ?>
             <p><b>Aluno atualmente matriculado em <?= htmlspecialchars($linha["nome"]) ?></b></p>
             <p><b>Id da matrícula: </b> <?= htmlspecialchars($linha["idMatricula"]) ?></b></p>
             <p><b>Etapa: </b> <?= htmlspecialchars($linha["etapa"]) ?></b>
