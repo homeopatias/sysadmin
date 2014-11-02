@@ -386,7 +386,7 @@
                                     $quantiaPaga = htmlspecialchars($_POST["valor-pagamento"]);
                                     $quantiaPaga = number_format($quantiaPaga, 2);
                                     $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
-                                    $msg = "Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la";
+                                    $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
                                     $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
                                     $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
                                     $msg .= "<br><b>Método:</b> " . $metodo;
@@ -397,6 +397,15 @@
                                         "X-Mailer: PHP/" . phpversion();
 
                                     mail($aluno->getEmail(), $assunto, $msg, $headers);
+
+                                    // agora registramos no sistema uma notificação para o aluno
+                                    $texto .= "Pagamento recebido:\nValor: R$" . $quantiaPaga;
+                                    $texto .= "\nData: " . date("d/m/Y") . "\nHorário: " . date("H:i");
+                                    $texto .= "\nMétodo: " . $metodo;
+                                    $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
+                                                        (titulo, texto, chaveAluno, lida) VALUES (?, ?, ?, 0)");
+                                    $dados = array("Pagamento recebido", $texto, $idAluno);
+                                    $queryNotificacao->execute($dados);
 
                                     $conexao->commit(); 
                                 }
