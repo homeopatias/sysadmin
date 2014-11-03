@@ -191,9 +191,7 @@
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
-                        $numNotificacoes = $query->rowCount();
-
-                        if($numNotificacoes){
+                        if($query->rowCount()){
                             // se houverem notificações a ser lidas, criamos
                             // o modal para exibí-las
                 ?>
@@ -231,9 +229,6 @@
                href="#" data-toggle="modal" data-target="#modal-notificacoes">
                 <i class="fa fa-circle fa-stack-2x warning"></i>
                 <i class="fa fa-exclamation fa-stack-1x fa-inverse"></i>
-                <b style="position:relative; left: 25px; top: 15px">
-                   <?= $numNotificacoes ?>
-                </b>
             </a>
                 <?php
 
@@ -309,7 +304,6 @@
                         </a>
                     </p>
                     <br><br>
-
                 <?php    }else if($usuarioLogado instanceof Associado){
                         echo "Associado";
                 ?>
