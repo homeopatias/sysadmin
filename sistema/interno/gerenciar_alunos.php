@@ -168,6 +168,9 @@
                 $("#filtro-numero").hide();
                 $("#div-data-min").hide();
                 $("#div-data-max").hide();
+                $("#filtro-cidade").hide();
+                $("#filtro-ano").hide();
+                $("#filtro-etapa").hide();
 
 
                 // alterna campos de texto com campos de input
@@ -267,6 +270,45 @@
                     $("#label-ipp").show(300);   
                 });
 
+                $("#label-cidade").click(function(){
+                    $(this).hide();
+                    $("#filtro-cidade").show(300);
+                    $("#filtro-cidade").focus();
+                });
+
+                $("#filtro-cidade").blur(function(){
+                    if($(this).val() == null || $(this).val() == "0"){
+                        $(this).hide(300);
+                        $("#label-cidade").show(300);   
+                    }
+                });
+
+                $("#label-ano").click(function(){
+                    $(this).hide();
+                    $("#filtro-ano").show(300);
+                    $("#filtro-ano").focus();
+                });
+
+                $("#filtro-ano").blur(function(){
+                    if($(this).val() == null || $(this).val() == "0"){
+                        $(this).hide(300);
+                        $("#label-ano").show(300);   
+                    }
+                });
+
+                $("#label-etapa").click(function(){
+                    $(this).hide();
+                    $("#filtro-etapa").show(300);
+                    $("#filtro-etapa").focus();
+                });
+
+                $("#filtro-etapa").blur(function(){
+                    if($(this).val() == ""){
+                        $(this).hide(300);
+                        $("#label-etapa").show(300);   
+                    }
+                });
+
                 // processa envio do formulário se enter for pressionado dentro de algum campo
                 // do formulário de filtro
 
@@ -295,6 +337,29 @@
 
                 $("#filtro-status").change(function(){
                     atualizaPagina();
+                });
+
+                $("#filtro-cidade").change(function(){
+                    if($("#filtro-cidade").val != "0" && $("#filtro-ano").val() == "0"){
+                        $("#label-ano").click();
+                    }
+                    else{
+                        $(this).blur();
+                    }
+                });
+
+                $("#filtro-ano").keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13'){ // enter foi pressionado
+                       atualizaPagina();
+                    }
+                });
+
+                $("#filtro-etapa").keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13'){ // enter foi pressionado
+                       atualizaPagina();
+                    }
                 });
 
                 // se clicou na lupa, envia o formulário
@@ -334,6 +399,15 @@
                     podeMudarPagina = false;
                 });
 
+                //remove inputs em branco do form antes de enviar
+                $("#form-filtro").submit(function(){
+
+                    $(':input', this).each(function() {
+                         this.disabled = !($(this).val());
+                    });
+
+                });
+
                 // se clicou na borracha, apaga todos os campos e envia o formulário limpo
                 $("#limpar").click(function(e){
                     $("#filtro-nome").val("");
@@ -342,6 +416,9 @@
                     $("#filtro-numero").val("");
                     $("#filtro-data-min").val("");
                     $("#filtro-data-max").val("");
+                    $("#filtro-cidade").val("");
+                    $("#filtro-ano").val("");
+                    $("#filtro-etapa").val("");
                     atualizaPagina();
                 });
 
@@ -378,6 +455,56 @@
                     atualizaPagina();
                 });
 
+                // preenche o select de cidades
+
+                // se há cidade filtrada, seleciona ela
+                // remove os sinais de + que são passados e transforma em uma entidade html
+                selecionado = <?= isset($_GET["filtro-cidade"]) ?
+                             "\"" . str_replace("+","",$_GET["filtro-cidade"]) . "\"" 
+                             : "0"?>;
+
+
+                // A primeira opção indica nenhuma cidade
+                var opcao = '<option value="" >Todas</option>';
+                            $("#filtro-cidade").append(opcao);
+
+                nomesCidades.forEach(function(cidade){
+                    if(selecionado != "" && selecionado == cidade.nome){
+                        var opcao = '<option value=" '+ cidade.nome +' " selected = selected>'
+                            + cidade.nome + '</option>';
+                        $("#filtro-cidade").append(opcao);
+
+                    }
+                    else{
+                        var opcao = '<option value=" '+ cidade.nome +' ">'
+                            + cidade.nome + '</option>';
+                        $("#filtro-cidade").append(opcao);
+                    }
+                });
+
+                // se há ano filtrado, seleciona ele
+                // remove os sinais de + que são passados e transforma em uma entidade html
+                selecionado = <?= isset($_GET["filtro-ano"]) ?
+                             htmlspecialchars(str_replace("+","",$_GET["filtro-ano"]) ) : "0"?>;
+
+
+                // A primeira opção indica nenhum ano
+                var opcao = '<option value= 0>Todos</option>';
+                            $("#filtro-ano").append(opcao);
+                anos.forEach(function(ano){
+                    if(selecionado != "0" && selecionado == ano){
+                        var opcao = '<option value=" '+ ano +' " selected = selected>'
+                            + ano + '</option>';
+                        $("#filtro-ano").append(opcao);
+
+                    }
+                    else{
+                        var opcao = '<option value=" '+ ano +' ">'
+                            + ano + '</option>';
+                        $("#filtro-ano").append(opcao);
+                    }
+                });
+
                 checaTamanhoTela();
             }); 
             
@@ -408,6 +535,70 @@
             $(window).resize(function() {
                 checaTamanhoTela();
             });
+
+            //preparamos os dados necessários para fazer os inputs de busca por cidade
+            var nomesCidades = new Array();
+            var anos         = new Array();
+            <?php
+                // lemos as credenciais do banco de dados
+                $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
+                $dados = json_decode($dados, true);
+
+                foreach($dados as $chave => $valor) {
+                    $dados[$chave] = str_rot13($valor);
+                }
+
+                $host    = $dados["host"];
+                $usuario = $dados["nome_usuario"];
+                $senhaBD = $dados["senha"];
+
+                // cria conexão com o banco para ser usada ao longo da página
+                $conexao = null;
+                $host    = "localhost";
+                $db      = "homeopatias";
+                try{
+                    $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
+                }catch (PDOException $e){
+                    echo $e->getMessage();
+                }
+
+                $textoQuery  = "SELECT idCidade, UF, nome, ano 
+                                FROM Cidade ORDER BY ano DESC, nome ASC";
+
+                $query = $conexao->prepare($textoQuery);
+                $query->setFetchMode(PDO::FETCH_ASSOC);
+                $query->execute();
+
+                // variável para garantir que inicializaremos o vetor para cada
+                // ano sempre que estivermos utilizando-o pela primeira vez
+                $anos = [];
+                $nomesCidades = [];
+
+                while ($linha = $query->fetch()){
+                    $id   = "\"".htmlspecialchars($linha["idCidade"])."\"";
+                    $uf   = "\"".htmlspecialchars($linha["UF"])."\"";
+                    $nome = "\"".htmlspecialchars($linha["nome"])."\"";
+                    $ano  = "\"".htmlspecialchars($linha["ano"])."\"";
+                    if(!in_array($linha["ano"], $anos)){
+                        $anos[] = $linha["ano"];
+                        ?>
+            
+                        anos.push( <?= $ano ?> );
+                    <?php } 
+
+                // preenche o vetor de nomes de cidades
+
+                    if(!in_array($linha["nome"], $nomesCidades)){
+                        $nomesCidades[] = $linha["nome"];
+                ?>
+                    nomesCidades.push({
+                    id:   <?= $id ?>,
+                    nome: <?= $nome . " + \"/\" + " . $uf ?>
+                });
+                <?php
+                    }
+                }
+                ?>
 
         </script>
     </head>
@@ -486,6 +677,7 @@
                         $cpfChecar = str_replace("-","",$cpfChecar);
                         $cpfChecar = str_split($cpfChecar);
                         $somaChecagem = 0;
+
                         for($i = 10; $i >= 2; $i = $i - 1){
                             $somaChecagem += (int)($cpfChecar[10 - $i]) * $i;
                         }
@@ -504,10 +696,66 @@
                                 $cpfValido = false;
                             }
                         }
+
+                        $todosZero = true;
+                        $todosNove = true;
+                        for($i = 0; $i <11; $i++){
+                            if($cpfChecar[$i] != '0'){
+                                $todosZero = false;
+                            }
+                            if($cpfChecar[$i] != '9'){
+                                $todosNove = false;
+                            }
+                        }
+
+                        if($todosZero || $todosNove){
+                            $cpfValido = false;
+                        }
+
                     }
+
+                    $cpfExistente = false;
+                    if($cpfValido){
+                        //Checa se ja existe este cpf no sistema cadastrado como aluno
+                        $cpfNumerico = str_replace(".","",$cpf);
+                        $cpfNumerico = str_replace("-","",$cpfNumerico);
+                        $textoQuery = "SELECT U.cpf
+                                       FROM Usuario U , Aluno A
+                                       WHERE U.id = A.idUsuario AND U.cpf = ?";
+        
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $cpfNumerico, PDO::PARAM_STR);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+    
+                        if($linha = $query->fetch()){
+                            $cpfValido = false;
+                            $cpfExistente = true;
+                        }
+                    }
+
 
                     $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
                                     preg_match("/^.+\@.+\..+$/", $email);
+    
+                    $emailExistente = false;
+                    if($emailValido){
+                        //Checa se ja existe este email no sistema cadastrado como aluno
+                        $textoQuery = "SELECT U.email
+                                       FROM Usuario U , Aluno A
+                                       WHERE U.id = A.idUsuario AND U.email = ?";
+        
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1,$email, PDO::PARAM_STR);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+    
+                        if($linha = $query->fetch()){
+                            $emailValido = false;
+                            $emailExistente = true;
+                        }
+                    }
+
                     $loginValido  = isset($login) && mb_strlen($login, 'UTF-8') >= 3 &&
                                     mb_strlen($login, 'UTF-8') <= 100;
                     $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
@@ -630,10 +878,14 @@
 
                     }else if(!$nomeValido){
                         $mensagem = "Nome inválido!";
-                    }else if(!$cpfValido){
+                    }else if(!$cpfValido && !$cpfExistente){
                         $mensagem = "CPF inválido!";
-                    }else if(!$emailValido){
+                    }else if($cpfExistente){
+                        $mensagem = "CPF ja cadastrado!";
+                    }else if(!$emailValido && !$emailExistente){
                         $mensagem = "E-mail inválido!";
+                    }else if($emailExistente){
+                        $mensagem = "E-mail ja cadastrado!";
                     }else if(!$loginValido){
                         $mensagem = "Nome de usuário inválido!";
                     }else if(!$senhaValida){
@@ -652,12 +904,44 @@
                         }
                     }
                 }
+                $filtroCidade    = null;
+                $queryAnoCidade   = null;
+                if( isset($_GET["filtro-cidade"] ) ){
+                    $filtroCidade    = $_GET["filtro-cidade"] ;
+                }
+                if( isset($_GET["filtro-ano"]) ){
+                    $filtroAnoCidade = htmlspecialchars( $_GET["anoCidade"] );
+                }
 
-                $textoQuery  = "SELECT U.id, U.cpf, U.dataInscricao, U.email,
+                $textoQuery  =  "SELECT U.id, U.cpf, U.dataInscricao, U.email,
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
                                 A.complemento, A.escolaridade, A.curso FROM Usuario U, 
-                                Aluno A WHERE A.idUsuario = U.id ";
+                                Aluno A ";
+
+                $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
+                                 && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
+                                 && $filtroAnoCidade != "0")
+                                            ? ", Cidade C, Matricula M "
+                                            : "";
+
+                $textoQuery .=  " WHERE A.idUsuario = U.id ";
+
+                $textoQuery .= ( mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
+                                 && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
+                                 && $filtroAnoCidade != "0" )
+                                            ?"AND M.chaveAluno = A.numeroInscricao  
+                                              AND M.chaveCidade = C.idCidade "
+                                            : "";
+                $textoQuery .= mb_strlen($filtroCidade)  > 0 && $filtroCidade != "0"
+                                                    ? "
+                                                        AND C.nome = :filtrocidade
+                                                        AND C.uf = :filtrouf "
+                                                    : "" ;
+
+                $textoQuery .= mb_strlen($filtroAnoCidade) > 0 && $filtroAnoCidade != "0" 
+                                                       ? " AND C.ano = :anoCidade"
+                                                       : "" ;
 
                 // se algum filtro foi enviado, filtra os resultados da consulta
                 $filtroNome = $filtroCpf = $filtroStatus = $filtroNumero = 
@@ -665,15 +949,18 @@
 
                 // como não há botão para submit, temos que checar se todas as variáveis
                 // existem
-                if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])     ||
-                   isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])  ||
-                   isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"])){
+                if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])      ||
+                   isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
+                   isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
+                   isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
+                   isset($_GET["filtro-etapa"])                                         ){
                     $filtroNome    =  htmlspecialchars($_GET["filtro-nome"]);
                     $filtroCpf     =  htmlspecialchars($_GET["filtro-cpf"]);
                     $filtroStatus  =  htmlspecialchars($_GET["filtro-status"]);
                     $filtroNumero  =  htmlspecialchars($_GET["filtro-numero"]);
                     $filtroDataMin =  htmlspecialchars($_GET["filtro-data-min"]);
                     $filtroDataMax =  htmlspecialchars($_GET["filtro-data-max"]);
+                    $filtroEtapa      =  htmlspecialchars($_GET["filtro-etapa"]);
 
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         // prepara o nome para ser colocado na query
@@ -699,6 +986,11 @@
                         $textoQuery .= " AND CAST(U.dataInscricao AS Date) <= ";
                         $textoQuery .= "CAST(:dataMax as Date)";
                     }
+                    if(isset($filtroEtapa) && mb_strlen($filtroEtapa) > 0 && 
+                        !is_nan($filtroEtapa) && $filtroEtapa != "0"){
+                        $textoQuery .= " AND M.etapa LIKE :filtroetapa ";
+                    }
+
 
                 }
 
@@ -772,9 +1064,11 @@
                 $query = $conexao->prepare($textoQuery);
 
                 // passamos os parâmetros corretamente de acordo com os filtros passados
-                if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])     ||
-                   isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])  ||
-                   isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"])){
+                if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])      ||
+                   isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
+                   isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
+                   isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
+                   isset($_GET["filtro-etapa"])                                         ){
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         $query->bindParam(":nome", $filtroNome);
                     }
@@ -793,11 +1087,26 @@
                             $query->bindParam(":numInsc", $filtroNumero);
                         }
                     }
-                    if(isset($filtroDataMin) && mb_strlen($filtroDataMin)){
+                    if(isset($filtroDataMin) && mb_strlen($filtroDataMin) > 0){
                         $query->bindParam(":dataMin" , $filtroDataMin);
                     }
-                    if(isset($filtroDataMax) && mb_strlen($filtroDataMax)){
+                    if(isset($filtroDataMax) && mb_strlen($filtroDataMax) > 0){
                         $query->bindParam(":dataMax" , $filtroDataMax);
+                    }
+                    if(isset($filtroAnoCidade) && mb_strlen($filtroAnoCidade) > 0 ){
+                        $query->bindParam(":anoCidade" , $filtroAnoCidade);
+
+                    }
+                    if(isset($filtroCidade) && mb_strlen($filtroCidade) > 0 ){
+                        $vetorCidade = explode("/", $filtroCidade);
+                        $nomeCidade = trim($vetorCidade[0]);
+                        $ufCidade   = trim($vetorCidade[1]);
+                        $query->bindParam(":filtrocidade", $nomeCidade);
+                        $query->bindParam(":filtrouf"    , $ufCidade);
+                    }
+                    if(isset($filtroEtapa) && mb_strlen($filtroEtapa) > 0  &&
+                         $filtroEtapa != "0"){
+                         $query->bindParam(":filtroetapa",$filtroEtapa);
                     }
                 }
 
@@ -907,6 +1216,7 @@
                     $contador++;
 
                 }
+
         ?>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
@@ -1046,14 +1356,77 @@
                                        value =<?= isset($_GET["filtro-data-max"]) ?
                                                 htmlspecialchars($_GET["filtro-data-max"]) : "" ?> >
                             </div>
-                            <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
-                                Buscar
-                                <i href="#" class="fa fa-search"></i>
+                            <a id="label-cidade" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-cidade"]) && 
+                                        mb_strlen(($_GET["filtro-cidade"])) > 0 &&
+                                        htmlspecialchars($_GET["filtro-cidade"]) != "0") ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Cidade
                             </a>
-                            <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
-                                Limpar
-                                <i href="#" class="fa fa-eraser"></i>
+                            <select name="filtro-cidade" id="filtro-cidade" 
+                                        class="form-control"
+                                        style="display:inline;width:120px">
+                            </select>
+                            <a id="label-ano" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-ano"]) && 
+                                        mb_strlen(($_GET["filtro-ano"])) > 0 &&
+                                        htmlspecialchars($_GET["filtro-ano"]) != "0") ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Ano
                             </a>
+                            <select name="filtro-ano" id="filtro-ano" 
+                                        class="form-control"
+                                        style="display:inline;width:95px">
+                            </select>
+                            <a id="label-etapa" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-etapa"]) && 
+                                        mb_strlen(($_GET["filtro-etapa"])) > 0 &&
+                                        htmlspecialchars($_GET["filtro-etapa"]) != "0") ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Etapa
+                            </a>
+
+                                <select name="filtro-etapa" id="filtro-etapa" class="form-control"
+                                        style="display:inline;width:120px">
+                                        <option value="0" 
+                                            <?=isset($_GET["filtro-etapa"]) &&
+                                                htmlspecialchars($_GET["filtro-etapa"]) == "0" ?
+                                                'selected="selected"': '' ;?> >Todas
+                                        </option>
+                                        <option value="1" 
+                                            <?=isset($_GET["filtro-etapa"]) &&
+                                                htmlspecialchars($_GET["filtro-etapa"]) == "1" ?
+                                                'selected="selected"': '' ;?> >1
+                                        </option>
+                                        <option value="2"
+                                            <?=isset($_GET["filtro-etapa"]) &&
+                                                htmlspecialchars($_GET["filtro-etapa"]) == "2"?
+                                                'selected="selected"':'';?> >  2
+                                        </option>
+                                        <option value="3"
+                                            <?=isset($_GET["filtro-etapa"]) &&
+                                                htmlspecialchars($_GET["filtro-etapa"]) == "3"?
+                                            'selected="selected"':'';?> >      3
+                                        </option>
+                                        <option value="4"
+                                           <?=isset($_GET["filtro-etapa"]) &&
+                                                htmlspecialchars($_GET["filtro-etapa"]) == "4"?
+                                           'selected="selected"':'';?> >       4
+                                        </option>
+                                    </select>
+                            <div>
+                                <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
+                                    Buscar
+                                    <i href="#" class="fa fa-search"></i>
+                               </a>
+                                <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
+                                    Limpar
+                                    <i href="#" class="fa fa-eraser"></i>
+                                </a>
+                            </div>
 
                             <!-- controle de pagina da paginação -->
                             <input type="hidden" id="pagina" name="pagina" 
