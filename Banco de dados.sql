@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 31, 2014 at 07:53 PM
+-- Generation Time: Nov 03, 2014 at 03:19 PM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4
+-- PHP Version: 5.5.9-1ubuntu4.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -514,14 +514,19 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `Notificacao`
 --
 
 INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `lida`) VALUES
-(1, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$23.00\nData: 31/10/2014\nHorário: 19:52\nMétodo: Dsadsdasdsa', 14, 0);
+(1, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$23.00\nData: 31/10/2014\nHorário: 19:52\nMétodo: Dsadsdasdsa', 14, 1),
+(2, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$34.00\nData: 03/11/2014\nHorário: 12:51\nMétodo: Weew', 14, 1),
+(3, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$11.00\nData: 03/11/2014\nHorário: 12:51\nMétodo: Eweew', 14, 1),
+(4, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 7, 0),
+(5, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 14, 1),
+(6, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$12.00\nData: 03/11/2014\nHorário: 15:09\nMétodo: Dsasaddas', 14, 1);
 
 -- --------------------------------------------------------
 
@@ -684,8 +689,8 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (74, 118, 1, 120.9, 120.9, 0, 'Sdadsa|Monkey|Dindin', '2014-10-31 00:00:00', 2014, 1),
 (75, 118, 2, 120.9, 120.9, 0, 'Dindin|Dasdsa', '2014-10-31 00:00:00', 2014, 1),
 (76, 118, 3, 120.9, 120.9, 0, 'Dasdsa', '2014-10-31 00:00:00', 2014, 1),
-(77, 118, 4, 120.9, 96.5, 0, 'Dasdsa|Eqewq|Dsadsdasdsa', '2014-10-31 00:00:00', 2014, 0),
-(78, 118, 5, 120.9, 0, 0, '', NULL, 2014, 0),
+(77, 118, 4, 120.9, 120.9, 0, 'Dasdsa|Eqewq|Dsadsdasdsa|Weew', '2014-11-03 00:00:00', 2014, 1),
+(78, 118, 5, 120.9, 32.6, 0, 'Weew|Eweew|Dsasaddas', '2014-11-03 00:00:00', 2014, 0),
 (79, 118, 6, 120.9, 0, 0, '', NULL, 2014, 0),
 (80, 118, 7, 120.9, 0, 0, '', NULL, 2014, 0),
 (81, 118, 8, 120.9, 0, 0, '', NULL, 2014, 0),
