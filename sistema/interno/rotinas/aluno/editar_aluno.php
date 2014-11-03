@@ -8,7 +8,8 @@ require_once("../../entidades/Administrador.php");
 $mensagem = "Você não possui permissão para fazer isso";
 
 if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
-   && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
+   && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" && 
+   unserialize($_SESSION["usuario"]).gerPermissoes() & 1 ){
 
     // se o usuário chegou até aqui através de um formulário, altera os dados do aluno
     if(isset($_POST["submit"])){
