@@ -45,12 +45,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100;
-        $cpfValido    = isset($cpf) &&
-                        (preg_match("/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", $cpf) || 
-                         preg_match("/^\d{11}$/", $cpf));
-
-        $cepValido    = isset($cep) &&
-                        (preg_match("/^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$/", $cep));
+                        
 
         $cpfValido = validaCpf($cpf);
 
