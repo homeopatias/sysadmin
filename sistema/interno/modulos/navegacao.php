@@ -233,6 +233,16 @@
                            unserialize($_SESSION["usuario"]) instanceof Associado){
 
                             /////////////// OPÇÕES PARA ASSOCIADOS ///////////////
+
+                            // exibimos as reuniões apenas para associados cujos documentos
+                            // foram recebidos e aprovados, e cujos pagamentos estão em dia
+
+                            require_once('rotinas/associado/checa_situacao_pagamentos.php');
+
+                            $pagamentosEmDia = checa_situacao_pagamentos();
+
+                            if(unserialize($_SESSION["usuario"])->getEnviouDocumentos() &&
+                               $pagamentosEmDia) {
                     ?>
 
                     <li>
@@ -242,7 +252,9 @@
                         </a>
                     </li>
 
-                    <?php } // Fim das opções para alunos 
+                    <?php }
+
+                        } // Fim das opções para associados
 
                         else if(isset($_SESSION["usuario"]) &&
                            unserialize($_SESSION["usuario"]) instanceof Aluno){
