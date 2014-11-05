@@ -30,16 +30,23 @@ function checa_situacao_pagamentos(){
 
         // selecionamos todos os pagamentos em aberto dos outros anos, e também selecionamos
         // a inscrição desse ano caso ela esteja em aberto
-        $textoQuery = "SELECT idPagAnuidade FROM PgtoAnuidade WHERE chaveAssoc = ? AND
-                              fechado = 0 AND (ano <> YEAR(CURDATE()) OR inscricao = 1)";
+        $textoQuery = "SELECT NOT EXISTS
+                           (SELECT idPagAnuidade 
+                            FROM PgtoAnuidade
+                            WHERE chaveAssoc = ? AND fechado = 0 AND (ano <> YEAR(CURDATE())
+                            OR inscricao = 1))
+                       AND EXISTS 
+                           (SELECT idPagAnuidade FROM PgtoAnuidade WHERE ano = YEAR(CURDATE())
+                            AND chaveAssoc = ?) as emDia";
 
         // se o associado estiver em dia com os pagamentos, essa query não deve retornar nada
         $query = $conexao->prepare($textoQuery);
         $query->bindParam(1, $usuarioLogado->getIdAssoc());
+        $query->bindParam(2, $usuarioLogado->getIdAssoc());
         $query->setFetchMode(PDO::FETCH_ASSOC);
         $query->execute();
 
-        $emDia = !$query->fetch();
+        $emDia = $query->fetch()['emDia'];
 
         $conexao = null;
 
