@@ -945,10 +945,12 @@
 
                             $descontoAnoAtual = $descontoIndicados;
                             $dataInscricao = unserialize($_SESSION["usuario"])->getDataInscricao();
+
+                            $foiIndicado = unserialize($_SESSION["usuario"])->getIdIndicador();
                             
-                            if(date("Y",$dataInscricao) === date("Y")){
+                            if(date("Y",$dataInscricao) === date("Y") && $foiIndicado){
                                 $descontoAnoAtual += 10;
-                                $desconto = "<p><b>Desconto de indicado : 10</b></p>";
+                                $desconto = "<p><b>Desconto de indicado : 10%</b></p>";
                             }else{
                                 $desconto = "<p><b>Você não possui desconto de indicado</b></p>";
                             }
@@ -959,7 +961,7 @@
                             
                             if($descontoAnoAtual >0){
                                 $descontoAnoAtual = "<p class='sucesso'>Seu desconto no ano 
-                                                    atual : ".$descontoAnoAtual."</p>";
+                                                    atual : ".$descontoAnoAtual."%</p>";
                             }else{
                                 $descontoAnoAtual = "<p class='warning'>Você não possui desconto
                                                     no ano atual</p>";
@@ -1008,10 +1010,11 @@
                                 $listaAnoAnterior .= "</table>";
                             }
                          ?>
+                        <?= $desconto ?>
                         <?= $descontoAnoAtual ?>
                         <h5>Indicados Matriculados este ano</h5>
                         <?= $listaAnoAtual ?>
-                        <p>Desconto por ter indicado este ano : <?= $descontoIndicados ?></p>
+                        <p>Desconto por ter indicado este ano : <?= $descontoIndicados ?>%</p>
                         <br>
                         <h5>Indicados Matriculados em anos anteriores</h5>
                         <?= $listaAnoAnterior ?>
