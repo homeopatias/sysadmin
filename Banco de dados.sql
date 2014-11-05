@@ -3,7 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
+<<<<<<< HEAD
 -- Generation Time: Nov 04, 2014 at 03:37 PM
+=======
+-- Generation Time: Nov 03, 2014 at 04:04 PM
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -459,7 +463,11 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   PRIMARY KEY (`idMatricula`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveCidade` (`chaveCidade`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=120 ;
+=======
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=119 ;
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 --
 -- Dumping data for table `Matricula`
@@ -498,8 +506,12 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (113, 41, 1, NULL, 4),
 (115, 41, 1, NULL, 11),
 (116, 41, 1, NULL, 12),
+<<<<<<< HEAD
 (118, 14, 1, NULL, 3),
 (119, 22, 1, NULL, 13);
+=======
+(118, 14, 1, NULL, 3);
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 -- --------------------------------------------------------
 
@@ -514,7 +526,11 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=13 ;
+=======
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=12 ;
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 --
 -- Dumping data for table `Notificacao`
@@ -531,8 +547,12 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (8, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$32.00\nData: 03/11/2014\nHorário: 15:41\nMétodo: Sdaasd', 14, 1),
 (9, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$32.00\nData: 03/11/2014\nHorário: 15:41\nMétodo: Dsasd', 14, 1),
 (10, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 7, 0),
+<<<<<<< HEAD
 (11, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 14, 1),
 (12, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$98.00\nData: 04/11/2014\nHorário: 09:36\nMétodo: Dinheiro', 22, 0);
+=======
+(11, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 14, 1);
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 -- --------------------------------------------------------
 
@@ -624,7 +644,11 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagMensalidade`),
   KEY `chaveAluno` (`chaveMatricula`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=97 ;
+=======
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=85 ;
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 --
 -- Dumping data for table `PgtoMensalidade`
@@ -714,6 +738,7 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (81, 118, 8, 120.9, 0, 0, '', NULL, 2014, 0),
 (82, 118, 9, 120.9, 0, 0, '', NULL, 2014, 0),
 (83, 118, 10, 120.9, 0, 0, '', NULL, 2014, 0),
+<<<<<<< HEAD
 (84, 118, 11, 120.9, 0, 0, '', NULL, 2014, 0),
 (85, 119, 0, 98, 98, 0, 'Dinheiro', '2014-11-04 00:00:00', 2014, 1),
 (86, 119, 1, 89, 0, 0, '', NULL, 2014, 0),
@@ -727,6 +752,9 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (94, 119, 9, 89, 0, 0, '', NULL, 2014, 0),
 (95, 119, 10, 89, 0, 0, '', NULL, 2014, 0),
 (96, 119, 11, 89, 0, 0, '', NULL, 2014, 0);
+=======
+(84, 118, 11, 120.9, 0, 0, '', NULL, 2014, 0);
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 -- --------------------------------------------------------
 

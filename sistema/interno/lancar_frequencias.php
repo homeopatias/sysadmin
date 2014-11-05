@@ -106,6 +106,10 @@
                     $textoQuery = 'INSERT INTO Frequencia (chaveAluno, chaveAula, presenca) VALUES';
                     $numAlunos = count($alunos);
 
+                    // armazenamos o número de matrícula dos alunos ausentes,
+                    // para enviar um email avisando da ausência registrada
+                    $ausentes = array();
+
                     // loop nos alunos para determinar quem está presente e quem não está,
                     // preenchendo a query de acordo
                     for($i = 0; $i < $numAlunos; $i++) {
@@ -115,6 +119,7 @@
                         } else {
                             // aluno ausente
                             $textoQuery .= ' (?,?,0)';
+                            $ausentes[] = $alunos[$i];
                         }
                         if($i < $numAlunos - 1){
                             $textoQuery .= ',';
@@ -137,8 +142,66 @@
                     if(!$sucesso) {
                         $mensagem = 'Erro no envio dos dados de frequências';
                     } else {
-                        // redirecionamos o usuário para que não haja reenvio do formulários
+                        // enviamos um email para os alunos ausentes
 
+                        $numAusentes = count($ausentes);
+
+                        if($numAusentes) {
+                            // primeiro descobrimos de que data é essa aula
+                            $query = $conexao->prepare("SELECT data FROM Aula WHERE idAula = ?");
+                            $query->bindParam(1, $idAula);
+
+                            $query->setFetchMode(PDO::FETCH_ASSOC);
+                            $query->execute();
+
+                            $dataAula = $query->fetch()['data'];
+                            $dataAula = date("d/m/Y", strtotime($dataAula));
+
+                            $textoQuery = "SELECT U.email, U.nome, A.numeroInscricao FROM Aluno A INNER JOIN Usuario U ON 
+                                           A.idUsuario = U.id WHERE ";
+                            for($i = 0; $i < $numAusentes; $i++) {
+                                $textoQuery .= "A.numeroInscricao = ?";
+                                if($i < $numAusentes - 1) {
+                                    $textoQuery .= " OR ";
+                                }
+                            }
+
+                            $query = $conexao->prepare($textoQuery);
+
+                            for($i = 0; $i < $numAusentes; $i++) {
+                                $query->bindParam($i + 1, $ausentes[$i]);
+                            }
+
+                            $query->setFetchMode(PDO::FETCH_ASSOC);
+                            $query->execute();
+
+                            while($linha = $query->fetch()) {
+                                // enviamos um email avisando o aluno de sua ausência
+                                $emailAluno = $linha['email'];
+                                $nomeAluno = $linha['nome'];
+                                $numInscricao = $linha['numeroInscricao'];
+                                $assunto = "Homeopatias.com - Ausência registrada na aula do dia " . $dataAula;
+                                $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la</b>";
+                                $msg .= "<br><br>Foi registrada uma ausência do(a) aluno(a) " . $nomeAluno . " na aula do dia ";
+                                $msg .= $dataAula . "<br>Caso esse dado não esteja correto, favor contatar o coordenador da sua cidade.";
+                                $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
+                                $headers = "Content-type: text/html; charset=utf-8 " .
+                                    "From: Sistema Financeiro Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+                                    "Reply-To: noreply@homeopatias.com" . "\r\n" .
+                                    "X-Mailer: PHP/" . phpversion();
+                                mail($emailAluno, $assunto, $msg, $headers);
+
+                                // agora registramos no sistema uma notificação para o aluno
+                                $textoNotificacao = "Uma ausência sua foi registrada para a aula do dia " . $dataAula;
+                                $textoNotificacao .= "\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.";
+                                $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
+                                                    (titulo, texto, chaveAluno, lida) VALUES (?, ?, ?, 0)");
+                                $dados = array("Ausência na aula do dia " . $dataAula, $textoNotificacao, $numInscricao);
+                                $queryNotificacao->execute($dados);
+                            }
+                        }
+
+                        // redirecionamos o usuário para que não haja reenvio do formulários
                         $url = 'lancar_frequencias.php?aula='.$idAula.'&sucesso=true';
         ?>
 
@@ -187,7 +250,7 @@
                     $tabela .= '" value="' . htmlspecialchars($linha["numeroInscricao"]);
                     $tabela .= '"> <input type="checkbox" name="presencas[]" id="';
                     $tabela .= htmlspecialchars($linha["numeroInscricao"]);
-                    $tabela .= '" value="' . $linha['numeroInscricao'] . '"';
+                    $tabela .= '" value="' . htmlspecialchars($linha['numeroInscricao']) . '"';
                     $tabela .= (!is_null($linha['presenca']) && $linha['presenca']) ? "checked " : '';
                     $tabela .= '></td>';
 

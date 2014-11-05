@@ -523,7 +523,6 @@
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute();
 
-
                 $numeroRegistros = $query->rowCount();
 
                 $possuiProximaPagina = false;

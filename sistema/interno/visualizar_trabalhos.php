@@ -120,9 +120,9 @@
                 // trabalho
                 if(isset($_POST['submit'])){
 
-                    $idTrabalho = $_POST['idTrabalho'];
-                    $nota       = $_POST['nota'];
-                    $comentario = $_POST['comentario'];
+                    $idTrabalho = htmlspecialchars($_POST['idTrabalho']);
+                    $nota       = htmlspecialchars($_POST['nota']);
+                    $comentario = htmlspecialchars($_POST['comentario']);
 
                     $idTrabalhoValido = isset($idTrabalho) && preg_match("/^[0-9]*$/", $idTrabalho);
                     $notaValida       = isset($nota) && preg_match("/^[0-9]*$/", $nota);
@@ -140,8 +140,8 @@
                         $query->bindParam(3, $idTrabalho);
                         $sucesso = $query->execute();
 
-                        $textoQuery = "SELECT U.email, TD.titulo FROM Aluno A INNER JOIN Usuario U ON
-                                       A.idUsuario = U.id INNER JOIN Trabalho T ON T.chaveAluno =
+                        $textoQuery = "SELECT U.email, A.numeroInscricao, TD.titulo FROM Aluno A INNER JOIN
+                                       Usuario U ON A.idUsuario = U.id INNER JOIN Trabalho T ON T.chaveAluno =
                                        A.numeroInscricao INNER JOIN TrabalhoDefinicao TD ON
                                        T.chaveDefinicao = TD.idDefTrabalho WHERE T.idTrabalho = ?";
 
@@ -152,6 +152,7 @@
 
                         $resultado = $query->fetch();
                         $emailAluno = $resultado['email'];
+                        $inscAluno = $resultado['numeroInscricao'];
                         $nomeTrabalho = $resultado['titulo'];
 
                         if(!$sucesso) {
@@ -159,7 +160,7 @@
                         } else {
                             // enviamos um email avisando o aluno do trabalho corrigido
                             $assunto = "Homeopatias.com - Trabalho corrigido: " . $nomeTrabalho;
-                            $msg = "Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la";
+                            $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
                             $msg .= "<br><br><b>Trabalho \"" . $nomeTrabalho . "\"</b>";
                             $msg .= "<br>Corrigido dia " . date("d/m/Y, à\s H:i");
                             $msg .= "<br>Nota: " . $nota;
@@ -172,6 +173,17 @@
                                 "X-Mailer: PHP/" . phpversion();
 
                             mail($emailAluno, $assunto, $msg, $headers);
+
+                            // agora registramos no sistema uma notificação para o aluno
+                            $texto .= "Trabalho \"" . $nomeTrabalho . "\"";
+                            $texto .= "\nCorrigido dia " . date("d/m/Y, à\s H:i");
+                            $texto .= "\nNota: " . $nota;
+                            $texto .= "\n" . (mb_strlen($comentario, 'UTF-8') != 0 ? "\"" . $comentario . "\"" :
+                                              "O professor não fez nenhum comentário em relação ao trabalho.");
+                            $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
+                                                (titulo, texto, chaveAluno, lida) VALUES (?, ?, ?, 0)");
+                            $dados = array("Trabalho \"" . $nomeTrabalho . "\" corrigido", $texto, $inscAluno);
+                            $queryNotificacao->execute($dados);
                         }
 
                     } else if(!$idTrabalhoValido) {
