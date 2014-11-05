@@ -319,7 +319,7 @@ function ValidaCpf($cpf, $id){
     return $return;
 }
 
-function validaEmail($email){
+function validaEmail($email, $id){
     // lemos as credenciais do banco de dados
     $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
     $dados = json_decode($dados, true);
@@ -345,7 +345,7 @@ function validaEmail($email){
     // [1] = mensagem do erro
     $return = array(1,"");
 
-    //Checa se ja existe este email no sistema cadastrado como aluno
+    //Checa se ja existe este email no sistema cadastrado como Aluno
     $textoQuery = "SELECT U.email
                    FROM Usuario U , Aluno A
                    WHERE U.id = A.idUsuario AND U.email = ?";
