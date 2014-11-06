@@ -246,7 +246,7 @@ function ValidaCpf($cpf, $id){
         echo $e->getMessage();
     }
 
-    // [0] = 1 = houve erro ou 0 = não houve erro
+    // [0] = 0= houve erro ou 1 = não houve erro
     // [1] = mensagem do erro
     $return = array(1,"");
 
@@ -341,7 +341,7 @@ function validaEmail($email, $id){
         echo $e->getMessage();
     }
 
-    // [0] = 1 = houve erro ou 0 = não houve erro
+    // [0] = 0 = houve erro ou 1 = não houve erro
     // [1] = mensagem do erro
     $return = array(1,"");
 
