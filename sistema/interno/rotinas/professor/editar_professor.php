@@ -206,7 +206,7 @@ function validaEmail($email, $id){
 
     //Checa se ja existe este email no sistema cadastrado como Professor
     $textoQuery = "SELECT U.email
-                   FROM Usuario U , administrador A
+                   FROM Usuario U , Administrador A
                    WHERE U.id = A.idUsuario AND U.email = ?
                    AND A.nivel LIKE 'professor'";
     
