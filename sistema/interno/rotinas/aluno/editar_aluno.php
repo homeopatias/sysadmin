@@ -346,7 +346,7 @@ function validaEmail($email, $id){
     $return = array(1,"");
 
     //Checa se ja existe este email no sistema cadastrado como Aluno
-    $textoQuery = "SELECT U.email
+    $textoQuery = "SELECT U.email, U.id
                    FROM Usuario U , Aluno A
                    WHERE U.id = A.idUsuario AND U.email = ?";
     

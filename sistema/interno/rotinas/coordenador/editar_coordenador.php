@@ -205,7 +205,7 @@ function validaEmail($email, $id){
     $return = array(1,"");
 
     //Checa se ja existe este email no sistema cadastrado como Coordenador
-    $textoQuery = "SELECT U.email
+    $textoQuery = "SELECT U.email,U.id
                    FROM Usuario U , Administrador A
                    WHERE U.id = A.idUsuario AND U.email = ?
                    AND A.nivel LIKE 'coordenador'";
