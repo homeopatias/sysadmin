@@ -112,14 +112,14 @@
                 ( !(  unserialize($_SESSION["usuario"]) instanceof Aluno  ) || 
                     ($idAluno != $idAlunoUsuario) ) ) {
                 // o id passado foi inválido
-                // redirecionamos o usuário para a página de gerenciamento de alunos
+                // redirecionamos o usuário para a index
                 // com uma mensagem de erro
         ?>
 
         <!-- redireciona o usuário -->
-        <meta http-equiv="refresh" content="0; url=gerenciar_alunos.php?erro=Dados inválidos!">
+        <meta http-equiv="refresh" content="0; url=index.php?erro=Dados inválidos!">
         <script type="text/javascript">
-            window.location = "gerenciar_alunos.php?erro=Dados inválidos!";
+            window.location = "index.php?erro=Dados inválidos!";
         </script>
 
         <?php
@@ -129,21 +129,7 @@
             // procuramos o aluno desejado no banco de dados
             $aluno = new Aluno("");
             $aluno->setNumeroInscricao($idAluno);
-            $sucesso = $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
-            if(!$sucesso){
-                // o id passado não representa um aluno no sistema
-                // redirecionamos o usuário para a página de gerenciamento de alunos
-                // com uma mensagem de erro
-        ?>
-
-        <!-- redireciona o usuário -->
-        <meta http-equiv="refresh" content="0; url=gerenciar_alunos.php?erro=Dados inválidos!">
-        <script type="text/javascript">
-            window.location = "gerenciar_alunos.php?erro=Dados inválidos!";
-        </script>
-
-        <?php
-            }
+            $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
 
             include("modulos/navegacao.php");
 
@@ -745,9 +731,6 @@
                          //////////////////////////////////////////////////////////////////////
                          Pagamentos efetuados e pendentes desse aluno -->
                     <?php
-
-                        // os pagamentos são criados na hora em que o aluno se matricula,
-                        // e a medida que o aluno paga, eles vão sendo fechados.
 
                         // procuramos os pagamentos desse ano, tanto pendentes
                         // como efetuados
