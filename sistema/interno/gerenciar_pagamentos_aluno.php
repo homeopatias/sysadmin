@@ -391,8 +391,25 @@
                                     }
 
                                 }
-                                //se todos os pagamentos foram atualizados, confirma a  atualização , se não, da rollback
+                                //se todos os pagamentos foram atualizados confirma a 
+                                // atualização , se não, da rollback
                                 if($sucesso){
+                                    // enviamos um email confirmando o envio do pagamento
+                                    $quantiaPaga = htmlspecialchars($_POST["valor-pagamento"]);
+                                    $quantiaPaga = number_format($quantiaPaga, 2);
+                                    $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
+                                    $msg = "Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la";
+                                    $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
+                                    $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
+                                    $msg .= "<br><b>Método:</b> " . $metodo;
+                                    $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
+                                    $headers = "Content-type: text/html; charset=utf-8 " .
+                                        "From: Sistema Financeiro Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+                                        "Reply-To: noreply@homeopatias.com" . "\r\n" .
+                                        "X-Mailer: PHP/" . phpversion();
+
+                                    mail($aluno->getEmail(), $assunto, $msg, $headers);
+
                                     $conexao->commit(); 
                                 }
                                 else{
