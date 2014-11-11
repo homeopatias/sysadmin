@@ -594,7 +594,10 @@
                                 <label for="metodo-pagamento" class="col-sm-6">
                                     Método de Pagamento:
                                 </label>
-                                <input type="text" class="col-sm-6" id="metodo-pagamento" name="metodo-pagamento" >
+                                <select id="metodo-pagamento" name="metodo-pagamento">
+                                    <option value="Dinheiro">Dinheiro</option>
+                                    <option value="Cheque"  >Cheque</option>
+                                </select>
                             </div>
                             <div class="col-sm-12">
                                 <h5 class="warning">Não é permitido lançar um pagamento maior do que a divida total!</h5>

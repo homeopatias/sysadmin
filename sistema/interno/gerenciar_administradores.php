@@ -989,7 +989,7 @@
                                     As permissões só serão válidas a partir do próximo login
                                      do administrador
                                 </span>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="pessoas">Usuários :</label>
                                     <input type="checkbox" name="pessoas" id="pessoas"
@@ -997,7 +997,7 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="curso">Curso :</label>
                                     <input type="checkbox" name="curso" id="curso"
@@ -1005,7 +1005,7 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="site">Site :</label>
                                     <input type="checkbox" name="site" id="site"
@@ -1021,7 +1021,7 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="miscelanea">Outros :</label>
                                     <input type="checkbox" name="miscelanea" id="miscelanea"
@@ -1031,6 +1031,7 @@
                                 </div>
 
                             </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
