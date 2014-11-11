@@ -333,8 +333,6 @@
                     $senha       = $_POST["senha"];
                     $permissoes  = $_POST["permissoes"];
 
-                    var_dump($permissoes);
-                    die();
                     $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                     mb_strlen($nome,'UTF-8') <= 100;
                     $cpfValido    = isset($cpf) &&
