@@ -33,7 +33,12 @@
 
             <div id="navbarCollapse" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-
+                    <li>
+                        <a href="index.php">
+                            <i class="fa fa-fw fa-home fa-lg"></i>
+                            <p style="display:inline">Página inicial</p>
+                        </a>
+                    </li>
                     <?php 
                         if(isset($_SESSION["usuario"]) &&
                            unserialize($_SESSION["usuario"]) instanceof Administrador &&
