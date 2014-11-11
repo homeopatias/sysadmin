@@ -94,6 +94,11 @@
                     }else{
                         $(this).find("#miscelanea").prop('checked', false);
                     }
+                    if( 32 & permissoes){
+                        $(this).find("#financeiro").prop('checked', true);
+                    }else{
+                        $(this).find("#financeiro").prop('checked', false);
+                    }
                 });
 
                 // esconde inputs de busca
@@ -328,6 +333,8 @@
                     $senha       = $_POST["senha"];
                     $permissoes  = $_POST["permissoes"];
 
+                    var_dump($permissoes);
+                    die();
                     $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                     mb_strlen($nome,'UTF-8') <= 100;
                     $cpfValido    = isset($cpf) &&
@@ -366,6 +373,8 @@
                                     mb_strlen($login, 'UTF-8') <= 100;
                     $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                     mb_strlen($senha, 'UTF-8') <= 72;
+
+
 
                     // se todos os dados estão válidos, o administrador é cadastrado
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida){
