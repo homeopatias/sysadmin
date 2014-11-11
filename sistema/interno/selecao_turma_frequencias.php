@@ -41,17 +41,15 @@
                 $coordenador = unserialize($_SESSION["usuario"]);
                 $idCoordenador = $coordenador->getIdAdmin();
 
-                $textoQuery  = "SELECT C.idCidade, C.UF, C.nome, A.idAula, A.etapa,
+                $textoQuery  = "SELECT C.idCidade, C.UF, C.nome, C.ano, A.idAula, A.etapa,
                                 UNIX_TIMESTAMP(A.data) as dataAula FROM Cidade C
                                 INNER JOIN Aula A ON A.chaveCidade = C.idCidade
-                                WHERE C.ano = YEAR(CURDATE()) AND A.data < NOW() AND
-                                C.idCoordenador = :idcoordenador ORDER BY A.data ASC, C.nome ASC";
+                                WHERE A.data < NOW() AND C.idCoordenador = :idcoordenador";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->bindParam(":idcoordenador",$idCoordenador);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute();
-
 
                 // usamos um vetor com os ids das cidades já inseridas
                 // para determinar quando criar uma nova cidade e quando inserir
@@ -62,6 +60,7 @@
                     $id   = "\"".htmlspecialchars($linha["idCidade"])."\"";
                     $uf   = "\"".htmlspecialchars($linha["UF"])."\"";
                     $nome = "\"".htmlspecialchars($linha["nome"])."\"";
+                    $ano  = "\"".htmlspecialchars($linha["ano"])."\"";
                     if(!in_array($linha["idCidade"], $cidadesListadas)){
                         $cidadesListadas[] = $linha["idCidade"];
             ?>
@@ -69,6 +68,7 @@
             cidades[ <?= $id ?> ] = {
                 uf:   <?= $uf ?>,
                 nome: <?= $nome ?>,
+                ano: <?= $ano ?>,
                 aulas: new Array()
             };
             <?php
@@ -88,9 +88,12 @@
 
             // agora implementamos o funcionamento dinâmico da página
             $(document).ready(function(){
+                cidades.sort(function(a, b){
+                    return b["ano"] - a["ano"];
+                });
                 cidades.forEach(function(cidade, idCidade){
                     $("#form-turma #cidade").append('<option value="' + idCidade + '">' +
-                        cidade.nome + "/" + cidade.uf + '</option>');
+                        cidade.ano + ": " + cidade.nome + "/" + cidade.uf + '</option>');
                 });
 
                 // atualizamos as etapas disponíveis quando a cidade é mudada
@@ -163,7 +166,7 @@
                             echo "<p class=\"warning\">$mensagem</p>";
                         }
                     ?>
-                    <p>Na lista de cidades constam apenas as cidades em que já ocorreram aulas esse ano</p>
+                    <p>Na lista de cidades constam apenas as cidades em que já ocorreram aulas</p>
                     <form class="form-inline" id="form-turma"
                           action="lancar_frequencias.php" method="GET">
                         <br>

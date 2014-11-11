@@ -80,10 +80,9 @@
                 $coordenadorId = $coordenador->getId();
                 $coordenadorIdAdmin = $coordenador->getIdAdmin();
 
-                $textoQuery  = "SELECT C.idCidade, C.nome, C.UF FROM Cidade C , Usuario U, 
-                                Administrador A WHERE C.ano = YEAR(NOW()) AND U.id = ? AND
-                                A.nivel = 'coordenador' AND C.idCoordenador = A.idAdmin AND A.idAdmin = ?
-                                ORDER BY nome DESC";
+                $textoQuery  = "SELECT C.idCidade, C.nome, C.UF, C.ano FROM Cidade C , Usuario U, 
+                                Administrador A WHERE U.id = ? AND A.nivel = 'coordenador'
+                                AND C.idCoordenador = A.idAdmin AND A.idAdmin = ? ORDER BY ano DESC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->bindParam(1,$coordenadorId);
@@ -108,14 +107,15 @@
 
                     $cidades[] = array("nome" => htmlspecialchars($linha["nome"]),
                                        "UF"   => htmlspecialchars($linha["UF"]),
-                                       "id"   => htmlspecialchars($linha["idCidade"]));
+                                       "id"   => htmlspecialchars($linha["idCidade"]),
+                                       "ano" => htmlspecialchars($linha["ano"]));
                 }
         ?>
 
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
-                    <h2 style="font-weight:bold; display:inline">Turmas de <?= date("Y") ?></h2>
+                    <h2 style="font-weight:bold; display:inline">Suas turmas</h2>
                     <?php
                         $mensagem = isset($_GET['mensagem']) ? $_GET['mensagem'] : false;
                         $sucesso  = isset($_GET['sucesso']) ? $_GET['sucesso'] : false;
@@ -139,18 +139,22 @@
                         Fechar turma
                     </a>
                     <label for="ano">
-                        Selecione a cidade e a etapa:
+                        Selecione o ano e a etapa:
                     </label><br>
                     <form style="width: 300px" method="GET" action="visualizar_turmas.php ">
                         <select style="display:inline; width: 200px !important"
                                 class="form-control input-sm" id="cidade" name="cidade">
                             <?php foreach ($cidades as $cidade) {
                                 if($idCidade == $cidade["id"]){
-                                    echo "<option value=" . $cidade["id"] .
-                                         " selected>" . $cidade["nome"] . "/" . $cidade["UF"] . "</option>";
+                                    echo "<option value=" . $cidade["id"] . " selected>"
+                                         . $cidade["ano"] . ": "
+                                         . $cidade["nome"] . "/" . $cidade["UF"]
+                                         . "</option>";
                                 }else{
-                                    echo "<option value=" . $cidade["id"] .
-                                         ">" . $cidade["nome"] . "/" . $cidade["UF"] . "</option>";
+                                    echo "<option value=" . $cidade["id"] . ">"
+                                         . $cidade["ano"] . ": "
+                                         . $cidade["nome"] . "/" . $cidade["UF"]
+                                         ."</option>";
                                 }
                             } ?>
                         </select>
