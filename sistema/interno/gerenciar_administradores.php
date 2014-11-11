@@ -451,8 +451,6 @@
                     $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                     mb_strlen($senha, 'UTF-8') <= 72;
 
-
-
                     // se todos os dados estão válidos, o administrador é cadastrado
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida){
 
@@ -923,7 +921,6 @@
                                 </div>
 
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
