@@ -256,9 +256,9 @@
 
                             
                             if(!$pagamentos[$anoPag][$numParcela]['fechado']){
-                                $pagamentos[$anoPag]['divida'] += $linha['valorTotal'] -
-                                ( ($linha['valorTotal'] * ($linha['desconto']/100) )
-                                    - $linha['valorPago']);
+                                $pagamentos[$anoPag]['divida'] += $linha['valorTotal'] /*-
+                                ( ($linha['valorTotal']) * ($linha['desconto']/100) ) desconto */
+                                    - $linha['valorPago'];
                             }
                         }
 
@@ -274,38 +274,55 @@
                                              );
                             
                             if($valorValido && $metodoValido){
-                                $pagamentos[$anoPagamento]['divida'] = 0;
+                                
                                 for ($i = 0 ; $i < 12 && $valor > 0; $i++) {
                                     if(!$pagamentos[$anoPagamento][$i]['fechado']){
-                                        // Valor é o que sobrar do pagamento, ja que ele pode terminar de pagar, e caso não feche o pagamento, retornará um valor negativo
 
-                                        $pagamentos[$anoPagamento][$i]['pago'] += $valor;
+                                        if($valor > 0 ){
+                                            // Valor é o que sobrar do pagamento, ja que ele pode terminar de pagar, e caso não feche o pagamento, retornará um valor negativo
 
-                                        $valor = $pagamentos[$anoPagamento][$i]['pago']  - $pagamentos[$anoPagamento][$i]['valor'] ;
-                                        $pagamentos[$anoPagamento][$i]['editado'] = 1;
-                                        //Se o valor retornar > 0, o pagamento foi suficiente para fechar a parcela
-                                        if($valor > 0 || 
-                                            $pagamentos[$anoPagamento][$i]['pago'] == 
-                                            $pagamentos[$anoPagamento][$i]['valor']){
+                                            $pagamentos[$anoPagamento][$i]['pago'] += $valor;
 
-                                            $pagamentos[$anoPagamento][$i]['pago']  =    $pagamentos[$anoPagamento][$i]['valor'];
+                                            $valor = $pagamentos[$anoPagamento][$i]['pago']  - $pagamentos[$anoPagamento][$i]['valor'] ;
+                                            $pagamentos[$anoPagamento][$i]['editado'] = 1;
+                                            //Se o valor pago >= valor da parcela,
+                                            // o pagamento foi suficiente para fechar a parcela
 
-                                            //se o pagamento foi suficiente para pagar o restante da parcela, fecha a parcela
-                                            $pagamentos[$anoPagamento][$i]['fechado'] = "1";
+                                            if( $pagamentos[$anoPagamento][$i]['pago'] >= 
+                                                $pagamentos[$anoPagamento][$i]['valor']){
+
+                                                $pagamentos[$anoPagamento][$i]['pago']  =
+                                                    $pagamentos[$anoPagamento][$i]['valor'];
+
+                                                //se o pagamento foi suficiente para pagar o 
+                                                //restante da parcela, fecha a parcela
+                                                $pagamentos[$anoPagamento][$i]['fechado'] = "1";
+
+                                            }
+                                                
+
+
                                         }
                                     }
-                                    if(!$pagamentos[$anoPagamento][$i]['fechado']){
-                                    $pagamentos[$anoPagamento]['divida'] +=
-                                        ($pagamentos[$anoPagamento][$i]['valor'] -
-                                         (
-                                            //desconto
-                                            $pagamentos[$anoPagamento][$i]['valor'] *
-                                            $pagamentos[$anoPag][$numParcela]['desconto'] /100
-                                         )
-                                        )
-                                        - $pagamentos[$anoPagamento][$i]['pago'];
-                            }
                                 }   
+
+                                //Coletamos agora a divida total do aluno
+                                $pagamentos[$anoPagamento]['divida'] = 0;
+                                for ($i = 0 ; $i < 12 ; $i++) {
+                                    if(!$pagamentos[$anoPagamento][$i]['fechado']){
+                                        $pagamentos[$anoPagamento]['divida'] +=
+                                            $pagamentos[$anoPagamento][$i]['valor'] /*-
+                                             (
+                                                //desconto
+                                                $pagamentos[$anoPagamento][$i]['valor'] *
+                                                $pagamentos[$anoPagamento][$i]['desconto'] /100
+
+                                             )
+                                            )*/
+                                            - $pagamentos[$anoPagamento][$i]['pago'];
+                                    }
+                                }
+
                                 $conexao->beginTransaction();
                                 $sucesso = 1;
                                 for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
