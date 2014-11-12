@@ -720,8 +720,9 @@
                         $cpfNumerico = str_replace(".","",$cpf);
                         $cpfNumerico = str_replace("-","",$cpfNumerico);
                         $textoQuery = "SELECT U.cpf
-                                       FROM Usuario U , Aluno A
-                                       WHERE U.id = A.idUsuario AND U.cpf = ?";
+                                       FROM Usuario U , Administrador A
+                                       WHERE U.id = A.idUsuario AND U.cpf = ?
+                                       AND A.nivel LIKE 'administrador'";
         
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $cpfNumerico, PDO::PARAM_STR);
@@ -734,7 +735,6 @@
                         }
                     }
 
-
                     $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
                                     preg_match("/^.+\@.+\..+$/", $email);
     
@@ -742,9 +742,10 @@
                     if($emailValido){
                         //Checa se ja existe este email no sistema cadastrado como aluno
                         $textoQuery = "SELECT U.email
-                                       FROM Usuario U , Aluno A
-                                       WHERE U.id = A.idUsuario AND U.email = ?";
-        
+                                       FROM Usuario U , Administrador A
+                                       WHERE U.id = A.idUsuario AND U.email = ? 
+                                       AND A.nivel LIKE 'administrador'";
+
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1,$email, PDO::PARAM_STR);
                         $query->setFetchMode(PDO::FETCH_ASSOC);

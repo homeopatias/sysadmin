@@ -21,6 +21,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $login       = $_POST["login"];
         $permissoes  = $_POST["permissoes"];
 
+
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100;
 
@@ -34,7 +35,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $idValido = isset($id) && preg_match("/^[0-9]*$/", $id);
 
         // se todos os dados estão válidos, o administrador é editado
-        if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido &&
+        if($id != "1" && $nomeValido && $cpfValido && $emailValido && $loginValido &&
            $idAdminValido && $idValido){
 
             // lemos as credenciais do banco de dados
@@ -76,6 +77,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         }else if(!$loginValido){
             $mensagem = "Nome de usuário inválido!";
         }else if(!$idAdminValido || !$idValido){
+            $mensagem = "Dados inconsistentes";
+        }else if($id == "1"){
             $mensagem = "Dados inconsistentes";
         }
     }else{
