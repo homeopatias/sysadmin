@@ -744,8 +744,10 @@
 
                 // variáveis com valores defaults
                 $orderBy = " ORDER BY A.data DESC" ;
-                $indexHeader = -1;
-                $direcao = 2;
+                $indexHeader = isset($_GET["numeroTableHeader"] ) 
+                                ? htmlspecialchars( $_GET["numeroTableHeader"] ) 
+                                : 3 ;
+                $direcao = 1;
                 //------------------
 
                 if( isset($_GET["numeroTableHeader"]) && isset($_GET["cimaOuBaixo"]) ){

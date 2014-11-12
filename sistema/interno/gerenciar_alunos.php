@@ -706,7 +706,9 @@
 
                 // variáveis com valores defaults
                 $orderBy = " ORDER BY U.dataInscricao DESC" ;
-                $indexHeader = -1;
+                $indexHeader = isset($_GET["numeroTableHeader"] ) 
+                                ? htmlspecialchars( $_GET["numeroTableHeader"] ) 
+                                : 0 ;
                 $direcao = 2;
                 //------------------
 
