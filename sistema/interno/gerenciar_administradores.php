@@ -451,6 +451,8 @@
                     $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                     mb_strlen($senha, 'UTF-8') <= 72;
 
+
+
                     // se todos os dados estão válidos, o administrador é cadastrado
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida){
 
@@ -982,10 +984,10 @@
 
                             <div style="display:block col-sm-12">
                                 <p> Permissões de administração:</p>
-                                <span class="warning">
+                                <div class="warning">
                                     As permissões só serão válidas a partir do próximo login
                                      do administrador
-                                </span>
+                                </div>
                                 <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="pessoas">Usuários :</label>
