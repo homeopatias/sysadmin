@@ -451,6 +451,8 @@
                     $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                     mb_strlen($senha, 'UTF-8') <= 72;
 
+
+
                     // se todos os dados estão válidos, o administrador é cadastrado
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida){
 

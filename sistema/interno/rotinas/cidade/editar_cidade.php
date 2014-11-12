@@ -29,7 +29,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $nomeValido    = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                          mb_strlen($nome, 'UTF-8') <= 100;
         $UfValido      = isset($UF) && mb_strlen($UF, 'UTF-8') === 2;
-        $anoValido     = isset($ano) && intval($ano) > 2000 && intval($ano) < 3000;
+        $anoValido     = isset($ano) && intval($ano) < date("Y") + 3;
         $localValido   = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
                          mb_strlen($local, 'UTF-8') <= 200;
         $idCoordValido = isset($idCoord) && preg_match("/^[0-9]*$/", $idCoord);
