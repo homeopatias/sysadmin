@@ -22,8 +22,17 @@
 
             $mensagem = "";
 
-            // exibe reuniões apenas para associados logados
-            if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Associado){
+
+            // conferimos se o associado logado está com os pagamentos em dia
+            // caso o usuário logado não seja um associado, retorna false
+            require_once('rotinas/associado/checa_situacao_pagamentos.php');
+
+            $pagamentosEmDia = checa_situacao_pagamentos();
+
+            // exibe reuniões apenas para associados logados cujos documentos tenham
+            // sido aprovados
+            if(isset($_SESSION["usuario"]) && $pagamentosEmDia &&
+               unserialize($_SESSION["usuario"])->getEnviouDocumentos()){
                 $ano = date("Y");
                 if(isset($_GET["ano"]) && preg_match("/^[0-9]{4,}$/", $_GET["ano"]) ){
                     $ano = $_GET["ano"];

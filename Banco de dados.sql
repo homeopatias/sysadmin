@@ -3,7 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
+<<<<<<< HEAD
+-- Generation Time: Nov 04, 2014 at 03:37 PM
+=======
 -- Generation Time: Nov 03, 2014 at 04:04 PM
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -114,7 +118,7 @@ INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `t
 (19, 37, 'inscrito', 4, '3199999999', 'Mão', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (20, 38, 'preinscrito', NULL, '3112345432', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (21, 39, 'preinscrito', NULL, '3199887766', 'Rua da rua da', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
-(22, 47, 'preinscrito', 14, '3199887766', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
+(22, 47, 'inscrito', 14, '3199887766', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (23, 49, 'preinscrito', NULL, '3199887766', 'itamanai yo', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (24, 50, 'preinscrito', NULL, '3199887766', 'Saiba que o problema é seu (I pray for children down in Aaaaaaaaaaafricaaaaaaaaaaaa)', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (25, 51, 'preinscrito', NULL, '3188776655', 'Haaa dsadkjaskda', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
@@ -208,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `Associado` (
 --
 
 INSERT INTO `Associado` (`idAssoc`, `idUsuario`, `instituicao`, `formacaoTerapeutica`, `telefone`, `endereco`, `cidade`, `estado`, `numObjeto`, `dataEnvioCarteirinha`, `enviouDocumentos`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `pais`) VALUES
-(2, 28, 'atenemg', '', '3199887766', 'dsasdadsa', 'Belzont', 'MG', 'you were standing in the street cuz you were trying not to crack up', '2007-04-07', 1, '0', '', 0, '', NULL, ''),
+(2, 28, 'atenemg', 'Abacate homeopático', '3199887766', 'dsasdadsa', 'Belzont', 'MG', 'you were standing in the street cuz you were trying not to crack up', '2007-04-07', 1, '12312123', '31231321', 32, '2323423', '323223', 'BRL'),
 (3, 43, 'conahom', '', '3166600666', 'Maltat', '', '', NULL, NULL, 1, '0', '', 0, '', NULL, ''),
 (5, 45, 'atenemg', '', '3199886655', 'Aperture Science, 200. Perto da Black Mesa.', 'erasio', 'AP', 'uiuj7uk,juo8lu897', '2014-11-27', 1, '0', '', 0, '', NULL, ''),
 (6, 46, 'conahom', 'teste', '3144444444', 'I SEE PEOPLE ON THE FLOOR', 'rvt', 'CE', '', '0000-00-00', 0, '0', '', 0, '', NULL, ''),
@@ -220,7 +224,7 @@ INSERT INTO `Associado` (`idAssoc`, `idUsuario`, `instituicao`, `formacaoTerapeu
 (13, 77, 'conahom', 'eu amo uma tempestade mas eu não amo iluminamento', '3166666666', 'Rua dos Tra-sadfjhfbdfvdwaefr', 'I LAIAL', 'AC', '', '0000-00-00', 0, '0', '', 0, '', NULL, ''),
 (14, 81, 'atenemg', 'Formação em terapia para terapeutas', '3199887766', '', 'fasdf', 'AC', NULL, NULL, 0, '0', '', 0, '', NULL, ''),
 (15, 82, 'conahom', 'Terapia de Famosos', '3199887766', '', 'fasd', 'AC', NULL, NULL, 0, '0', '', 0, '', NULL, ''),
-(16, 83, 'conahom', 'AM I THE ONE YOU THINK ABOUT', '3131313131', '', 'fgsdf', 'AP', '', '1971-12-07', 0, '30880420', 'asdfa', 153, 'asdfa', 'adfas', 'BRL'),
+(16, 83, 'conahom', 'asdfdsds', '3131313131', '', 'fgsdf', 'AP', '', '1971-12-07', 0, '30880420', 'asdfa', 153, 'asdfa', 'adfas', 'BRL'),
 (17, 84, 'atenemg', 'Teurapeta', '3199887766', '', 'dfa', 'AC', '', '1971-07-12', 0, '30880420', 'asdf', 45, 'asdfa', 'fasdf', 'BRL');
 
 -- --------------------------------------------------------
@@ -459,7 +463,11 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   PRIMARY KEY (`idMatricula`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveCidade` (`chaveCidade`)
+<<<<<<< HEAD
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=120 ;
+=======
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=119 ;
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 --
 -- Dumping data for table `Matricula`
@@ -488,7 +496,6 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (100, 42, 1, NULL, 11),
 (101, 14, 1, NULL, 12),
 (103, 32, 1, NULL, 22),
-(105, 22, 1, NULL, 13),
 (106, 15, 3, NULL, 4),
 (107, 16, 2, NULL, 4),
 (108, 42, 1, NULL, 12),
@@ -499,7 +506,12 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (113, 41, 1, NULL, 4),
 (115, 41, 1, NULL, 11),
 (116, 41, 1, NULL, 12),
+<<<<<<< HEAD
+(118, 14, 1, NULL, 3),
+(119, 22, 1, NULL, 13);
+=======
 (118, 14, 1, NULL, 3);
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 -- --------------------------------------------------------
 
@@ -514,7 +526,11 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
+<<<<<<< HEAD
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=13 ;
+=======
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=12 ;
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 --
 -- Dumping data for table `Notificacao`
@@ -531,7 +547,12 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (8, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$32.00\nData: 03/11/2014\nHorário: 15:41\nMétodo: Sdaasd', 14, 1),
 (9, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$32.00\nData: 03/11/2014\nHorário: 15:41\nMétodo: Dsasd', 14, 1),
 (10, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 7, 0),
+<<<<<<< HEAD
+(11, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 14, 1),
+(12, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$98.00\nData: 04/11/2014\nHorário: 09:36\nMétodo: Dinheiro', 22, 0);
+=======
 (11, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 14, 1);
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 -- --------------------------------------------------------
 
@@ -567,13 +588,25 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
   `idPagAnuidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de pagamento de anuidade',
   `chaveAssoc` int(11) NOT NULL COMMENT 'Identificador do associado ao qual esse pagamento se refere',
   `inscricao` tinyint(1) NOT NULL COMMENT 'Determina se esse pagamento se refere a uma inscricao ou a uma anuidade',
-  `valor` float NOT NULL COMMENT 'Valor do pagamento',
+  `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa anuidade/inscrição',
+  `valorPago` float NOT NULL COMMENT 'Valor pago pelo associado',
   `metodo` varchar(100) NOT NULL,
-  `data` datetime NOT NULL COMMENT 'Data do pagamento da anuidade',
+  `data` datetime DEFAULT NULL COMMENT 'Data do pagamento da anuidade',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
+  `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagAnuidade`),
   KEY `chaveAssoc` (`chaveAssoc`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado' AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `PgtoAnuidade`
+--
+
+INSERT INTO `PgtoAnuidade` (`idPagAnuidade`, `chaveAssoc`, `inscricao`, `valorTotal`, `valorPago`, `metodo`, `data`, `ano`, `fechado`) VALUES
+(1, 2, 1, 123, 1, 'sdsfdf', '2014-11-06 00:00:00', 2014, 1),
+(2, 2, 1, 122, 12, 'dasa', '2014-11-01 00:00:00', 1998, 1),
+(3, 2, 0, 123, 12, 'sdasdsad', '2014-10-28 00:00:00', 1998, 1),
+(4, 2, 0, 123, 12, 'sadsdasa', '2014-11-01 00:00:00', 2014, 0);
 
 -- --------------------------------------------------------
 
@@ -602,7 +635,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `idPagMensalidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador do pagamento de mensalidade',
   `chaveMatricula` int(11) DEFAULT NULL COMMENT 'Numero da matrícula à qual esse pagamento se refere',
   `numParcela` int(11) NOT NULL COMMENT 'Numero da parcela ao qual esse pagamento se refere (deve ser 0 caso esse pagamento seja de inscrição)',
-  `valorTotal` float NOT NULL COMMENT 'Valor pago nessa mensalidade',
+  `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa mensalidade',
   `valorPago` float NOT NULL COMMENT 'Valor pago pelo aluno',
   `desconto` float NOT NULL COMMENT 'Desconto (em %) recebido pelo aluno devido às indicações',
   `metodo` varchar(100) NOT NULL,
@@ -611,7 +644,11 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagMensalidade`),
   KEY `chaveAluno` (`chaveMatricula`)
+<<<<<<< HEAD
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=97 ;
+=======
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=85 ;
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 --
 -- Dumping data for table `PgtoMensalidade`
@@ -701,7 +738,23 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (81, 118, 8, 120.9, 0, 0, '', NULL, 2014, 0),
 (82, 118, 9, 120.9, 0, 0, '', NULL, 2014, 0),
 (83, 118, 10, 120.9, 0, 0, '', NULL, 2014, 0),
+<<<<<<< HEAD
+(84, 118, 11, 120.9, 0, 0, '', NULL, 2014, 0),
+(85, 119, 0, 98, 98, 0, 'Dinheiro', '2014-11-04 00:00:00', 2014, 1),
+(86, 119, 1, 89, 0, 0, '', NULL, 2014, 0),
+(87, 119, 2, 89, 0, 0, '', NULL, 2014, 0),
+(88, 119, 3, 89, 0, 0, '', NULL, 2014, 0),
+(89, 119, 4, 89, 0, 0, '', NULL, 2014, 0),
+(90, 119, 5, 89, 0, 0, '', NULL, 2014, 0),
+(91, 119, 6, 89, 0, 0, '', NULL, 2014, 0),
+(92, 119, 7, 89, 0, 0, '', NULL, 2014, 0),
+(93, 119, 8, 89, 0, 0, '', NULL, 2014, 0),
+(94, 119, 9, 89, 0, 0, '', NULL, 2014, 0),
+(95, 119, 10, 89, 0, 0, '', NULL, 2014, 0),
+(96, 119, 11, 89, 0, 0, '', NULL, 2014, 0);
+=======
 (84, 118, 11, 120.9, 0, 0, '', NULL, 2014, 0);
+>>>>>>> c0caeebafbd1eed19073c1bf0bb2d9b30fe06f9c
 
 -- --------------------------------------------------------
 
