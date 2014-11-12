@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 21, 2014 at 05:22 PM
+-- Generation Time: Nov 03, 2014 at 03:19 PM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.4
+-- PHP Version: 5.5.9-1ubuntu4.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -107,7 +107,7 @@ INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `t
 (11, 23, 'inscrito', 4, '2121212121', 'saddsasdsdadsaasdadssda', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (12, 24, 'inscrito', NULL, '9999999999', 'sadkfçlfjçlk', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (13, 25, 'inscrito', NULL, '2222222222', 'テストテストテストテスト', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
-(14, 29, 'preinscrito', NULL, '3199887766', 'Avenida B, 303, Apto 400, Belo Horizonte, Minas Gerais', 'fundamental incompleto', NULL, '30880420', 'Avenida B', 303, 'Um bairro random', 'Apto 400', 'MG', 'Belo Horizonte', 'BRL'),
+(14, 29, 'inscrito', NULL, '3199887766', 'Avenida B, 303, Apto 400, Belo Horizonte, Minas Gerais', 'fundamental incompleto', NULL, '30880420', 'Avenida B', 303, 'Um bairro random', 'Apto 400', 'MG', 'Belo Horizonte', 'BRL'),
 (15, 33, 'preinscrito', NULL, '3189987777', 'saddsaadsdsa', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (16, 34, 'preinscrito', NULL, '3199887766', 'teste ende', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
 (18, 36, 'preinscrito', NULL, '3199887766', 'asdfasdf', 'fundamental incompleto', NULL, '0', '', 0, '', '', '', '', ''),
@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `Aula` (
   PRIMARY KEY (`idAula`),
   KEY `chaveCidade` (`chaveCidade`),
   KEY `idProfessor` (`idProfessor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aula lancada no sistema' AUTO_INCREMENT=31 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aula lancada no sistema' AUTO_INCREMENT=34 ;
 
 --
 -- Dumping data for table `Aula`
@@ -267,7 +267,10 @@ INSERT INTO `Aula` (`idAula`, `chaveCidade`, `etapa`, `data`, `idProfessor`, `no
 (27, 22, 1, '2014-10-01 14:00:00', 25, NULL, 'Ainda vou ter q da essa aula pqp'),
 (28, 22, 1, '2014-10-28 14:00:00', 25, NULL, 'Quem pode pode quem não pode se fode'),
 (29, 11, 3, '2003-01-24 09:00:00', 14, NULL, 'asdfasdf'),
-(30, 11, 3, '2003-01-24 09:00:00', 14, NULL, 'asdfasdf');
+(30, 11, 3, '2003-01-24 09:00:00', 14, NULL, 'asdfasdf'),
+(31, 3, 1, '2014-09-02 13:30:00', NULL, NULL, 'TESTE'),
+(32, 3, 1, '2014-02-02 12:22:00', NULL, NULL, 'tata'),
+(33, 3, 1, '2014-09-02 13:33:00', NULL, NULL, 'adsdsaads');
 
 -- --------------------------------------------------------
 
@@ -389,7 +392,7 @@ INSERT INTO `Frequencia` (`chaveAluno`, `chaveAula`, `presenca`, `jaAvaliou`) VA
 (3, 14, 1, 1),
 (14, 14, 1, 1),
 (3, 15, 1, 1),
-(6, 15, 1, 1),
+(6, 15, 0, 1),
 (9, 15, 1, 1),
 (10, 15, 1, 1),
 (11, 15, 1, 1),
@@ -408,7 +411,10 @@ INSERT INTO `Frequencia` (`chaveAluno`, `chaveAula`, `presenca`, `jaAvaliou`) VA
 (27, 22, 1, 1),
 (19, 23, 0, 0),
 (27, 23, 0, 0),
-(32, 26, 1, 1);
+(32, 26, 1, 1),
+(7, 32, 0, 0),
+(11, 32, 1, 0),
+(14, 32, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -453,7 +459,7 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   PRIMARY KEY (`idMatricula`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveCidade` (`chaveCidade`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=117 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=119 ;
 
 --
 -- Dumping data for table `Matricula`
@@ -491,9 +497,36 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (111, 42, 1, NULL, 21),
 (112, 27, 1, NULL, 4),
 (113, 41, 1, NULL, 4),
-(114, 14, 1, NULL, 4),
 (115, 41, 1, NULL, 11),
-(116, 41, 1, NULL, 12);
+(116, 41, 1, NULL, 12),
+(118, 14, 1, NULL, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Notificacao`
+--
+
+CREATE TABLE IF NOT EXISTS `Notificacao` (
+  `idNotificacao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único dessa notificação',
+  `titulo` varchar(100) NOT NULL COMMENT 'Título da notificação a ser dada ao aluno',
+  `texto` varchar(500) NOT NULL COMMENT 'Texto da notificação a ser dada ao aluno',
+  `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
+  `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
+  PRIMARY KEY (`idNotificacao`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `Notificacao`
+--
+
+INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `lida`) VALUES
+(1, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$23.00\nData: 31/10/2014\nHorário: 19:52\nMétodo: Dsadsdasdsa', 14, 1),
+(2, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$34.00\nData: 03/11/2014\nHorário: 12:51\nMétodo: Weew', 14, 1),
+(3, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$11.00\nData: 03/11/2014\nHorário: 12:51\nMétodo: Eweew', 14, 1),
+(4, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 7, 0),
+(5, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 14, 1),
+(6, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$12.00\nData: 03/11/2014\nHorário: 15:09\nMétodo: Dsasaddas', 14, 1);
 
 -- --------------------------------------------------------
 
@@ -573,7 +606,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagMensalidade`),
   KEY `chaveAluno` (`chaveMatricula`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=61 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=85 ;
 
 --
 -- Dumping data for table `PgtoMensalidade`
@@ -604,18 +637,18 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (22, 113, 9, 150, 0, 0, '', NULL, 2014, 0),
 (23, 113, 10, 150, 0, 0, '', NULL, 2014, 0),
 (24, 113, 11, 150, 0, 0, '', NULL, 2014, 0),
-(25, 114, 0, 6500, 6500, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
-(26, 114, 1, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
-(27, 114, 2, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
-(28, 114, 3, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
-(29, 114, 4, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
-(30, 114, 5, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
-(31, 114, 6, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
-(32, 114, 7, 150, 100, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 0),
-(33, 114, 8, 150, 0, 0, '', NULL, 2014, 0),
-(34, 114, 9, 150, 0, 0, '', NULL, 2014, 0),
-(35, 114, 10, 150, 0, 0, '', NULL, 2014, 0),
-(36, 114, 11, 150, 0, 0, '', NULL, 2014, 0),
+(25, NULL, 0, 6500, 6500, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(26, NULL, 1, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(27, NULL, 2, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(28, NULL, 3, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(29, NULL, 4, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(30, NULL, 5, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(31, NULL, 6, 150, 150, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 1),
+(32, NULL, 7, 150, 100, 0, 'dinheiro', '2014-10-21 00:00:00', 2014, 0),
+(33, NULL, 8, 150, 0, 0, '', NULL, 2014, 0),
+(34, NULL, 9, 150, 0, 0, '', NULL, 2014, 0),
+(35, NULL, 10, 150, 0, 0, '', NULL, 2014, 0),
+(36, NULL, 11, 150, 0, 0, '', NULL, 2014, 0),
 (37, 115, 0, 123, 123, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
 (38, 115, 1, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
 (39, 115, 2, 12, 12, 0, 'dinheiro', '2014-10-21 00:00:00', 2003, 1),
@@ -639,7 +672,31 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (57, 116, 8, 44, 0, 0, '', NULL, 2005, 0),
 (58, 116, 9, 44, 0, 0, '', NULL, 2005, 0),
 (59, 116, 10, 44, 0, 0, '', NULL, 2005, 0),
-(60, 116, 11, 44, 0, 0, '', NULL, 2005, 0);
+(60, 116, 11, 44, 0, 0, '', NULL, 2005, 0),
+(61, NULL, 0, 560.8, 0, 0, '', NULL, 2014, 0),
+(62, NULL, 1, 120.9, 0, 0, '', NULL, 2014, 0),
+(63, NULL, 2, 120.9, 0, 0, '', NULL, 2014, 0),
+(64, NULL, 3, 120.9, 0, 0, '', NULL, 2014, 0),
+(65, NULL, 4, 120.9, 0, 0, '', NULL, 2014, 0),
+(66, NULL, 5, 120.9, 0, 0, '', NULL, 2014, 0),
+(67, NULL, 6, 120.9, 0, 0, '', NULL, 2014, 0),
+(68, NULL, 7, 120.9, 0, 0, '', NULL, 2014, 0),
+(69, NULL, 8, 120.9, 0, 0, '', NULL, 2014, 0),
+(70, NULL, 9, 120.9, 0, 0, '', NULL, 2014, 0),
+(71, NULL, 10, 120.9, 0, 0, '', NULL, 2014, 0),
+(72, NULL, 11, 120.9, 0, 0, '', NULL, 2014, 0),
+(73, 118, 0, 560.8, 560.8, 0, 'Cara, dinheiros|Sdadsa', '2014-10-30 00:00:00', 2014, 1),
+(74, 118, 1, 120.9, 120.9, 0, 'Sdadsa|Monkey|Dindin', '2014-10-31 00:00:00', 2014, 1),
+(75, 118, 2, 120.9, 120.9, 0, 'Dindin|Dasdsa', '2014-10-31 00:00:00', 2014, 1),
+(76, 118, 3, 120.9, 120.9, 0, 'Dasdsa', '2014-10-31 00:00:00', 2014, 1),
+(77, 118, 4, 120.9, 120.9, 0, 'Dasdsa|Eqewq|Dsadsdasdsa|Weew', '2014-11-03 00:00:00', 2014, 1),
+(78, 118, 5, 120.9, 32.6, 0, 'Weew|Eweew|Dsasaddas', '2014-11-03 00:00:00', 2014, 0),
+(79, 118, 6, 120.9, 0, 0, '', NULL, 2014, 0),
+(80, 118, 7, 120.9, 0, 0, '', NULL, 2014, 0),
+(81, 118, 8, 120.9, 0, 0, '', NULL, 2014, 0),
+(82, 118, 9, 120.9, 0, 0, '', NULL, 2014, 0),
+(83, 118, 10, 120.9, 0, 0, '', NULL, 2014, 0),
+(84, 118, 11, 120.9, 0, 0, '', NULL, 2014, 0);
 
 -- --------------------------------------------------------
 
@@ -684,7 +741,7 @@ CREATE TABLE IF NOT EXISTS `Trabalho` (
   PRIMARY KEY (`idTrabalho`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveDefinicao` (`chaveDefinicao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Trabalho enviado por aluno' AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Trabalho enviado por aluno' AUTO_INCREMENT=20 ;
 
 --
 -- Dumping data for table `Trabalho`
@@ -699,10 +756,11 @@ INSERT INTO `Trabalho` (`idTrabalho`, `chaveAluno`, `dataEntrega`, `chaveDefinic
 (8, 22, '2014-09-10 11:31:36', 7, NULL, NULL, 'txt'),
 (9, 15, '2014-09-10 16:20:05', 7, 0, 'MI RÉSPEITE VÉI SEINVERGONHA', 'txt'),
 (10, 14, '2014-09-24 10:37:09', 9, 0, 'ha muluque', 'doc'),
-(15, 14, '2014-09-24 10:37:09', 15, NULL, NULL, 'doc'),
+(15, 14, '2014-09-24 10:37:09', 15, 23, 'como se não houvesse amanhã', 'doc'),
 (16, 32, '2014-09-29 11:01:40', 18, NULL, NULL, 'txt'),
 (17, 32, '2014-09-29 11:01:47', 19, 100, 'OP!', 'txt'),
-(18, 14, '2014-10-02 10:34:22', 20, NULL, NULL, 'txt');
+(18, 14, '2014-10-02 10:34:22', 20, NULL, NULL, 'txt'),
+(19, 14, '2014-10-31 17:10:09', 19, 50, 'Jorel', 'pdf');
 
 -- --------------------------------------------------------
 
@@ -716,6 +774,7 @@ CREATE TABLE IF NOT EXISTS `TrabalhoDefinicao` (
   `etapa` int(10) unsigned NOT NULL COMMENT 'Etapa do curso a qual se refere esse trabalho',
   `descricao` varchar(10000) NOT NULL,
   `dataLimite` datetime NOT NULL COMMENT 'Data e hora limite de entrega do trabalho',
+  `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse trabalho se refere',
   PRIMARY KEY (`idDefTrabalho`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Especificacao dada para a confeccao de um trabalho por parte dos alunos' AUTO_INCREMENT=21 ;
 
@@ -723,18 +782,18 @@ CREATE TABLE IF NOT EXISTS `TrabalhoDefinicao` (
 -- Dumping data for table `TrabalhoDefinicao`
 --
 
-INSERT INTO `TrabalhoDefinicao` (`idDefTrabalho`, `titulo`, `etapa`, `descricao`, `dataLimite`) VALUES
-(4, 'Homeopatia prática escolástica', 2, 'Fazer uma apresentação do modelo aristotélico-platônico do teorema de Fermat. Mesmo que isso não faça sentido algum.', '2014-08-19 00:00:00'),
-(5, 'Teste', 2, 'fdgjlklççl', '2014-09-02 00:00:00'),
-(6, 'Trabalho atrasado', 3, 'Favor entregar esse trabalho atrasado. Porque aparentemente isso é legal', '2014-02-02 00:00:00'),
-(7, 'Teste 2', 3, 'Tava aqui sem nada pra fazer, e decidi fazer pedir esse trabalho , vlw, flw.', '2014-11-27 00:00:00'),
-(9, 'Teste agaom', 3, 'asdf', '2014-09-25 00:00:00'),
-(15, 'É preciso saber fazer', 3, 'teste', '2014-10-23 00:00:00'),
-(16, 'Bomba', 3, 'Se enviar um arquivo é bomba.', '2014-11-27 00:00:00'),
-(17, 'Trabalho padrão para recém matriculados', 1, 'Sifuderu primeiro dia de aula com trabalho pra entregar', '2014-09-29 00:00:00'),
-(18, 'Cura para gadisse para iniciantes', 1, 'Sei lá o q vamos ver nessa aula...', '2014-09-10 00:00:00'),
-(19, 'Aula Exemplar', 1, 'Aquela aula formosa, perfeita, escultural... ', '2014-10-14 00:00:00'),
-(20, 'Exame para testar seu passado', 2, 'Vamos testar o seu passado', '2013-07-18 00:00:00');
+INSERT INTO `TrabalhoDefinicao` (`idDefTrabalho`, `titulo`, `etapa`, `descricao`, `dataLimite`, `ano`) VALUES
+(4, 'Homeopatia prática escolástica', 2, 'Fazer uma apresentação do modelo aristotélico-platônico do teorema de Fermat. Mesmo que isso não faça sentido algum.', '2014-08-19 00:00:00', 2014),
+(5, 'Teste', 2, 'fdgjlklççl', '2014-09-02 00:00:00', 2014),
+(6, 'Trabalho atrasado', 3, 'Favor entregar esse trabalho atrasado. Porque aparentemente isso é legal', '2014-02-02 00:00:00', 2014),
+(7, 'Teste 2', 3, 'Tava aqui sem nada pra fazer, e decidi fazer pedir esse trabalho , vlw, flw.', '2014-11-27 00:00:00', 2014),
+(9, 'Teste agaom', 3, 'asdf', '2014-09-25 00:00:00', 2014),
+(15, 'É preciso saber fazer', 3, 'teste', '2014-10-23 00:00:00', 2014),
+(16, 'Bomba', 3, 'Se enviar um arquivo é bomba.', '2014-11-27 00:00:00', 2014),
+(17, 'Trabalho padrão para recém matriculados', 1, 'Sifuderu primeiro dia de aula com trabalho pra entregar', '2014-09-29 00:00:00', 2014),
+(18, 'Cura para gadisse para iniciantes', 1, 'Sei lá o q vamos ver nessa aula...', '2014-09-10 00:00:00', 2014),
+(19, 'Aula Exemplar', 1, 'Aquela aula formosa, perfeita, escultural... ', '2014-10-14 00:00:00', 2014),
+(20, 'Exame para testar seu passado', 2, 'Vamos testar o seu passado', '2013-07-18 00:00:00', 2013);
 
 -- --------------------------------------------------------
 
@@ -773,12 +832,12 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (17, '28446014211', '2014-07-29 16:59:58', 'teste@gmail.com', 'test', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Outro teste'),
 (19, '59873949291', '2014-07-30 10:23:15', 'test@test.jp', 'サボテン', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'テスト'),
 (20, '99999999999', '2014-07-31 10:34:17', 'fds@fds.fsd', 'asdfjhk', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Lucas Augustp Freore de Pçoveoira'),
-(23, '34983523774', '2014-08-05 13:58:18', 'ednaldo@whatisthebrother.com', 'comcerteza', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Ednaldo Pereira'),
+(23, '34983523774', '2014-08-05 13:58:18', 'luc.aug.freire@gmail.com', 'comcerteza', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Ednaldo Pereira'),
 (24, '34983523774', '2014-08-05 13:59:10', 'kdaosasdok@dsok.sad', 'jkçlfda', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'okdsadakos'),
 (25, '11989183654', '2014-08-05 14:48:19', 'aaaa@aaaaaaa.aaaa', 'テストテ', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'テスト'),
 (27, '11989183654', '2014-08-05 15:11:00', 'aaa@aaa.aaa', 'logo existo', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'tento'),
 (28, '99999999999', '2014-08-05 15:49:01', 'aaa@aaa.aa', 'associado', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'assoc'),
-(29, '99999999999', '2014-08-05 15:54:03', 'aaaaaa@aaaaaaaaaaaa.aaaaaaaaaa', 'aluno', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'aluno'),
+(29, '99999999999', '2014-08-05 15:54:03', 'luc.aug.freire@gmail.com', 'aluno', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'aluno'),
 (30, '99999999999', '2014-08-05 15:58:13', 'tes@te.sa', 'coord', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Teste'),
 (31, '99999999999', '2014-08-07 17:28:16', 'professor@gmail.com', 'professor', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Augusto Jorge'),
 (32, '99999999999', '2014-08-11 12:50:28', 'testante@gmail.com', 'testando', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Admin testante'),

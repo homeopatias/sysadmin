@@ -1,18 +1,32 @@
 <?php
     ini_set('default_charset', 'utf-8');
     header('Content-Type: text/html; charset=utf-8');
-	session_start();
+    session_start();
 ?>
 <!DOCTYPE html>
 <html>
     <head>
         <?php include("modulos/head.php"); ?>
         <title>Bem-vindo - Homeopatias.com</title>
+        <script>
+            $(document).ready(function(){
+                // marca as notificações do aluno como lidas, caso isso seja aplicável
+                if($("#modal-notificacoes")){
+                    $("#modal-notificacoes").on('show.bs.modal', function(e) {
+                        $.get('rotinas/notificacoes_lidas.php', {}, function(sucesso){
+                            if(sucesso) {
+                                $("#alerta-notificacoes").remove();
+                            }
+                        });
+                    });
+                }
+            });
+        </script>
     </head>
     <body>
         <?php
-        	// mensagem a ser exibida acima do formulário de login, caso seja necessário
-        	$mensagem = "";
+            // mensagem a ser exibida acima do formulário de login, caso seja necessário
+            $mensagem = "";
 
             // importa a função para execução do login e armazenamento da sessão
             include("rotinas/processa_login.php");
@@ -91,28 +105,28 @@
                  style="max-width: 300px">
                 <form method="POST" class="conteudo" id="form-login" action="index.php "
                       style="margin-top: 50%">
-                	<?php
-                    	if(mb_strlen($mensagem, 'UTF-8') !== 0){
-                    		echo "<p class=\"warning\">$mensagem</p>";
-                    	}
+                    <?php
+                        if(mb_strlen($mensagem, 'UTF-8') !== 0){
+                            echo "<p class=\"warning\">$mensagem</p>";
+                        }
                         if(isset($_GET["cadastroSucesso"])) {
                             echo "<p class=\"sucesso\">Cadastro efetuado com sucesso!</p>";
                         }
-                	?>
-                	<div class="form-group">
-        	            <label for="login">Nome de usuário: </label>
-        	            <input type="text" name="login" id="login" class="form-control input-mir" 
+                    ?>
+                    <div class="form-group">
+                        <label for="login">Nome de usuário: </label>
+                        <input type="text" name="login" id="login" class="form-control input-mir" 
                                required pattern=".{3,100}"
-        	                   title="O login deve ter de 3 a 100 caracteres"
-        	                   placeholder="Nome de usuario" autocomplete="login" autofocus>
-        	        </div>
-        	        <div class="form-group">
-        	            <label for="senha">Senha: </label>
-        	            <input type="password" name="senha" id="senha" class="form-control input-mir"
+                               title="O login deve ter de 3 a 100 caracteres"
+                               placeholder="Nome de usuario" autocomplete="login" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha: </label>
+                        <input type="password" name="senha" id="senha" class="form-control input-mir"
                                required pattern=".{6,72}"
-        	                   title="A senha deve ter de 6 a 72 caracteres"
-        	                   placeholder="Senha">
-        	        </div>
+                               title="A senha deve ter de 6 a 72 caracteres"
+                               placeholder="Senha">
+                    </div>
                     <input type="submit" name="submit" value="Login" class="btn btn-primary pull-right">
                     <br>
                 </form>
@@ -168,6 +182,57 @@
                         echo "</p>";
                     }else if($usuarioLogado instanceof Aluno){
                         echo "Aluno";
+                        // procuramos no banco de dados se o aluno tem notificações não-lidas
+                        $textoQuery = "SELECT titulo, texto FROM Notificacao
+                                       WHERE chaveAluno = ? AND lida = 0";
+
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $usuarioLogado->getNumeroInscricao());
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+
+                        if($query->rowCount()){
+                            // se houverem notificações a ser lidas, criamos
+                            // o modal para exibí-las
+                ?>
+            <!-- modal para listagem de notificações -->
+            <div class="modal fade" id="modal-notificacoes" tabindex="-1" role="dialog" 
+                 aria-labelledby="modal-notificacoes" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                X
+                            </button>
+                            <h4 class="modal-title">Notificações</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p style="border-bottom: dashed #AAA 5px"></p>
+                <?php
+                        while($linha = $query->fetch()) {
+                ?>
+                            <h4><b><?= htmlspecialchars($linha['titulo']) ?></b></h4>
+                            <p>
+                                <?= nl2br(htmlspecialchars($linha['texto'])) ?>
+                            </p>
+                            <p style="border-bottom: dashed #AAA 5px"></p>
+                <?php
+                        }
+                ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- agora criamos o ícone de visualização de notificações -->
+            <a class="fa-stack fa-lg pull-right" id="alerta-notificacoes"
+               style="position:relative; top:-130px; color: #400; text-decoration: none"
+               href="#" data-toggle="modal" data-target="#modal-notificacoes">
+                <i class="fa fa-circle fa-stack-2x warning"></i>
+                <i class="fa fa-exclamation fa-stack-1x fa-inverse"></i>
+            </a>
+                <?php
+
+                        }
                 ?>
             <p>
                 <b>Número de inscrição:</b>
@@ -239,7 +304,6 @@
                         </a>
                     </p>
                     <br><br>
-
                 <?php    }else if($usuarioLogado instanceof Associado){
                         echo "Associado";
                 ?>
