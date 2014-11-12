@@ -76,10 +76,13 @@
                     $cpfChecar = str_replace("-","",$cpfChecar);
                     $cpfChecar = str_split($cpfChecar);
                     $somaChecagem = 0;
+
                     for($i = 10; $i >= 2; $i = $i - 1){
                         $somaChecagem += (int)($cpfChecar[10 - $i]) * $i;
                     }
+
                     $digito = ($somaChecagem % 11) < 2 ? 0 : 11 - ($somaChecagem % 11);
+
                     if($digito != $cpfChecar[9]){
                         $cpfValido = false;
                     }else{
@@ -94,10 +97,57 @@
                             $cpfValido = false;
                         }
                     }
+
+                    $todosZero = true;
+                    $todosNove = true;
+
+                    for($i = 0; $i <12; $i++){
+                        if($cpfChecar[$i] != '0'){
+                            $todosZero = false;
+                        }
+                        if($cpfChecar[$i] != '9'){
+                            $todosNove = false;
+                        }
+                    }
+                    
+                    if($todosZero || $todosNove){
+                        $cpfValido = false;
+                    }
+                }
+                if($cpfValido){
+                    //Checa se ja existe este cpf no sistema cadastrado como associado
+                    $textoQuery = "SELECT U.cpf
+                                   FROM Usuario U , Associado A
+                                   WHERE U.id = A.id AND U.cpf = ?";
+    
+                    $query = $conexao->prepare($textoQuery);
+                    $query->bindParam(1,$cpf, PDO::PARAM_STR);
+                    $query->setFetchMode(PDO::FETCH_ASSOC);
+                    $query->execute();
+
+                    if($linha = $query->fecth()){
+                        $cpfValido = false;
+                    }
                 }
 
                 $emailValido       = isset($email) && mb_strlen($email,'UTF-8') <= 100 &&
                                      preg_match("/^.+\@.+\..+$/", $email);
+                                     
+                if($emailvalido){
+                    //Checa se ja existe este email no sistema cadastrado como associado
+                    $textoQuery = "SELECT U.email
+                                   FROM Usuario U , Associado A
+                                   WHERE U.id = A.id AND U.email = ?";
+    
+                    $query = $conexao->prepare($textoQuery);
+                    $query->bindParam(1,$email, PDO::PARAM_STR);
+                    $query->setFetchMode(PDO::FETCH_ASSOC);
+                    $query->execute();
+
+                    if($linha = $query->fecth()){
+                        $emailvalido = false;
+                    }
+                }
                 $loginValido       = isset($login) && mb_strlen($login, 'UTF-8') >= 3 &&
                                      mb_strlen($login, 'UTF-8') <= 100;
                 $senhaValida       = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
