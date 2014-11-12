@@ -1153,12 +1153,14 @@
                     $tabela .= htmlspecialchars($linha["status"]). "\">";
                     if($linha["status"] === "inscrito"){
                         $tabela .= "Inscrito";
-                    }else if($linha["status"] === "preinscrito"){
+                    } else if($linha["status"] === "preinscrito"){
                         $tabela .= "Pré-inscrito";
-                    }else if($linha["status"] === "desistente"){
+                    } else if($linha["status"] === "desistente"){
                         $tabela .= "Desistente";
-                    }else if($linha["status"] === "formado"){
+                    } else if($linha["status"] === "formado"){
                         $tabela .= "Formado";
+                    } else if($linha["status"] === "inativo"){
+                        $tabela .= "Inativo";
                     }
                     $tabela .= "</td>";
 
@@ -1311,6 +1313,11 @@
                                                 htmlspecialchars($_GET["filtro-status"]) == "formado"?
                                            'selected="selected"':'';?> >
                                         Formado</option>
+                                        <option value="inativo"
+                                            <?=isset($_GET["filtro-status"]) &&
+                                                htmlspecialchars($_GET["filtro-status"]) == "inativo"?
+                                           'selected="selected"':'';?> >
+                                        Inativo</option>
                                     </select>
 
                             <a id="label-numero" href="#" class="btn" 
@@ -1986,6 +1993,7 @@
                                     <option value="inscrito">Inscrito</option>
                                     <option value="desistente">Desistente</option>
                                     <option value="formado">Formado</option>
+                                    <option value="inativo">Inativo</option>
                                 </select>
                             </div>
                             <div class="form-group">

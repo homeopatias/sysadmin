@@ -251,6 +251,9 @@
                             echo "Desistente";
                         else if($usuarioLogado->getStatus() === "formado")
                             echo "Formado";
+                        else if($usuarioLogado->getStatus() === "inativo"){
+                            echo "Inativo";
+                        }
                         echo "</p>";
                 ?>
             </p>

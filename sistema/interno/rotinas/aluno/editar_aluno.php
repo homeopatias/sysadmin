@@ -56,7 +56,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $statusValido = isset($status) && ($status === "preinscrito" ||
                                            $status === "inscrito"    ||
                                            $status === "desistente"  ||
-                                           $status === "formado"     );
+                                           $status === "formado"     ||
+                                           $status === "inativo"     );
         $loginIndicadorValido = (isset($loginIndicador) && mb_strlen($loginIndicador, 'UTF-8') >= 3 
                                  && mb_strlen($loginIndicador, 'UTF-8') <= 100)
                                 || !isset($loginIndicador) || $loginIndicador === "";

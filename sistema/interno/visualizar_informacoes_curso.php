@@ -342,12 +342,14 @@
                             $status = "";
                             if($aluno->getStatus() === "inscrito"){
                                 $status = "Inscrito";
-                            }else if($aluno->getStatus() === "preinscrito"){
+                            } else if($aluno->getStatus() === "preinscrito"){
                                 $status = "Pré-inscrito";
-                            }else if($aluno->getStatus() === "desistente"){
+                            } else if($aluno->getStatus() === "desistente"){
                                 $status = "Desistente";
-                            }else if($aluno->getStatus() === "formado"){
+                            } else if($aluno->getStatus() === "formado"){
                                 $status = "Formado";
+                            } else if($aluno->getStatus() === "inativo"){
+                                $status = "Inativo";
                             }
                         ?>
                         <p style="display:inline" class="col-sm-3">
