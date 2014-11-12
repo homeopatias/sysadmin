@@ -513,7 +513,7 @@
                     $nomeValido      = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                        mb_strlen($nome, 'UTF-8') <= 100;
                     $UfValido        = isset($UF) && mb_strlen($UF, 'UTF-8') === 2;
-                    $anoValido       = isset($ano) && intval($ano) > 2000 && intval($ano) < 3000;
+                    $anoValido       = isset($ano) && intval($ano) >= date("Y") && intval($ano) < date("Y") + 3;
                     $localValido     = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
                                        mb_strlen($local, 'UTF-8') <= 200;
                     $idCoordValido   = isset($idCoord) && preg_match("/^[0-9]*$/", $idCoord);
@@ -1173,10 +1173,15 @@
                             </div>
                             <div class="form-group">
                                 <label for="ano-nova">Ano:</label>
-                                <input type="text" name="ano" id="ano-nova" required
-                                       pattern="^[0-9]{4,}$" placeholder="Ano"
-                                       title="Insira um ano válido"
-                                       class="form-control">
+                                <select name="ano-nova" id="ano-nova" required
+                                        class="form-control">
+                                    <?php
+                                        for($i = 0; $i < 3; $i++){
+                                            echo '<option value="' . (date("Y") + $i) . 
+                                                  '">' . (date("Y") + $i) . '</option>';
+                                        }
+                                    ?>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="local-nova">Local:</label>
@@ -1305,10 +1310,17 @@
                             </div>
                             <div class="form-group">
                                 <label for="ano">Ano:</label>
-                                <input type="text" name="ano" id="ano" required
-                                       pattern="^[0-9]{4,}$" placeholder="Ano"
-                                       title="Insira um ano válido"
-                                       class="form-control">
+                                <select name="ano" id="ano" required
+                                        class="form-control">
+                                    <?php
+                                        $listagemAno = date("Y") + 3;
+                                        while($listagemAno >= 2000){
+                                            echo '<option value="' . ($listagemAno ) . 
+                                                  '">' . ($listagemAno ) . '</option>';
+                                            $listagemAno--;
+                                        }
+                                    ?>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="local">Local:</label>
