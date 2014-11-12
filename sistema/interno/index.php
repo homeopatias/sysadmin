@@ -232,9 +232,7 @@
                 ?>
                     <p class="col-sm-12">
                         <a style="cursor: pointer"
-                           data-toggle="modal"
-                           href=<?= "visualizar_informacoes_curso.php?id=".
-                           unserialize($_SESSION["usuario"])->getNumeroInscricao() ?> >
+                           href= "visualizar_informacoes_curso.php">
                             Visualizar dados de curso
                         </a>
                     </p>

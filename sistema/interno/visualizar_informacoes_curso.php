@@ -106,31 +106,8 @@
         <?php
             require_once("entidades/Aluno.php");
 
-            $idAluno = $_GET["id"];
-            $idAlunoUsuario = unserialize($_SESSION["usuario"])->getNumeroInscricao();
-            if(!isset($idAluno) || !preg_match("/^[0-9]*$/", $idAluno) ||
-                ( !(  unserialize($_SESSION["usuario"]) instanceof Aluno  ) || 
-                    ($idAluno != $idAlunoUsuario) ) ) {
-                // o id passado foi inválido
-                // redirecionamos o usuário para a index
-                // com uma mensagem de erro
-        ?>
-
-        <!-- redireciona o usuário -->
-        <meta http-equiv="refresh" content="0; url=index.php?erro=Dados inválidos!">
-        <script type="text/javascript">
-            window.location = "index.php?erro=Dados inválidos!";
-        </script>
-
-        <?php
-                die();
-            }
-
-            // procuramos o aluno desejado no banco de dados
-            $aluno = new Aluno("");
-            $aluno->setNumeroInscricao($idAluno);
-            $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
-
+            $aluno = unserialize($_SESSION["usuario"]);
+            $idAluno = $aluno->getNumeroInscricao();
             include("modulos/navegacao.php");
 
             $mensagem = "";
@@ -692,8 +669,8 @@
                                            "<i class=\"fa fa-times warning\"></i>";
                             }
                             $tabela .= "</td>";
-                            $tabela .= "    <td><a href=\"visualizar_informacoes_curso.php?id=".$idAluno.
-                                       "&ano=".$linha["ano"]."\" >
+                            $tabela .= "    <td><a href=\"visualizar_informacoes_curso.php?ano=".
+                                $linha["ano"]."\" >
                                         <i class=\"fa fa-money\"></i>
                                         </a></td>";
                             $tabela .= "</tr>";
@@ -732,7 +709,7 @@
                          Pagamentos efetuados e pendentes desse aluno -->
                     <?php
 
-                        // procuramos os pagamentos desse ano, tanto pendentes
+                        // procuramos os pagamentos do ano enviado, tanto pendentes
                         // como efetuados
 
                         $anoPagamento = date("Y");
