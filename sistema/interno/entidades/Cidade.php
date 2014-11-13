@@ -28,6 +28,7 @@ class Cidade{
     private $limiteInscricao;
     private $nomeEmpresa;
     private $cnpjEmpresa;
+    private $custoCurso;
 
     // Construtor
     public function __construct(){
@@ -42,6 +43,7 @@ class Cidade{
         $this->limiteInscricao = date("0000-00-00");
         $this->nomeEmpresa     = "";
         $this->cnpjEmpresa     = -1;
+        $this->custoCurso     = 0;
     }
 
 
@@ -83,6 +85,7 @@ class Cidade{
             $this->limiteInscricao = $linha["limiteInscricao"];
             $this->nomeEmpresa     = $linha["nomeEmpresa"];
             $this->cnpjEmpresa     = $linha["cnpjEmpresa"];
+            $this->custoCurso      = $linha["custoCurso"];
 
 
             $this->setCoordenadorId($linha["idCoordenador"]);
@@ -132,10 +135,10 @@ class Cidade{
         $dados  = array($this->UF, $this->ano, $this->nome, $this->coordenador->getIdAdmin(),
                          $this->local, $this->inscricao, $this->parcela,
                          date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
-                         $this->nomeEmpresa, $this->cnpjEmpresa);
+                         $this->nomeEmpresa, $this->cnpjEmpresa, $this->custoCurso);
         $textoQuery  = "INSERT INTO Cidade (UF, ano, nome, idCoordenador, local, 
                         precoInscricao, precoParcela, limiteInscricao, nomeEmpresa,
-                        cnpjEmpresa) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                        cnpjEmpresa,custoCurso) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         $query  = $conexao->prepare($textoQuery);
         $sucesso = $query->execute($dados);
 
@@ -162,14 +165,16 @@ class Cidade{
             echo $e->getMessage();
         }
 
+
         $comando  = "UPDATE Cidade SET UF=?, ano=?, nome=?, idCoordenador=?,
                      local=?, precoInscricao=?, precoParcela=?, limiteInscricao=?,
-                     nomeEmpresa=?, cnpjEmpresa=? WHERE idCidade = ?";
+                     nomeEmpresa=?, cnpjEmpresa=?, custoCurso=? WHERE idCidade = ?";
         $query = $conexao->prepare($comando);
         $dados  = array($this->UF, $this->ano, $this->nome, $this->coordenador->getIdAdmin(),
                         $this->local, $this->inscricao, $this->parcela,
                         date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
-                        $this->nomeEmpresa, $this->cnpjEmpresa, $this->idCidade);
+                        $this->nomeEmpresa, $this->cnpjEmpresa, $this->custoCurso,
+                        $this->idCidade);
         $sucesso = $query->execute($dados);
 
         // Encerramos a conexão com o BD
@@ -325,5 +330,17 @@ class Cidade{
 
         return $this;
     }
+    public function getCustoCurso()
+    {
+        return $this->custoCurso;
+    }
+
+    public function setCustoCurso($custoCurso)
+    {
+        $this->custoCurso = $custoCurso;
+
+        return $this;
+    }
+
 }
 ?>
