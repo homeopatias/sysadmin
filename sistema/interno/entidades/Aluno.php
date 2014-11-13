@@ -299,6 +299,17 @@ class Aluno extends Usuario{
             echo $e->getMessage();
         }
 
+        //Pega o status e o indicador atual do aluno no banco-------------------------
+        $comando = "SELECT status, idIndicador FROM Aluno WHERE numeroInscricao = ?";
+        $query = $conexao->prepare($comando);
+        $query->bindParam(1, $this->numeroInscricao, PDO::PARAM_INT);
+        $query->execute();
+
+        $linha = $query->fetch();
+
+        $statusAnterior    = $linha["status"];
+        $indicadorAnterior = $linha["idIndicador"];
+
         $comando = "UPDATE Usuario SET nome = :nome, cpf = :cpf, email = :email, login = :login
                     WHERE id = :id";
         $query = $conexao->prepare($comando);
@@ -321,6 +332,8 @@ class Aluno extends Usuario{
                     cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais 
                     WHERE numeroInscricao = :numInsc";
         $query = $conexao->prepare($comando);
+
+
 
 
         $query->bindParam(":status", $this->status, PDO::PARAM_STR);
