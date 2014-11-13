@@ -504,6 +504,9 @@
 
             checaTamanhoTela();
 
+            // chamamos a função change do dropdown de ano de nova cidade
+            // para carregar os coordenadores possíveis
+            $("#ano-nova").change();
         }); 
 
         //atualiza formulário com a busca
@@ -559,7 +562,7 @@
                     // validamos todos os dados recebidos
                     $nome        = $_POST["nome"];
                     $UF          = $_POST["UF"];
-                    $ano         = $_POST["ano"];
+                    $ano         = $_POST["ano-nova"];
                     $local       = $_POST["local"];
                     $idCoord     = $_POST["coord"];
                     $inscricao   = $_POST["inscricao"];

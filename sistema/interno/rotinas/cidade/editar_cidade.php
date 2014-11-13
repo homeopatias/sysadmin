@@ -66,10 +66,11 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             // checamos se esse coordenador já coordena outra cidade nesse ano,
             // caso coordene, esse coordenador é inválido
             $textoQuery  = 'SELECT idCidade FROM Cidade WHERE ano = ?
-                            AND idCoordenador = ?';
+                            AND idCoordenador = ? AND idCidade <> ?';
             $query = $conexao->prepare($textoQuery);
             $query->bindParam(1, $ano);
             $query->bindParam(2, $idCoord);
+            $query->bindParam(3, $id);
 
             $query->setFetchMode(PDO::FETCH_ASSOC);
             $query->execute();

@@ -12,18 +12,16 @@ if(!isset($_SESSION['usuario']) ||
     die();
 }
 
-// Recebe os dados da turma e confere se estão válidos
-$idCidade = $_GET["idCidade"];
-$etapa    = $_GET["etapa"];
+// Recebe a etapa da turma e confere se está válida
+$etapa = $_GET["etapa"];
 
-$idCidadeValido = preg_match("/^[0-9]+$/", $idCidade);
 $etapaValida = $etapa == 1 || $etapa == 2 || $etapa == 3 || $etapa == 4;
 
 // mensagem a ser exibida em caso de erro
 $mensagem = "";
 $sucesso = false;
 
-if($idCidadeValido && $etapaValida){
+if($etapaValida){
     // lemos as credenciais do banco de dados
     $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
     $dados = json_decode($dados, true);
@@ -57,12 +55,11 @@ if($idCidadeValido && $etapaValida){
                     TD.etapa = M.etapa INNER JOIN Aula Au ON
                     Au.chaveCidade = C.idCidade AND Au.etapa = M.etapa LEFT JOIN Frequencia F ON
                     F.chaveAluno = M.chaveAluno AND F.chaveAula = Au.idAula WHERE 
-                    C.idCidade = ? AND M.etapa = ? AND C.idCoordenador = ?
+                    M.etapa = ? AND C.idCoordenador = ? AND C.ano = YEAR(NOW())
                     GROUP BY T.chaveAluno, F.chaveAluno";
     $query = $conexao->prepare($textoQuery);
-    $query->bindParam(1, $idCidade, PDO::PARAM_INT);
-    $query->bindParam(2, $etapa, PDO::PARAM_INT);
-    $query->bindParam(3, $coordenadorId, PDO::PARAM_INT);
+    $query->bindParam(1, $etapa, PDO::PARAM_INT);
+    $query->bindParam(2, $coordenadorId, PDO::PARAM_INT);
     $query->setFetchMode(PDO::FETCH_ASSOC);
     $query->execute();
 
@@ -98,6 +95,6 @@ if($idCidadeValido && $etapaValida){
         $mensagem = "Etapa inválida!";
 }
 
-header('Location: ../visualizar_turmas.php?cidade='.$idCidade.
-       '&etapa='.$etapa.'&mensagem='.$mensagem.'&sucesso='.$sucesso, true, "302");
+header('Location: ../visualizar_turmas.php?etapa=' . $etapa .
+       '&etapa=' . $etapa . '&mensagem=' . $mensagem . '&sucesso=' . $sucesso, true, "302");
 die();
