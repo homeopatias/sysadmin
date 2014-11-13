@@ -668,7 +668,7 @@
                                 id="numeroTableHeader" 
                                 value =<?= isset($_GET["numeroTableHeader"])? 
                                     htmlspecialchars($_GET["numeroTableHeader"]) :
-                                    "0" ?> >
+                                    "-1" ?> >
 
                             <!-- passar 1 para ser crescente ou 2 para decrescente -->
                             <input type="hidden" name="cimaOuBaixo" 
