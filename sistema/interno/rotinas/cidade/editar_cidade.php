@@ -24,6 +24,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $limite      = $_POST["limite"];
         $nomeEmpresa = $_POST["nomeEmpresa"];
         $cnpjEmpresa = $_POST["cnpjEmpresa"];
+        $custoCurso  = $_POST["custoCurso"];
 
         $idValido      = isset($id) && preg_match("/^[0-9]*$/", $id);
         $nomeValido    = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
@@ -41,6 +42,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $cnpjValido      = isset($cnpjEmpresa) &&
                            preg_match("/^(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|\d{14})$/",
                            $cnpjEmpresa);
+        $custoCursoValido   = isset($custoCurso) && preg_match("/^[0-9]*\.?[0-9]+$/",
+                                                                 $custoCurso);
 
         // lemos as credenciais do banco de dados
         $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -81,7 +84,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
 
         // se todos os dados estão válidos, a cidade é editada
         if($idValido && $nomeValido && $UfValido && $anoValido && $localValido && $idCoordValido &&
-           $inscricaoValida && $parcelaValida && $limiteValido && $empresaValida && $cnpjValido){
+           $inscricaoValida && $parcelaValida && $limiteValido && $empresaValida && $cnpjValido &&
+           $custoCursoValido){
 
             require_once("../../entidades/Cidade.php");
 
@@ -96,6 +100,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setLimiteInscricao($limite);
             $atualizar->setNomeEmpresa($nomeEmpresa);
             $atualizar->setCnpjEmpresa($cnpjEmpresa);
+            $atualizar->setCustoCurso($custoCurso);
             $coordExiste = $atualizar->setCoordenadorId($idCoord);
 
             if($coordExiste){
@@ -118,7 +123,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "Ano inválido!";
         }else if(!$localValido){
             $mensagem = "Local inválido!";
-        }else if(!$idCoordInvalido){
+        }else if(!$idCoordValido){
             $mensagem = "Id de coordenador inválido!";
         }else if(!$inscricaoValida){
             $mensagem = "Valor de inscrição inválido!";
@@ -132,6 +137,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "Nome da empresa inválida!";
         }else if(!$cnpjValido) {
             $mensagem = "CNPJ inválido!";
+        }else if(!$custoCurso) {
+            $mensagem = "Custo do curso inválido!";
         }
     }else{
         $mensagem = "Erro de envio de formulário";

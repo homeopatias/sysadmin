@@ -153,6 +153,10 @@
                             );
                         });
                     });
+
+                    $(this).find('#custoCurso').val(
+                        $(e.relatedTarget).data('custo')
+                    );
                 });
 
                 // esconde inputs de busca
@@ -570,6 +574,7 @@
                     $limite      = $_POST["limite"];
                     $nomeEmpresa = $_POST["nomeEmpresa"];
                     $cnpjEmpresa = $_POST["cnpjEmpresa"];
+                    $custoCurso  = $_POST["custoCurso"];
 
                     $nomeValido      = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                        mb_strlen($nome, 'UTF-8') <= 100;
@@ -586,6 +591,9 @@
                     $cnpjValido      = isset($cnpjEmpresa) &&
                                        preg_match("/^(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|\d{14})$/",
                                        $cnpjEmpresa);
+                    $custoCursoValido   = isset($custoCurso) && preg_match("/^[0-9]*\.?[0-9]+$/",
+                                                                 $custoCurso);
+
 
                     if($cnpjValido){
                         // checamos se os dígitos verificadores do cnpj conferem
@@ -634,7 +642,7 @@
                     // se todos os dados estão válidos, a cidade é cadastrada
                     if($nomeValido && $UfValido && $anoValido && $localValido && $idCoordValido &&
                        $inscricaoValida && $parcelaValida && $limiteValido && $empresaValida && 
-                       $cnpjValido){
+                       $cnpjValido && $custoCursoValido){
 
                         require_once("entidades/Cidade.php");
 
@@ -648,6 +656,7 @@
                         $nova->setLimiteInscricao($limite);
                         $nova->setNomeEmpresa($nomeEmpresa);
                         $nova->setCnpjEmpresa($cnpjEmpresa);
+                        $nova->setCustoCurso($custoCurso);
                         $coordExiste = $nova->setCoordenadorId($idCoord);
 
                         if($coordExiste){
@@ -697,7 +706,8 @@
 
                 $textoQuery  = "SELECT C.idCidade, C.UF, C.ano, A.idAdmin, C.nome, 
                                 C.precoInscricao, C.precoParcela, C.idCoordenador, 
-                                C.local, C.limiteInscricao, C.nomeEmpresa, C.cnpjEmpresa 
+                                C.local, C.limiteInscricao, C.nomeEmpresa, C.cnpjEmpresa,
+                                C.custoCurso
                                 FROM Cidade C, Administrador A WHERE C.idCoordenador 
                                 = A.idAdmin AND A.nivel = \"coordenador\" ";
 
@@ -902,12 +912,15 @@
                         $tabela .= number_format(htmlspecialchars($linha["precoInscricao"]), 2, ".", " ")."</td>";
                         $tabela .= "    <td class=\"parcela\">R$ ";
                         $tabela .= number_format(htmlspecialchars($linha["precoParcela"]), 2, ".", " ")."</td>";
+                        $tabela .= "    <td class=\"custo\">R$ ";
+                        $tabela .= number_format(htmlspecialchars($linha["custoCurso"]), 2, ".", " ")."</td>";
     
                         $tabela .= "    <td><a data-id=\"";
                         $tabela .= $linha['idCidade'];
                         $tabela .= "\" data-empresa=\"" . $linha['nomeEmpresa'];
                         $tabela .= "\" data-cnpj=\"". $cnpj;
                         $tabela .= "\"href=\"#\" data-toggle=\"modal\"";
+                        $tabela .= " data-custo=\"".$linha["custoCurso"]."\"";
                         $tabela .= " data-target=\"#modal-edita-cidade\">";
                         $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
                         $tabela .= "    <td><a data-href=\"rotinas/cidade/";
@@ -1121,6 +1134,9 @@
                                         <th width="80px" <?= $indexHeader == 7 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Parcela</th>
+                                        <th width="80px" <?= $indexHeader == 8 ? 
+                                            ($direcao == 1? "class =\"headerSortUp\"" : 
+                                                "class =\"headerSortDown\"") : "" ?>>Custo</th>
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
                                     </tr>
@@ -1295,6 +1311,14 @@
                                        class="form-control">
                             </div>
                             <div class="form-group">
+                                <label for="custo-curso-novo">Custo para efetivar o curso:</label>
+                                <input type="text" name="custoCurso" id="custo-curso-novo" 
+                                        required
+                                       pattern="^[0-9]*\.?[0-9]+$" placeholder="Custo do curso"
+                                       title="O valor de custo deve ser um número real"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
                                 <label for="nomeEmpresa-nova">Empresa que oferece 
                                        o curso nessa cidade:</label>
                                 <input type="text" name="nomeEmpresa" id="nomeEmpresa-nova" required
@@ -1423,6 +1447,14 @@
                                 <input type="text" name="parcela" id="parcela" required
                                        pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                        title="A parcela deve ser um número real"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="custoCurso">Custo para efetivar o curso:</label>
+                                <input type="text" name="custoCurso" id="custoCurso" 
+                                        required
+                                       pattern="^[0-9]*\.?[0-9]+$" placeholder="Custo do curso"
+                                       title="O valor de custo deve ser um número real"
                                        class="form-control">
                             </div>
                             <div class="form-group">
