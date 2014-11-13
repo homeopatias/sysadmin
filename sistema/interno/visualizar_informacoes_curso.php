@@ -468,10 +468,12 @@
                             // alunos matriculados no ano atual e que tenham sido indicados por ele
 
                             $textoQuery = "SELECT A.numeroInscricao
-                                           FROM Aluno A, Matricula M, Cidade C
+                                           FROM Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
                                            WHERE A.idIndicador = ? AND 
                                            M.chaveAluno = A.numeroInscricao AND
-                                           M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())";
+                                           M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())
+                                           AND Pg.chaveMatricula = M.idMatricula AND Pg.numParcela = 0
+                                           AND Pg.fechado = 1";
 
                             $query = $conexao->prepare($textoQuery);
 
