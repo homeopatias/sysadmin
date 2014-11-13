@@ -309,6 +309,8 @@ class Aluno extends Usuario{
         $statusAnterior    = $linha["status"];
         $indicadorAnterior = $linha["idIndicador"];
 
+        //----------------------------------------------------------------------------
+
         $comando = "UPDATE Usuario SET nome = :nome, cpf = :cpf, email = :email, login = :login
                     WHERE id = :id";
         $query = $conexao->prepare($comando);
@@ -356,6 +358,65 @@ class Aluno extends Usuario{
         $query->bindParam(":pais", $this->pais, PDO::PARAM_STR);
 
         $sucessoAluno = $query->execute();
+
+        //Tratamento de desconto de alunos indicadores
+
+        //Primeiro checamos se o aluno pagou a inscição deste ano (se gerou desconto)
+
+        $comando = "SELECT EXISTS(
+                        SELECT Pg.numParcela
+                        FROM PgtoMensalidade Pg, Aluno A, Usuario U,Matricula M, Cidade C
+                        WHERE A.idUsuario     = U.id 
+                        AND M.chaveAluno      = A.numeroInscricao 
+                        AND M.chaveCidade     = C.idCidade
+                        AND C.ano             = YEAR(CURDATE()) 
+                        AND Pg.chaveMatricula = M.idMatricula 
+                        AND Pg.numParcela     = 0
+                        AND Pg.numParcela     = 0 
+                        AND Pg.fechado        = 1 
+                        AND A.numeroInscricao = ?
+                        ) as existe";
+
+        $query = $conexao->prepare($comando);
+        $query->bindParam(1,$this->numeroInscricao, PDO::PARAM_INT);
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+        $query->execute();
+
+        $linha = $query->fetch();
+        if($linha["existe"]){
+            //Estas variáveis armazenam se será necessário atualizar ou não os descontos do
+            //anterior e/ou do novo 
+
+            // 0 = Não altera, 1 = adiciona e -1 = remove
+            $atualizaDescontosNovo = 0;
+            $atualizaDescontosAntigo = 0;
+
+            //Se o aluno ja pagou a inscrição deste ano, checa se será necessário remover o
+            //desconto do indicador, se possuir indicador
+
+            //checa se ele possui indicador e se não possuir, se agora possui
+            if( ($indicadorAnterior != null) ||($this->idIndicador != null) ){
+
+                //O usuário mudou de id de indicador, remove o desconto do anterior e soma 
+                //ao novo
+
+                if($indicadorAnterior != $this->idIndicador){
+                    //Só será necessário mudar o desconto de um aluno válido
+                    if($indicadorAnterior != null){
+                        $atualizaDescontosAntigo = -1;
+                    }
+                    $atualizaDescontosNovo = 1;
+                }
+
+                if($this->status === "desistente" && $statusAnterior !== "desistente"){
+                    $atualizaDescontosNovo = 1;
+                }
+
+            }
+
+        }
+
+        //--------------------------------------------------------------------------
 
         if($sucessoUsuario && $sucessoAluno) {
             // deu tudo certo, atualizamos o aluno
