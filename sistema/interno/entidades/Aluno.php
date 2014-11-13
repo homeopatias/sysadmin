@@ -163,6 +163,7 @@ class Aluno extends Usuario{
 
         if ($linha = $query->fetch()){
             // encontramos o usuário no sistema
+            $this->id              = $linha["id"];
             $this->login           = $linha["login"];
             $this->cpf             = $linha["cpf"];
             $this->dataInscricao   = $linha["data"];

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 13, 2014 at 01:41 PM
+-- Generation Time: Nov 13, 2014 at 05:07 PM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `Administrador` (
   `permissoes` int(5) NOT NULL DEFAULT '0' COMMENT 'Bitflag de acesso de admins',
   PRIMARY KEY (`idAdmin`),
   KEY `idUsuario` (`idUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Administradores do sistema' AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Administradores do sistema' AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `Administrador`
@@ -50,7 +50,8 @@ INSERT INTO `Administrador` (`idAdmin`, `idUsuario`, `nivel`, `corrigeTrabalho`,
 (7, 21, 'professor', 1, 0),
 (8, 23, 'coordenador', 0, 0),
 (9, 24, 'professor', 1, 0),
-(10, 25, 'administrador', 0, 47);
+(10, 25, 'administrador', 0, 47),
+(11, 26, 'coordenador', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -90,9 +91,9 @@ INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `t
 (3, 4, 'preinscrito', NULL, '8260134527', '', 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL'),
 (4, 5, 'preinscrito', NULL, '6135342360', '', 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL'),
 (5, 6, 'preinscrito', 4, '8698463979', '', 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL'),
-(6, 7, 'preinscrito', NULL, '2169357517', '', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL'),
-(7, 8, 'preinscrito', NULL, '1184439221', '', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL'),
-(8, 9, 'preinscrito', NULL, '8498876543', '', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL'),
+(6, 7, 'inscrito', NULL, '2169357517', '', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL'),
+(7, 8, 'inscrito', NULL, '1184439221', '', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL'),
+(8, 9, 'inscrito', NULL, '8498876543', '', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL'),
 (9, 10, 'preinscrito', NULL, '5787659485', '', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL'),
 (10, 11, 'preinscrito', NULL, '2098764959', '', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL'),
 (11, 12, 'preinscrito', NULL, '3498123232', '', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL');
@@ -178,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `Aula` (
   PRIMARY KEY (`idAula`),
   KEY `chaveCidade` (`chaveCidade`),
   KEY `idProfessor` (`idProfessor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aula lancada no sistema' AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aula lancada no sistema' AUTO_INCREMENT=13 ;
 
 --
 -- Dumping data for table `Aula`
@@ -195,7 +196,8 @@ INSERT INTO `Aula` (`idAula`, `chaveCidade`, `etapa`, `data`, `idProfessor`, `no
 (8, 1, 1, '2014-12-18 09:00:00', 5, NULL, 'Finalização de curso'),
 (9, 2, 1, '2014-12-18 09:00:00', 7, NULL, 'Finalização de curso'),
 (10, 3, 1, '2014-12-18 09:00:00', 6, NULL, 'Finalização de curso'),
-(11, 1, 1, '2014-11-19 09:00:00', 7, NULL, 'Aula prática de técnicas homeopáticas.');
+(11, 1, 1, '2014-11-19 09:00:00', 7, NULL, 'Aula prática de técnicas homeopáticas.'),
+(12, 4, 1, '2014-02-02 12:30:00', 5, NULL, 'Aula introdutória');
 
 -- --------------------------------------------------------
 
@@ -218,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
   `custoCurso` float NOT NULL COMMENT 'valor de custo para abertura do curso',
   PRIMARY KEY (`idCidade`),
   KEY `idCoordenador` (`idCoordenador`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `Cidade`
@@ -228,7 +230,8 @@ INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`,
 (1, 'MG', 2014, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 100, 30, '2014-05-02', 'Homeobrás', '56667868000102', 7500.5),
 (2, 'RJ', 2014, 'Rio de Janeiro', 2, 'Faculdade de odontologia da UFRJ', 90, 85, '2014-05-02', 'Homeobrás', '56667868000102', 6750),
 (3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750),
-(4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000);
+(4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000),
+(5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0);
 
 -- --------------------------------------------------------
 
@@ -327,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   PRIMARY KEY (`idMatricula`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveCidade` (`chaveCidade`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `Matricula`
@@ -338,7 +341,10 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (2, 10, 1, NULL, 1),
 (3, 2, 1, NULL, 1),
 (4, 1, 1, NULL, 1),
-(5, 9, 1, NULL, 1);
+(5, 9, 1, NULL, 1),
+(6, 8, 1, NULL, 4),
+(7, 7, 1, NULL, 4),
+(8, 6, 1, NULL, 4);
 
 -- --------------------------------------------------------
 
@@ -353,17 +359,44 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `Notificacao`
+--
+
+INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `lida`) VALUES
+(1, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$150.00\nData: 13/11/2014\nHorário: 14:27\nMétodo: Dinheiro', 8, 1),
+(2, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$70.00\nData: 13/11/2014\nHorário: 16:36\nMétodo: Dinheiro', 7, 0),
+(3, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$1.50\nData: 13/11/2014\nHorário: 16:43\nMétodo: Dinheiro', 7, 0),
+(4, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$1,000.00\nData: 13/11/2014\nHorário: 16:49\nMétodo: Dinheiro', 7, 0),
+(5, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 16:50\nMétodo: Dinheiro', 7, 0),
+(6, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 17:05\nMétodo: Dinheiro', 7, 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Pagseguro`
+-- Table structure for table `Pagamento`
 --
 
-CREATE TABLE IF NOT EXISTS `Pagseguro` (
-  `placeholder` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Dados referentes ao sistema Pagseguro (a modelar)';
+CREATE TABLE IF NOT EXISTS `Pagamento` (
+  `idPagamento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único desse pagamento',
+  `chaveUsuario` int(11) NOT NULL,
+  `valor` float NOT NULL COMMENT 'Valor pago nesse pagamento',
+  `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento',
+  `objetivo` enum('mensalidade','anuidade','livro','') NOT NULL COMMENT 'Especifica o que esse pagamento está pagando',
+  `codigoTransacao` int(11) DEFAULT NULL COMMENT 'Código da transação no Pagseguro, quando houver',
+  `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere',
+  PRIMARY KEY (`idPagamento`),
+  KEY `chaveUsuario` (`chaveUsuario`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `Pagamento`
+--
+
+INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `metodo`, `objetivo`, `codigoTransacao`, `ano`) VALUES
+(1, 8, 500, 'Dinheiro', 'mensalidade', NULL, 2014);
 
 -- --------------------------------------------------------
 
@@ -391,7 +424,6 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
   `inscricao` tinyint(1) NOT NULL COMMENT 'Determina se esse pagamento se refere a uma inscricao ou a uma anuidade',
   `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa anuidade/inscrição',
   `valorPago` float NOT NULL COMMENT 'Valor pago pelo associado',
-  `metodo` varchar(100) NOT NULL,
   `data` datetime DEFAULT NULL COMMENT 'Data do pagamento da anuidade',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
@@ -410,7 +442,6 @@ CREATE TABLE IF NOT EXISTS `PgtoCompra` (
   `cpf` int(11) NOT NULL COMMENT 'CPF do comprador do produto',
   `valor` float NOT NULL COMMENT 'Valor pago na compra',
   `chaveCompra` int(11) NOT NULL COMMENT 'Identificador unico da compra feita, ao qual esse pagamento se refere',
-  `metodo` varchar(200) NOT NULL,
   `data` datetime NOT NULL COMMENT 'Data do pagamento',
   PRIMARY KEY (`idPagCompra`),
   KEY `chaveCompra` (`chaveCompra`)
@@ -435,7 +466,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagMensalidade`),
   KEY `chaveAluno` (`chaveMatricula`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=61 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=97 ;
 
 --
 -- Dumping data for table `PgtoMensalidade`
@@ -501,7 +532,43 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (57, 5, 8, 30, 0, 0, '', NULL, 2014, 0),
 (58, 5, 9, 30, 0, 0, '', NULL, 2014, 0),
 (59, 5, 10, 30, 0, 0, '', NULL, 2014, 0),
-(60, 5, 11, 30, 0, 0, '', NULL, 2014, 0);
+(60, 5, 11, 30, 0, 0, '', NULL, 2014, 0),
+(61, 6, 0, 150, 0, 0, 'Dinheiro', NULL, 2014, 1),
+(62, 6, 1, 220, 0, 0, '', NULL, 2014, 0),
+(63, 6, 2, 220, 0, 0, '', NULL, 2014, 0),
+(64, 6, 3, 220, 0, 0, '', NULL, 2014, 0),
+(65, 6, 4, 220, 0, 0, '', NULL, 2014, 0),
+(66, 6, 5, 220, 0, 0, '', NULL, 2014, 0),
+(67, 6, 6, 220, 0, 0, '', NULL, 2014, 0),
+(68, 6, 7, 220, 0, 0, '', NULL, 2014, 0),
+(69, 6, 8, 220, 0, 0, '', NULL, 2014, 0),
+(70, 6, 9, 220, 0, 0, '', NULL, 2014, 0),
+(71, 6, 10, 220, 0, 0, '', NULL, 2014, 0),
+(72, 6, 11, 220, 0, 0, '', NULL, 2014, 0),
+(73, 7, 0, 150, 150, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(74, 7, 1, 220, 220, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(75, 7, 2, 220, 220, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(76, 7, 3, 220, 220, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(77, 7, 4, 220, 220, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(78, 7, 5, 220, 220, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(79, 7, 6, 220, 220, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(80, 7, 7, 220, 220, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(81, 7, 8, 220, 220, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 1),
+(82, 7, 9, 220, 90, 0, 'Dinheiro', '2014-11-13 00:00:00', 2014, 0),
+(83, 7, 10, 220, 0, 0, '', NULL, 2014, 0),
+(84, 7, 11, 220, 0, 0, '', NULL, 2014, 0),
+(85, 8, 0, 150, 0, 0, '', NULL, 2014, 0),
+(86, 8, 1, 220, 0, 0, '', NULL, 2014, 0),
+(87, 8, 2, 220, 0, 0, '', NULL, 2014, 0),
+(88, 8, 3, 220, 0, 0, '', NULL, 2014, 0),
+(89, 8, 4, 220, 0, 0, '', NULL, 2014, 0),
+(90, 8, 5, 220, 0, 0, '', NULL, 2014, 0),
+(91, 8, 6, 220, 0, 0, '', NULL, 2014, 0),
+(92, 8, 7, 220, 0, 0, '', NULL, 2014, 0),
+(93, 8, 8, 220, 0, 0, '', NULL, 2014, 0),
+(94, 8, 9, 220, 0, 0, '', NULL, 2014, 0),
+(95, 8, 10, 220, 0, 0, '', NULL, 2014, 0),
+(96, 8, 11, 220, 0, 0, '', NULL, 2014, 0);
 
 -- --------------------------------------------------------
 
@@ -589,7 +656,7 @@ CREATE TABLE IF NOT EXISTS `Usuario` (
   KEY `cpf` (`cpf`),
   KEY `cpf_2` (`cpf`),
   KEY `dataInscricao` (`dataInscricao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=27 ;
 
 --
 -- Dumping data for table `Usuario`
@@ -620,7 +687,8 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (22, '74117042963', '2014-11-13 12:59:00', 'lusilveira@gmail.com', 'luiz_homeopat', '$2a$08$pxGqvRKKrHhrJx5ZLTPGaev7PeZw/zSNTBOeCDMs8irFfEroMTGXO', 'Luíz Silveira Santana'),
 (23, '98818182650', '2014-11-13 12:59:39', 'lsilva@gmail.com', 'lsilva', '$2a$08$5QVYK89G3mMsVom.Viz7zOWZQ8JGDQc/HQLCClQCuOd4xfIWWsRBG', 'Luana Silva Nogueira'),
 (24, '32759893910', '2014-11-13 13:00:42', 'sandra_mp@gmail.com', 'sandramp', '$2a$08$5b6vrhQoXT1ak4.pkzGA/uCbDXtqqD.TXRaOQBY35pYP05s1jfiMu', 'Sandra Maria Passos'),
-(25, '84272313428', '2014-11-13 13:14:03', 'ednaldo@whatisthebrother.com', 'ednaldop', '$2a$08$7Biq7AD37sJdNBrxXM7CKerTwRbxku8uiVaubQZcXbOSfQ7.aZruq', 'Ednaldo Pereira');
+(25, '84272313428', '2014-11-13 13:14:03', 'ednaldo@whatisthebrother.com', 'ednaldop', '$2a$08$7Biq7AD37sJdNBrxXM7CKerTwRbxku8uiVaubQZcXbOSfQ7.aZruq', 'Ednaldo Pereira'),
+(26, '81424367794', '2014-11-13 14:07:47', 'luiza.conceicao@gmail.com', 'luconceicao', '$2a$08$Eb4yjC5mPtgpLQ5cO.jJQ.UmnpMKXXkyj1i/MC1RtI6CGyK9G0Knq', 'Luíza Maria Conceição');
 
 --
 -- Constraints for dumped tables
@@ -671,6 +739,12 @@ ALTER TABLE `Frequencia`
 ALTER TABLE `Matricula`
   ADD CONSTRAINT `alunoMatricula` FOREIGN KEY (`chaveAluno`) REFERENCES `Aluno` (`numeroInscricao`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `cidadeMatriculado` FOREIGN KEY (`chaveCidade`) REFERENCES `Cidade` (`idCidade`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `Pagamento`
+--
+ALTER TABLE `Pagamento`
+  ADD CONSTRAINT `usuarioPagamento` FOREIGN KEY (`chaveUsuario`) REFERENCES `Usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Pedido`

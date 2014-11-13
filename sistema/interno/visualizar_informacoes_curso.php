@@ -464,9 +464,11 @@
                         <p style="display:inline" class="col-sm-3">
                             <b>Matriculado no período atual</b>
                         </p>
+                        <?php if (!is_null($aprovado)) { ?>
                         <p class=<?= "\"" . ($aprovado ? "sucesso" : "warning") . "\"" ?>><b>
                             Aluno <?= $aprovado ? "aprovado" : "reprovado" ?> no ano atual
-                        </b></p> 
+                        </b></p>
+                        <?php } ?>
                         <p style="display:inline" class="col-sm-3">
                             <?php 
                                 if( isset($_GET["ano"]) && $_GET["ano"] != date("Y") ){ ?>
