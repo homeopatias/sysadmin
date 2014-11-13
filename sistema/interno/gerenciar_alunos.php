@@ -708,7 +708,7 @@
                 $orderBy = " ORDER BY U.dataInscricao DESC" ;
                 $indexHeader = isset($_GET["numeroTableHeader"] ) 
                                 ? htmlspecialchars( $_GET["numeroTableHeader"] ) 
-                                : 0 ;
+                                : -1 ;
                 $direcao = 2;
                 //------------------
 
@@ -768,9 +768,18 @@
                 $itemsPorPagina = isset($_GET["pagina-ipp"]) ? 
                                   htmlspecialchars($_GET["pagina-ipp"]) : 10;
                 $itemsPorPagina = (int)$itemsPorPagina;
+
+                //---------SE algum index foi excolhido para ordenação, ordena---------
                 
-                $textoQuery .= $orderBy." LIMIT ".($itemsPorPagina+1).
+                if($indexHeader != -1){
+                    $textoQuery .= $orderBy;
+                }
+
+                $textoQuery .= " LIMIT ".($itemsPorPagina+1).
                                 " OFFSET ".(($pagina)*$itemsPorPagina);
+
+                //---------------------------------------------------------------------
+
                 $query = $conexao->prepare($textoQuery);
 
                 // passamos os parâmetros corretamente de acordo com os filtros passados
@@ -1071,7 +1080,7 @@
                                 id="numeroTableHeader" 
                                 value =<?= isset($_GET["numeroTableHeader"])? 
                                     htmlspecialchars($_GET["numeroTableHeader"]) :
-                                    "0" ?> >
+                                    "-1" ?> >
 
                             <!-- passar 1 para ser crescente ou 2 para decrescente -->
                             <input type="hidden" name="cimaOuBaixo" 
