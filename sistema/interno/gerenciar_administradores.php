@@ -94,6 +94,11 @@
                     }else{
                         $(this).find("#miscelanea").prop('checked', false);
                     }
+                    if( 32 & permissoes){
+                        $(this).find("#financeiro").prop('checked', true);
+                    }else{
+                        $(this).find("#financeiro").prop('checked', false);
+                    }
                 });
 
                 // esconde inputs de busca
@@ -317,6 +322,26 @@
                && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" &&
                16 & unserialize($_SESSION["usuario"])->getPermissoes() ){
 
+                $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
+                $dados = json_decode($dados, true);
+
+                foreach($dados as $chave => $valor) {
+                    $dados[$chave] = str_rot13($valor);
+                }
+
+                $host      = $dados["host"];
+                $usuario   = $dados["nome_usuario"];
+                $senhaBD   = $dados["senha"];
+            
+                // cria conexão com o banco
+                $conexao = null;
+                $db      = "homeopatias";
+                try{
+                    $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
+                }catch (PDOException $e){
+                    echo $e->getMessage();
+                }                
+
                 // se o usuário chegou até aqui através de um formulário, registra o novo
                 // administrador no sistema
                 if(isset($_POST["submit"])){
@@ -340,6 +365,7 @@
                         $cpfChecar = str_replace("-","",$cpfChecar);
                         $cpfChecar = str_split($cpfChecar);
                         $somaChecagem = 0;
+
                         for($i = 10; $i >= 2; $i = $i - 1){
                             $somaChecagem += (int)($cpfChecar[10 - $i]) * $i;
                         }
@@ -358,14 +384,74 @@
                                 $cpfValido = false;
                             }
                         }
+
+                        $todosZero = true;
+                        $todosNove = true;
+                        for($i = 0; $i <11; $i++){
+                            if($cpfChecar[$i] != '0'){
+                                $todosZero = false;
+                            }
+                            if($cpfChecar[$i] != '9'){
+                                $todosNove = false;
+                            }
+                        }
+
+                        if($todosZero || $todosNove){
+                            $cpfValido = false;
+                        }
+
                     }
+
+                    $cpfExistente = false;
+                    if($cpfValido){
+                        //Checa se ja existe este cpf no sistema cadastrado como administrador
+                        $cpfNumerico = str_replace(".","",$cpf);
+                        $cpfNumerico = str_replace("-","",$cpfNumerico);
+                        $textoQuery = "SELECT U.cpf
+                                       FROM Usuario U , Administrador A
+                                       WHERE U.id = A.idUsuario AND U.cpf = ?
+                                       AND A.nivel LIKE 'administrador'";
+        
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $cpfNumerico, PDO::PARAM_STR);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+    
+                        if($linha = $query->fetch()){
+                            $cpfValido = false;
+                            $cpfExistente = true;
+                        }
+                    }
+
 
                     $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
                                     preg_match("/^.+\@.+\..+$/", $email);
+    
+                    $emailExistente = false;
+                    if($emailValido){
+                        //Checa se ja existe este email no sistema cadastrado como administrador
+                        $textoQuery = "SELECT U.email
+                                       FROM Usuario U , Administrador A
+                                       WHERE U.id = A.idUsuario AND U.email = ? 
+                                       AND A.nivel LIKE 'administrador'";
+        
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1,$email, PDO::PARAM_STR);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+    
+                        if($linha = $query->fetch()){
+                            $emailValido = false;
+                            $emailExistente = true;
+                        }
+                    }
+
                     $loginValido  = isset($login) && mb_strlen($login, 'UTF-8') >= 3 &&
                                     mb_strlen($login, 'UTF-8') <= 100;
                     $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                     mb_strlen($senha, 'UTF-8') <= 72;
+
+
 
                     // se todos os dados estão válidos, o administrador é cadastrado
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida){
@@ -399,35 +485,19 @@
                         }
                     }else if(!$nomeValido){
                         $mensagem = "Nome inválido!";
-                    }else if(!$cpfValido){
+                    }else if(!$cpfValido && !$cpfExistente){
                         $mensagem = "CPF inválido!";
-                    }else if(!$emailValido){
+                    }else if($cpfExistente){
+                        $mensagem = "CPF ja cadastrado!";
+                    }else if(!$emailValido && !$emailExistente){
                         $mensagem = "E-mail inválido!";
+                    }else if($emailExistente){
+                        $mensagem = "E-mail ja cadastrado!";
                     }else if(!$loginValido){
                         $mensagem = "Nome de usuário inválido!";
                     }else if(!$senhaValida){
                         $mensagem = "Senha inválida!";
                     }
-                }
-
-                $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
-                $dados = json_decode($dados, true);
-
-                foreach($dados as $chave => $valor) {
-                    $dados[$chave] = str_rot13($valor);
-                }
-
-                $host      = $dados["host"];
-                $usuario   = $dados["nome_usuario"];
-                $senhaBD   = $dados["senha"];
-            
-                // cria conexão com o banco
-                $conexao = null;
-                $db      = "homeopatias";
-                try{
-                    $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
-                }catch (PDOException $e){
-                    echo $e->getMessage();
                 }
 
                 $textoQuery  = "SELECT U.id, U.cpf, U.dataInscricao, U.email, 
@@ -853,7 +923,6 @@
                                 </div>
 
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -915,7 +984,11 @@
 
                             <div style="display:block col-sm-12">
                                 <p> Permissões de administração:</p>
-                                <div  class="col-sm-3" 
+                                <div class="warning">
+                                    As permissões só serão válidas a partir do próximo login
+                                     do administrador
+                                </div>
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="pessoas">Usuários :</label>
                                     <input type="checkbox" name="pessoas" id="pessoas"
@@ -923,7 +996,7 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="curso">Curso :</label>
                                     <input type="checkbox" name="curso" id="curso"
@@ -931,7 +1004,7 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="site">Site :</label>
                                     <input type="checkbox" name="site" id="site"
@@ -947,7 +1020,7 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-                                <div  class="col-sm-3" 
+                                <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
                                     <label for="miscelanea">Outros :</label>
                                     <input type="checkbox" name="miscelanea" id="miscelanea"
@@ -957,6 +1030,7 @@
                                 </div>
 
                             </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">

@@ -106,45 +106,8 @@
         <?php
             require_once("entidades/Aluno.php");
 
-            $idAluno = $_GET["id"];
-            $idAlunoUsuario = unserialize($_SESSION["usuario"])->getNumeroInscricao();
-            if(!isset($idAluno) || !preg_match("/^[0-9]*$/", $idAluno) ||
-                ( !(  unserialize($_SESSION["usuario"]) instanceof Aluno  ) || 
-                    ($idAluno != $idAlunoUsuario) ) ) {
-                // o id passado foi inválido
-                // redirecionamos o usuário para a página de gerenciamento de alunos
-                // com uma mensagem de erro
-        ?>
-
-        <!-- redireciona o usuário -->
-        <meta http-equiv="refresh" content="0; url=gerenciar_alunos.php?erro=Dados inválidos!">
-        <script type="text/javascript">
-            window.location = "gerenciar_alunos.php?erro=Dados inválidos!";
-        </script>
-
-        <?php
-                die();
-            }
-
-            // procuramos o aluno desejado no banco de dados
-            $aluno = new Aluno("");
-            $aluno->setNumeroInscricao($idAluno);
-            $sucesso = $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
-            if(!$sucesso){
-                // o id passado não representa um aluno no sistema
-                // redirecionamos o usuário para a página de gerenciamento de alunos
-                // com uma mensagem de erro
-        ?>
-
-        <!-- redireciona o usuário -->
-        <meta http-equiv="refresh" content="0; url=gerenciar_alunos.php?erro=Dados inválidos!">
-        <script type="text/javascript">
-            window.location = "gerenciar_alunos.php?erro=Dados inválidos!";
-        </script>
-
-        <?php
-            }
-
+            $aluno = unserialize($_SESSION["usuario"]);
+            $idAluno = $aluno->getNumeroInscricao();
             include("modulos/navegacao.php");
 
             $mensagem = "";
@@ -342,12 +305,14 @@
                             $status = "";
                             if($aluno->getStatus() === "inscrito"){
                                 $status = "Inscrito";
-                            }else if($aluno->getStatus() === "preinscrito"){
+                            } else if($aluno->getStatus() === "preinscrito"){
                                 $status = "Pré-inscrito";
-                            }else if($aluno->getStatus() === "desistente"){
+                            } else if($aluno->getStatus() === "desistente"){
                                 $status = "Desistente";
-                            }else if($aluno->getStatus() === "formado"){
+                            } else if($aluno->getStatus() === "formado"){
                                 $status = "Formado";
+                            } else if($aluno->getStatus() === "inativo"){
+                                $status = "Inativo";
                             }
                         ?>
                         <p style="display:inline" class="col-sm-3">
@@ -371,10 +336,12 @@
                             // neste ano
 
                             $textoQuery = "SELECT A.numeroInscricao
-                                            FROM Aluno A, Matricula M, Cidade C
+                                            FROM Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
                                             WHERE A.idIndicador = ? AND 
                                             M.chaveAluno = A.numeroInscricao AND
-                                            M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())";
+                                            M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())
+                                            AND Pg.chaveMatricula = M.idMatricula AND
+                                            Pg.numParcela = 0 AND Pg.fechado = 1";
 
                             $query = $conexao->prepare($textoQuery);
 
@@ -383,7 +350,10 @@
                                         unserialize( $_SESSION["usuario"] )->getNumeroInscricao() );
 
                             $query->execute();
-                            $indicados = $query->rowCount();
+                            $indicados  = "<a href=\"#\" data-toggle=\"modal\"";
+                            $indicados .= " data-target=\"#modal-visualiza-indicados\">";
+                            $indicados .= $query->rowCount();
+                            $indicados .= "</a>";
 
 
                         ?>
@@ -708,8 +678,8 @@
                                            "<i class=\"fa fa-times warning\"></i>";
                             }
                             $tabela .= "</td>";
-                            $tabela .= "    <td><a href=\"visualizar_informacoes_curso.php?id=".$idAluno.
-                                       "&ano=".$linha["ano"]."\" >
+                            $tabela .= "    <td><a href=\"visualizar_informacoes_curso.php?ano=".
+                                $linha["ano"]."\" >
                                         <i class=\"fa fa-money\"></i>
                                         </a></td>";
                             $tabela .= "</tr>";
@@ -748,10 +718,7 @@
                          Pagamentos efetuados e pendentes desse aluno -->
                     <?php
 
-                        // os pagamentos são criados na hora em que o aluno se matricula,
-                        // e a medida que o aluno paga, eles vão sendo fechados.
-
-                        // procuramos os pagamentos desse ano, tanto pendentes
+                        // procuramos os pagamentos do ano enviado, tanto pendentes
                         // como efetuados
 
                         $anoPagamento = date("Y");
@@ -845,8 +812,7 @@
                     <?php
                         }
 
-                        // fechamos a conexão
-                        $conexao = null;
+                        
                     ?>
 
                 </section>
@@ -874,7 +840,156 @@
                 </div>
             </div>
         </div> 
+
+        <!-- popup "modal" do bootstrap para visualização de indicados -->
+        <div class="modal fade" id="modal-visualiza-indicados" tabindex="-1" role="dialog"
+             aria-labelledby="modal-visualiza-indicados" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        X
+                    </button>
+                    <h4 class="modal-title">Alunos Indicados</h4>
+                    </div>
+                    <div class="modal-body">
+                        <?php
+
+                            //Busca no banco alunos matriculados neste ano que foram indicados
+                            // pelo aluno
+                            $idUsuario = unserialize($_SESSION["usuario"])->getNumeroInscricao();
+                            
+                            $textoQuery = "SELECT U.nome, A.numeroInscricao
+                                           FROM Usuario U, Aluno A, Matricula M, Cidade C, 
+                                           PgtoMensalidade Pg
+                                           WHERE U.id = A.idUsuario AND
+                                           A.numeroInscricao = M.chaveAluno AND 
+                                           A.idIndicador = ? AND M.chaveCidade = C.idCidade AND
+                                           YEAR( CURDATE() ) = YEAR( U.dataInscricao ) 
+                                           AND Pg.chaveMatricula = M.idMatricula AND
+                                           Pg.numParcela = 0 AND Pg.fechado = 1
+                                           ORDER BY U.nome ASC";
+
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(1, $idUsuario);
+                            $query->setFetchMode(PDO::FETCH_ASSOC);
+                            $query->execute();
+
+                            $listaAnoAtual = "";
+                            $matriculadosEsteAno = $query->RowCount();
+                            if($matriculadosEsteAno === 0){
+                                $listaAnoAtual .= "<span class='warning'>
+                                                        Não há alunos indicados que se 
+                                                        matricularam este ano
+                                                    </span>";
+                            }
+                            else{
+                                $listaAnoAtual .= "<table class=\"table table-bordered table-striped\">
+                                                        <thead style=\"background-color: #AAA\" >
+                                                            <th>Nome</th>
+                                                            <th>Numero Inscrição</th>
+                                                        </thead>";
+
+                                while($linha = $query->fetch()){
+                                    $listaAnoAtual .= " <tr>
+                                                            <td>".$linha["nome"]."</td>
+                                                            <td>".$linha["numeroInscricao"]."</td>
+                                                        </tr>";
+                                     
+                                }
+                                $listaAnoAtual .= "</table>";
+                            }
+
+                            $descontoIndicados = 10*$matriculadosEsteAno;
+                            if($descontoIndicados > 100){
+                                $descontoIndicados = 100;
+                            }
+
+                            $descontoAnoAtual = $descontoIndicados;
+                            $dataInscricao = unserialize($_SESSION["usuario"])->getDataInscricao();
+
+                            $foiIndicado = unserialize($_SESSION["usuario"])->getIdIndicador();
+                            
+                            if(date("Y",$dataInscricao) === date("Y") && $foiIndicado){
+                                $descontoAnoAtual += 10;
+                                $desconto = "<p><b>Desconto de indicado : 10%</b></p>";
+                            }else{
+                                $desconto = "<p><b>Você não possui desconto de indicado</b></p>";
+                            }
+
+                            if($descontoAnoAtual > 100){
+                                $descontoAnoAtual = 100;
+                            }
+                            
+                            if($descontoAnoAtual >0){
+                                $descontoAnoAtual = "<p class='sucesso'>Seu desconto no ano 
+                                                    atual : ".$descontoAnoAtual."%</p>";
+                            }else{
+                                $descontoAnoAtual = "<p class='warning'>Você não possui desconto
+                                                    no ano atual</p>";
+                            }
+
+
+                            //Busca alunos indicados de anos anteriores
+                            $idUsuario = unserialize($_SESSION["usuario"])->getNumeroInscricao();
+                            
+                            $textoQuery = "SELECT U.nome
+                                           FROM Usuario U, Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
+                                           WHERE U.id = A.idUsuario AND
+                                           A.numeroInscricao = M.chaveAluno AND 
+                                           A.idIndicador = ? AND M.chaveCidade = C.idCidade AND
+                                           YEAR( U.dataInscricao ) < YEAR( CURDATE() )
+                                           AND Pg.chaveMatricula = M.idMatricula AND
+                                           Pg.numParcela = 0 AND Pg.fechado = 1
+                                           ORDER BY U.nome ASC";
+
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(1, $idUsuario);
+                            $query->setFetchMode(PDO::FETCH_ASSOC);
+                            $query->execute();
+
+                            $listaAnoAnterior = "";
+                            $matriculadosAnosAnteriores = $query->RowCount();
+                            if($matriculadosAnosAnteriores === 0){
+                                $listaAnoAnterior .= "<span class='warning'>
+                                                        Não há alunos indicados que se 
+                                                        matricularam em anos anteriores
+                                                    </span>";
+                            }
+                            else{
+                                $listaAnoAnterior .= "<table class=\"table table-bordered table-striped\">
+                                                        <thead style=\"background-color: #AAA\" >
+                                                            <th>Nome</th>
+                                                            <th>Numero Inscrição</th>
+                                                        </thead>";
+                                while($linha = $query->fetch()){
+                                    $listaAnoAnterior .= " <tr>
+                                                            <td>".$linha["nome"]."</td>
+                                                            <td>".$linha["numeroInscricao"]."</td>
+                                                        </tr>";
+                                     
+                                }
+                                $listaAnoAnterior .= "</table>";
+                            }
+                         ?>
+                        <?= $desconto ?>
+                        <?= $descontoAnoAtual ?>
+                        <h5>Indicados Matriculados este ano</h5>
+                        <?= $listaAnoAtual ?>
+                        <p>Desconto por ter indicado este ano : <?= $descontoIndicados ?>%</p>
+                        <br>
+                        <h5>Indicados Matriculados em anos anteriores</h5>
+                        <?= $listaAnoAnterior ?>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div> 
         <?php
+
+            // fechamos a conexão
+            $conexao = null;
             }else{
         ?>
         <!-- redireciona o usuário para o index.php -->

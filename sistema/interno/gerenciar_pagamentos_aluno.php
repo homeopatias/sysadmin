@@ -133,12 +133,14 @@
                             $status = "";
                             if($aluno->getStatus() === "inscrito"){
                                 $status = "Inscrito";
-                            }else if($aluno->getStatus() === "preinscrito"){
+                            } else if($aluno->getStatus() === "preinscrito"){
                                 $status = "Pré-inscrito";
-                            }else if($aluno->getStatus() === "desistente"){
+                            } else if($aluno->getStatus() === "desistente"){
                                 $status = "Desistente";
-                            }else if($aluno->getStatus() === "formado"){
+                            } else if($aluno->getStatus() === "formado"){
                                 $status = "Formado";
+                            } else if($aluno->getStatus() === "inativo"){
+                                $status = "Inativo";
                             }
                         ?>
                     </div>
@@ -156,7 +158,7 @@
                     </div>
 
                     <?php
-                        //Lê os anos das mariculas que o usuário possui para permitir selecionar o ano a ser
+                            //Lê os anos das mariculas que o usuário possui para permitir selecionar o ano a ser
                             //exibido
     
                             $textoQuery = "SELECT C.ano 
@@ -202,15 +204,16 @@
     
                     }
                     ?>
+                    <!-- 
+                    //////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////
+                    ////////////////////////// PAGAMENTOS ////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////
 
-                    <!-- //////////////////////////////////////////////////////////////////////
-                         //////////////////////////////////////////////////////////////////////
-                         //////////////////////////////////////////////////////////////////////
-                         ////////////////////////// PAGAMENTOS ////////////////////////////////
-                         //////////////////////////////////////////////////////////////////////
-                         //////////////////////////////////////////////////////////////////////
-                         //////////////////////////////////////////////////////////////////////
-                         //////////////////////////////////////////////////////////////////////
                          Pagamentos efetuados e pendentes desse aluno -->
                     <?php
                         // procuramos os pagamentos desse ano, tanto pendentes
@@ -403,7 +406,7 @@
                                     $quantiaPaga = htmlspecialchars($_POST["valor-pagamento"]);
                                     $quantiaPaga = number_format($quantiaPaga, 2);
                                     $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
-                                    $msg = "Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la";
+                                    $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
                                     $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
                                     $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
                                     $msg .= "<br><b>Método:</b> " . $metodo;
@@ -414,6 +417,15 @@
                                         "X-Mailer: PHP/" . phpversion();
 
                                     mail($aluno->getEmail(), $assunto, $msg, $headers);
+
+                                    // agora registramos no sistema uma notificação para o aluno
+                                    $texto .= "Pagamento recebido:\nValor: R$" . $quantiaPaga;
+                                    $texto .= "\nData: " . date("d/m/Y") . "\nHorário: " . date("H:i");
+                                    $texto .= "\nMétodo: " . $metodo;
+                                    $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
+                                                        (titulo, texto, chaveAluno, lida) VALUES (?, ?, ?, 0)");
+                                    $dados = array("Pagamento recebido", $texto, $idAluno);
+                                    $queryNotificacao->execute($dados);
 
                                     $conexao->commit(); 
                                 }
@@ -582,7 +594,10 @@
                                 <label for="metodo-pagamento" class="col-sm-6">
                                     Método de Pagamento:
                                 </label>
-                                <input type="text" class="col-sm-6" id="metodo-pagamento" name="metodo-pagamento" >
+                                <select id="metodo-pagamento" name="metodo-pagamento">
+                                    <option value="Dinheiro">Dinheiro</option>
+                                    <option value="Cheque"  >Cheque</option>
+                                </select>
                             </div>
                             <div class="col-sm-12">
                                 <h5 class="warning">Não é permitido lançar um pagamento maior do que a divida total!</h5>
