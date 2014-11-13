@@ -156,6 +156,10 @@
                             );
                         });
                     });
+
+                    $(this).find('#custoCurso').val(
+                        $(e.relatedTarget).data('custo')
+                    );
                 });
 
                 // esconde inputs de busca
