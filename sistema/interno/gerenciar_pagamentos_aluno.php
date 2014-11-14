@@ -431,7 +431,7 @@
                                     mail($aluno->getEmail(), $assunto, $msg, $headers);
 
                                     // agora registramos no sistema uma notificação para o aluno
-                                    $texto .= "Pagamento recebido:\nValor: R$" . $quantiaPaga;
+                                    $texto  = "Pagamento recebido:\nValor: R$" . $quantiaPaga;
                                     $texto .= "\nData: " . date("d/m/Y") . "\nHorário: " . date("H:i");
                                     $texto .= "\nMétodo: " . $metodo;
                                     $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
@@ -540,7 +540,7 @@
                             echo "<td> ";
 
                             echo $metodo
-                                 ? htmlspecialchars(str_replace("|", " , ", $metodo))
+                                 ? htmlspecialchars(str_replace("|", ", ", $metodo))
                                  : "N/A";
                             echo "</td>";
                         }

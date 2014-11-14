@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 13, 2014 at 05:07 PM
+-- Generation Time: Nov 14, 2014 at 07:12 PM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `Notificacao`
@@ -371,7 +371,9 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (3, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$1.50\nData: 13/11/2014\nHorário: 16:43\nMétodo: Dinheiro', 7, 0),
 (4, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$1,000.00\nData: 13/11/2014\nHorário: 16:49\nMétodo: Dinheiro', 7, 0),
 (5, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 16:50\nMétodo: Dinheiro', 7, 0),
-(6, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 17:05\nMétodo: Dinheiro', 7, 0);
+(6, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 17:05\nMétodo: Dinheiro', 7, 0),
+(7, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$150.00\nData: 14/11/2014\nHorário: 18:43\nMétodo: Cheque', 8, 1),
+(8, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$70.00\nData: 14/11/2014\nHorário: 18:44\nMétodo: Dinheiro', 8, 1);
 
 -- --------------------------------------------------------
 
@@ -389,14 +391,16 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere',
   PRIMARY KEY (`idPagamento`),
   KEY `chaveUsuario` (`chaveUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `Pagamento`
 --
 
 INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `metodo`, `objetivo`, `codigoTransacao`, `ano`) VALUES
-(1, 8, 500, 'Dinheiro', 'mensalidade', NULL, 2014);
+(1, 8, 500, 'Dinheiro', 'mensalidade', NULL, 2014),
+(2, 9, 150, 'Cheque', 'mensalidade', NULL, 2014),
+(3, 9, 70, 'Dinheiro', 'mensalidade', NULL, 2014);
 
 -- --------------------------------------------------------
 
@@ -424,6 +428,7 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
   `inscricao` tinyint(1) NOT NULL COMMENT 'Determina se esse pagamento se refere a uma inscricao ou a uma anuidade',
   `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa anuidade/inscrição',
   `valorPago` float NOT NULL COMMENT 'Valor pago pelo associado',
+  `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento utilizado para essa anuidade',
   `data` datetime DEFAULT NULL COMMENT 'Data do pagamento da anuidade',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
@@ -441,6 +446,7 @@ CREATE TABLE IF NOT EXISTS `PgtoCompra` (
   `idPagCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de pagamento de uma compra',
   `cpf` int(11) NOT NULL COMMENT 'CPF do comprador do produto',
   `valor` float NOT NULL COMMENT 'Valor pago na compra',
+  `metodo` int(11) NOT NULL COMMENT 'Método de pagamento utilizado para essa compra',
   `chaveCompra` int(11) NOT NULL COMMENT 'Identificador unico da compra feita, ao qual esse pagamento se refere',
   `data` datetime NOT NULL COMMENT 'Data do pagamento',
   PRIMARY KEY (`idPagCompra`),
@@ -460,7 +466,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa mensalidade',
   `valorPago` float NOT NULL COMMENT 'Valor pago pelo aluno',
   `desconto` float NOT NULL COMMENT 'Desconto (em %) recebido pelo aluno devido às indicações',
-  `metodo` varchar(100) NOT NULL,
+  `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento utilizado para essa mensalidade',
   `data` datetime DEFAULT NULL COMMENT 'Data na qual essa mensalidade foi paga',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
@@ -534,7 +540,7 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (59, 5, 10, 30, 0, 0, '', NULL, 2014, 0),
 (60, 5, 11, 30, 0, 0, '', NULL, 2014, 0),
 (61, 6, 0, 150, 0, 0, 'Dinheiro', NULL, 2014, 1),
-(62, 6, 1, 220, 0, 0, '', NULL, 2014, 0),
+(62, 6, 1, 220, 220, 0, 'Cheque|Dinheiro', '2014-11-14 00:00:00', 2014, 1),
 (63, 6, 2, 220, 0, 0, '', NULL, 2014, 0),
 (64, 6, 3, 220, 0, 0, '', NULL, 2014, 0),
 (65, 6, 4, 220, 0, 0, '', NULL, 2014, 0),
