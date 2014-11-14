@@ -11,8 +11,7 @@
         <script>
             $(document).ready(function(){
                 // pequeno script para que o envio do formulário de ano seja feito assim
-                // que a cidade ou a etapa for mudada
-                $("#cidade").change( function(){ $(this).parent().submit() });
+                // que a etapa for mudada
                 $("#etapa").change( function(){ $(this).parent().submit() });
 
                 // passa os dados do href para o modal de confirmação de fechamento
@@ -33,16 +32,6 @@
             if(isset($_SESSION["usuario"]) &&
                unserialize($_SESSION["usuario"]) instanceof Administrador &&
                unserialize($_SESSION["usuario"])->getNivelAdmin() === "coordenador"){
-
-                $idCidade = false;
-                if(isset($_GET["cidade"])){
-                    if(preg_match("/^[0-9]*$/", $_GET["cidade"])){
-                        $idCidade = htmlspecialchars($_GET["cidade"]);
-                    }else{
-                        $mensagem = "Cidade inválida!";
-                        $idCidade = -1;
-                    }
-                }
 
                 $etapa = false;
                 if(isset($_GET["etapa"])){
@@ -81,9 +70,9 @@
                 $coordenadorIdAdmin = $coordenador->getIdAdmin();
 
                 $textoQuery  = "SELECT C.idCidade, C.nome, C.UF FROM Cidade C , Usuario U, 
-                                Administrador A WHERE C.ano = YEAR(NOW()) AND U.id = ? AND
-                                A.nivel = 'coordenador' AND C.idCoordenador = A.idAdmin AND A.idAdmin = ?
-                                ORDER BY nome DESC";
+                                Administrador A WHERE U.id = ? AND A.nivel = 'coordenador'
+                                AND C.idCoordenador = A.idAdmin AND A.idAdmin = ?
+                                AND ano = YEAR(NOW()) LIMIT 1";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->bindParam(1,$coordenadorId);
@@ -91,14 +80,10 @@
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute();
 
-                $cidades = array();
+                $cidade = null;
 
-                while ($linha = $query->fetch()){
-                    // caso nenhuma cidade tenha sido recebida ou seja recebido um id de cidade
-                    // inválido, listamos os alunos da primeira cidade (ordem alfabética)
-                    if($idCidade == -1 || !$idCidade){
-                        $idCidade = htmlspecialchars($linha["idCidade"]);
-                    }
+                if ($linha = $query->fetch()){
+                    $idCidade = htmlspecialchars($linha["idCidade"]);
 
                     // caso nenhuma etapa tenha sido recebida, listamos os alunos da
                     // primeira etapa
@@ -106,16 +91,17 @@
                         $etapa = 1;
                     }
 
-                    $cidades[] = array("nome" => htmlspecialchars($linha["nome"]),
-                                       "UF"   => htmlspecialchars($linha["UF"]),
-                                       "id"   => htmlspecialchars($linha["idCidade"]));
+                    $cidade = array("nome" => htmlspecialchars($linha["nome"]),
+                                    "UF"   => htmlspecialchars($linha["UF"]));
                 }
         ?>
 
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
-                    <h2 style="font-weight:bold; display:inline">Turmas de <?= date("Y") ?></h2>
+                    <h2 style="font-weight:bold; display:inline">
+                        Suas turmas atuais - <?= $cidade['nome'] . '/' . $cidade['UF'] ?>
+                    </h2>
                     <?php
                         $mensagem = isset($_GET['mensagem']) ? $_GET['mensagem'] : false;
                         $sucesso  = isset($_GET['sucesso']) ? $_GET['sucesso'] : false;
@@ -126,7 +112,7 @@
                             echo "<br><br><p class=\"sucesso\">$mensagem</p>";
                         }
                     ?>
-                    <a href=<?= "\"impressao_chamada.php?cidade=". $idCidade . "&etapa=" . $etapa ."\"" ?>
+                    <a href=<?= "\"impressao_chamada.php?etapa=" . $etapa ."\"" ?>
                        target="_blank" class="pull-right" style="text-decoration:none" id="btn-imprimir">
                         <b>Lista de chamada para impressão &nbsp;</b>
                         <i class="fa fa-lg fa-print"></i>
@@ -134,27 +120,14 @@
                     <br><br>
                     <a class="pull-right btn btn-primary" id="btn-fechar" data-toggle="modal"
                        data-target="#modal-fecha-turma"
-                       data-href=<?= "\"rotinas/fechar_turma.php?idCidade=" .
-                                     $idCidade . "&etapa=" . $etapa . "\""?>>
+                       data-href=<?= "\"rotinas/fechar_turma.php?etapa=" . $etapa . "\""?>>
                         Fechar turma
                     </a>
-                    <label for="ano">
-                        Selecione a cidade e a etapa:
-                    </label><br>
-                    <form style="width: 300px" method="GET" action="visualizar_turmas.php ">
-                        <select style="display:inline; width: 200px !important"
-                                class="form-control input-sm" id="cidade" name="cidade">
-                            <?php foreach ($cidades as $cidade) {
-                                if($idCidade == $cidade["id"]){
-                                    echo "<option value=" . $cidade["id"] .
-                                         " selected>" . $cidade["nome"] . "/" . $cidade["UF"] . "</option>";
-                                }else{
-                                    echo "<option value=" . $cidade["id"] .
-                                         ">" . $cidade["nome"] . "/" . $cidade["UF"] . "</option>";
-                                }
-                            } ?>
-                        </select>
-                        <select style="display:inline; width: 50px !important"
+                    <form style="width: 500px" method="GET" action="visualizar_turmas.php ">                
+                        <label for="etapa">
+                            Selecione a etapa:
+                        </label>
+                        <select style="display:inline; width: 50px !important; margin-left: 20px"
                                 class="form-control input-sm" id="etapa" name="etapa">
                             <option value="1" <?php if($etapa == 1) echo "selected" ?>>1</option>
                             <option value="2" <?php if($etapa == 2) echo "selected" ?>>2</option>
@@ -170,12 +143,11 @@
                                         ON C.idCidade = M.chaveCidade INNER JOIN Aluno A ON 
                                         M.chaveAluno = A.numeroInscricao INNER JOIN Usuario U ON 
                                         U.id = A.idUsuario WHERE 
-                                        C.idCidade = ? AND M.etapa = ? AND C.idCoordenador = ?";
+                                        C.idCidade = ? AND M.etapa = ?";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $idCidade, PDO::PARAM_INT);
                         $query->bindParam(2, $etapa, PDO::PARAM_INT);
-                        $query->bindParam(3, $coordenadorId, PDO::PARAM_INT);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 

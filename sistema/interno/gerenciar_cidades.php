@@ -76,9 +76,28 @@
                     $(this).find('#local').val(
                         $(e.relatedTarget).parent().siblings('.local').text()
                     );
-                    $(this).find('#coord').val(
-                        $(e.relatedTarget).parent().siblings('.nome-coord').data('id-coord')
-                    );
+
+                    // carregamos os dados dos coordenadores do ano dessa cidade
+                    $.post("rotinas/coordenador/lista_coordenadores_json.php", {
+                        'ano': $("#ano").val()
+                    }, function(data){
+                        $("#coord").find('option').remove().end();
+                        $("#coord").append(
+                                '<option value="' +
+                                $(e.relatedTarget).parent().siblings('.nome-coord').data('id-coord') + '">' +
+                                $(e.relatedTarget).parent().siblings('.nome-coord').data('nome-coord') +
+                                '</option>'
+                        );
+                        data = JSON.parse(data);
+                        data.forEach(function(coordenador){
+                            var coord = JSON.parse(coordenador);
+                            $("#coord").append(
+                                '<option value="' + coord['id'] + '">' +
+                                coord['nome'] + '</option>'
+                            );
+                        });
+                    });
+
                     $(this).find('#inscricao').val(
                         $(e.relatedTarget).parent().siblings('.inscricao').text()
                                           .substring(3).replace(/\s+/g, '')
@@ -99,6 +118,44 @@
                     $(this).find('#custoCurso').val(
                         $(e.relatedTarget).data('custo')
                     );
+
+                });
+
+
+                // fazemos com que caso a entrada de ano da cidade seja mudada, os coordenadores
+                // listados também mudem, assim só ficam visíveis os coordenadores que não
+                // coordenam nenhuma cidade no ano escolhido
+                $("#ano-nova").change(function(){
+                    $.post("rotinas/coordenador/lista_coordenadores_json.php", {
+                        'ano': $("#ano-nova").val()
+                    }, function(data){
+                        $("#coord-nova").find('option').remove().end();
+                        data = JSON.parse(data);
+                        data.forEach(function(coordenador){
+                            var coord = JSON.parse(coordenador);
+                            $("#coord-nova").append(
+                                '<option value="' + coord['id'] + '">' +
+                                coord['nome'] + '</option>'
+                            );
+                        });
+                    });
+                });
+
+                // repetimos o processo para edição
+                $("#ano").change(function(){
+                    $.post("rotinas/coordenador/lista_coordenadores_json.php", {
+                        'ano': $("#ano").val()
+                    }, function(data){
+                        $("#coord").find('option').remove().end();
+                        data = JSON.parse(data);
+                        data.forEach(function(coordenador){
+                            var coord = JSON.parse(coordenador);
+                            $("#coord").append(
+                                '<option value="' + coord['id'] + '">' +
+                                coord['nome'] + '</option>'
+                            );
+                        });
+                    });
                 });
 
                 // esconde inputs de busca
@@ -438,7 +495,7 @@
                     if( $(this).hasClass("headerSortDown") ){
                         direcao = 1; // muda para virada para cima
                     }
-                    else{
+                    else {
                         direcao = 2;
                     }
                     $("#numeroTableHeader").val(position);
@@ -449,6 +506,10 @@
                 });
 
             checaTamanhoTela();
+
+            // chamamos a função change do dropdown de ano de nova cidade
+            // para carregar os coordenadores possíveis
+            $("#ano-nova").change();
         }); 
 
         //atualiza formulário com a busca
@@ -458,26 +519,26 @@
         }
 
         //------------Checa se tamanho minimo da tela é o tamanho minimo do css
-            function checaTamanhoTela(){
-                tamanhoTela = $(window).width();
+        function checaTamanhoTela(){
+            tamanhoTela = $(window).width();
 
-                if (tamanhoTela < 700) {
-                    $("table").colResizable({
-                        disable:true
-                    }); 
-                    $(".flip-scroll th").css("width","150px");
-                }
-                else {
-                    $("table").colResizable({
-                        disable:false
-                    }); 
-                }
+            if (tamanhoTela < 700) {
+                $("table").colResizable({
+                    disable:true
+                }); 
+                $(".flip-scroll th").css("width","150px");
             }
+            else {
+                $("table").colResizable({
+                    disable:false
+                }); 
+            }
+        }
 
-            //----Checa se ao redimencionar a tela atingiu o tamanho minimo da tela
-            $(window).resize(function() {
-                checaTamanhoTela();
-            });
+        //----Checa se ao redimencionar a tela atingiu o tamanho minimo da tela
+        $(window).resize(function() {
+            checaTamanhoTela();
+        });
 
         </script>
     </head>
@@ -559,6 +620,22 @@
                                 $cnpjValido = false;
                             }
                         }
+                    }
+
+                    if($idCoordValido) {
+                        // checamos se esse coordenador já coordena outra cidade nesse ano,
+                        // caso coordene, esse coordenador é inválido
+                        $textoQuery  = 'SELECT idCidade FROM Cidade WHERE ano = ?
+                                        AND idCoordenador = ?';
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $ano);
+                        $query->bindParam(2, $idCoord);
+
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+
+                        // se esse coordenador é de outra cidade no ano dado, não é válido
+                        if($query->fetch()) $idCoordValido = false;
                     }
 
                     // se todos os dados estão válidos, a cidade é cadastrada
@@ -818,7 +895,7 @@
                         $tabela .= date("d/m/Y", $dataLimite) ."</td>";
                         $tabela .= "    <td class=\"nome-coord\" data-id-coord=\"";
                         $tabela .= $linha["idCoordenador"];
-                        $tabela .= "\">";
+                        $tabela .= "\"";
     
                         require_once("entidades/Administrador.php");
                         $coord = new Administrador("");
@@ -826,6 +903,8 @@
                         $coord->recebeAdminId("localhost", "homeopatias", $usuario, $senhaBD,
                                               "coordenador");
     
+                        $tabela .= "data-nome-coord=\"" . htmlspecialchars($coord->getNome());
+                        $tabela .= "\">";
                         $tabela .= htmlspecialchars($coord->getNome())."</td>";
     
                         $tabela .= "    <td class=\"inscricao\">R$ ";
@@ -856,7 +935,7 @@
                         $possuiProximaPagina = true;
                     }
                     $contador++;
-                }          
+                }   
         ?>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
@@ -1213,15 +1292,7 @@
                             <div class="form-group">
                                 <label for="coord-nova">Coordenador da cidade:</label>
                                 <select name="coord" id="coord-nova" class="form-control" required>
-                                    <?php
-                                        require_once("rotinas/coordenador/lista_coordenadores.php");
-                                        $lista = listaCoordenadores();
-                                        for($i = 0; $i < count($lista); $i++){
-                                            echo "<option value=\"";
-                                            echo $lista[$i]->getIdAdmin()."\">";
-                                            echo $lista[$i]->getNome()."</option>";
-                                        }
-                                    ?>
+                                    <option value="">Escolha um ano acima...</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -1360,15 +1431,7 @@
                             <div class="form-group">
                                 <label for="coord">Coordenador da cidade:</label>
                                 <select name="coord" id="coord" class="form-control" required>
-                                    <?php
-                                        require_once("rotinas/coordenador/lista_coordenadores.php");
-                                        $lista = listaCoordenadores();
-                                        for($i = 0; $i < count($lista); $i++){
-                                            echo "<option value=\"";
-                                            echo $lista[$i]->getIdAdmin()."\">";
-                                            echo $lista[$i]->getNome()."</option>";
-                                        }
-                                    ?>
+                                    <option value="">Escolha um ano acima...</option>
                                 </select>
                             </div>
                             <div class="form-group">

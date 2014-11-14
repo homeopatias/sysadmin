@@ -45,16 +45,6 @@
 
                 $mensagem = "";
 
-                $idCidade = false;
-                if(isset($_GET["cidade"])){
-                    if(preg_match("/^[0-9]*$/", $_GET["cidade"])){
-                        $idCidade = htmlspecialchars($_GET["cidade"]);
-                    }else{
-                        $mensagem = "Cidade inválida!";
-                        $idCidade = -1;
-                    }
-                }
-
                 $etapa = false;
                 if(isset($_GET["etapa"])){
                     if(preg_match("/^[1-4]*$/", $_GET["etapa"])){
@@ -82,6 +72,8 @@
                         $usuario = $dados["nome_usuario"];
                         $senhaBD = $dados["senha"];
 
+                        $idCoordenador = unserialize($_SESSION['usuario'])->getIdAdmin();
+
                         // cria conexão com o banco
                         $conexao = null;
                         $db      = "homeopatias";
@@ -99,12 +91,13 @@
                                         FROM Matricula M INNER JOIN Cidade C ON C.idCidade 
                                         = M.chaveCidade INNER JOIN Aluno A ON M.chaveAluno = 
                                         A.numeroInscricao INNER JOIN Usuario U ON U.id = 
-                                        A.idUsuario WHERE A.status = 'inscrito' AND C.idCidade = ? 
-                                        AND M.etapa = ?";
+                                        A.idUsuario WHERE A.status = 'inscrito'
+                                        AND M.etapa = ? AND C.ano = YEAR(NOW())
+                                        AND C.idCoordenador = ?";
 
                         $query = $conexao->prepare($textoQuery);
-                        $query->bindParam(1, $idCidade, PDO::PARAM_INT);
-                        $query->bindParam(2, $etapa, PDO::PARAM_INT);
+                        $query->bindParam(1, $etapa, PDO::PARAM_INT);
+                        $query->bindParam(2, $idCoordenador, PDO::PARAM_INT);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 

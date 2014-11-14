@@ -2,10 +2,13 @@
 
 // Função que lista todos os coordenadores do sistema
 //
+// Recebe: O ano no qual devemos procurar os administradores. Se não for
+//         passado, procuramos em todos os anos. Caso o ano seja passado, apenas
+//         os coordenadores que não estão coordenando esse ano são listados.
 // Retorna: Vetor de Administradores, com apenas id, nome e login preenchidos
 
-function listaCoordenadores(){
-    require_once("entidades/Administrador.php");
+function listaCoordenadores($ano = false){
+    require_once($_SERVER["DOCUMENT_ROOT"] . "/interno/entidades/Administrador.php");
 
     // lemos as credenciais do banco de dados
     $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -26,12 +29,25 @@ function listaCoordenadores(){
         echo $e->getMessage();
     }
 
-    $textoQuery  = "SELECT U.id, U.cpf, U.dataInscricao, U.email, 
-                    U.nome, U.login, A.idAdmin 
-                    FROM Usuario U, Administrador A WHERE A.idUsuario = U.id AND 
-                    A.nivel = \"coordenador\" ORDER BY U.nome ASC";
+    if(!$ano) {
+        $textoQuery  = 'SELECT U.nome, U.login, A.idAdmin
+                        FROM Usuario U INNER JOIN Administrador A ON A.idUsuario = U.id
+                        WHERE A.idUsuario = U.id AND A.nivel = "coordenador" ORDER BY U.nome ASC';
+        $query = $conexao->prepare($textoQuery);
+    } else {
+        $textoQuery  = 'SELECT U.nome, U.login, A.idAdmin
+                        FROM Usuario U INNER JOIN Administrador A ON A.idUsuario = U.id
+                        WHERE A.nivel = "coordenador" AND NOT EXISTS(
+                            SELECT Ad.idAdmin FROM Administrador Ad LEFT JOIN Cidade C
+                            ON C.idCoordenador = Ad.idAdmin WHERE C.idCidade IS NOT NULL
+                            AND C.ano = ? AND C.idCoordenador = A.idAdmin
+                        )
+                        ORDER BY U.nome ASC';
+        $query = $conexao->prepare($textoQuery);
+        $query->bindParam(1, $ano);
 
-    $query = $conexao->prepare($textoQuery);
+    }
+
     $query->setFetchMode(PDO::FETCH_ASSOC);
     $query->execute();
 
