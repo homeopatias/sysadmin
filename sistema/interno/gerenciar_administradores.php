@@ -614,9 +614,9 @@
                 $tabela = "";
 
                 while ($linha = $query->fetch()){
-                    if($contador != $itemsPorPagina){
-                    // formatando o texto do cpf
-                    $cpfOriginal = str_split($linha["cpf"]);
+                    if($contador != $itemsPorPagina && $linha['idAdmin'] != 1){
+                        // formatando o texto do cpf
+                        $cpfOriginal = str_split($linha["cpf"]);
 
                         $cpf  = implode("", array_slice($cpfOriginal, 0, 3)) . ".";
                         $cpf .= implode("", array_slice($cpfOriginal, 3, 3)) . ".";
@@ -639,7 +639,7 @@
                                        strtotime(htmlspecialchars($linha["dataInscricao"])))    ."</td>";
                         $tabela .= "    <td><a data-id=\"" . $linha["id"];
                         $tabela .= "\" data-id-admin=\"";
-                        $tabela .= $linha["idAdmin"]."\" href=\"#\" data-toggle=\"modal\"";
+                        $tabela .= $linha['idAdmin']."\" href=\"#\" data-toggle=\"modal\"";
                         $tabela .= " data-target=\"#modal-edita-admin\"";
                         $tabela .= " data-permissoes=\"".htmlspecialchars($linha["permissoes"])."\">";
                         $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
@@ -649,9 +649,8 @@
                         $tabela .= " data-target=\"#modal-confirma-deleta\">";
                         $tabela .= "<i class=\"fa fa-trash-o\"></i></a></td>";
                         $tabela .= "</tr>";
-
                     }
-                    else{
+                    else if($linha['idAdmin'] != 1){
                         $possuiProximaPagina = true;
                     }
                     $contador++;
