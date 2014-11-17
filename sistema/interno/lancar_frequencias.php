@@ -183,17 +183,19 @@
                                 $assunto = "Homeopatias.com - Ausência registrada na aula do dia " . $dataAula;
                                 $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la</b>";
                                 $msg .= "<br><br>Foi registrada uma ausência do(a) aluno(a) " . $nomeAluno . " na aula do dia ";
-                                $msg .= $dataAula . "<br>Caso esse dado não esteja correto, favor contatar o coordenador da sua cidade.";
+                                $msg .= $dataAula . "<br>Caso esse dado não esteja correto, favor contatar o ";
+                                $msg .= "coordenador da sua cidade ou registrar uma justificativa no sistema.";
                                 $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
                                 $headers = "Content-type: text/html; charset=utf-8 " .
-                                    "From: Sistema Financeiro Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+                                    "From: Sistema Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
                                     "Reply-To: noreply@homeopatias.com" . "\r\n" .
                                     "X-Mailer: PHP/" . phpversion();
                                 mail($emailAluno, $assunto, $msg, $headers);
 
                                 // agora registramos no sistema uma notificação para o aluno
                                 $textoNotificacao = "Uma ausência sua foi registrada para a aula do dia " . $dataAula;
-                                $textoNotificacao .= "\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.";
+                                $textoNotificacao .= "\nCaso esse dado não esteja correto, favor contatar o coordenador";
+                                $textoNotificacao .= " da sua cidade ou registrar uma justificativa no sistema.";
                                 $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
                                                     (titulo, texto, chaveAluno, lida) VALUES (?, ?, ?, 0)");
                                 $dados = array("Ausência na aula do dia " . $dataAula, $textoNotificacao, $numInscricao);

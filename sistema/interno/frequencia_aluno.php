@@ -49,6 +49,12 @@
                 $("#ano").change(function(){
                     $("#busca-ano").submit();
                 });
+
+                // passa os dados do href para o modal de justificativa quando
+                // necessário
+                $("#modal-justificativa").on('show.bs.modal', function(e) {
+                    $(this).find('#idAula').val($(e.relatedTarget).data('chaveaula'));
+                });
             });
         </script>
     </head>
@@ -67,14 +73,6 @@
             if(isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof Aluno &&
                 unserialize($_SESSION['usuario'])->getStatus() === 'inscrito'){
 
-                $ano = "";
-                if( isset($_GET["ano"]) ){
-                    $ano = $_GET["ano"];
-                }
-                else{
-                    $ano = date("Y");
-                }
-
                 // lemos as credenciais do banco de dados
                 $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
                 $dados = json_decode($dados, true);
@@ -88,14 +86,46 @@
                 // cria conexão com o banco para uso ao longo da página
                 $conexao = null;
                 $db      = "homeopatias";
+
                 try {
                     $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
                 } catch (PDOException $e) {
                     echo $e->getMessage();
                 }
 
-                $textoQuery = "SELECT A.chaveCidade, A.etapa, A.data,
-                                P.nome , F.presenca FROM Aula A INNER JOIN Administrador Ad
+                $justificativaEnviada = false;
+
+                // checamos se recebemos dados de formulário
+                if (isset($_POST['submit'])) {
+                    // em caso afirmativo, enviamos a justificativa de ausência recebida
+                    $textoQuery = "UPDATE Frequencia SET aprovacaoPendente = 1,
+                                   justificativaAusencia = ? WHERE chaveAluno = ?
+                                   AND chaveAula = ?";
+
+                    $query = $conexao->prepare($textoQuery);
+                    $query->bindParam(1, htmlspecialchars($_POST['justificativa']));
+                    $query->bindParam(2, unserialize($_SESSION['usuario'])->getNumeroInscricao());
+                    $query->bindParam(3, $_POST['idAula']);
+
+                    $sucesso = $query->execute();
+
+                    if (!$sucesso) {
+                        $mensagem = "Erro no envio de justificativa de ausência";
+                    } else {
+                        $justificativaEnviada = true;
+                    }
+                }
+
+                $ano = "";
+                if( isset($_GET["ano"]) ){
+                    $ano = $_GET["ano"];
+                }
+                else{
+                    $ano = date("Y");
+                }
+
+                $textoQuery = "SELECT A.chaveCidade, A.etapa, A.data, P.nome, F.presenca,
+                                F.aprovacaoPendente, F.chaveAula FROM Aula A INNER JOIN Administrador Ad
                                 ON Ad.idAdmin = A.idProfessor INNER JOIN Usuario P ON 
                                 Ad.idUsuario = P.id INNER JOIN Cidade C ON
                                 A.chaveCidade = C.idCidade INNER JOIN Matricula M ON
@@ -139,25 +169,30 @@
                         $tabela .= str_replace("-", "/", $linha["data"])."\">";
                         $tabela .= date("d/m/Y H:i", strtotime($linha["data"])) ."</td>";
     
-                        $tabela .= "    <td><i class=\"fa " .($linha["presenca"] == 1
-                                                            ? "fa-check-square-o sucesso"
-                                                            : "fa-minus-square-o warning").
-                                        "\"></i>
-                                        </td>
-                                    </tr> ";
-                        if($linha["presenca"] == 1){
+                        if ($linha['aprovacaoPendente']) {
+                            $tabela .= "    <td><i class=\"fa fa-ellipsis-h\"></i>
+                                            </td>";
+                        } else if($linha['presenca']) {
+                            $tabela .= "    <td><i class=\"fa fa-check-square-o sucesso\"></i>
+                                            </td>";
                             $presencas++;
+                        } else {
+                            $tabela .= "<td><a href=\"#\" data-chaveaula=\"" .
+                                       htmlspecialchars($linha['chaveAula']) .
+                                       "\" data-toggle=\"modal\" data-target=\"#modal-justificativa\">
+                                       <i class=\"fa fa-minus-square-o warning\"></i>
+                                        </a></td>";
                         }
-                        
+                        $tabela .= "</tr> ";
 
-                        $aulas ++;
+                        $aulas++;
     
                 }       
 
                 $porcentagemFrequencia = (100 * $presencas)/$aulas;
 
-                //Lê os anos das mariculas que o usuário possui para permitir selecionar o ano a ser
-                //exibido
+                // Lê os anos das mariculas que o usuário possui para
+                // permitir selecionar o ano a ser exibido
 
                 $textoQuery = "SELECT C.ano 
                                 FROM Cidade C, Aluno A, Matricula M
@@ -175,7 +210,8 @@
                 $matriculas = $query->rowCount();
                 $select = "";
                 if($matriculas){
-                    $select = "<select id='ano' name='ano'>";
+                    $select = "<select id='ano' name='ano'
+                                       class='form-control' style='width: 100px'>";
 
                     while($linha = $query->fetch()){
                         if(!in_array($linha["ano"], $anos)){
@@ -196,14 +232,23 @@
                 <section class="conteudo">
                     <h1>
                         Frequências Lançadas:
-                    </h1><br><br>
+                    </h1>
+                    <?php if (mb_strlen($mensagem, 'utf-8') > 0)
+                            echo '<p class="warning">' . $mensagem . '</p>';
+                        if($justificativaEnviada)
+                            echo '<p class="sucesso">Justificativa enviada com sucesso</p>';
+                    ?>
+                    <br>
+                    <p>Para justificar uma ausência, clique no ícone
+                       <i class="fa fa-minus-square-o"></i> respectivo à essa ausência
+                    </p>
                     <?php if($matriculas){
                             echo "<form id='busca-ano' name='busca-ano' 
                                     action='frequencia_aluno.php' method='GET'>
                                     Ano letivo:".$select."</form>
                                     <br>";
 
-                            if($porcentagemFrequencia){
+                            if($aulas){
                                 echo "
                                         <p class=\"".($porcentagemFrequencia >= 80 
                                                     ? "sucesso" : "warning")."\">
@@ -226,10 +271,10 @@
                                 <thead style="background-color: #AAA">
                                     <tr>
                                         <th width="350px">Cidade</th>
-                                        <th> Professor </th>
-                                        <th> Etapa </th>
-                                        <th> Data </th>
-                                        <th> Presente? </th>
+                                        <th>Professor</th>
+                                        <th>Etapa</th>
+                                        <th>Data</th>
+                                        <th>Presente?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -239,6 +284,33 @@
                         </div>
                     </div>
                 </section>
+            </div>
+        </div>
+        <!-- popup "modal" do bootstrap para justificativa de ausência -->
+        <div class="modal fade" id="modal-justificativa" tabindex="-1" role="dialog"
+             aria-labelledby="modal-justificativa" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="" id="envia-justificativa">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        X
+                    </button>
+                    <h4 class="modal-title">Justificativa de ausência</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="idAula" name="idAula"></input>
+                        <label for="justificativa">Favor justificar sua ausência abaixo</label>
+                        <textarea name="justificativa" id="justificativa" rows="8" cols="50"
+                            maxlength="10000" required
+                            title="A justificativa deve ser preenchida e ter até 10000 caracteres"
+                            class="form-control"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" name="submit">Enviar</button>
+                    </div>
+                </div>
+                </form>
             </div>
         </div>
         <?php

@@ -160,6 +160,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="avaliar_ausencias.php">
+                                    <i class="fa fa-fw fa-file-text-o"></i>
+                                    <p style="display:inline">Justificativa de ausências</p>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="gerenciar_definicoes_trabalho.php">
                                     <i class="fa fa-fw fa-file-text"></i>
                                     <p style="display:inline">Definições de trabalho</p>
