@@ -254,6 +254,7 @@ class Aluno extends Usuario{
                              escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais) VALUES (?, ?, ?, ?, ?, ?, ?,
                              ?, ?, ?, ?, ?, ?)";
+
         }else{
             $dadosAluno  = array($idUsuario, $this->status, $this->telefone,
                                  $this->idIndicador, $this->escolaridade, $this->curso,
@@ -383,45 +384,60 @@ class Aluno extends Usuario{
         $query->setFetchMode(PDO::FETCH_ASSOC);
         $query->execute();
 
+        $atualizaDescontosAntigo = 0;
+
         $linha = $query->fetch();
         if($linha["existe"]){
             //Estas variáveis armazenam se será necessário atualizar ou não os descontos do
             //anterior e/ou do novo 
 
-            // 0 = Não altera, 1 = adiciona e -1 = remove
-            $atualizaDescontosNovo = 0;
-            $atualizaDescontosAntigo = 0;
+            
 
             //Se o aluno ja pagou a inscrição deste ano, checa se será necessário remover o
             //desconto do indicador, se possuir indicador
 
             //checa se ele possui indicador e se não possuir, se agora possui
             if( ($indicadorAnterior != null) ||($this->idIndicador != null) ){
-
                 //O usuário mudou de id de indicador, remove o desconto do anterior e soma 
                 //ao novo
 
                 if($indicadorAnterior != $this->idIndicador){
                     //Só será necessário mudar o desconto de um aluno válido
                     if($indicadorAnterior != null){
-                        $atualizaDescontosAntigo = -1;
+                        $atualizaDescontosAntigo = true;
                     }
-                    $atualizaDescontosNovo = 1;
+
                 }
 
-                if($this->status === "desistente" && $statusAnterior !== "desistente"){
-                    $atualizaDescontosNovo = 1;
-                }
 
             }
+            
 
         }
+
+        $sucessoAluno = $sucessoAluno && $this->atualizaDesconto($host, $bd, $usuario, $senha);
 
         //--------------------------------------------------------------------------
 
         if($sucessoUsuario && $sucessoAluno) {
             // deu tudo certo, atualizamos o aluno
             $conexao->commit();
+
+            if($atualizaDescontosAntigo){
+                    require_once($_SERVER["DOCUMENT_ROOT"]."/interno/entidades/Aluno.php");
+                    $indicadorAntigo = new Aluno;
+                    $indicadorAntigo->setNumeroInscricao($indicadorAnterior);
+                    $indicadorAntigo->recebeAlunoId($host, $bd, $usuario, $senha);
+                    $indicadorAntigo->atualizaDesconto($host, $bd, $usuario, $senha);
+            }
+
+            if($this->idIndicador != null){
+                require_once($_SERVER["DOCUMENT_ROOT"]."/interno/entidades/Aluno.php");
+                $indicadorNovo = new Aluno;
+                $indicadorNovo->setNumeroInscricao($this->idIndicador);
+                $indicadorNovo->recebeAlunoId($host, $bd, $usuario, $senha);
+                $sucesso = $indicadorNovo->atualizaDesconto($host, $bd, $usuario, $senha);
+            }
         } else {
             // algo deu errado, desfazemos as mudanças
             $conexao->rollBack();
@@ -431,6 +447,75 @@ class Aluno extends Usuario{
         $conexao = null;
 
         return $sucessoUsuario && $sucessoAluno;
+    }
+
+    public function atualizaDesconto($host, $bd, $usuario, $senha){
+        //Abrimos a conexão com o banco de
+        $conexao = null;
+        try{
+            $conexao = new PDO("mysql:host=$host;dbname=$bd;charset=utf8", $usuario, $senha);
+        }catch (PDOException $e){
+            echo $e->getMessage();
+        }
+
+
+        //primeiro buscamos a matricula do aluno deste ano
+        $textoQuery = "SELECT M.idMatricula
+                        FROM Matricula M, Cidade C
+                        WHERE M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())
+                        AND M.chaveAluno = :id";
+        $query = $conexao->prepare($textoQuery);
+        $query->bindParam(":id", $this->numeroInscricao, PDO::PARAM_INT);
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+        $query->execute();
+
+        if($linha = $query->fetch()){
+            $idMatricula = $linha["idMatricula"];
+        }else{
+            return false;
+        }
+
+        //buscamos agora os indicados que garantem desconto ao aluno
+        $textoQuery = "SELECT A.numeroInscricao
+                       FROM   Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
+                       WHERE  M.chaveAluno = A.numeroInscricao AND M.chaveCidade = C.idCidade
+                       AND    C.ano = YEAR( CURDATE()) AND Pg.chaveMatricula = M.idMatricula
+                       AND    Pg.numParcela = 0 AND Pg.fechado = 1 AND A.idIndicador = ? 
+                       AND    A.status = 'inscrito'";
+        $query = $conexao->prepare($textoQuery);
+        $query->bindParam(1,$this->numeroInscricao, PDO::PARAM_INT);
+        $query->execute();
+
+        //O aluno ganha 10% de desconto para cada indicado e mais 10% por ser indicador/indicado,
+        // contamos as linhas da query que correspondem aos indicados
+
+        $indicados = $query->rowCount();
+        $desconto = $indicados * 10;
+        if($this->idIndicador){
+            $desconto += 10;
+        }
+
+        if($desconto > 100) $desconto = 100;
+
+        //Agora atualizamos as tabelas alteradas e usaremos transaction para garantir 
+        //integridade de dados
+        $conexao->beginTransaction();
+        $sucesso = true;
+        $textoQuery = "UPDATE PgtoMensalidade
+                        SET    desconto = :desconto
+                        WHERE  chaveMatricula = :idMatricula AND valorPago = 0";
+        $query = $conexao->prepare($textoQuery);
+        $query->bindParam(":desconto",$desconto,PDO::PARAM_INT);
+        $query->bindParam(":idMatricula",$idMatricula, PDO::PARAM_INT);
+        $sucesso = $query->execute();
+
+        if($sucesso){
+            $conexao->commit();
+        }else{
+            $conexao->rollBack();
+        }
+        return $sucesso;
+
     }
 
     // Getters e setters
