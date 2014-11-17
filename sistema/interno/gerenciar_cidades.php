@@ -501,7 +501,7 @@
                     // validamos todos os dados recebidos
                     $nome        = $_POST["nome"];
                     $UF          = $_POST["UF"];
-                    $ano         = $_POST["ano"];
+                    $ano         = $_POST["ano-nova"];
                     $local       = $_POST["local"];
                     $idCoord     = $_POST["coord"];
                     $inscricao   = $_POST["inscricao"];

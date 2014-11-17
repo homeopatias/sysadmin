@@ -274,6 +274,8 @@
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
                     <?php
+                        $mensagem = isset($_GET['erro']) ? 
+                                    htmlspecialchars($_GET['erro']) : "";
                         if(mb_strlen($mensagem, 'UTF-8') !== 0){
                             echo "<p class=\"warning\">$mensagem</p>";
                         }
@@ -464,9 +466,11 @@
                         <p style="display:inline" class="col-sm-3">
                             <b>Matriculado no período atual</b>
                         </p>
-                        <p class=<?= "\"" . ($aprovado ? "sucesso" : "warning") . "\"" ?>><b>
-                            Aluno <?= $aprovado ? "aprovado" : "reprovado" ?> no ano atual
-                        </b></p> 
+                        <?php if(!is_null($aprovado)) { ?>
+                            <p class=<?= "\"" . ($aprovado ? "sucesso" : "warning") . "\"" ?>><b>
+                                Aluno <?= $aprovado ? "aprovado" : "reprovado" ?> no ano atual
+                            </b></p>
+                        <?php } ?>
                         <p style="display:inline" class="col-sm-3">
                             <?php 
                                 if( isset($_GET["ano"]) && $_GET["ano"] != date("Y") ){ ?>
@@ -612,7 +616,7 @@
                             $tabela .= "    <td>". htmlspecialchars($linha["nome"])."</td>";
                             $tabela .= "<td><a data-href=\"rotinas/matricula/";
                             $tabela .= "remover_matricula.php?id=";
-                            $tabela .= $linha["idMatricula"] . "&aluno=" . $idAluno;
+                            $tabela .= $linha["idMatricula"];
                             $tabela .= "\" href=\"#\" data-toggle=\"modal\"";
                             $tabela .= " data-target=\"#modal-confirma-deleta\">";
                             $tabela .= "<i class=\"fa fa-trash-o\"></i></a></td>";

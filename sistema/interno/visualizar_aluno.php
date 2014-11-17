@@ -450,7 +450,7 @@
                             <a style="cursor: pointer" data-target="#modal-confirma-deleta"
                                data-toggle="modal"
                                data-href=<?= "\"rotinas/matricula/remover_matricula.php?id=" .
-                                                $idMatricula . "&aluno=" . $idAluno . "\"" ?> >
+                                                $idMatricula . "\"" ?> >
                                 Cancelar matrícula
                             </a>
                         </p>
