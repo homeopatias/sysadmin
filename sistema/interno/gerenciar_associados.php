@@ -900,9 +900,45 @@
                 $contador = 0;
                 $tabela = "";
 
+                require_once('rotinas/associado/checa_situacao_pagamentos.php');
+
+                //abre um script para armazenar os pagamentos do associado
+                ?>
+                <script type="text/javascript">
+                var pagamentos = new Array();
+
+                <?php
+
                 while ($linha = $query->fetch()){
                     if($contador != $itemsPorPagina){
+                        //Busca pagamento do usuário 
                         // formatando o texto do cpf
+                        $textoQuery = "SELECT inscricao, valorTotal, valorPago,
+                                        data, ano
+                                        FROM PgtoAnuidade
+                                        WHERE chaveAssoc = :idAssoc";
+                        $queryPagamentos = $conexao->prepare($textoQuery);
+
+                        $queryPagamentos->bindParam(":idAssoc",$linha["idAssoc"],PDO::PARAM_INT);
+                        $queryPagamentos->setFetchMode(PDO::FETCH_ASSOC);
+
+                        $i = 0;
+                        while($pagamento = $queryPagamentos->fetch()){
+                            $tabelaPagamentos  = "<tr>";
+                            $tabelaPagamentos .= "    <td>".$pagamento["valorTotal"]."</td>";
+                            $tabelaPagamentos .= "    <td>".$pagamento["valorPago"]."</td>";
+                            $tabelaPagamentos .= "    <td>".$pagamento["data"]."</td>";
+                            $tabelaPagamentos .= "    <td>".$pagamento["ano"]."</td>";
+                            $tabelaPagamentos .= "</tr>";
+                            ?>
+                                pagamentos.push(new Array(<?= $linha["idAssoc"] ?>,
+                                                          <?= $tabelaPagamentos ?>  ));
+                            <?php 
+                            $i++;
+
+                        }
+
+                        //--------------------------------------------------
                         $cpfOriginal = str_split($linha["cpf"]);
                         $cepOriginal = str_split($linha["cep"]);
     
@@ -936,6 +972,9 @@
                         $tabela .= "    <td class=\"datainsc\">";
                         $tabela .= date("d/m/Y H:i:s", 
                                         strtotime(htmlspecialchars($linha["dataInscricao"])))    ."</td>";
+                        $emDia   = checa_situacao_pagamentos_por_id($linha["idAssoc"]) 
+                            ? $tabela .= "<td class=\"sucesso\">Sim</td>" 
+                            : $tabela .= "<td class=\"warning\">Não</td>";
                         $tabela .= "    <td><a data-id=\"";
                         $tabela .= $linha["id"];
                         $tabela .= "\" data-id-assoc=\"";
@@ -981,8 +1020,11 @@
                         $possuiProximaPagina = true;
                     }
                     $contador++;
-                }          
+                }  
+
+                //fecha o script que armazena os pagamentos 
         ?>
+        </script>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
@@ -1142,6 +1184,9 @@
                                         <th width="170px"<?= $indexHeader == 5 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Data e hora de inscrição</th>
+                                        <th width="50px"<?= $indexHeader == 6 ? 
+                                            ($direcao == 1? "class =\"headerSortUp\"" : 
+                                                "class =\"headerSortDown\"") : "" ?>>Em dia</th>
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
                                     </tr>
