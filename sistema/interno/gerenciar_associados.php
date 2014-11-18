@@ -908,7 +908,7 @@
                 var pagamentos = new Array();
 
                 <?php
-
+                $i = 0;
                 while ($linha = $query->fetch()){
                     if($contador != $itemsPorPagina){
                         //Busca pagamento do usuário 
@@ -922,21 +922,20 @@
                         $queryPagamentos->bindParam(":idAssoc",$linha["idAssoc"],PDO::PARAM_INT);
                         $queryPagamentos->setFetchMode(PDO::FETCH_ASSOC);
 
-                        $i = 0;
+                        $tabelaPagamentos = "";
                         while($pagamento = $queryPagamentos->fetch()){
-                            $tabelaPagamentos  = "<tr>";
+                            $tabelaPagamentos .= "<tr>";
                             $tabelaPagamentos .= "    <td>".$pagamento["valorTotal"]."</td>";
                             $tabelaPagamentos .= "    <td>".$pagamento["valorPago"]."</td>";
                             $tabelaPagamentos .= "    <td>".$pagamento["data"]."</td>";
                             $tabelaPagamentos .= "    <td>".$pagamento["ano"]."</td>";
                             $tabelaPagamentos .= "</tr>";
-                            ?>
-                                pagamentos.push(new Array(<?= $linha["idAssoc"] ?>,
-                                                          <?= $tabelaPagamentos ?>  ));
-                            <?php 
-                            $i++;
-
                         }
+                        ?>
+                        pagamentos.push(new Array(<?= $linha["idAssoc"] ?>,
+                                                          <?= $tabelaPagamentos ?>  ));
+
+                        <?php
 
                         //--------------------------------------------------
                         $cpfOriginal = str_split($linha["cpf"]);
@@ -1014,6 +1013,7 @@
                         $tabela .= " data-target=\"#modal-confirma-deleta\">";
                         $tabela .= "<i class=\"fa fa-trash-o\"></i></a></td>";
                         $tabela .= "</tr>";
+                        $i++;
     
                      }
                     else{
