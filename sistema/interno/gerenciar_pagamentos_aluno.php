@@ -450,6 +450,7 @@
                                         if($pagamentos[date("Y")][0]['fechado']){
                                             require_once($_SERVER["DOCUMENT_ROOT"].
                                                 "/interno/entidades/Aluno.php");
+
     
                                             $aluno = new Aluno("");
                                             $aluno->setNumeroInscricao($idAluno);
@@ -458,8 +459,47 @@
                                             $indicador = new Aluno("");
                                             $indicador->setNumeroInscricao($aluno->getIdIndicador());
                                             $indicador->recebeAlunoId($host, $db, $usuario, $senhaBD);
-                                            $sucesso = $indicador->atualizaDesconto($host, $db,
+                                            $indicador->atualizaDesconto($host, $db,
                                                              $usuario, $senhaBD);
+                                            $sucessoNotificacao = false;
+
+                                            if($aluno->getIdIndicador()){
+                                                //faremos 10 tentativas para notificar o aluno , se todas falharem
+                                                //mostramos que não foi possível notificar o aluno
+                                                for($i = 0;$i < 10 && !$sucessoNotificacao;$i++){
+                                                    //gera notificação para o indicador que ele recebeu 10% de desconto
+                                                    //nas próximas parcelas
+                                                    $conexao->beginTransaction();
+
+                                                    $titulo = "Desconto por indicação";
+                                                    $texto  = "Você recebeu 10% de desconto por ter indicado ";
+                                                    $texto .= "o(a) aluno(a) : ".$aluno->getNome();
+
+                                                    $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
+                                                                    VALUES (:titulo, :texto,:idIndicador)";
+                                                    $query = $conexao->prepare($textoQuery);
+                                                    $query->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+                                                    $query->bindParam(":texto", $texto, PDO::PARAM_STR);
+                                                    $query->bindParam(":idIndicador", 
+                                                        $indicador->getNumeroInscricao(),PDO::PARAM_INT);
+
+                                                    $sucessoNotificacao = $query->execute();
+
+                                                    if(!$sucessoNotificacao){
+                                                        $conexao->rollback();
+                                                    }
+                                                
+                                                }
+
+                                                //se conseguiu notificar, confirma transação
+                                                if($sucessoNotificacao){
+                                                    $conexao->commit();
+                                                }else{
+                                                    //se não, mostra mensagem na tela
+                                                    $mensagem = "Não foi possível notificar o aluno 
+                                                                de seu desconto.";
+                                                }
+                                            }
                                         }
                                     }
                                     
@@ -523,8 +563,11 @@
                                 <td style='background-color: #AAA'><b>Valor a pagar</b></td>
                     <?php
                         for($i = 0; $i < 12; $i ++) {
+                            $desconto = $pagamentos[$anoPagamento][$i]['valor'] *
+                                $pagamentos[$anoPagamento][$i]['desconto']/100;
                             echo "<td>R$ " . 
-                                 number_format($pagamentos[$anoPagamento][$i]['valor'], 2)
+                                 number_format($pagamentos[$anoPagamento][$i]['valor'] - 
+                                    $desconto, 2)
                                  . "</td>";
                         }
                         echo "</tr><tr>";
