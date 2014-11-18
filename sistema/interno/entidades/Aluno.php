@@ -427,6 +427,7 @@ class Aluno extends Usuario{
                     $indicadorAntigo->setNumeroInscricao($indicadorAnterior);
                     $indicadorAntigo->recebeAlunoId($host, $bd, $usuario, $senha);
                     $indicadorAntigo->atualizaDesconto($host, $bd, $usuario, $senha);
+
             }
 
             if($this->idIndicador != null){
