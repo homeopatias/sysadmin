@@ -98,7 +98,60 @@
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
 
-                $("form #ano").change();                
+                $("form #ano").change();     
+
+                // alterna campos de texto com campos de input
+
+                // entrada de quantidade de parcelas
+                $("#label-parcelas").click(function(){
+                    $(this).hide();
+                    $("#pgto-parcelas").show(300);
+                    $("#pgto-parcelas").focus();
+                });
+                $("#pgto-parcelas").blur(function(){
+                    if ($(this).val() && $(this).parent()[0].checkValidity()) {
+                        $(this).parent().submit();
+                        return;
+                    } else {
+                        $("#msg-erro").text("Insira um valor numérico inteiro menor ou igual " +
+                                            "ao número de parcelas em aberto");
+                    }
+                    $(this).hide();
+                    $(this).val("");
+                    $("#label-parcelas").show(300);
+                });
+
+                // entrada de valor em reais
+                $("#label-valor").click(function(){
+                    $(this).hide();
+                    $("#pgto-valor").show(300);
+                    $("#pgto-valor").focus();
+                });
+                $("#pgto-valor").blur(function(){
+                    if ($(this).val() && $(this).parent()[0].checkValidity()) {
+                        $(this).parent().submit();
+                        return;
+                    } else {
+                        $("#msg-erro").text("Insira um valor numérico real menor ou igual " +
+                                            "ao saldo devedor");
+                    }
+                    $(this).hide();
+                    $(this).val("");
+                    $("#label-valor").show(300);
+                });
+
+                // envia o formulário se enter for apertado dentro
+                // de um dos inputs
+
+                $("#pgto-parcelas, #pgto-valor").keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13'){ // enter foi pressionado
+                        if ($(this).val() && $("#form-pagamento").checkValidity()) {
+                            $("#form-pagamento").submit();
+                        }
+                    }
+                });
+
             });
         </script>
     </head>
@@ -274,8 +327,11 @@
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
                     <?php
-                        $mensagem = isset($_GET['erro']) ? 
-                                    htmlspecialchars($_GET['erro']) : "";
+                        if (mb_strlen($mensagem, 'UTF-8') === 0) {
+                            $mensagem = isset($_GET['mensagem']) ?
+                                            htmlspecialchars($_GET['mensagem']) :
+                                            '';
+                        }
                         if(mb_strlen($mensagem, 'UTF-8') !== 0){
                             echo "<p class=\"warning\">$mensagem</p>";
                         }
@@ -720,6 +776,55 @@
                          Pagamentos efetuados e pendentes desse aluno -->
                     <?php
 
+                        // procuramos pagamentos pendentes do aluno em todo o período
+                        $textoQuery  = "SELECT
+                                        sum( (((100 - P.desconto)/100) * P.valorTotal) - P.valorPago)
+                                        as valorFaltante,
+                                        count(P.idPagMensalidade) as numParcelas FROM PgtoMensalidade P
+                                        INNER JOIN Matricula M ON M.idMatricula = P.chaveMatricula
+                                        WHERE M.chaveAluno = ? AND P.fechado = 0 AND P.ano <= YEAR(NOW())";
+
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $idAluno, PDO::PARAM_INT);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+
+                        $linha = $query->fetch();
+                        $parcelasAberto = htmlspecialchars($linha['numParcelas']);
+                        $valorAberto = number_format($linha['valorFaltante'], 2, ',', ' ');
+
+                    ?>
+                    <h4>Você está com <?= $parcelasAberto ?> parcelas em aberto,
+                       e seu saldo devedor é de R$ <?= $valorAberto ?>.</h4>
+                    <p id="msg-erro" class="warning"></p>
+                    <?php if($valorAberto != 0) { ?>
+                    <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST" id="form-pagamento">
+                        <a id="label-parcelas" href="#" class="btn btn-primary" 
+                            style="display:block; width:300px">
+                            Pagar número de parcelas
+                        </a>
+                        <input type="number" name="pgto-parcelas" id="pgto-parcelas"
+                               placeholder="Nº de parcelas" class="form-control"
+                               autocomplete="off" pattern="^[0-9]*$"
+                               style="display:none;width:205px;" min="1"
+                               max=<?= '"' . $parcelasAberto . '"'?>>
+                        <br>
+                        <a id="label-valor" href="#" class="btn btn-primary" 
+                            style="display:block; width:300px">
+                            Pagar valor
+                        </a>
+                        <input type="number" name="pgto-valor" id="pgto-valor"
+                               placeholder="Quantidade em R$" class="form-control"
+                               autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
+                               style="display:none;width:205px;"
+                               step="0.01" min="1"
+                               max=<?= '"' .
+                                       number_format($linha['valorFaltante'], 2, '.', '') .
+                                       '"'?>>
+                    </form>
+                    <?php
+                        }
+
                         // procuramos os pagamentos do ano enviado, tanto pendentes
                         // como efetuados
 
@@ -733,7 +838,7 @@
                                         WHERE M.chaveAluno = ?
                                         AND P.chaveMatricula = M.idMatricula
                                         AND P.ano = ?
-                                        ORDER BY P.data DESC";
+                                        ORDER BY P.numParcela DESC";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $idAluno, PDO::PARAM_INT);
@@ -778,11 +883,20 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td style='background-color: #AAA'><b>Valor a pagar</b></td>
+                                <td style='background-color: #AAA'><b>Valor total</b></td>
                     <?php
                         for($i = 0; $i < 12; $i ++) {
                             echo "<td>R$ " . 
                                  number_format($pagamentos[$anoPagamento][$i]['valor'], 2)
+                                 . "</td>";
+                        }
+                        echo "</tr><tr>";
+                        echo "<td style='background-color: #AAA'><b>Valor com desconto</b></td>";
+                        for($i = 0; $i < 12; $i ++) {
+                            echo "<td>R$ " .
+                                 number_format($pagamentos[$anoPagamento][$i]['valor'] -
+                                               $pagamentos[$anoPagamento][$i]['valor'] *
+                                               ($pagamentos[$anoPagamento][$i]['desconto']/100), 2)
                                  . "</td>";
                         }
                         echo "</tr><tr>";
