@@ -386,7 +386,8 @@ class Aluno extends Usuario{
         $atualizaDescontosAntigo = 0;
 
         $linha = $query->fetch();
-        if($linha["existe"]){
+        $emDia = $linha["existe"];
+        if($emDia){
             //Estas variáveis armazenam se será necessário atualizar ou não os descontos do
             //anterior e/ou do novo 
 
@@ -408,9 +409,7 @@ class Aluno extends Usuario{
 
                 }
 
-
             }
-            
 
         }
 
@@ -436,6 +435,100 @@ class Aluno extends Usuario{
                 $indicadorNovo->setNumeroInscricao($this->idIndicador);
                 $indicadorNovo->recebeAlunoId($host, $bd, $usuario, $senha);
                 $sucesso = $indicadorNovo->atualizaDesconto($host, $bd, $usuario, $senha);
+
+                //Se o aluno estiver em dia e mudou de status,
+                // notifica o indicador que ele perdeu ou ganhou
+                // seu desconto novamente
+                if($emDia && $this->status != $statusAnterior){
+
+                    //Caso o aluno tenha desistido, notifica o indicador que ele perdeu o desconto
+                    if($this->status === "desistente"){
+                        $sucessoNotificacao = false;
+
+                        //faremos 10 tentativas para notificar o aluno , se todas falharem
+                        //mostramos que não foi possível notificar o aluno
+                        for($i = 0;$i < 10 && !$sucessoNotificacao;$i++){
+
+                            //gera notificação para o indicador que ele recebeu 10% de desconto
+                            //nas próximas parcelas
+                            $conexao->beginTransaction();
+
+                            $titulo = "Desconto por indicação";
+
+                            $texto  = "Um de seus indicados desistiu do curso, seu desconto de 10%";
+                            $texto  .= " por sua indicação foi removido das próximas parcelas";
+
+                            $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
+                                            VALUES (:titulo, :texto,:idIndicador)";
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+                            $query->bindParam(":texto", $texto, PDO::PARAM_STR);
+                            $query->bindParam(":idIndicador", 
+                                $indicadorNovo->getNumeroInscricao(),PDO::PARAM_INT);
+
+                            $sucessoNotificacao = $query->execute();
+
+                            if(!$sucessoNotificacao){
+                                $conexao->rollback();
+                            }
+                        
+                        }
+
+                        //se conseguiu notificar, confirma transação
+                        if($sucessoNotificacao){
+                            $conexao->commit();
+                        }else{
+                            //se não, mostra mensagem na tela
+                            $mensagem = "Não foi possível notificar o aluno 
+                                        de seu desconto.";
+                        }
+
+                    } // if($this->status === "desistente")
+
+                    else if($this->status === "inscrito"  ) {
+                        $sucessoNotificacao = false;
+
+                        //faremos 10 tentativas para notificar o aluno , se todas falharem
+                        //mostramos que não foi possível notificar o aluno
+                        for($i = 0;$i < 10 && !$sucessoNotificacao;$i++){
+
+                            //gera notificação para o indicador que ele recebeu 10% de desconto
+                            //nas próximas parcelas
+                            $conexao->beginTransaction();
+
+                            $titulo = "Desconto por indicação";
+
+                            $texto  = "Um de seus indicados retomou o curso, seu desconto de 10%";
+                            $texto .= " por sua indicação foi adicionado novamente às próximas";
+                            $texto .= " parcelas";
+
+                            $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
+                                            VALUES (:titulo, :texto,:idIndicador)";
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+                            $query->bindParam(":texto", $texto, PDO::PARAM_STR);
+                            $query->bindParam(":idIndicador", 
+                                $indicadorNovo->getNumeroInscricao(),PDO::PARAM_INT);
+
+                            $sucessoNotificacao = $query->execute();
+
+                            if(!$sucessoNotificacao){
+                                $conexao->rollback();
+                            }
+                        
+                        }
+
+                        //se conseguiu notificar, confirma transação
+                        if($sucessoNotificacao){
+                            $conexao->commit();
+                        }else{
+                            //se não, mostra mensagem na tela
+                            $mensagem = "Não foi possível notificar o aluno 
+                                        de seu desconto.";
+                        }
+                    }
+                }
+                
             }
         } else {
             // algo deu errado, desfazemos as mudanças

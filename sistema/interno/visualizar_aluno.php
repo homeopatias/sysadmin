@@ -754,8 +754,11 @@
                                 <td style='background-color: #AAA'><b>Valor a pagar</b></td>
                     <?php
                         for($i = 0; $i < 12; $i ++) {
+                            $desconto = $pagamentos[$anoPagamento][$i]['valor'] *
+                                $pagamentos[$anoPagamento][$i]['desconto']/100;
                             echo "<td>R$ " . 
-                                 number_format($pagamentos[$anoPagamento][$i]['valor'], 2)
+                                 number_format($pagamentos[$anoPagamento][$i]['valor'] - 
+                                    $desconto, 2)
                                  . "</td>";
                         }
                         echo "</tr><tr>";
