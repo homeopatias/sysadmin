@@ -112,6 +112,9 @@
                         if(isset($_GET["cadastroSucesso"])) {
                             echo "<p class=\"sucesso\">Cadastro efetuado com sucesso!</p>";
                         }
+                        if(isset($_GET["pgtoSucesso"])) {
+                            echo "<p class=\"sucesso\">A Homeobrás agradece seu apoio!</p>"
+                        }
                     ?>
                     <div class="form-group">
                         <label for="login">Nome de usuário: </label>
