@@ -149,16 +149,19 @@
                         var tr;
                         data.forEach(function(pagamento){
                             var pag = JSON.parse(pagamento);
-                            alert(pag);
                             tr = tbody.append("<tr>");
                             if(pag['inscricao'] == 1){
-                                tr.append("<td>inscrição</td>");
+                                tr.append("<td>Inscrição</td>");
                             }else{
                                 tr.append("<td>Anuidade</td>");
                             }
                             tr.append("<td>" + pag["valorTotal"] +" </td>");
                             tr.append("<td>" + pag["valorPago"] +" </td>");
-                            tr.append("<td>" + pag["data"] +" </td>");
+                            if(pag['data']){
+                                tr.append("<td>" + pag["data"] +" </td>");
+                            }else{
+                                tr.append("<td>N/A </td>");
+                            }
                             tr.append("<td>" + pag["ano"] +" </td>");
                         });
                     });
@@ -1686,7 +1689,8 @@
 
         <!-- popup "modal" do bootstrap para visualização de pagamentos do associado -->
         <div class="modal fade" id="modal-visualiza-pagamentos" tabindex="-1" role="dialog"
-             aria-labelledby="modal-visualiza-pagamentos" aria-hidden="true">
+             aria-labelledby="modal-visualiza-pagamentos" aria-hidden="true" 
+             >
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -1696,8 +1700,8 @@
                     <h4 class="modal-title">Pagamentos efetuados</h4>
                     </div>
                     <div class="modal-body">
-                        <table id="pagamentos">
-                             <thead style="background-color: #AAA;border:1">
+                        <table id="pagamentos" class = "table table-bordered table-striped CRZ" >
+                             <thead style="background-color: #AAA">
                                 <th>Tipo</th>
                                 <th>Valor Total</th>
                                 <th>Valor Pago</th>
