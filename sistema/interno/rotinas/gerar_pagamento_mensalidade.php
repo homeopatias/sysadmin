@@ -34,14 +34,14 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
     $valorRecebido     = isset($_POST['pgto-valor']) ? $_POST['pgto-valor'] : -1;
 
     $parcelasValidas = preg_match("/^[0-9]+$/", $parcelasRecebidas) && $parcelasRecebidas != -1 &&
-                       $parcelasValidas != 0;
+                       $parcelasRecebidas != 0;
     $valorValido = preg_match("/^[0-9]*\.?[0-9]+$/", $valorRecebido) && $valorRecebido != -1;
 
     if ($parcelasValidas && $valorValido) {
         // o usuário enviou um valor e um número de parcelas
         // redirecionamos o aluno de volta com uma mensagem de erro
         header('Location: ../visualizar_informacoes_curso.php?' .
-               'mensagem=Envie um número de parcelas ou um valor a pagar', true, "302");
+               'mensagem=Envie um número de parcelas ou um valor a pagar, não os dois', true, "302");
         die();
     }
 
@@ -58,7 +58,7 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
                         FROM PgtoMensalidade P
                         INNER JOIN Matricula M ON M.idMatricula = P.chaveMatricula
                         WHERE M.chaveAluno = ? AND P.fechado = 0 AND P.ano <= YEAR(NOW())
-                        ORDER BY P.ano DESC, P.numParcela DESC LIMIT ?) R";
+                        ORDER BY P.ano DESC, P.numParcela ASC LIMIT ?) R";
 
         $query = $conexao->prepare($textoQuery);
         $query->bindParam(1, $aluno->getNumeroInscricao(), PDO::PARAM_INT);

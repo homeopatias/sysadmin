@@ -105,6 +105,7 @@
                 // entrada de quantidade de parcelas
                 $("#label-parcelas").click(function(){
                     $(this).hide();
+                    $("#pgto-valor").val("");
                     $("#pgto-parcelas").show(300);
                     $("#pgto-parcelas").focus();
                 });
@@ -124,6 +125,7 @@
                 // entrada de valor em reais
                 $("#label-valor").click(function(){
                     $(this).hide();
+                    $("#pgto-parcelas").val("");
                     $("#pgto-valor").show(300);
                     $("#pgto-valor").focus();
                 });
@@ -146,8 +148,8 @@
                 $("#pgto-parcelas, #pgto-valor").keypress(function(e){
                     var keycode = (e.keyCode ? e.keyCode : e.which);
                     if(keycode == '13'){ // enter foi pressionado
-                        if ($(this).val() && $("#form-pagamento").checkValidity()) {
-                            $("#form-pagamento").submit();
+                        if ($(this).val() && $("#pgto-parcelas").checkValidity()) {
+                            $(this).parent().submit();
                         }
                     }
                 });
@@ -798,7 +800,7 @@
                        e seu saldo devedor é de R$ <?= $valorAberto ?>.</h4>
                     <p id="msg-erro" class="warning"></p>
                     <?php if($valorAberto != 0) { ?>
-                    <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST" id="form-pagamento">
+                    <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST">
                         <a id="label-parcelas" href="#" class="btn btn-primary" 
                             style="display:block; width:300px">
                             Pagar número de parcelas
@@ -809,6 +811,8 @@
                                style="display:none;width:205px;" min="1"
                                max=<?= '"' . $parcelasAberto . '"'?>>
                         <br>
+                    </form>
+                    <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST">
                         <a id="label-valor" href="#" class="btn btn-primary" 
                             style="display:block; width:300px">
                             Pagar valor
