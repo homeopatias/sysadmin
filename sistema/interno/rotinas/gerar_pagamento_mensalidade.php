@@ -146,8 +146,9 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
 
     $reqPagamento->setShippingType(3);
 
-    $reqPagamento->addParameter('tipoPagamento', 'mensalidade');
-    $reqPagamento->addParameter('numeroInscricaoAluno', $aluno->getNumeroInscricao());
+    // a referência desse pagamente será a letra "M" de mensalidade,
+    // seguida do número de inscrição desse aluno
+    $reqPagamento->setReference("M" . $aluno->getNumeroInscricao());
 
     $credenciais = PagSeguroConfig::getAccountCredentials();
     $url = $reqPagamento->register($credenciais);
