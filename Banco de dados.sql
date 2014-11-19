@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 17, 2014 at 02:44 PM
+-- Generation Time: Nov 19, 2014 at 01:24 PM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -94,9 +94,9 @@ INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `t
 (6, 7, 'inscrito', NULL, '2169357517', '', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL'),
 (7, 8, 'inscrito', NULL, '1184439221', '', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL'),
 (8, 9, 'inscrito', NULL, '8498876543', '', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL'),
-(9, 10, 'preinscrito', NULL, '5787659485', '', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL'),
+(9, 10, 'inscrito', NULL, '5787659485', '', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL'),
 (10, 11, 'preinscrito', NULL, '2098764959', '', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL'),
-(11, 12, 'preinscrito', 9, '3498123232', '', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL');
+(11, 12, 'desistente', 9, '3498123232', '', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL');
 
 -- --------------------------------------------------------
 
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
   `custoCurso` float NOT NULL COMMENT 'valor de custo para abertura do curso',
   PRIMARY KEY (`idCidade`),
   KEY `idCoordenador` (`idCoordenador`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `Cidade`
@@ -233,7 +233,12 @@ INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`,
 (3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750),
 (4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000),
 (5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0),
-(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0);
+(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0),
+(7, 'MG', 2014, 'Contagem', 3, 'Curso Homeopático Contagem', 300, 220, '2014-07-07', 'Curso Homeopático Contagem', '44732943000184', 0),
+(8, 'TO', 2014, 'Palmas', 3, 'UFT', 300, 170, '2014-02-11', 'UFT', '65563135000100', 0),
+(9, 'RN', 2014, 'Natal', 3, 'UFRN', 300, 220, '2014-03-12', 'UFRN', '27266655000162', 0),
+(10, 'PA', 2014, 'Belém', 3, 'Homeopatias Paraense', 250, 220, '2014-05-11', 'Homeopatias Paraense', '37156271000140', 0),
+(11, 'MG', 2015, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 250, 220, '2015-03-05', 'Faculdade de odontologia da UFMG', '56667868000102', 0);
 
 -- --------------------------------------------------------
 
@@ -346,7 +351,7 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   PRIMARY KEY (`idMatricula`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveCidade` (`chaveCidade`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `Matricula`
@@ -361,7 +366,7 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (6, 8, 1, NULL, 4),
 (7, 7, 1, NULL, 4),
 (8, 6, 1, NULL, 4),
-(9, 11, 2, NULL, 6);
+(11, 11, 2, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -376,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=89 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=103 ;
 
 --
 -- Dumping data for table `Notificacao`
@@ -446,7 +451,20 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (85, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade ou registrar uma justificativa no sistema.', 6, 1),
 (86, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade ou registrar uma justificativa no sistema.', 6, 1),
 (87, 'Justificativa de ausência negada', 'Sua justificativa de ausência foi negada\nCaso você acredite que houve algum erro de julgamento por parte do avaliador da sua justificativa, favor entrar em contato conosco.', 6, 1),
-(88, 'Justificativa de ausência aceita', 'Sua justificativa de ausência foi aceita.', 6, 1);
+(88, 'Justificativa de ausência aceita', 'Sua justificativa de ausência foi aceita.', 6, 1),
+(89, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 18/11/2014\nHorário: 08:09\nMétodo: Dinheiro', 11, 1),
+(91, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 18/11/2014\nHorário: 08:15\nMétodo: Dinheiro', 11, 1),
+(92, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 18/11/2014\nHorário: 08:18\nMétodo: Dinheiro', 11, 1),
+(93, 'Desconto por indicação', 'Você recebeu 10% de desconto por ter indicado o(a) aluno(a) : Hernando Hércules Ferreira', 9, 1),
+(94, 'Desconto por indicação', ' por sua indicação foi removido das próximas parcelas', 9, 1),
+(95, 'Desconto por indicação', 'Um de seus indicados retomou o curso, seu desconto de 10% por sua indicação foi adicionado novamente às próximas parcelas', 9, 1),
+(96, 'Desconto por indicação', 'Um de seus indicados desistiu do curso, seu desconto de 10% por sua indicação foi removido das próximas parcelas', 9, 1),
+(97, 'Desconto por indicação', 'Um de seus indicados retomou o curso, seu desconto de 10% por sua indicação foi adicionado novamente às próximas parcelas', 9, 1),
+(98, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 18/11/2014\nHorário: 08:42\nMétodo: Dinheiro', 9, 1),
+(99, 'Desconto por indicação', 'Um de seus indicados desistiu do curso, seu desconto de 10% por sua indicação foi removido das próximas parcelas', 9, 1),
+(100, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$40.00\nData: 18/11/2014\nHorário: 08:48\nMétodo: Dinheiro', 9, 0),
+(101, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$30.00\nData: 18/11/2014\nHorário: 08:49\nMétodo: Dinheiro', 9, 0),
+(102, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$20.00\nData: 18/11/2014\nHorário: 08:50\nMétodo: Dinheiro', 9, 0);
 
 -- --------------------------------------------------------
 
@@ -506,7 +524,15 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagAnuidade`),
   KEY `chaveAssoc` (`chaveAssoc`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado' AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `PgtoAnuidade`
+--
+
+INSERT INTO `PgtoAnuidade` (`idPagAnuidade`, `chaveAssoc`, `inscricao`, `valorTotal`, `valorPago`, `data`, `ano`, `fechado`) VALUES
+(1, 1, 1, 300, 300, '2014-11-18 00:00:00', 2014, 1),
+(2, 1, 0, 1500, 0, NULL, 2014, 0);
 
 -- --------------------------------------------------------
 
@@ -544,14 +570,14 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagMensalidade`),
   KEY `chaveAluno` (`chaveMatricula`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=109 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=133 ;
 
 --
 -- Dumping data for table `PgtoMensalidade`
 --
 
 INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela`, `valorTotal`, `valorPago`, `desconto`, `metodo`, `data`, `ano`, `fechado`) VALUES
-(1, 1, 0, 100, 0, 10, '', NULL, 2014, 0),
+(1, 1, 0, 100, 90, 10, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
 (2, 1, 1, 30, 0, 10, '', NULL, 2014, 0),
 (3, 1, 2, 30, 0, 10, '', NULL, 2014, 0),
 (4, 1, 3, 30, 0, 10, '', NULL, 2014, 0),
@@ -599,18 +625,18 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (46, 4, 9, 30, 0, 10, '', NULL, 2014, 0),
 (47, 4, 10, 30, 0, 10, '', NULL, 2014, 0),
 (48, 4, 11, 30, 0, 10, '', NULL, 2014, 0),
-(49, 5, 0, 100, 0, 10, '', NULL, 2014, 0),
-(50, 5, 1, 30, 0, 10, '', NULL, 2014, 0),
-(51, 5, 2, 30, 0, 10, '', NULL, 2014, 0),
-(52, 5, 3, 30, 0, 10, '', NULL, 2014, 0),
-(53, 5, 4, 30, 0, 10, '', NULL, 2014, 0),
-(54, 5, 5, 30, 0, 10, '', NULL, 2014, 0),
-(55, 5, 6, 30, 0, 10, '', NULL, 2014, 0),
-(56, 5, 7, 30, 0, 10, '', NULL, 2014, 0),
-(57, 5, 8, 30, 0, 10, '', NULL, 2014, 0),
-(58, 5, 9, 30, 0, 10, '', NULL, 2014, 0),
-(59, 5, 10, 30, 0, 10, '', NULL, 2014, 0),
-(60, 5, 11, 30, 0, 10, '', NULL, 2014, 0),
+(49, 5, 0, 100, 90, 10, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
+(50, 5, 1, 30, 30, 0, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
+(51, 5, 2, 30, 30, 0, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
+(52, 5, 3, 30, 30, 0, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
+(53, 5, 4, 30, 0, 0, '', NULL, 2014, 0),
+(54, 5, 5, 30, 0, 0, '', NULL, 2014, 0),
+(55, 5, 6, 30, 0, 0, '', NULL, 2014, 0),
+(56, 5, 7, 30, 0, 0, '', NULL, 2014, 0),
+(57, 5, 8, 30, 0, 0, '', NULL, 2014, 0),
+(58, 5, 9, 30, 0, 0, '', NULL, 2014, 0),
+(59, 5, 10, 30, 0, 0, '', NULL, 2014, 0),
+(60, 5, 11, 30, 0, 0, '', NULL, 2014, 0),
 (61, 6, 0, 150, 0, 0, '', NULL, 2014, 0),
 (62, 6, 1, 220, 0, 0, '', NULL, 2014, 0),
 (63, 6, 2, 220, 0, 0, '', NULL, 2014, 0),
@@ -647,18 +673,42 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (94, 8, 9, 220, 0, 0, '', NULL, 2014, 0),
 (95, 8, 10, 220, 0, 0, '', NULL, 2014, 0),
 (96, 8, 11, 220, 0, 0, '', NULL, 2014, 0),
-(97, 9, 0, 100, 0, 0, '', NULL, 2015, 0),
-(98, 9, 1, 80, 0, 0, '', NULL, 2015, 0),
-(99, 9, 2, 80, 0, 0, '', NULL, 2015, 0),
-(100, 9, 3, 80, 0, 0, '', NULL, 2015, 0),
-(101, 9, 4, 80, 0, 0, '', NULL, 2015, 0),
-(102, 9, 5, 80, 0, 0, '', NULL, 2015, 0),
-(103, 9, 6, 80, 0, 0, '', NULL, 2015, 0),
-(104, 9, 7, 80, 0, 0, '', NULL, 2015, 0),
-(105, 9, 8, 80, 0, 0, '', NULL, 2015, 0),
-(106, 9, 9, 80, 0, 0, '', NULL, 2015, 0),
-(107, 9, 10, 80, 0, 0, '', NULL, 2015, 0),
-(108, 9, 11, 80, 0, 0, '', NULL, 2015, 0);
+(97, NULL, 0, 100, 0, 0, '', NULL, 2015, 0),
+(98, NULL, 1, 80, 0, 0, '', NULL, 2015, 0),
+(99, NULL, 2, 80, 0, 0, '', NULL, 2015, 0),
+(100, NULL, 3, 80, 0, 0, '', NULL, 2015, 0),
+(101, NULL, 4, 80, 0, 0, '', NULL, 2015, 0),
+(102, NULL, 5, 80, 0, 0, '', NULL, 2015, 0),
+(103, NULL, 6, 80, 0, 0, '', NULL, 2015, 0),
+(104, NULL, 7, 80, 0, 0, '', NULL, 2015, 0),
+(105, NULL, 8, 80, 0, 0, '', NULL, 2015, 0),
+(106, NULL, 9, 80, 0, 0, '', NULL, 2015, 0),
+(107, NULL, 10, 80, 0, 0, '', NULL, 2015, 0),
+(108, NULL, 11, 80, 0, 0, '', NULL, 2015, 0),
+(109, NULL, 0, 100, 0, 0, '', NULL, 2015, 0),
+(110, NULL, 1, 80, 0, 0, '', NULL, 2015, 0),
+(111, NULL, 2, 80, 0, 0, '', NULL, 2015, 0),
+(112, NULL, 3, 80, 0, 0, '', NULL, 2015, 0),
+(113, NULL, 4, 80, 0, 0, '', NULL, 2015, 0),
+(114, NULL, 5, 80, 0, 0, '', NULL, 2015, 0),
+(115, NULL, 6, 80, 0, 0, '', NULL, 2015, 0),
+(116, NULL, 7, 80, 0, 0, '', NULL, 2015, 0),
+(117, NULL, 8, 80, 0, 0, '', NULL, 2015, 0),
+(118, NULL, 9, 80, 0, 0, '', NULL, 2015, 0),
+(119, NULL, 10, 80, 0, 0, '', NULL, 2015, 0),
+(120, NULL, 11, 80, 0, 0, '', NULL, 2015, 0),
+(121, 11, 0, 100, 0, 0, '', NULL, 2015, 0),
+(122, 11, 1, 80, 0, 0, '', NULL, 2015, 0),
+(123, 11, 2, 80, 0, 0, '', NULL, 2015, 0),
+(124, 11, 3, 80, 0, 0, '', NULL, 2015, 0),
+(125, 11, 4, 80, 0, 0, '', NULL, 2015, 0),
+(126, 11, 5, 80, 0, 0, '', NULL, 2015, 0),
+(127, 11, 6, 80, 0, 0, '', NULL, 2015, 0),
+(128, 11, 7, 80, 0, 0, '', NULL, 2015, 0),
+(129, 11, 8, 80, 0, 0, '', NULL, 2015, 0),
+(130, 11, 9, 80, 0, 0, '', NULL, 2015, 0),
+(131, 11, 10, 80, 0, 0, '', NULL, 2015, 0),
+(132, 11, 11, 80, 0, 0, '', NULL, 2015, 0);
 
 -- --------------------------------------------------------
 

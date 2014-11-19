@@ -113,7 +113,7 @@
                             echo "<p class=\"sucesso\">Cadastro efetuado com sucesso!</p>";
                         }
                         if(isset($_GET["pgtoSucesso"])) {
-                            echo "<p class=\"sucesso\">A Homeobrás agradece seu apoio!</p>"
+                            echo "<p class=\"sucesso\">A Homeobrás agradece seu apoio!</p>";
                         }
                     ?>
                     <div class="form-group">
