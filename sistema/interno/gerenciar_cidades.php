@@ -115,6 +115,9 @@
                     $(this).find('#cnpjEmpresa').val(
                         $(e.relatedTarget).data('cnpj')
                     );
+                    $(this).find('#custoCurso').val(
+                        $(e.relatedTarget).data('custo')
+                    );
 
                 });
 
@@ -699,7 +702,7 @@
                 $host    = "localhost";
                 $db      = "homeopatias";
                 try{
-                    $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", "homeopat", $senhaBD);
+                    $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
                 }catch (PDOException $e){
                     echo $e->getMessage();
                 }
@@ -901,7 +904,7 @@
                         require_once("entidades/Administrador.php");
                         $coord = new Administrador("");
                         $coord->setIdAdmin($linha["idCoordenador"]);
-                        $coord->recebeAdminId("localhost", "homeopatias", "homeopat", $senhaBD,
+                        $coord->recebeAdminId("localhost", "homeopatias", $usuario, $senhaBD,
                                               "coordenador");
     
                         $tabela .= "data-nome-coord=\"" . htmlspecialchars($coord->getNome());
