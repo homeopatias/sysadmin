@@ -158,13 +158,9 @@
             <h4 class="sucesso">Obrigado pela sua avaliação!</h4>
             <?php
                 } else if(isset($_GET["pgtoSucesso"])) {
-<<<<<<< HEAD
             ?>
             <p class="sucesso">A Homeobrás agradece seu apoio!</p>
             <?php
-=======
-                    echo "<p class=\"sucesso\">A Homeobrás agradece seu apoio!</p>";
->>>>>>> a5b85ff... Associado pode pagar anuidades pelo PagSeguro
                 } else {
             ?>
             <p class="warning"><?= $mensagem ?></p>
