@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 17, 2014 at 01:29 PM
+-- Generation Time: Nov 17, 2014 at 02:44 PM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -96,7 +96,7 @@ INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `t
 (8, 9, 'inscrito', NULL, '8498876543', '', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL'),
 (9, 10, 'preinscrito', NULL, '5787659485', '', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL'),
 (10, 11, 'preinscrito', NULL, '2098764959', '', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL'),
-(11, 12, 'inscrito', 9, '3498123232', '', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL');
+(11, 12, 'preinscrito', 9, '3498123232', '', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL');
 
 -- --------------------------------------------------------
 
@@ -197,7 +197,7 @@ INSERT INTO `Aula` (`idAula`, `chaveCidade`, `etapa`, `data`, `idProfessor`, `no
 (9, 2, 1, '2014-12-18 09:00:00', 7, NULL, 'Finalização de curso'),
 (10, 3, 1, '2014-12-18 09:00:00', 6, NULL, 'Finalização de curso'),
 (11, 1, 1, '2014-11-19 09:00:00', 7, NULL, 'Aula prática de técnicas homeopáticas.'),
-(12, 4, 1, '2014-02-02 12:30:00', 5, NULL, 'Aula introdutória'),
+(12, 4, 1, '2014-02-02 12:30:00', 5, 44.4444, 'Aula introdutória'),
 (13, 4, 1, '2014-09-05 08:10:00', 5, 66.6667, 'Aula final');
 
 -- --------------------------------------------------------
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
   `custoCurso` float NOT NULL COMMENT 'valor de custo para abertura do curso',
   PRIMARY KEY (`idCidade`),
   KEY `idCoordenador` (`idCoordenador`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `Cidade`
@@ -232,7 +232,8 @@ INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`,
 (2, 'RJ', 2014, 'Rio de Janeiro', 2, 'Faculdade de odontologia da UFRJ', 90, 85, '2014-05-02', 'Homeobrás', '56667868000102', 6750),
 (3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750),
 (4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000),
-(5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0);
+(5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0),
+(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0);
 
 -- --------------------------------------------------------
 
@@ -296,12 +297,12 @@ CREATE TABLE IF NOT EXISTS `Frequencia` (
 --
 
 INSERT INTO `Frequencia` (`chaveAluno`, `chaveAula`, `presenca`, `jaAvaliou`, `aprovacaoPendente`, `justificativaAusencia`) VALUES
-(6, 12, 0, 0, 1, 'Sofri um acidente no dia da aula.'),
-(7, 12, 1, 0, 0, NULL),
-(8, 12, 1, 0, 0, NULL),
+(6, 12, 1, 1, 0, 'TESTE'),
+(7, 12, 1, 1, 0, NULL),
+(8, 12, 1, 1, 0, NULL),
 (6, 13, 1, 1, 0, NULL),
-(7, 13, 1, 0, 0, NULL),
-(8, 13, 1, 0, 0, NULL);
+(7, 13, 1, 1, 0, NULL),
+(8, 13, 1, 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -345,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   PRIMARY KEY (`idMatricula`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveCidade` (`chaveCidade`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `Matricula`
@@ -359,7 +360,8 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (5, 9, 1, NULL, 1),
 (6, 8, 1, NULL, 4),
 (7, 7, 1, NULL, 4),
-(8, 6, 1, NULL, 4);
+(8, 6, 1, NULL, 4),
+(9, 11, 2, NULL, 6);
 
 -- --------------------------------------------------------
 
@@ -374,7 +376,7 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=84 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=89 ;
 
 --
 -- Dumping data for table `Notificacao`
@@ -388,10 +390,10 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (5, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 16:50\nMétodo: Dinheiro', 7, 0),
 (6, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 17:05\nMétodo: Dinheiro', 7, 0),
 (18, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 17/11/2014\nHorário: 09:24\nMétodo: Dinheiro', 11, 1),
-(19, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 09:40\nMétodo: Dinheiro', 11, 0),
+(19, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 09:40\nMétodo: Dinheiro', 11, 1),
 (20, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:00\nMétodo: Dinheiro', 2, 0),
-(23, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:05\nMétodo: Dinheiro', 11, 0),
-(24, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:05\nMétodo: Dinheiro', 11, 0),
+(23, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:05\nMétodo: Dinheiro', 11, 1),
+(24, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:05\nMétodo: Dinheiro', 11, 1),
 (26, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:14\nMétodo: Dinheiro', 2, 0),
 (28, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:17\nMétodo: Dinheiro', 2, 0),
 (29, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:17\nMétodo: Dinheiro', 2, 0),
@@ -439,7 +441,12 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (80, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 17/11/2014\nHorário: 11:16\nMétodo: Dinheiro', 2, 0),
 (81, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 17/11/2014\nHorário: 11:18\nMétodo: Dinheiro', 2, 0),
 (82, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$569.00\nData: 17/11/2014\nHorário: 11:50\nMétodo: Dinheiro', 7, 0),
-(83, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 6, 1);
+(83, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 6, 1),
+(84, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade ou registrar uma justificativa no sistema.', 6, 1),
+(85, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade ou registrar uma justificativa no sistema.', 6, 1),
+(86, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade ou registrar uma justificativa no sistema.', 6, 1),
+(87, 'Justificativa de ausência negada', 'Sua justificativa de ausência foi negada\nCaso você acredite que houve algum erro de julgamento por parte do avaliador da sua justificativa, favor entrar em contato conosco.', 6, 1),
+(88, 'Justificativa de ausência aceita', 'Sua justificativa de ausência foi aceita.', 6, 1);
 
 -- --------------------------------------------------------
 
@@ -527,7 +534,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagMensalidade`),
   KEY `chaveAluno` (`chaveMatricula`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=97 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=109 ;
 
 --
 -- Dumping data for table `PgtoMensalidade`
@@ -629,7 +636,19 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (93, 8, 8, 220, 0, 0, '', NULL, 2014, 0),
 (94, 8, 9, 220, 0, 0, '', NULL, 2014, 0),
 (95, 8, 10, 220, 0, 0, '', NULL, 2014, 0),
-(96, 8, 11, 220, 0, 0, '', NULL, 2014, 0);
+(96, 8, 11, 220, 0, 0, '', NULL, 2014, 0),
+(97, 9, 0, 100, 0, 0, '', NULL, 2015, 0),
+(98, 9, 1, 80, 0, 0, '', NULL, 2015, 0),
+(99, 9, 2, 80, 0, 0, '', NULL, 2015, 0),
+(100, 9, 3, 80, 0, 0, '', NULL, 2015, 0),
+(101, 9, 4, 80, 0, 0, '', NULL, 2015, 0),
+(102, 9, 5, 80, 0, 0, '', NULL, 2015, 0),
+(103, 9, 6, 80, 0, 0, '', NULL, 2015, 0),
+(104, 9, 7, 80, 0, 0, '', NULL, 2015, 0),
+(105, 9, 8, 80, 0, 0, '', NULL, 2015, 0),
+(106, 9, 9, 80, 0, 0, '', NULL, 2015, 0),
+(107, 9, 10, 80, 0, 0, '', NULL, 2015, 0),
+(108, 9, 11, 80, 0, 0, '', NULL, 2015, 0);
 
 -- --------------------------------------------------------
 
