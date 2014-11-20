@@ -139,3 +139,115 @@
   'Reference' => NULL,
   'SenderEmail' => 'herc@gmail.com',
 )) - end {1}C97430A29595ED9994BCEFBB111DC681 
+{2014/11/20 07:39:54} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - begin 
+{2014/11/20 07:39:58} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - end {1}90CCB405888802E994C5EF92ADE43068 
+{2014/11/20 09:52:34} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - begin 
+{2014/11/20 09:52:38} [Error] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - error [HTTP 400] - BAD_REQUEST 0 [11029] - Item amount invalid pattern: 1,250.00. Must fit the patern: \d+.\d{2} 
+{2014/11/20 09:54:46} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - begin 
+{2014/11/20 09:54:53} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - end {1}198AEE665F5F9B5AA4E74F8FCFB97B22 
+{2014/11/20 09:55:28} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - begin 
+{2014/11/20 09:55:29} [Error] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - error [HTTP 400] - BAD_REQUEST 0 [11029] - Item amount invalid pattern: 1,200.00. Must fit the patern: \d+.\d{2} 
+{2014/11/20 09:58:21} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - begin 
+{2014/11/20 09:58:27} [Error] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - error [HTTP 400] - BAD_REQUEST 0 [11029] - Item amount invalid pattern: 1,250.00. Must fit the patern: \d+.\d{2} 
+{2014/11/20 10:00:27} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - begin 
+{2014/11/20 10:00:28} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A1',
+  'SenderEmail' => 'joaojoao@gmail.com',
+)) - end {1}34E2D1E4BBBBB51BB4B29F9656B507D3 
+{2014/11/20 10:11:29} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 10:11:33} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}5AD31287808066999411DF92269E4ECB 
+{2014/11/20 10:20:13} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 10:20:15} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}50B12E74E5E5C183343F8F8DA65D23DB 
+{2014/11/20 10:22:42} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 10:22:45} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}9C89513D8A8A709224443FA455DC892A 
+{2014/11/20 10:23:56} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 10:23:56} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}B1D776253A3ABE9FF4158F90A491A3F6 
+{2014/11/20 10:28:48} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 10:28:50} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}2D0A9DBB8989A76224AD7FBD32B94819 
+{2014/11/20 10:31:02} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 10:31:09} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}4A844E5AC2C23A1664168FB76CE2DCBC 
+{2014/11/20 11:17:05} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 11:17:13} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}7846955BE5E5644DD4CFDF86319B4D0A 
+{2014/11/20 11:18:39} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - begin 
+{2014/11/20 11:18:45} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - end {1}DF27D98DB2B28025544FBF9A99A54F71 

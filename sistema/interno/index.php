@@ -175,6 +175,9 @@
             <br>
             <a href="#" data-toggle="modal"
                data-target="#modal-muda-email">Alterar e-mail</a>
+            <br><br>
+
+            <a href="visualizar_pagamentos_associado.php">Visualizar pagamentos</a>
             <br><br><br>
             <p><b>Tipo de usuário:</b>
                 <?php
