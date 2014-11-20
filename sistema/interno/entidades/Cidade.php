@@ -65,8 +65,8 @@ class Cidade{
         }
 
         $textoQuery  = "SELECT idCidade, UF, ano, nome, idCoordenador, local, precoInscricao, 
-                        precoParcela, limiteInscricao, nomeEmpresa, cnpjEmpresa FROM Cidade
-                        WHERE idCidade = ?";
+                        precoParcela, limiteInscricao, nomeEmpresa, cnpjEmpresa, custoCurso
+                        FROM Cidade WHERE idCidade = ?";
 
         $query = $conexao->prepare($textoQuery);
         $query->bindParam(1, $this->idCidade, PDO::PARAM_INT);
