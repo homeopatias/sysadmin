@@ -242,7 +242,7 @@
                         while($linha = $query->fetch()){
                             $anoPag = $linha['ano'];
 
-                            //Inicia a divida para o ano atual caso não tenha sido inicia ainda
+                            // Inicia a divida para o ano atual caso não tenha sido iniciada ainda
                             if(!in_array($anoPag, $anos)){
                                 $anos[] = $anoPag;
                                 $pagamentos[$anoPag]['divida'] = 0;
@@ -265,10 +265,10 @@
                             }
                         }
 
-                        //se recebeu um pagamento via POST, efetua o pagamento
+                        // se recebeu um pagamento via POST, efetua o pagamento
                         if( isset($_POST["submit"]) ){
-                            $valor = (int) $_POST["valor-pagamento"];
-                            $valorValido = ($valor <= $pagamentos[$anoPagamento]['divida'] && $valor > 0) ? 1 : 0;
+                            $valor = (float) $_POST["valor-pagamento"];
+                            $valorValido = ($valor <= $pagamentos[$anoPagamento]['divida'] && $valor > 0);
 
                             $metodo = $_POST["metodo-pagamento"];
                             $metodoValido =  ( isset($metodo) && 
@@ -277,18 +277,19 @@
                                              );
                             
                             if($valorValido && $metodoValido){
-                                
                                 for ($i = 0 ; $i < 12 && $valor > 0; $i++) {
                                     if(!$pagamentos[$anoPagamento][$i]['fechado']){
-
                                         if($valor > 0 ){
-                                            // Valor é o que sobrar do pagamento, ja que ele pode terminar de pagar, e caso não feche o pagamento, retornará um valor negativo
+                                            // Valor é o que sobrar do pagamento, 
+                                            // ja que ele pode terminar de pagar,
+                                            // e caso não feche o pagamento, retornará
+                                            // um valor negativo
 
                                             $pagamentos[$anoPagamento][$i]['pago'] += $valor;
 
                                             $valor = $pagamentos[$anoPagamento][$i]['pago']  - $pagamentos[$anoPagamento][$i]['valor'] ;
                                             $pagamentos[$anoPagamento][$i]['editado'] = 1;
-                                            //Se o valor pago >= valor da parcela,
+                                            // Se o valor pago >= valor da parcela,
                                             // o pagamento foi suficiente para fechar a parcela
 
                                             if( $pagamentos[$anoPagamento][$i]['pago'] >= 
@@ -297,19 +298,15 @@
                                                 $pagamentos[$anoPagamento][$i]['pago']  =
                                                     $pagamentos[$anoPagamento][$i]['valor'];
 
-                                                //se o pagamento foi suficiente para pagar o 
-                                                //restante da parcela, fecha a parcela
+                                                // se o pagamento foi suficiente para pagar o 
+                                                // restante da parcela, fecha a parcela
                                                 $pagamentos[$anoPagamento][$i]['fechado'] = "1";
-
                                             }
-                                                
-
-
                                         }
                                     }
                                 }   
 
-                                //Coletamos agora a divida total do aluno
+                                // Coletamos agora a divida total do aluno
                                 $pagamentos[$anoPagamento]['divida'] = 0;
                                 for ($i = 0 ; $i < 12 ; $i++) {
                                     if(!$pagamentos[$anoPagamento][$i]['fechado']){
@@ -328,8 +325,23 @@
 
                                 $conexao->beginTransaction();
                                 $sucesso = 1;
-                                for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
 
+                                // agora registramos o pagamento genérico no banco
+                                $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor,
+                                               metodo, objetivo, ano)
+                                               VALUES (?, ?, ?, "mensalidade", ?)';
+                                $query = $conexao->prepare($textoQuery);
+
+                                $valorTotalPago = (float) $_POST["valor-pagamento"];
+
+                                $query->bindParam(1, $aluno->getId());
+                                $query->bindParam(2, $valorTotalPago);
+                                $query->bindParam(3, $metodo);
+                                $query->bindParam(4, $anoPagamento);
+
+                                $sucesso = $query->execute();
+
+                                for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
                                     if( $pagamentos[$anoPagamento][$i]['editado'] ){
                                         $textoQuery = "UPDATE PgtoMensalidade 
                                                     SET valorTotal = ?, valorPago = ?,
@@ -349,13 +361,13 @@
                                         }
 
                                         
-                                        //Se o método passado não está na lista de métodos , adiciona ele
+                                        // Se o método passado não está na lista de métodos , adiciona ele
                                         if(!in_array(strtolower($metodo), $metodosList ) ){
                                             $metodosList[] = $metodo;
                                         }
 
                                         $metodoUpdate = "";
-                                        //Separa os métodos por '|' no bd
+                                        // Separa os métodos por '|' no bd
                                         foreach ($metodosList as $metodo) {
                                             $metodo = ucfirst($metodo);
                                             if(strlen($metodoUpdate) == 0){
@@ -380,8 +392,8 @@
                                         $sucesso = $query->execute($queryArray);
 
                                     }
-
                                 }
+
                                 // se conseguiu lançar o pagamento da inscrição do ano 
                                 // atual e
                                 // ela fechou, muda o status do aluno para inscrito
@@ -419,7 +431,7 @@
                                     mail($aluno->getEmail(), $assunto, $msg, $headers);
 
                                     // agora registramos no sistema uma notificação para o aluno
-                                    $texto .= "Pagamento recebido:\nValor: R$" . $quantiaPaga;
+                                    $texto  = "Pagamento recebido:\nValor: R$" . $quantiaPaga;
                                     $texto .= "\nData: " . date("d/m/Y") . "\nHorário: " . date("H:i");
                                     $texto .= "\nMétodo: " . $metodo;
                                     $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
@@ -528,7 +540,7 @@
                             echo "<td> ";
 
                             echo $metodo
-                                 ? htmlspecialchars(str_replace("|", " , ", $metodo))
+                                 ? htmlspecialchars(str_replace("|", ", ", $metodo))
                                  : "N/A";
                             echo "</td>";
                         }
@@ -567,10 +579,10 @@
                     <h4 class="modal-title">Lançamento de pagamento</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="btn col-sm-12">
+                        <div class="col-sm-12">
                             <div class="col-sm-12">
                                 <p> 
-                                Lançamento de pagamento para o aluno  <?= $aluno->getNome() ?> para o ano : <?= isset($_GET["ano"]) 
+                                Lançamento de pagamento para o aluno  <?= $aluno->getNome() ?> para o ano de <?= isset($_GET["ano"]) 
                                                 ? htmlspecialchars($_GET["ano"]) 
                                                 : date("Y")  ?>
                                 </p>
@@ -594,11 +606,12 @@
                                 <label for="metodo-pagamento" class="col-sm-6">
                                     Método de Pagamento:
                                 </label>
-                                <select id="metodo-pagamento" name="metodo-pagamento">
+                                <select id="metodo-pagamento" name="metodo-pagamento"
+                                        class="form-control" style="width: 100px">
                                     <option value="Dinheiro">Dinheiro</option>
                                     <option value="Cheque"  >Cheque</option>
                                 </select>
-                            </div>
+                            </div><br>
                             <div class="col-sm-12">
                                 <h5 class="warning">Não é permitido lançar um pagamento maior do que a divida total!</h5>
                             </div>
