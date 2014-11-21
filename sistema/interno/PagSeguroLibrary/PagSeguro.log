@@ -282,4 +282,4 @@
 {2014/11/20 13:39:56} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
   'Reference' => 'A3',
   'SenderEmail' => 'juju.silva@gmail.com',
-)) - end {1}20444685ACAC709004C8CF9BD8B3F7BE 
+)) - end {1}20444685ACAC709004C8CF9BD8B3F7BE

@@ -30,60 +30,11 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
     }
 
     // descobrimos o quanto esse aluno vai pagar, e se os dados recebidos são válidos
-    $parcelasRecebidas = isset($_POST['pgto-parcelas']) ? intval($_POST['pgto-parcelas']) : -1;
-    $valorRecebido     = isset($_POST['pgto-valor']) ? $_POST['pgto-valor'] : -1;
-
-    $parcelasValidas = preg_match("/^[0-9]+$/", $parcelasRecebidas) && $parcelasRecebidas != -1 &&
-                       $parcelasRecebidas != 0;
+    $valorRecebido = isset($_POST['pgto-valor']) ? $_POST['pgto-valor'] : -1;
     $valorValido = preg_match("/^[0-9]*\.?[0-9]+$/", $valorRecebido) && $valorRecebido != -1;
 
-    if ($parcelasValidas && $valorValido) {
-        // o usuário enviou um valor e um número de parcelas
-        // redirecionamos o aluno de volta com uma mensagem de erro
-        header('Location: ../visualizar_informacoes_curso.php?' .
-               'mensagem=Envie um número de parcelas ou um valor a pagar, não os dois', true, "302");
-        die();
-    }
-
-    $valorPagar = 0;
-    if ($parcelasValidas) {
-        // checamos se o número de parcelas é válido, enquanto já
-        // descobrimos o valor a ser pago, se tudo estiver correto
-
-        $textoQuery  = "SELECT
-                        sum( (((100 - R.desconto)/100) * R.valorTotal) - R.valorPago)
-                        as valorPagar,
-                        count(R.idPagMensalidade) as numParcelas FROM 
-                        (SELECT P.valorTotal, P.desconto, P.valorPago, P.idPagMensalidade
-                        FROM PgtoMensalidade P
-                        INNER JOIN Matricula M ON M.idMatricula = P.chaveMatricula
-                        WHERE M.chaveAluno = ? AND P.fechado = 0 AND P.ano <= YEAR(NOW())
-                        ORDER BY P.ano DESC, P.numParcela ASC LIMIT ?) R";
-
-        $query = $conexao->prepare($textoQuery);
-        $query->bindParam(1, $aluno->getNumeroInscricao(), PDO::PARAM_INT);
-        $query->bindParam(2, $parcelasRecebidas, PDO::PARAM_INT);
-
-        $query->setFetchMode(PDO::FETCH_ASSOC);
-        $query->execute();
-
-        if ($linha = $query->fetch()) {
-            if ($linha['numParcelas']  != $parcelasRecebidas) {
-                // foram recebidas mais parcelas do que é possível
-                $parcelasValidas = false;
-            } else {
-                $valorPagar = $linha['valorPagar'];
-            }
-        } else {
-            // redirecionamos o aluno de volta com uma mensagem de erro
-            header('Location: ../visualizar_informacoes_curso.php?' .
-                   'mensagem=Erro com o banco de dados', true, "302");
-            die();
-        }
-
-    } else if ($valorValido) {
+    if ($valorValido) {
         // checamos se o valor a pagar é válido
-
         $textoQuery  = "SELECT sum( (((100 - P.desconto)/100) * P.valorTotal) - P.valorPago)
                         as valorFaltante FROM PgtoMensalidade P
                         INNER JOIN Matricula M ON M.idMatricula = P.chaveMatricula
@@ -99,8 +50,6 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
             if ($linha['valorFaltante']  < $valorRecebido) {
                 // foi recebido um valor a pagar maior que o saldo devedor
                 $valorValido = false;
-            } else {
-                $valorPagar = $valorRecebido;
             }
         } else {
             // redirecionamos o aluno de volta com uma mensagem de erro
@@ -108,9 +57,7 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
                    'mensagem=Erro com o banco de dados', true, "302");
             die();
         }
-    }
-
-    if (!$parcelasValidas && !$valorValido) {
+    } else {
         // redirecionamos o aluno de volta com uma mensagem de erro
         header('Location: ../visualizar_informacoes_curso.php?' .
                'mensagem=Valor enviado inválido', true, "302");
@@ -122,7 +69,7 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
 
     $reqPagamento = new PagSeguroPaymentRequest();
     $reqPagamento->addItem('0001', 'Parcela do curso de Homeopatia',
-                           1, number_format($valorPagar, 2));
+                           1, number_format($valorRecebido, 2));
     $reqPagamento->setCurrency("BRL");
 
 

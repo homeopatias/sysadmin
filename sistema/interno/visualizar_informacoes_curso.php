@@ -102,55 +102,23 @@
 
                 // alterna campos de texto com campos de input
 
-                // entrada de quantidade de parcelas
-                $("#label-parcelas").click(function(){
-                    $(this).hide();
-                    $("#pgto-valor").val("");
-                    $("#pgto-parcelas").show(300);
-                    $("#pgto-parcelas").focus();
-                });
-                $("#pgto-parcelas").blur(function(){
-                    if ($(this).val() && $(this).parent()[0].checkValidity()) {
-                        $(this).parent().submit();
-                        return;
-                    } else {
-                        $("#msg-erro").text("Insira um valor numérico inteiro menor ou igual " +
-                                            "ao número de parcelas em aberto");
-                    }
-                    $(this).hide();
-                    $(this).val("");
-                    $("#label-parcelas").show(300);
-                });
-
                 // entrada de valor em reais
                 $("#label-valor").click(function(){
                     $(this).hide();
-                    $("#pgto-parcelas").val("");
                     $("#pgto-valor").show(300);
+                    $("#pgto-valor").css("display", "inline");
+                    $(this).parent().find('input[type="submit"]').show(300);
+                    $(this).parent().find('input[type="submit"]').css("display", "inline");
                     $("#pgto-valor").focus();
-                });
-                $("#pgto-valor").blur(function(){
-                    if ($(this).val() && $(this).parent()[0].checkValidity()) {
-                        $(this).parent().submit();
-                        return;
-                    } else {
-                        $("#msg-erro").text("Insira um valor numérico real menor ou igual " +
-                                            "ao saldo devedor");
-                    }
-                    $(this).hide();
-                    $(this).val("");
-                    $("#label-valor").show(300);
+                    return false;
                 });
 
                 // envia o formulário se enter for apertado dentro
-                // de um dos inputs
-
-                $("#pgto-parcelas, #pgto-valor").keypress(function(e){
+                // do input
+                $("#pgto-valor").keypress(function(e){
                     var keycode = (e.keyCode ? e.keyCode : e.which);
                     if(keycode == '13'){ // enter foi pressionado
-                        if ($(this).val() && $("#pgto-parcelas").checkValidity()) {
-                            $(this).parent().submit();
-                        }
+                        $(this).parent().find('input[type="submit"]').click();
                     }
                 });
 
@@ -778,57 +746,6 @@
                          Pagamentos efetuados e pendentes desse aluno -->
                     <?php
 
-                        // procuramos pagamentos pendentes do aluno em todo o período
-                        $textoQuery  = "SELECT
-                                        sum( (((100 - P.desconto)/100) * P.valorTotal) - P.valorPago)
-                                        as valorFaltante,
-                                        count(P.idPagMensalidade) as numParcelas FROM PgtoMensalidade P
-                                        INNER JOIN Matricula M ON M.idMatricula = P.chaveMatricula
-                                        WHERE M.chaveAluno = ? AND P.fechado = 0 AND P.ano <= YEAR(NOW())";
-
-                        $query = $conexao->prepare($textoQuery);
-                        $query->bindParam(1, $idAluno, PDO::PARAM_INT);
-                        $query->setFetchMode(PDO::FETCH_ASSOC);
-                        $query->execute();
-
-                        $linha = $query->fetch();
-                        $parcelasAberto = htmlspecialchars($linha['numParcelas']);
-                        $valorAberto = number_format($linha['valorFaltante'], 2, ',', ' ');
-
-                    ?>
-                    <h4>Você está com <?= $parcelasAberto ?> parcelas em aberto,
-                       e seu saldo devedor é de R$ <?= $valorAberto ?>.</h4>
-                    <p id="msg-erro" class="warning"></p>
-                    <?php if($valorAberto != 0) { ?>
-                    <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST">
-                        <a id="label-parcelas" href="#" class="btn btn-primary" 
-                            style="display:block; width:300px">
-                            Pagar número de parcelas
-                        </a>
-                        <input type="number" name="pgto-parcelas" id="pgto-parcelas"
-                               placeholder="Nº de parcelas" class="form-control"
-                               autocomplete="off" pattern="^[0-9]*$"
-                               style="display:none;width:205px;" min="1"
-                               max=<?= '"' . $parcelasAberto . '"'?>>
-                        <br>
-                    </form>
-                    <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST">
-                        <a id="label-valor" href="#" class="btn btn-primary" 
-                            style="display:block; width:300px">
-                            Pagar valor
-                        </a>
-                        <input type="number" name="pgto-valor" id="pgto-valor"
-                               placeholder="Quantidade em R$" class="form-control"
-                               autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
-                               style="display:none;width:205px;"
-                               step="0.01" min="1"
-                               max=<?= '"' .
-                                       number_format($linha['valorFaltante'], 2, '.', '') .
-                                       '"'?>>
-                    </form>
-                    <?php
-                        }
-
                         // procuramos os pagamentos do ano enviado, tanto pendentes
                         // como efetuados
 
@@ -932,7 +849,45 @@
                     <?php
                         }
 
-                        
+                        // procuramos pagamentos pendentes do aluno em todo o período
+                        $textoQuery  = "SELECT
+                                        sum( (((100 - P.desconto)/100) * P.valorTotal) - P.valorPago)
+                                        as valorFaltante,
+                                        count(P.idPagMensalidade) as numParcelas FROM PgtoMensalidade P
+                                        INNER JOIN Matricula M ON M.idMatricula = P.chaveMatricula
+                                        WHERE M.chaveAluno = ? AND P.fechado = 0 AND P.ano <= YEAR(NOW())";
+
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(1, $idAluno, PDO::PARAM_INT);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+
+                        $linha = $query->fetch();
+                        $parcelasAberto = htmlspecialchars($linha['numParcelas']);
+                        $valorAberto = number_format($linha['valorFaltante'], 2, ',', ' ');
+
+                    ?>
+                    <h4>Você está com <?= $parcelasAberto ?> parcelas em aberto,
+                       e seu saldo devedor é de R$ <?= $valorAberto ?>.</h4>
+                    <p id="msg-erro" class="warning"></p>
+                    <?php if($valorAberto != 0) { ?>
+                    <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST">
+                        <a id="label-valor" href="#" class="btn btn-primary" 
+                            style="display:block; width:300px">
+                            Pagar valor
+                        </a>
+                        <input type="number" name="pgto-valor" id="pgto-valor"
+                               placeholder="Quantidade em R$" class="form-control"
+                               autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
+                               style="display:none;width:205px;"
+                               step="0.01" min="1"
+                               max=<?= '"' .
+                                       number_format($linha['valorFaltante'], 2, '.', '') .
+                                       '"'?>>
+                        <input type="submit" value="Gerar" class="btn btn-primary" style="display:none">
+                    </form>
+                    <?php
+                        }
                     ?>
 
                 </section>
