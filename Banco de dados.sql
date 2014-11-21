@@ -465,6 +465,14 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
   PRIMARY KEY (`idPagamento`),
   KEY `chaveUsuario` (`chaveUsuario`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=3 ;
+--
+-- Dumping data for table `Pagamento`
+--
+
+INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `metodo`, `objetivo`, `codigoTransacao`, `ano`) VALUES
+(1, 8, 500, 'Dinheiro', 'mensalidade', NULL, 2014),
+(2, 9, 150, 'Cheque', 'mensalidade', NULL, 2014),
+(3, 9, 70, 'Dinheiro', 'mensalidade', NULL, 2014);
 
 -- --------------------------------------------------------
 
@@ -492,6 +500,7 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
   `inscricao` tinyint(1) NOT NULL COMMENT 'Determina se esse pagamento se refere a uma inscricao ou a uma anuidade',
   `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa anuidade/inscrição',
   `valorPago` float NOT NULL COMMENT 'Valor pago pelo associado',
+  `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento utilizado para essa anuidade',
   `data` datetime DEFAULT NULL COMMENT 'Data do pagamento da anuidade',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
@@ -509,6 +518,7 @@ CREATE TABLE IF NOT EXISTS `PgtoCompra` (
   `idPagCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de pagamento de uma compra',
   `cpf` int(11) NOT NULL COMMENT 'CPF do comprador do produto',
   `valor` float NOT NULL COMMENT 'Valor pago na compra',
+  `metodo` int(11) NOT NULL COMMENT 'Método de pagamento utilizado para essa compra',
   `chaveCompra` int(11) NOT NULL COMMENT 'Identificador unico da compra feita, ao qual esse pagamento se refere',
   `data` datetime NOT NULL COMMENT 'Data do pagamento',
   PRIMARY KEY (`idPagCompra`),
@@ -528,7 +538,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa mensalidade',
   `valorPago` float NOT NULL COMMENT 'Valor pago pelo aluno',
   `desconto` float NOT NULL COMMENT 'Desconto (em %) recebido pelo aluno devido às indicações',
-  `metodo` varchar(100) NOT NULL,
+  `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento utilizado para essa mensalidade',
   `data` datetime DEFAULT NULL COMMENT 'Data na qual essa mensalidade foi paga',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
