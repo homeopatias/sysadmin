@@ -180,53 +180,23 @@
                     $("#filtro-nome").focus();
                 });
 
-                $("#filtro-nome").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-nome").show(300);   
-                    } 
-                });
-
                 $("#label-uf").click(function(){
                     $(this).hide();
                     $("#filtro-uf").show(300);
                     $("#filtro-uf").focus();
                 });
 
-                $("#filtro-uf").blur(function(){
-                    if($(this).val() == "0"){
-                        $(this).hide(300);
-                        $("#label-uf").show(300);   
-                    } 
-                });
-
                 $("#label-ano").click(function(){
                     $(this).hide();
                     $("#filtro-ano").show(300);
                     $("#filtro-ano").focus();
-                });
-
-                $("#filtro-ano").blur(function(){
-                    if($(this).val() == "0"){
-                        $(this).hide(300);
-                        $("#label-ano").show(300);   
-                    }
-                });
-                
+                });                
 
                 $("#label-coordenador").click(function(){
                     $(this).hide();
                     $("#filtro-coordenador").show(300);
                     $("#filtro-coordenador").focus();
-                });
-
-                $("#filtro-coordenador").blur(function(){
-                    if($(this).val() == "0"){
-                        $(this).hide(300);
-                        $("#label-coordenador").show(300);   
-                    }
-                });
-                
+                });                
 
                 $("#label-local").click(function(){
                     $(this).hide();
@@ -234,27 +204,10 @@
                     $("#filtro-local").focus();
                 });
 
-                $("#filtro-local").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-local").show(300);   
-                    }
-                }); 
-
                 $("#label-data-max").click(function(){
                     $(this).hide();
                     $("#div-data-max").show(300);
                     $("#filtro-data-max").focus();
-                });
-
-                $("#filtro-data-max").blur(function(){
-                    if($(this).val() != ""){
-                        atualizaPagina();
-                    }
-                    else{
-                        $("#div-data-max").hide(300);
-                        $("#label-data-max").show(300);   
-                    }
                 });
 
                 $("#label-ipp").click(function(){
@@ -266,46 +219,6 @@
                 $("#ipp").blur(function(){
                     $(this).hide(300);
                     $("#label-ipp").show(300);   
-                });
-
-                // processa envio do formulário se enter for pressionado dentro de algum campo
-                // do formulário de filtro
-
-                // filtro-data-max e filtro-data-min envia o formulário usando .onblur()
-                $("#filtro-nome").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-uf").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-ano").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-local").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-
-                $("#filtro-coordenador").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
                 });
 
                 // se clicou na lupa, envia o formulário
@@ -354,22 +267,6 @@
 
                 $("#form-filtro input").change(function(){
                     podeMudarPagina = false;
-                });
-
-                // ------------ Muda de página usando as setas do teclado
-                $(window).keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == "37" && possuiPaginaAnterior && 
-                    document.activeElement.tagName == "BODY" ){
-                        
-                        $("#anterior").trigger("click");
-                    }
-                    
-                    else if(keycode == "39" && possuiProximaPagina && 
-                         document.activeElement.tagName == "BODY" ){
-                       
-                        $("#proxima").trigger("click");
-                    }
                 });
 
                 var anos = new Array();
@@ -1081,13 +978,15 @@
                                         class="form-control"
                                         style="display:inline;width:175px">
                             </select>
-                            <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
-                                Buscar
-                                <i href="#" class="fa fa-search"></i>
-                            </a>
-                            <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
+                            
+                            <br><br>
+                            <a href="#" id="limpar" class="btn btn-info" >
                                 Limpar
                                 <i href="#" class="fa fa-eraser"></i>
+                            </a>
+                            <a href="#" id="busca" class="btn btn-info">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
                             </a>
                             
                             <!-- controle de pagina da paginação -->

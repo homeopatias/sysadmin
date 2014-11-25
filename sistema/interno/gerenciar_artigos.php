@@ -92,56 +92,22 @@
                     $("#filtro-titulo").focus();
                 });
 
-                $("#filtro-titulo").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-titulo").show(300);   
-                    } 
-                });
-
                 $("#label-autor").click(function(){
                     $(this).hide();
                     $("#filtro-autor").show(300);
                     $("#filtro-autor").focus();
                 });
 
-                $("#filtro-autor").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-autor").show(300);   
-                    }
-                });
-
                 $("#label-data-min").click(function(){
                     $(this).hide();
                     $("#div-data-min").show(300);
                     $("#filtro-data-min").focus();
-                });
-
-                $("#filtro-data-min").focusout(function(){
-                    if($("this").val() != ""){
-                        atualizaPagina();
-                    }
-                    $("#div-data-min").hide(300);
-                    $("#label-data-min").show(300);   
-                });
-
-                
+                });                
 
                 $("#label-data-max").click(function(){
                     $(this).hide();
                     $("#div-data-max").show(300);
                     $("#filtro-data-max").focus();
-                });
-
-                $("#filtro-data-max").blur(function(){
-                    if($(this).val() != ""){
-                        atualizaPagina();
-                    }
-                    else{
-                        $("#div-data-max").hide(300);
-                        $("#label-data-max").show(300);   
-                    }
                 });
 
                 $("#label-ipp").click(function(){
@@ -153,24 +119,6 @@
                 $("#ipp").blur(function(){
                     $(this).hide(300);
                     $("#label-ipp").show(300);   
-                });
-
-                // processa envio do formulário se enter for pressionado dentro de algum campo
-                // do formulário de filtro
-
-                // filtro-data-max e filtro-data-min envia o formulário usando .onblur()
-                $("#filtro-titulo").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-autor").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
                 });
 
                 //se mudou a quantidade de pessoas por página, atualiza
@@ -217,22 +165,6 @@
 
                 $("#form-filtro input").change(function(){
                     podeMudarPagina = false;
-                });
-
-                // ------------ Muda de página usando as setas do teclado
-                $(window).keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == "37" && possuiPaginaAnterior && 
-                    document.activeElement.tagName == "BODY" ){
-                        
-                        $("#anterior").trigger("click");
-                    }
-                    
-                    else if(keycode == "39" && possuiProximaPagina && 
-                         document.activeElement.tagName == "BODY" ){
-                       
-                        $("#proxima").trigger("click");
-                    }
                 });
 
                 //---- Passa o th que foi clicado para o form e o envia, para reformatar
@@ -575,7 +507,7 @@
                                         mb_strlen(($_GET["filtro-data-min"])) > 0) ? 
                                             "display:inline;color:#336600" : "display:inline";
                                         ?>
-                                >Data minima de publicação
+                                >Datas desde
                             </a>
                             <div id="div-data-min" style="display: inline">
                                 <input type="date" name="filtro-data-min" id="filtro-data-min"
@@ -589,7 +521,7 @@
                                         mb_strlen(($_GET["filtro-data-max"])) > 0) ? 
                                             "display:inline;color:#336600" : "display:inline";
                                         ?>
-                                >Data máxima de publicação
+                                >Datas até
                             </a>
                             <div id="div-data-max" style="display: inline">
                             <input type="date" name="filtro-data-max" id="filtro-data-max"
@@ -598,13 +530,14 @@
                                        value =<?= isset($_GET["filtro-data-max"]) ?
                                                 htmlspecialchars($_GET["filtro-data-max"]) : "" ?> >
                             </div>
-                            <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
-                                Buscar
-                                <i href="#" class="fa fa-search"></i>
-                            </a>
-                            <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
+                            <br><br>
+                            <a href="#" id="limpar" class="btn btn-info" >
                                 Limpar
                                 <i href="#" class="fa fa-eraser"></i>
+                            </a>
+                            <a href="#" id="busca" class="btn btn-info">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
                             </a>
                             <!-- controle de pagina da paginação -->
                             <input type="hidden" id="pagina" name="pagina" 

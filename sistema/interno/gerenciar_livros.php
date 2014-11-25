@@ -125,24 +125,10 @@
                     $("#filtro-titulo").focus();
                 });
 
-                $("#filtro-titulo").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-titulo").show(300);   
-                    } 
-                });
-
                 $("#label-edicao").click(function(){
                     $(this).hide();
                     $("#filtro-edicao").show(300);
                     $("#filtro-edicao").focus();
-                });
-
-                $("#filtro-edicao").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-edicao").show(300);   
-                    } 
                 });
 
                 $("#label-autor").click(function(){
@@ -151,24 +137,10 @@
                     $("#filtro-autor").focus();
                 });
 
-                $("#filtro-autor").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-autor").show(300);   
-                    }
-                });
-
                 $("#label-editora").click(function(){
                     $(this).hide();
                     $("#filtro-editora").show(300);
                     $("#filtro-editora").focus();
-                });
-
-                $("#filtro-editora").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-editora").show(300);   
-                    } 
                 });
 
                 $("#label-qtd-min").click(function(){
@@ -177,37 +149,16 @@
                     $("#filtro-qtd-min").focus();
                 });
 
-                $("#filtro-qtd-min").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-qtd-min").show(300);   
-                    } 
-                });
-
                 $("#label-qtd-max").click(function(){
                     $(this).hide();
                     $("#filtro-qtd-max").show(300);
                     $("#filtro-qtd-max").focus();
                 });
 
-                $("#filtro-qtd-max").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-qtd-max").show(300);   
-                    }
-                });
-
                 $("#label-fornecedor").click(function(){
                     $(this).hide();
                     $("#filtro-fornecedor").show(300);
                     $("#filtro-fornecedor").focus();
-                });
-
-                $("#filtro-fornecedor").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-fornecedor").show(300);   
-                    } 
                 });
 
                 $("#label-ipp").click(function(){
@@ -228,58 +179,6 @@
                     atualizaPagina();
                 });
 
-                // processa envio do formulário se enter for pressionado dentro de algum campo
-                // do formulário de filtro
-
-                // filtro-data-max e filtro-data-min envia o formulário usando .onblur()
-                $("#filtro-titulo").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-edicao").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-autor").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-editora").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-qtd-min").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-qtd-max").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-fornecedor").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
 
                 // se clicou em anterior ou próxima muda a página da tabela
                 $("#anterior").click(function(e){
@@ -301,22 +200,6 @@
                     proximaPagina = parseInt(proximaPagina) + 1
                     $("#pagina").val(proximaPagina);
                     $("#form-filtro").submit();
-                });
-
-                // ------------ Muda de página usando as setas do teclado
-                $(window).keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == "37" && possuiPaginaAnterior && 
-                    document.activeElement.tagName == "BODY" ){
-                        
-                        $("#anterior").trigger("click");
-                    }
-                    
-                    else if(keycode == "39" && possuiProximaPagina && 
-                         document.activeElement.tagName == "BODY" ){
-                       
-                        $("#proxima").trigger("click");
-                    }
                 });
 
                 // se clicou na lupa, envia o formulário
@@ -890,13 +773,14 @@
                                         htmlspecialchars($_GET["filtro-fornecedor"]) : "" ?> >
 
                             
-                            <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
-                                Buscar
-                                <i href="#" class="fa fa-search"></i>
-                            </a>
-                            <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
+                            <br><br>
+                            <a href="#" id="limpar" class="btn btn-info" >
                                 Limpar
                                 <i href="#" class="fa fa-eraser"></i>
+                            </a>
+                            <a href="#" id="busca" class="btn btn-info">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
                             </a>
 
                             <!-- controle de pagina da paginação -->

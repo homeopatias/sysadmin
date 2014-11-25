@@ -54,22 +54,6 @@
                     $("#form-filtro").submit();
                 });
 
-                // ------------ Muda de página usando as setas do teclado
-                $(window).keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == "37" && possuiPaginaAnterior && 
-                    document.activeElement.tagName == "BODY" ){
-                        
-                        $("#anterior").trigger("click");
-                    }
-                    
-                    else if(keycode == "39" && possuiProximaPagina && 
-                         document.activeElement.tagName == "BODY" ){
-                       
-                        $("#proxima").trigger("click");
-                    }
-                });
-
                 // passa os dados para o modal de avaliação de justificativa
                 // quando necessário
                 $("#modal-justificativa").on('show.bs.modal', function(e) {

@@ -180,69 +180,31 @@
                     $("#filtro-nome").focus();
                 });
 
-                $("#filtro-nome").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-nome").show(300);   
-                    } 
-                });
-
                 $("#label-cpf").click(function(){
                     $(this).hide();
                     $("#filtro-cpf").show(300);
                     $("#filtro-cpf").focus();
                 });
 
-                $("#filtro-cpf").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-cpf").show(300);   
-                    }
-                });
                 
 
                 $("#label-status").click(function(){
                     $(this).hide();
                     $("#filtro-status").show(300);
                     $("#filtro-status").focus();
-                });
-
-                $("#filtro-status").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-status").show(300);   
-                    }
-                });
-                
+                });                
 
                 $("#label-numero").click(function(){
                     $(this).hide();
                     $("#filtro-numero").show(300);
                     $("#filtro-numero").focus();
-                });
-
-                $("#filtro-numero").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-numero").show(300);   
-                    }
-                });                
+                });               
 
                 $("#label-data-min").click(function(){
                     $(this).hide();
                     $("#div-data-min").show(300);
                     $("#filtro-data-min").focus();
-                });
-
-                $("#filtro-data-min").focusout(function(){
-                    if($("this").val() != ""){
-                        atualizaPagina();
-                    }
-                    $("#div-data-min").hide(300);
-                    $("#label-data-min").show(300);   
-                });
-
-                
+                });                
 
                 $("#label-data-max").click(function(){
                     $(this).hide();
@@ -250,15 +212,6 @@
                     $("#filtro-data-max").focus();
                 });
 
-                $("#filtro-data-max").blur(function(){
-                    if($(this).val() != ""){
-                        atualizaPagina();
-                    }
-                    else{
-                        $("#div-data-max").hide(300);
-                        $("#label-data-max").show(300);   
-                    }
-                });
                 $("#label-ipp").click(function(){
                     $(this).hide();
                     $("#ipp").show(300);
@@ -276,90 +229,16 @@
                     $("#filtro-cidade").focus();
                 });
 
-                $("#filtro-cidade").blur(function(){
-                    if($(this).val() == null || $(this).val() == "0"){
-                        $(this).hide(300);
-                        $("#label-cidade").show(300);   
-                    }
-                });
-
                 $("#label-ano").click(function(){
                     $(this).hide();
                     $("#filtro-ano").show(300);
                     $("#filtro-ano").focus();
                 });
 
-                $("#filtro-ano").blur(function(){
-                    if($(this).val() == null || $(this).val() == "0"){
-                        $(this).hide(300);
-                        $("#label-ano").show(300);   
-                    }
-                });
-
                 $("#label-etapa").click(function(){
                     $(this).hide();
                     $("#filtro-etapa").show(300);
                     $("#filtro-etapa").focus();
-                });
-
-                $("#filtro-etapa").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-etapa").show(300);   
-                    }
-                });
-
-                // processa envio do formulário se enter for pressionado dentro de algum campo
-                // do formulário de filtro
-
-                // filtro-data-max e filtro-data-min envia o formulário usando .onblur()
-                $("#filtro-nome").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-cpf").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-
-                $("#filtro-numero").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-status").change(function(){
-                    atualizaPagina();
-                });
-
-                $("#filtro-cidade").change(function(){
-                    if($("#filtro-cidade").val != "0" && $("#filtro-ano").val() == "0"){
-                        $("#label-ano").click();
-                    }
-                    else{
-                        $(this).blur();
-                    }
-                });
-
-                $("#filtro-ano").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-etapa").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
                 });
 
                 // se clicou na lupa, envia o formulário
@@ -420,22 +299,6 @@
                     $("#filtro-ano").val("");
                     $("#filtro-etapa").val("");
                     atualizaPagina();
-                });
-
-                // ------------ Muda de página usando as setas do teclado
-                $(window).keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == "37" && possuiPaginaAnterior && 
-                    document.activeElement.tagName == "BODY" ){
-
-                        $("#anterior").trigger("click");
-                    }
-                    
-                    else if(keycode == "39" && possuiProximaPagina && 
-                         document.activeElement.tagName == "BODY" ){
-
-                            $("#proxima").trigger("click");
-                    }
                 });
 
                 //---- Passa o th que foi clicado para o form e o envia, para reformatar
@@ -1337,12 +1200,12 @@
                                         mb_strlen(($_GET["filtro-numero"])) > 0) ? 
                                             "display:inline;color:#336600" : "display:inline";
                                         ?> 
-                                >Numero
+                                >Inscrição
                             </a>
 
                             <input type="text" name="filtro-numero"
                                        id="filtro-numero"
-                                       placeholder="xx" class="form-control"
+                                       placeholder="Nº insc" class="form-control"
                                        style="display:inline;width:75px"
                                        value= <?= isset($_GET["filtro-numero"]) ? 
                                         htmlspecialchars($_GET["filtro-numero"]) : "" ?> >
@@ -1352,7 +1215,7 @@
                                         mb_strlen(($_GET["filtro-data-min"])) > 0) ? 
                                             "display:inline;color:#336600" : "display:inline";
                                         ?>
-                                >Data minima de inscrição
+                                >Datas desde
                             </a>
                             <div id="div-data-min" style="display: inline">
                                 <input type="date" name="filtro-data-min" id="filtro-data-min"
@@ -1366,7 +1229,7 @@
                                         mb_strlen(($_GET["filtro-data-max"])) > 0) ? 
                                             "display:inline;color:#336600" : "display:inline";
                                         ?>
-                                >Data máxima de inscrição
+                                >Datas até
                             </a>
                             <div id="div-data-max" style="display: inline">
                             <input type="date" name="filtro-data-max" id="filtro-data-max"
@@ -1436,16 +1299,15 @@
                                            'selected="selected"':'';?> >       4
                                         </option>
                                     </select>
-                            <div>
-                                <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
-                                    Buscar
-                                    <i href="#" class="fa fa-search"></i>
-                               </a>
-                                <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
-                                    Limpar
-                                    <i href="#" class="fa fa-eraser"></i>
-                                </a>
-                            </div>
+                            <br><br>
+                            <a href="#" id="limpar" class="btn btn-info" >
+                                Limpar
+                                <i href="#" class="fa fa-eraser"></i>
+                            </a>
+                            <a href="#" id="busca" class="btn btn-info">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
+                            </a>
 
                             <!-- controle de pagina da paginação -->
                             <input type="hidden" id="pagina" name="pagina" 

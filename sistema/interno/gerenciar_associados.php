@@ -183,24 +183,10 @@
                     $("#filtro-nome").focus();
                 });
 
-                $("#filtro-nome").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-nome").show(300);   
-                    } 
-                });
-
                 $("#label-cidade").click(function(){
                     $(this).hide();
                     $("#filtro-cidade").show(300);
                     $("#filtro-cidade").focus();
-                });
-
-                $("#filtro-cidade").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-cidade").show(300);   
-                    } 
                 });
 
                 $("#label-estado").click(function(){
@@ -209,37 +195,16 @@
                     $("#filtro-estado").focus();
                 });
 
-                $("#filtro-estado").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-estado").show(300);   
-                    } 
-                });
-
                 $("#label-cpf").click(function(){
                     $(this).hide();
                     $("#filtro-cpf").show(300);
                     $("#filtro-cpf").focus();
                 });
 
-                $("#filtro-cpf").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-cpf").show(300);   
-                    }
-                });
-
                 $("#label-instituicao").click(function(){
                     $(this).hide();
                     $("#filtro-instituicao").show(300);
                     $("#filtro-instituicao").focus();
-                });
-
-                $("#filtro-instituicao").blur(function(){
-                    if($(this).val() == "0" || $(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-instituicao").show(300);   
-                    }
                 });
 
                 $("#label-ipp").click(function(){
@@ -252,29 +217,6 @@
                     $(this).hide(300);
                     $("#label-ipp").show(300);   
                 });
-
-                // processa envio do formulário se enter for pressionado dentro de algum campo
-                // do formulário de filtro
-
-                // filtro-data-max e filtro-data-min envia o formulário usando .onblur()
-                $("#filtro-nome").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-cpf").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-instituicao").change(function(){
-                    atualizaPagina();
-                });
-
 
                 // se clicou na lupa, envia o formulário
                 $("#busca").click(function(e){
@@ -321,22 +263,6 @@
 
                 $("#form-filtro input").change(function(){
                     podeMudarPagina = false;
-                });
-
-                // ------------ Muda de página usando as setas do teclado
-                $(window).keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == "37" && possuiPaginaAnterior && 
-                    document.activeElement.tagName == "BODY" ){
-                        
-                        $("#anterior").trigger("click");
-                    }
-                    
-                    else if(keycode == "39" && possuiProximaPagina && 
-                         document.activeElement.tagName == "BODY" ){
-                       
-                        $("#proxima").trigger("click");
-                    }
                 });
 
                 //Preencher os vetores de cidades e estados
@@ -1139,13 +1065,14 @@
                                         style="display:inline;width:120px">
                             </select>
 
-                            <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
-                                Buscar
-                                <i href="#" class="fa fa-search"></i>
-                            </a>
-                            <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
+                            <br><br>
+                            <a href="#" id="limpar" class="btn btn-info" >
                                 Limpar
                                 <i href="#" class="fa fa-eraser"></i>
+                            </a>
+                            <a href="#" id="busca" class="btn btn-info">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
                             </a>
                             <!-- controle de pagina da paginação -->
                             <input type="hidden" id="pagina" name="pagina" 

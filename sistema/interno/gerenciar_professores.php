@@ -89,24 +89,10 @@
                     $("#filtro-nome").focus();
                 });
 
-                $("#filtro-nome").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-nome").show(300);   
-                    } 
-                });
-
                 $("#label-cpf").click(function(){
                     $(this).hide();
                     $("#filtro-cpf").show(300);
                     $("#filtro-cpf").focus();
-                });
-
-                $("#filtro-cpf").blur(function(){
-                    if($(this).val() == ""){
-                        $(this).hide(300);
-                        $("#label-cpf").show(300);   
-                    }
                 });
 
                 $("#label-ipp").click(function(){
@@ -118,24 +104,6 @@
                 $("#ipp").blur(function(){
                     $(this).hide(300);
                     $("#label-ipp").show(300);   
-                });
-
-                // processa envio do formulário se enter for pressionado dentro de algum campo
-                // do formulário de filtro
-
-                // filtro-data-max e filtro-data-min envia o formulário usando .onblur()
-                $("#filtro-nome").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
-                });
-
-                $("#filtro-cpf").keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == '13'){ // enter foi pressionado
-                       atualizaPagina();
-                    }
                 });
 
                 // se clicou na lupa, envia o formulário
@@ -176,22 +144,6 @@
                     proximaPagina = parseInt(proximaPagina) + 1
                     $("#pagina").val(proximaPagina);
                     $("#form-filtro").submit();
-                });
-
-                // ------------ Muda de página usando as setas do teclado
-                $(window).keypress(function(e){
-                    var keycode = (e.keyCode ? e.keyCode : e.which);
-                    if(keycode == "37" && possuiPaginaAnterior && 
-                    document.activeElement.tagName == "BODY" ){
-                        
-                        $("#anterior").trigger("click");
-                    }
-                    
-                    else if(keycode == "39" && possuiProximaPagina && 
-                         document.activeElement.tagName == "BODY" ){
-                       
-                        $("#proxima").trigger("click");
-                    }
                 });
 
                 //---- Passa o th que foi clicado para o form e o envia, para reformatar
@@ -680,13 +632,15 @@
                                        value= <?= isset($_GET["filtro-cpf"]) ? 
                                         htmlspecialchars($_GET["filtro-cpf"]) : "" ?> >
 
-                            <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
-                                Buscar
-                                <i href="#" class="fa fa-search"></i>
-                            </a>
-                            <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
+                            
+                            <br><br>
+                            <a href="#" id="limpar" class="btn btn-info" >
                                 Limpar
                                 <i href="#" class="fa fa-eraser"></i>
+                            </a>
+                            <a href="#" id="busca" class="btn btn-info">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
                             </a>
 
                             <!-- controle de pagina da paginação -->
