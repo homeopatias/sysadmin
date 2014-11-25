@@ -30,14 +30,14 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
 
     //recebemos e analizamos o que ele deseja pagar
 
-    //os tipos anuidade e inscrição somente estão disponíveis para pagamento no ano atual
+    // os tipos anuidade e inscrição somente estão disponíveis para pagamento no ano atual
     $inscricao = isset($_POST["target"]) && $_POST["target"] === "inscricao";
     $anuidade  = isset($_POST["target"]) && $_POST["target"] === "anuidade";
 
-    //pode ter sido passado um valor negativo
-    $valor     = isset($_POST["pgto-valor"]) && $_POST["pgto-valor"] > 0 ? $_POST["pgto-valor"] : 0 ;
+    // pode ter sido passado um valor negativo
+    $valor = isset($_POST["pgto-valor"]) && $_POST["pgto-valor"] > 0 ? $_POST["pgto-valor"] : 0 ;
     if(($valor && $inscricao) || ($valor && $anuidade) || ($inscricao && $anuidade)){
-        header('Location: ../visualizar_pagamentos_associado.php?mensagem=Erro, tente novamente', true, "302");
+        header('Location: ../visualizar_pagamentos_associado.php?mensagem=Selecione o valor a enviar ou selecione pagamento de inscrição/anuidade, não os dois.', true, "302");
         die();
     }
 
@@ -86,7 +86,7 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
             }
             else{
 
-                //Agora analizamos quanto falta para ele pagar da anuidade e se a inscrição foi paga
+                // Agora analisamos quanto falta para ele pagar da anuidade e se a inscrição foi paga
                 $textoQuery = "SELECT sum(valorTotal - valorPago) as valorPagar,
                                EXISTS(SELECT sum(valorTotal - valorPago) as valorPagar
                                     FROM   PgtoAnuidade
@@ -162,10 +162,10 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
     $reqPagamento = new PagSeguroPaymentRequest();
     if($inscricao){
 
-        $reqPagamento->addItem('0001', 'Inscrição de associação ao curso de Homeopatia',
+        $reqPagamento->addItem('0002', 'Inscrição de associação ao curso de Homeopatia',
                            1, number_format($valor, 2, ".", ""));   
     }else{
-        $reqPagamento->addItem('0001', 'Anuidade de associação ao curso de Homeopatia',
+        $reqPagamento->addItem('0003', 'Anuidade de associação ao curso de Homeopatia',
                            1, number_format($valor, 2, ".", ""));
     }
     $reqPagamento->setCurrency("BRL");

@@ -10,10 +10,11 @@
         <title>Visualização de pagamentos</title>
         <script type="text/javascript">
             $(document).ready(function(){
-            // entrada de valor em reais
+                // entrada de valor em reais
                 $("#label-valor").click(function(){
                     $(this).hide();
                     $("#pgto-valor").show(300);
+                    $("#pgto-valor").css('display', 'inline');
                     $("#pgto-valor").focus();
                 });
                 $("#pgto-valor").blur(function(){
@@ -46,9 +47,10 @@
         <?php 
             require_once("entidades/Associado.php");
 
-            //exibe página apenas para associados logados no sistema
+            // exibe página apenas para associados logados no sistema
              if(isset($_SESSION["usuario"]) &&
-               unserialize($_SESSION["usuario"])->getEnviouDocumentos()){
+                unserialize($_SESSION["usuario"]) instanceof Associado &&
+                unserialize($_SESSION["usuario"])->getEnviouDocumentos()){
 
                 include("modulos/navegacao.php");
 
@@ -109,7 +111,9 @@
                             $tabela .= "    <td> R$". number_format($linha["valorTotal"],2).
                                     "</td>";
                             $tabela .= "    <td> R$". number_format($linha["valorPago"],2)."</td>";
-                            $tabela .= "    <td>".($linha["data"] ? $linha["data"] : "N/A")."</td>";
+                            $tabela .= "    <td>".($linha["data"] ?
+                                                   date("d/m/Y H:i:s", strtotime($linha["data"])) 
+                                                   : "N/A")."</td>";
                             $tabela .= "</tr>"; 
 
                             if($linha["inscricao"] && $linha["fechado"]){
@@ -185,6 +189,18 @@
                             echo "<form action = './rotinas/gerar_pagamento_anuidade.php' method='POST' >
                                     <input type='hidden' name='target' id= 'target' value=''> ";
 
+                            echo '<a id="label-valor" href="#" class="btn btn-primary" 
+                                        style="width:150px">
+                                        Pagar valor
+                                    </a>
+                                    <input type="number" name="pgto-valor" id="pgto-valor"
+                                           placeholder="Quantidade em R$" class="form-control"
+                                           autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
+                                           style="display:none;width:150px; margin-right: 5px"
+                                           step="0.01" min="1"
+                                           max="' .
+                                                   number_format($divida, 2, '.', '') .
+                                                   '">';
                             if(!($dividaAnosAnteriores > 0) ){
                                 if(!$inscricaoPaga){
                                     echo "<a  id='pagar-inscricao' href='#' class='btn btn-primary'
@@ -196,18 +212,6 @@
                                 }
 
                             }
-                            echo '<a id="label-valor" href="#" class="btn btn-primary" 
-                                        style="display:block; width:150px">
-                                        Pagar valor
-                                    </a>
-                                    <input type="number" name="pgto-valor" id="pgto-valor"
-                                           placeholder="Quantidade em R$" class="form-control"
-                                           autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
-                                           style="display:none;width:150px"
-                                           step="0.01" min="1"
-                                           max="' .
-                                                   number_format($divida, 2, '.', '') .
-                                                   '">';
                         }
 
                     ?>
@@ -240,12 +244,12 @@
         </div>
 
         <?php
-            }else{
+            } else {
         ?>
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location = "index.php?mensagem=Apenas associados com os documentos aprovados podem ver os pagamentos";
         </script>
         <?php
                 die();

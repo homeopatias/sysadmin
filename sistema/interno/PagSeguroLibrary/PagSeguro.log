@@ -251,3 +251,35 @@
   'Reference' => 'M11',
   'SenderEmail' => 'herc@gmail.com',
 )) - end {1}DF27D98DB2B28025544FBF9A99A54F71 
+{2014/11/20 13:38:23} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 13:38:25} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}BE995357F8F8FEB224076F925A73E3C7 
+{2014/11/20 13:38:26} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 13:38:31} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}D5093508E6E67AFCC43F4F8774125162 
+{2014/11/20 13:39:01} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 13:39:05} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}5B42555DF7F79F2AA443EFAC716C412B 
+{2014/11/20 13:39:52} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - begin 
+{2014/11/20 13:39:56} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'A3',
+  'SenderEmail' => 'juju.silva@gmail.com',
+)) - end {1}20444685ACAC709004C8CF9BD8B3F7BE 
