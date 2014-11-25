@@ -26,7 +26,7 @@
     <body>
         <?php
             // mensagem a ser exibida acima do formulário de login, caso seja necessário
-            $mensagem = "";
+            $mensagem = isset($_GET['mensagem']) ? htmlspecialchars($_GET['mensagem']) : "";
 
             // importa a função para execução do login e armazenamento da sessão
             include("rotinas/processa_login.php");
@@ -130,6 +130,35 @@
                     <input type="submit" name="submit" value="Login" class="btn btn-primary pull-right">
                     <br>
                 </form>
+                <div class="conteudo" style="position: relative; top: -70px">
+                    <a href="cadastro_aluno.php">Cadastro no curso</a>
+                    <br>
+                    <?php
+                        $sql = "SELECT nome FROM Instituicao WHERE inicioInsc <= CURDATE() AND
+                                fimInsc >= CURDATE()";
+                        $query = $conexao->prepare($sql);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute();
+
+                        $instituicoes = array();
+                        while($linha = $query->fetch()) {
+                            $instituicoes[] = $linha['nome'];
+                        }
+
+                        if(in_array('atenemg', $instituicoes)) {
+                    ?>
+                    <a href="cadastro_associado_atenemg.php">Associar-se à ATENEMG</a>
+                    <br>
+                    <?php
+                        }
+
+                        if(in_array('conahom', $instituicoes)) {
+                    ?>
+                    <a href="cadastro_associado_conahom.php">Associar-se ao CONAHOM</a>
+                    <?php
+                        }
+                    ?>
+                </div>
             </div>
         </div>
         <?php

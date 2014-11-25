@@ -201,8 +201,32 @@ class Associado extends Usuario{
 
         $query = $conexao->prepare($queryAssoc);
         $sucessoAssoc = $query->execute($dadosAssoc);
+        $idAssocInserido = $conexao->lastInsertId();
 
-        if($sucessoUsuario && $sucessoAssoc) {
+        // agora descobrimos o valor que deve ser pago por esse associado
+        // de acordo com a instituição que escolheu
+        $queryValor = "SELECT valorInscricao, ano FROM Instituicao WHERE nome = ?";
+        $query = $conexao->prepare($queryValor);
+        $query->bindParam(1, $this->instituicao);
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+
+        $query->execute();
+
+        $dados = $query->fetch();
+        $valorInscricao = $dados['valorInscricao'];
+        $valorAnuidade = $dados['valorAnuidade'];
+        $ano = $dados['ano'];
+
+        // por fim registramos os pagamentos que esse associado deverá fazer
+        $queryPgtos = "INSERT INTO PgtoAnuidade (chaveAssoc, inscricao,
+                       valorTotal, valorPago, data, ano, fechado) VALUES
+                       (?, 1, ?, 0, NULL, ?, 0), (?, 0, ?, 0, NULL, ?, 0)";
+        $query = $conexao->prepare($queryPgtos);
+        $dados = array($idAssocInserido, $valorInscricao, $ano, $idAssocInserido,
+                       $valorAnuidade, $ano);
+        $sucessoPgtos = $query->execute($dados);
+
+        if($sucessoUsuario && $sucessoAssoc && $sucessoPgtos) {
             // deu tudo certo, inserimos o associado
             $conexao->commit();
         } else {
@@ -212,7 +236,7 @@ class Associado extends Usuario{
 
         // Fecha a conexão 
         $conexao = null;
-        return $sucessoUsuario && $sucessoAssoc;
+        return $sucessoUsuario && $sucessoAssoc && $sucessoPgtos;
     }
 
     // Função que altera um associado no sistema, inserindo no associado de id igual a
