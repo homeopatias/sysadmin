@@ -142,7 +142,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle btn-toggle-dropdown"
                            data-toggle="dropdown">
-                            <i class="fa fa-fw fa-university"></i>
+                            <i class="fa fa-fw fa-leaf"></i>
                             <p style="display:inline">Curso</p>
                         </a>
                         <ul class="dropdown-menu drop">
@@ -227,6 +227,12 @@
                         </a>
                         <ul class="dropdown-menu drop">
                             <!-- dropdown de gerenciamento de miscelânea -->
+                            <li>
+                                <a href="gerenciar_instituicoes.php">
+                                    <i class="fa fa-fw fa-institution"></i>
+                                    <p style="display:inline">Instituições</p>
+                                </a>
+                            </li>
                             <li>
                                 <a href="gerenciar_livros.php">
                                     <i class="fa fa-fw fa-book"></i>

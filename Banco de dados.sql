@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 25, 2014 at 11:29 AM
+-- Generation Time: Nov 26, 2014 at 12:27 AM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -331,8 +331,8 @@ CREATE TABLE IF NOT EXISTS `Instituicao` (
 --
 
 INSERT INTO `Instituicao` (`idInstituicao`, `nome`, `valorInscricao`, `valorAnuidade`, `inicioInsc`, `fimInsc`, `ano`) VALUES
-(1, 'atenemg', 20, 50, '2014-07-14 00:00:00', '2014-10-06 00:00:00', 0),
-(2, 'conahom', 30, 40, '2014-09-24 00:00:00', '2014-10-22 00:00:00', 0);
+(1, 'atenemg', 30, 50, '2014-08-22 00:00:00', '2015-01-14 00:00:00', 2015),
+(2, 'conahom', 40, 40, '2014-07-14 00:00:00', '2014-12-31 00:00:00', 2014);
 
 -- --------------------------------------------------------
 
