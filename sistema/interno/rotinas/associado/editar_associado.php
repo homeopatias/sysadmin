@@ -32,7 +32,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $numObjeto       = $_POST["nobjeto"];
         $dataEnvio       = $_POST["data-envio"];
         $formTerapeutica = $_POST["form-terapeutica"];
-        $documentos      = $_POST["documentos"] === "on";
+        $documentos      = isset($_POST["documentos"]) ? $_POST["documentos"] === "on" : false;
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100;
