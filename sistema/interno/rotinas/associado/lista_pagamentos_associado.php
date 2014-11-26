@@ -45,7 +45,9 @@ while( $linha = $queryPagamentos->fetch() ){
     $json_objeto .= '"inscricao": "' . $linha["inscricao"] . '",';
     $json_objeto .= '"valorTotal": "' . $linha["valorTotal"] . '",';
     $json_objeto .= '"valorPago": "' . $linha["valorPago"] . '",';
-    $json_objeto .= '"data": "' . $linha["data"] . '",';
+    $json_objeto .= '"data": "' . (!is_null($linha["data"]) ?
+                                  date("d/m/Y H:i:s", strtotime($linha["data"])) :
+                                  null) . '",';
     $json_objeto .= '"ano": "' . $linha["ano"] . '"';
     $json_objeto .= '}';
     $resultado[] = $json_objeto;
