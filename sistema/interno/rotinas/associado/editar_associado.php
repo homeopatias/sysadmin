@@ -260,7 +260,6 @@ function ValidaCpf($cpf , $id, $instituicao){
             $return[0] = 0;
             $return[1] = "CPF ja registrado no sistema";
         }
-        
     }
   
    if( !(isset($cpf) && (preg_match("/^\d{3}\.?\d{3}\.?\d{3}\-?\d{2}$/", $cpf) || 
