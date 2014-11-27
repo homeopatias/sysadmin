@@ -176,7 +176,36 @@
             <br>
             <a href="#" data-toggle="modal"
                data-target="#modal-muda-email">Alterar e-mail</a>
-            <br><br><br>
+            <br><br>
+            <?php
+                if ($usuarioLogado instanceof Administrador &&
+                    $usuarioLogado->getNivelAdmin() === "administrador" &&
+                    ($usuarioLogado->getPermissoes() & 2) ) {
+                    // caso o usuário logado seja administrador de curso, avisamos
+                    // se existem justificativas de ausência a ser avaliadas
+                    $textoQuery = "SELECT count(aprovacaoPendente) as numPendentes
+                                   FROM Frequencia F WHERE aprovacaoPendente = 1
+                                   AND presenca = 0";
+
+                    $query = $conexao->prepare($textoQuery);
+                    $query->setFetchMode(PDO::FETCH_ASSOC);
+                    $query->execute();
+
+                    $numPendentes = $query->fetch()['numPendentes'];
+                    if ($numPendentes) {
+                        $numJustificativas = $numPendentes . " justificativa" .
+                                             ($numPendentes != 1 ? 's' : '');
+            ?>
+            <a href="avaliar_ausencias.php" style="text-decoration: none">
+                <b class="warning">
+                    Você tem <?= $numJustificativas ?> de ausência para avaliar
+                </b>
+            </a>
+            <br><br>
+            <?php
+                    }
+                }
+            ?>
             <p><b>Tipo de usuário:</b>
                 <?php
                     if($usuarioLogado instanceof Administrador){
@@ -188,7 +217,8 @@
                         echo "Aluno";
                         // procuramos no banco de dados se o aluno tem notificações não-lidas
                         $textoQuery = "SELECT titulo, texto FROM Notificacao
-                                       WHERE chaveAluno = ? AND lida = 0";
+                                       WHERE chaveAluno = ? AND lida = 0
+                                       ORDER BY idNotificacao DESC";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $usuarioLogado->getNumeroInscricao());
