@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 19, 2014 at 01:24 PM
+-- Generation Time: Nov 27, 2014 at 08:24 AM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `Administrador` (
   `permissoes` int(5) NOT NULL DEFAULT '0' COMMENT 'Bitflag de acesso de admins',
   PRIMARY KEY (`idAdmin`),
   KEY `idUsuario` (`idUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Administradores do sistema' AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Administradores do sistema' AUTO_INCREMENT=13 ;
 
 --
 -- Dumping data for table `Administrador`
@@ -51,7 +51,8 @@ INSERT INTO `Administrador` (`idAdmin`, `idUsuario`, `nivel`, `corrigeTrabalho`,
 (8, 23, 'coordenador', 0, 0),
 (9, 24, 'professor', 1, 0),
 (10, 25, 'administrador', 0, 47),
-(11, 26, 'coordenador', 0, 0);
+(11, 26, 'coordenador', 0, 0),
+(12, 27, 'administrador', 0, 3);
 
 -- --------------------------------------------------------
 
@@ -159,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `Associado` (
 INSERT INTO `Associado` (`idAssoc`, `idUsuario`, `instituicao`, `formacaoTerapeutica`, `telefone`, `endereco`, `cidade`, `estado`, `numObjeto`, `dataEnvioCarteirinha`, `enviouDocumentos`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `pais`) VALUES
 (1, 13, 'conahom', 'Quiropraxia', '2487348942', '', 'Nova Lima', 'MG', NULL, NULL, 1, '43857654', 'Rua Nogueira', 98, 'Carijós', '', 'BRL'),
 (2, 14, 'atenemg', 'Florais', '2398575677', '', 'Belém', 'PA', NULL, NULL, 0, '30843030', 'Rua Lobo Soares', 87, 'Jordânia', '', 'BRL'),
-(3, 15, 'conahom', 'Tratamentos de longo prazo', '3372383294', '', 'Palmas', 'TO', NULL, NULL, 0, '44556544', 'Rua das Flores', 83, 'Especial', '', 'BRL'),
+(3, 15, 'conahom', 'Tratamentos de longo prazo', '3372383294', '', 'Palmas', 'TO', '', '0000-00-00', 1, '44556544', 'Rua das Flores', 83, 'Especial', '', 'BRL'),
 (4, 22, 'atenemg', 'Homeopatia do sono', '3134921312', '', 'Belo Horizonte', 'MG', NULL, NULL, 0, '31540120', 'Rua Professor Clóvis de Faria', 103, 'Santa Amélia', 'Apto. 201', 'BRL');
 
 -- --------------------------------------------------------
@@ -308,6 +309,31 @@ INSERT INTO `Frequencia` (`chaveAluno`, `chaveAula`, `presenca`, `jaAvaliou`, `a
 (6, 13, 1, 1, 0, NULL),
 (7, 13, 1, 1, 0, NULL),
 (8, 13, 1, 1, 0, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Instituicao`
+--
+
+CREATE TABLE IF NOT EXISTS `Instituicao` (
+  `idInstituicao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da instituição',
+  `nome` enum('atenemg','conahom') NOT NULL COMMENT 'Nome da instituição',
+  `valorInscricao` float NOT NULL COMMENT 'Preço da inscrição nessa instituição',
+  `valorAnuidade` float NOT NULL COMMENT 'Preço da anuidade nessa instituição',
+  `inicioInsc` datetime NOT NULL COMMENT 'Data a partir da qual os associados podem se associar',
+  `fimInsc` datetime NOT NULL COMMENT 'Data até qual os associados podem se associar',
+  `ano` int(11) NOT NULL COMMENT 'Ano para o qual as inscrições estão/estarão abertas',
+  PRIMARY KEY (`idInstituicao`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Instituição na qual podem ser feitas as associações' AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `Instituicao`
+--
+
+INSERT INTO `Instituicao` (`idInstituicao`, `nome`, `valorInscricao`, `valorAnuidade`, `inicioInsc`, `fimInsc`, `ano`) VALUES
+(1, 'atenemg', 20, 50, '2014-07-14 00:00:00', '2014-12-25 00:00:00', 2015),
+(2, 'conahom', 30, 40, '2014-09-24 00:00:00', '2015-02-04 00:00:00', 2015);
 
 -- --------------------------------------------------------
 
@@ -482,7 +508,8 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere',
   PRIMARY KEY (`idPagamento`),
   KEY `chaveUsuario` (`chaveUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=4 ;
+
 --
 -- Dumping data for table `Pagamento`
 --
@@ -524,15 +551,19 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagAnuidade`),
   KEY `chaveAssoc` (`chaveAssoc`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado' AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `PgtoAnuidade`
 --
 
-INSERT INTO `PgtoAnuidade` (`idPagAnuidade`, `chaveAssoc`, `inscricao`, `valorTotal`, `valorPago`, `data`, `ano`, `fechado`) VALUES
-(1, 1, 1, 300, 300, '2014-11-18 00:00:00', 2014, 1),
-(2, 1, 0, 1500, 0, NULL, 2014, 0);
+INSERT INTO `PgtoAnuidade` (`idPagAnuidade`, `chaveAssoc`, `inscricao`, `valorTotal`, `valorPago`, `metodo`, `data`, `ano`, `fechado`) VALUES
+(1, 1, 1, 300, 300, '', '2014-11-18 00:00:00', 2014, 1),
+(2, 1, 0, 1500, 0, '', NULL, 2014, 0),
+(3, 3, 1, 30, 0, '', NULL, 2014, 0),
+(4, 3, 0, 40, 0, '', NULL, 2014, 0),
+(7, 3, 1, 30, 0, '', NULL, 2015, 0),
+(8, 3, 0, 40, 0, '', NULL, 2015, 0);
 
 -- --------------------------------------------------------
 
@@ -796,14 +827,14 @@ CREATE TABLE IF NOT EXISTS `Usuario` (
   KEY `cpf` (`cpf`),
   KEY `cpf_2` (`cpf`),
   KEY `dataInscricao` (`dataInscricao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=27 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=28 ;
 
 --
 -- Dumping data for table `Usuario`
 --
 
 INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, `nome`) VALUES
-(1, '11989183654', '2014-07-14 11:31:56', 'luc.aug.freire@gmail.com', 'admin', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Lucas'),
+(1, '99999999999', '2014-07-14 11:31:56', 'luc.aug.freire@gmail.com', 'admin', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Lucas'),
 (2, '81763492168', '2014-11-12 10:12:49', 'victorcastrocarvalho@armyspy.com', 'victor1994', '$2a$08$RpGAR3lVb3RdDDmRALqYCOFaRsfm7GP7PcdWu233ZGdNW2E6J5Q5e', 'Victor Castro Carvalho'),
 (3, '64705249070', '2014-11-12 10:15:41', 'ViniciusAlvesSilva@teleworm.us', 'vinicius', '$2a$08$hJj9/hBGZfnrblpx.muqC.zlhru0j./kvn/9Hdz2HTQlsGUHlmJ26', 'Vinicius Alves Silva'),
 (4, '83834893315', '2014-11-12 10:21:24', 'MarianaFerreiraPinto@armyspy.com', 'mariana1234', '$2a$08$OsTyrZYsCSvMd4evTtFYA.O3UTY95oL05Y4t6M0JHYvlmbJ9m9NVC', 'Mariana Ferreira Pinto'),
@@ -817,7 +848,7 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (12, '61055784748', '2014-11-12 11:00:44', 'herc@gmail.com', 'hercules', '$2a$08$UIKre.q/kHjOQrTAXQjB3.yYVVFW9l.y6BxiUlVbDyxzsk6p//5qK', 'Hernando Hércules Ferreira'),
 (13, '85479936492', '2014-11-12 11:06:36', 'joaojoao@gmail.com', 'joaocarlos', '$2a$08$4L7KmSz2RitcwdW9lkp48uI7uZM3a525FF7qotDhzVY7LEn4651rG', 'João Carlos Alberto'),
 (14, '77721252245', '2014-11-12 11:08:20', 'ame.joana@gmail.com', 'amelia_flor', '$2a$08$HcZfTXY/8Kdylekb/9dSYO9HE8JIn8pu31bQKDB7DhfQ8n6YXF5Sa', 'Amélia Joana Glória'),
-(15, '77721252245', '2014-11-12 11:10:44', 'juju.silva@gmail.com', 'juju', '$2a$08$aCColQUnDPf.jOP93CKueuSeoSqDSIA82uI5dcqqUoaBI1gAtLgam', 'Júlia Silva'),
+(15, '72163814912', '2014-11-12 11:10:44', 'juju.silva@gmail.com', 'juju', '$2a$08$aCColQUnDPf.jOP93CKueuSeoSqDSIA82uI5dcqqUoaBI1gAtLgam', 'Júlia Silva'),
 (16, '17125261540', '2014-11-12 11:12:12', 'fernando.filho@gmail.com', 'nando', '$2a$08$axsrInHv6.bBo8J0Ef7qxOAASLAoH4FM2kVnXDmDZApZ5aV1Aes72', 'Fernando Faria Filho'),
 (17, '68322372787', '2014-11-12 11:13:36', 'cassio.murilo@gmail.com', 'camum', '$2a$08$JjcHZKPEMGXqcm2m4R5dsexqGE56BEFI0nj4oyMk6zvWFFTPdkncW', 'Cássio Murilo de Oliveira'),
 (18, '77702570776', '2014-11-12 11:14:14', 'jess1231@gmail.com', 'jessica', '$2a$08$dGC9vIFIC4ayGzwx3v16j.Gm9f.cYSfaf9Y.KqiEcA17J1lMvYj86', 'Jéssica Martins Pereira'),
@@ -827,8 +858,9 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (22, '74117042963', '2014-11-13 12:59:00', 'lusilveira@gmail.com', 'luiz_homeopat', '$2a$08$pxGqvRKKrHhrJx5ZLTPGaev7PeZw/zSNTBOeCDMs8irFfEroMTGXO', 'Luíz Silveira Santana'),
 (23, '98818182650', '2014-11-13 12:59:39', 'lsilva@gmail.com', 'lsilva', '$2a$08$5QVYK89G3mMsVom.Viz7zOWZQ8JGDQc/HQLCClQCuOd4xfIWWsRBG', 'Luana Silva Nogueira'),
 (24, '32759893910', '2014-11-13 13:00:42', 'sandra_mp@gmail.com', 'sandramp', '$2a$08$5b6vrhQoXT1ak4.pkzGA/uCbDXtqqD.TXRaOQBY35pYP05s1jfiMu', 'Sandra Maria Passos'),
-(25, '84272313428', '2014-11-13 13:14:03', 'ednaldo@whatisthebrother.com', 'ednaldop', '$2a$08$7Biq7AD37sJdNBrxXM7CKerTwRbxku8uiVaubQZcXbOSfQ7.aZruq', 'Ednaldo Pereira'),
-(26, '81424367794', '2014-11-13 14:07:47', 'luiza.conceicao@gmail.com', 'luconceicao', '$2a$08$Eb4yjC5mPtgpLQ5cO.jJQ.UmnpMKXXkyj1i/MC1RtI6CGyK9G0Knq', 'Luíza Maria Conceição');
+(25, '99999999999', '2014-11-13 13:14:03', 'ednaldo@whatisthebrother.com', 'ednaldop', '$2a$08$7Biq7AD37sJdNBrxXM7CKerTwRbxku8uiVaubQZcXbOSfQ7.aZruq', 'Ednaldo Pereira'),
+(26, '81424367794', '2014-11-13 14:07:47', 'luiza.conceicao@gmail.com', 'luconceicao', '$2a$08$Eb4yjC5mPtgpLQ5cO.jJQ.UmnpMKXXkyj1i/MC1RtI6CGyK9G0Knq', 'Luíza Maria Conceição'),
+(27, '99999999999', '2014-11-27 08:10:12', 'jose.m@gmail.com', 'josem', '$2a$08$xzY/0SJALmn7FHjQfIizPOhFZ357Pv45348lzn4KWSB/wyhDXYHVa', 'José Maria');
 
 --
 -- Constraints for dumped tables

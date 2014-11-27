@@ -35,7 +35,6 @@ class Administrador extends Usuario{
     // Retorna: Nada
     public function __construct($login){
         $this->login = $login;
-        $this->cpf = "";
         $this->dataInscricao = new DateTime();
         $this->email = "";
         $this->nome = "";
@@ -64,7 +63,7 @@ class Administrador extends Usuario{
             echo $e->getMessage();
         }
 
-        $textoQuery  = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
+        $textoQuery  = "SELECT U.id, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
                         U.senha, U.nome, A.idAdmin, A.nivel, A.corrigeTrabalho, A.permissoes
                         FROM Usuario U,
                         Administrador A WHERE U.login=? AND A.idUsuario = U.id";
@@ -81,7 +80,6 @@ class Administrador extends Usuario{
             $senhaCorreta = $hasher->CheckPassword($senhaUsuario, $linha["senha"]);
             if($senhaCorreta){
                 $this->id              = $linha["id"];
-                $this->cpf             = $linha["cpf"];
                 $this->dataInscricao   = $linha["data"];
                 $this->email           = $linha["email"];
                 $this->nome            = $linha["nome"];
@@ -125,7 +123,7 @@ class Administrador extends Usuario{
             echo $e->getMessage();
         }
 
-        $textoQuery  = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
+        $textoQuery  = "SELECT U.id, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
                         U.senha, U.nome, U.login, A.nivel, A.corrigeTrabalho, A.permissoes
                         FROM Usuario U,
                         Administrador A WHERE A.idAdmin=? AND A.idUsuario = U.id AND A.nivel = ?";
@@ -139,7 +137,6 @@ class Administrador extends Usuario{
         if ($linha = $query->fetch()){
             // encontramos o administrador no sistema
             $this->id              = $linha["id"];
-            $this->cpf             = $linha["cpf"];
             $this->dataInscricao   = $linha["data"];
             $this->email           = $linha["email"];
             $this->nome            = $linha["nome"];
@@ -176,7 +173,7 @@ class Administrador extends Usuario{
             echo $e->getMessage();
         }
 
-        $textoQuery  = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
+        $textoQuery  = "SELECT U.id, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
                         U.senha, U.nome, A.idAdmin, A.nivel, A.corrigeTrabalho FROM Usuario U,
                         Administrador A WHERE U.login=? AND A.idUsuario = U.id AND A.nivel = ?";
 
@@ -189,7 +186,6 @@ class Administrador extends Usuario{
         if ($linha = $query->fetch()){
             // encontramos o administrador no sistema
             $this->id              = $linha["id"];
-            $this->cpf             = $linha["cpf"];
             $this->dataInscricao   = $linha["data"];
             $this->email           = $linha["email"];
             $this->nome            = $linha["nome"];
@@ -247,10 +243,10 @@ class Administrador extends Usuario{
         $conexao->beginTransaction();
 
         $dataInscricao = date("Y-m-d H:i:s");
-        $dadosUsuario  = array($this->cpf, $dataInscricao, $this->email, $this->login,
+        $dadosUsuario  = array($dataInscricao, $this->email, $this->login,
                                $hashSenha, $this->nome);
         $queryUsuario  = "INSERT INTO Usuario (cpf, dataInscricao, email, login, senha, nome) 
-                          VALUES (?,?,?,?,?,?)";
+                          VALUES ('99999999999',?,?,?,?,?)";
         $query         = $conexao->prepare($queryUsuario);
         $sucessoUsuario = $query->execute($dadosUsuario);
 
@@ -299,7 +295,7 @@ class Administrador extends Usuario{
             return false;
         }
 
-        $comando = "UPDATE Usuario SET nome = :nome, cpf = :cpf, email = :email,
+        $comando = "UPDATE Usuario SET nome = :nome, email = :email,
                     login = :login WHERE id = :id";
         $query = $conexao->prepare($comando);
 
@@ -308,7 +304,6 @@ class Administrador extends Usuario{
         $conexao->beginTransaction();
 
         $query->bindParam(":nome", $this->nome, PDO::PARAM_STR);
-        $query->bindParam(":cpf", $this->cpf, PDO::PARAM_STR);
         $query->bindParam(":email", $this->email, PDO::PARAM_STR);
         $query->bindParam(":login", $this->login, PDO::PARAM_STR);
         $query->bindParam(":id", $this->id, PDO::PARAM_INT);

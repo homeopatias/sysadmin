@@ -37,10 +37,9 @@
                 });
 
                 $("#administradores").tablesorter({ headers: {
-                    2 : { sorter: false },
-                    4 : { sorter: "datetime" },
-                    5 : { sorter: false },
-                    6 : { sorter: false }
+                    3 : { sorter: "datetime" },
+                    4 : { sorter: false },
+                    5 : { sorter: false }
                 }});
                 // passa os dados do href para o modal de confirmação de deleção quando
                 // necessário
@@ -440,10 +439,10 @@
                             case '1':
                                 $orderBy = " ORDER BY U.login " ;
                                 break;
-                            case '3':
+                            case '2':
                                 $orderBy = " ORDER BY U.email " ;
                                 break;
-                            case '4':
+                            case '3':
                                 $orderBy = " ORDER BY U.dataInscricao " ;
                                 break;
                             
@@ -626,10 +625,10 @@
                                         <th width="160px" <?= $indexHeader == 1 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Nome de usuário</th>
-                                        <th width="200px" <?= $indexHeader == 3 ? 
+                                        <th width="200px" <?= $indexHeader == 2 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>E-mail</th>
-                                        <th width="180px" <?= $indexHeader == 4 ? 
+                                        <th width="180px" <?= $indexHeader == 3 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Data e hora de inscrição</th>
                                         <th width="60px">Editar</th>
@@ -787,8 +786,8 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-
                             </div>
+                            <br><br>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -888,9 +887,8 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-
                             </div>
-
+                            <br><br>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -943,7 +941,7 @@
                         <div class="modal-body">
                             <?php 
                             // se o usuario filtrou algo recentemente, mantem o filtro
-                            if(isset($_GET["submit"])){ ?>
+                            if(isset($_GET["submit"])) { ?>
                                 
                                 <label for="filtro-nome">Nome:</label>
                                 <input type="text" name="filtro-nome" 
@@ -953,7 +951,7 @@
 
                             <?php
 
-                                }else{ // caso contrario, mostra um novo formulario
+                                } else { // caso contrario, mostra um novo formulario
                             ?>
 
                             <label for="filtro-nome">Nome:</label>
@@ -975,7 +973,7 @@
             </div>
         </div>
         <?php
-            }else{
+            } else {
         ?>
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
