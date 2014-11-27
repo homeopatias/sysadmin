@@ -37,7 +37,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100;
 
-        $cpfValido    = validaCpf($cpf,$id);
+        $cpfValido    = validaCpf($cpf, $id, $instituicao);
 
         $emailValido  = validaEmail($email,$id);
 
@@ -172,7 +172,7 @@ if($mensagem !== "" && !$sucesso){
     $mensagem = "?erro=".$mensagem;
 }
 
-function ValidaCpf($cpf , $id){
+function ValidaCpf($cpf , $id, $instituicao){
 
     // lemos as credenciais do banco de dados
     $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -243,12 +243,15 @@ function ValidaCpf($cpf , $id){
     }
 
     //Checa se ja existe este cpf no sistema cadastrado como Associado
-    $textoQuery = "SELECT U.cpf , U.id
+    $textoQuery = "SELECT U.cpf, U.id
                    FROM Usuario U , Associado A
-                   WHERE U.id = A.idUsuario AND U.cpf = ?";
+                   WHERE U.id = A.idUsuario AND U.cpf = ? AND A.instituicao = ?";
+
+    $nomeInstituicao = ($instituicao == 1 ? "atenemg" : "conahom");
 
     $query = $conexao->prepare($textoQuery);
     $query->bindParam(1, $cpfNumerico, PDO::PARAM_STR);
+    $query->bindParam(2, $nomeInstituicao, PDO::PARAM_STR);
     $query->setFetchMode(PDO::FETCH_ASSOC);
     $query->execute();
     
