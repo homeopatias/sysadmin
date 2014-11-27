@@ -221,7 +221,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
     }
 }
 
-if($mensagem !== "" && !$sucesso){
+if($mensagem !== ""){
     $mensagem = "mensagem=".$mensagem;
 }
 
