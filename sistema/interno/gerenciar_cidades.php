@@ -49,7 +49,8 @@
                 $("#cidades").tablesorter({ headers: {
                     4 : { sorter: "datetime" },
                     8 : { sorter: false },
-                    9 : { sorter: false }
+                    9 : { sorter: false },
+                    10 : { sorter: false }
                 }});
                 // passa os dados do href para o modal de confirmação de deleção quando
                 // necessário
