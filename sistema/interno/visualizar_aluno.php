@@ -793,7 +793,42 @@
 
                 </section>
             </div>
-        </div>        
+        </div>
+
+        <?php if(isset($aluno)) { ?>
+        <!-- popup "modal" do bootstrap para visualização dos dados de pagamento -->
+        <div class="modal fade" id="modal-pgto" tabindex="-1" role="dialog"
+             aria-labelledby="modal-pgto" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        X
+                    </button>
+                    <h4 class="modal-title">Lista de pagamentos do aluno</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Pagamentos</h3>
+                        <?php
+                            $textoQuery = "SELECT valor, metodo, ano FROM Pagamento
+                                           WHERE chaveUsuario = ? AND objetivo = 'mensalidade'";
+
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(1, $aluno->getId());
+                            $query->execute();
+
+                            $tabela = "";
+                            while ($linha = $query->fetch()) {
+
+                            }
+                        ?>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
 
         <!-- popup "modal" do bootstrap para confirmação de cancelamento de matrícula -->
         <div class="modal fade" id="modal-confirma-deleta" tabindex="-1" role="dialog"
