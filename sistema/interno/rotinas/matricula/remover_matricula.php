@@ -49,7 +49,7 @@ if($adminValido || $alunoValido){
     $dados  = array($_GET["id"]);
     $query  = $conexao->prepare($sql);
 
-    // continuandio verificação de segurança acima
+    // continuando verificação de segurança acima
     if ($alunoValido) {
         $dados[] = unserialize($_SESSION['usuario'])->getNumeroInscricao();        
     }

@@ -95,7 +95,7 @@ if($adminValido){
         for($i = 0; $i < 12 && $sucessoCriaPgto; $i++){
             if($i == 0){ // parcela numero 0 será considerada valor da
                          // inscrição
-                $queryInsert    = "INSERT INTO PgtoMensalidade 
+                $queryInsert = "INSERT INTO PgtoMensalidade 
                                 (chaveMatricula, numParcela, valorTotal, valorPago, 
                                     desconto, fechado,ano) 
                                 VALUES (?, '0', ?, '0', '0', '0', YEAR(CURDATE())) ";
@@ -103,14 +103,14 @@ if($adminValido){
 
             } 
             else{
-                $queryInsert    .= " , (?, ?, ?, '0', '0', '0', YEAR(CURDATE())) ";
+                $queryInsert    .= ", (?, ?, ?, '0', '0', '0', YEAR(CURDATE())) ";
                 $insertArray[]  = $idMatricula;
                 $insertArray[]  = $i;
                 $insertArray[]  = $precoParcela;
             }
-            $query = $conexao->prepare($queryInsert);
-            $sucessoCriaPgto = $sucessoCriaPgto && $query->execute($insertArray);
         }
+        $query = $conexao->prepare($queryInsert);
+        $sucessoCriaPgto = $sucessoCriaPgto && $query->execute($insertArray);
 
         if($sucessoCriaPgto && $remocaoMensalidade && $sucessoMatricula) {
             $conexao->commit();
