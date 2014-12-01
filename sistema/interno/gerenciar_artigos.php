@@ -167,8 +167,8 @@
                     podeMudarPagina = false;
                 });
 
-                //---- Passa o th que foi clicado para o form e o envia, para reformatar
-                //----  a tabela
+                // ---- Passa o th que foi clicado para o form e o envia, para reformatar
+                // ----  a tabela
                 $("table th.header").click(function(){
                     var position = $("table th").index( $(this) );
                     if( $(this).hasClass("headerSortDown") ){
@@ -183,34 +183,12 @@
                     // Envia o formulário para atualizar a tabela com os filtros desejados
                     atualizaPagina();
                 });
-            }); 
-            //atualiza formulário com a busca
+            });
+
+            // atualiza formulário com a busca
             function atualizaPagina(){
-                $("#pagina").val(0);
                 $("#form-filtro").submit();
             }
-
-            //------------Checa se tamanho minimo da tela é o tamanho minimo do css
-            function checaTamanhoTela(){
-                tamanhoTela = $(window).width();
-
-                if (tamanhoTela < 700) {
-                    $("table").colResizable({
-                        disable:true
-                    }); 
-                    $(".flip-scroll th").css("width","150px");
-                }
-                else {
-                    $("table").colResizable({
-                        disable:false
-                    }); 
-                }
-            }
-
-            //----Checa se ao redimencionar a tela atingiu o tamanho minimo da tela
-            $(window).resize(function() {
-                checaTamanhoTela();
-            });
         </script>
     </head>
     <body>

@@ -19,6 +19,43 @@
                 $("#modal-fecha-turma").on('show.bs.modal', function(e) {
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
+
+
+                // esconde inputs de busca
+
+                $("#filtro-nome").hide();
+                $("#filtro-registro").hide();
+
+                // alterna campos de texto com campos de input
+                $("#label-nome").click(function(){
+                    $(this).hide();
+                    $("#filtro-nome").show(300);
+                    $("#filtro-nome").focus();
+                });
+
+                $("#label-registro").click(function(){
+                    $(this).hide();
+                    $("#filtro-registro").show(300);
+                    $("#filtro-registro").focus();
+                });
+
+                // se clicou na lupa, envia o formulário
+                $("#busca").click(function(e){
+                    atualizaPagina();
+                });
+
+                // se clicou na borracha, apaga todos os campos e envia o formulário limpo
+                $("#limpar").click(function(e){
+                    $("#filtro-nome").val("");
+                    $("#filtro-registro").val("");
+                    atualizaPagina();
+                });
+
+
+                // atualiza formulário com a busca
+                function atualizaPagina(){
+                    $("#form-filtro").submit();
+                }
             });
         </script>
     </head>
@@ -126,8 +163,8 @@
                     <form style="width: 500px" method="GET" action="visualizar_turmas.php ">                
                         <label for="etapa">
                             Selecione a etapa:
-                        </label>
-                        <select style="display:inline; width: 50px !important; margin-left: 20px"
+                        </label><br>
+                        <select style="display:inline; width: 50px !important"
                                 class="form-control input-sm" id="etapa" name="etapa">
                             <option value="1" <?php if($etapa == 1) echo "selected" ?>>1</option>
                             <option value="2" <?php if($etapa == 2) echo "selected" ?>>2</option>
@@ -135,25 +172,101 @@
                             <option value="4" <?php if($etapa == 4) echo "selected" ?>>4</option>
                         </select>
                     </form>
+                    <!-- formulario para implementar filtros -->
+                    <form method="GET" action id="form-filtro">
+                        <div class="form-group">
+                            <br/>
+                            <p>
+                                <b>Buscar por:</b>
+                            </p>
+                            <input type="hidden" name="etapa" value=<?= "\"" . $etapa . "\""?>>
+                            <a id="label-nome" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-nome"]) && 
+                                        mb_strlen(($_GET["filtro-nome"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >
+                                Nome
+                            </a>
+                            <input  type="text" name="filtro-nome" id="filtro-nome"
+                                    placeholder="Nome do aluno" class="form-control"
+                                    autocomplete="off"
+                                    style="display:inline;width:205px"
+                                    value= <?= isset($_GET["filtro-nome"]) ? 
+                                        htmlspecialchars($_GET["filtro-nome"]) : "" ?> >
+
+                            <a id="label-registro" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-registro"]) && 
+                                        mb_strlen(($_GET["filtro-registro"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >
+                                Registro
+                            </a>
+                            <input  type="text" name="filtro-registro" id="filtro-registro"
+                                    placeholder="Registro do aluno" class="form-control"
+                                    autocomplete="off"
+                                    style="display:inline;width:205px"
+                                    value= <?= isset($_GET["filtro-registro"]) ? 
+                                        htmlspecialchars($_GET["filtro-registro"]) : "" ?> >
+                            <br><br>
+                            <a href="#" id="limpar" class="btn btn-info" >
+                                Limpar
+                                <i href="#" class="fa fa-eraser"></i>
+                            </a>
+                            <a href="#" id="busca" class="btn btn-info">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </form>
+                    <!--  Fim form filtros   -->
                     <br><br>
                     <?php
 
-                        $textoQuery  = "SELECT U.nome, U.cpf, A.numeroInscricao, M.idMatricula,
+                        $textoQuery  = "SELECT U.nome, U.cpf, A.numeroInscricao,
                                         M.aprovado FROM Matricula M INNER JOIN Cidade C 
                                         ON C.idCidade = M.chaveCidade INNER JOIN Aluno A ON 
                                         M.chaveAluno = A.numeroInscricao INNER JOIN Usuario U ON 
                                         U.id = A.idUsuario WHERE 
-                                        C.idCidade = ? AND M.etapa = ?";
+                                        C.idCidade = :idcidade AND M.etapa = :etapa";
+
+                        // Se algum filtro foi repassado, altera o query para filtrar
+                        $filtroRegistro = $filtroNome = false;
+                        if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-registro"])){
+
+                            $filtroNome     =  htmlspecialchars($_GET["filtro-nome"]);
+                            $filtroRegistro =  htmlspecialchars($_GET["filtro-registro"]);
+
+                            if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                                $filtroNome  =  "%".mb_strtoupper($filtroNome)."%";
+                                $textoQuery .= " AND UPPER(U.nome) LIKE :filtronome ";
+                            }            
+                            if(isset($filtroRegistro) && mb_strlen($filtroRegistro) > 0){
+                                $filtroRegistro =  "%".mb_strtoupper($filtroRegistro)."%";
+                                $textoQuery    .= " AND UPPER(A.numeroInscricao) LIKE :filtroinsc ";
+                            }
+                        }
 
                         $query = $conexao->prepare($textoQuery);
-                        $query->bindParam(1, $idCidade, PDO::PARAM_INT);
-                        $query->bindParam(2, $etapa, PDO::PARAM_INT);
+                        $query->bindParam("idcidade", $idCidade, PDO::PARAM_INT);
+                        $query->bindParam("etapa", $etapa, PDO::PARAM_INT);
+
+                        // seta os parâmetro necessários para exacutar a filtragem de dados
+                        if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-registro"])){
+                            if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                                $query->bindParam(":filtronome", $filtroNome);
+                            }
+                            if(isset($filtroRegistro) && mb_strlen($filtroRegistro) > 0){
+                                $query->bindParam(":filtroinsc", $filtroRegistro);
+                            }
+                        }
+
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
                         $resultado = '<div class="flip-table"> <table class="table">
-                            <th style="font-weight: bold">Registro do aluno</th>
-                            <th style="font-weight: bold">Número de matrícula</th>
+                            <th style="font-weight: bold">Nº de inscrição</th>
                             <th style="font-weight: bold">Nome do aluno</th>
                             <th style="font-weight: bold">CPF do aluno</th>
                             <th style="font-weight: bold">Visualizar pagamentos</th>';
@@ -179,7 +292,6 @@
                             $resultado .= '
                         <tr>
                             <td>' . $linha['numeroInscricao'] . '</td>
-                            <td>' . $linha['idMatricula'] . '</td>
                             <td>' . $linha['nome'] .'</td>
                             <td>' . $cpf .'</td>
                             <td>
