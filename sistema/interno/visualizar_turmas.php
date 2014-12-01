@@ -20,8 +20,8 @@
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
 
-                $("#modal-fecha-turma").on('show.bs.modal', function(e) {
-                    $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
+                $("#sendTodos").click(function(e){
+                    $("#modal-email").find("#sendType").val("todos");
                 });
 
             });
@@ -215,7 +215,8 @@
                         echo $resultado;
                     ?>
                     <div class='btn btn-primary'>
-                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-email">
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-email"
+                            id="sendTodos">
                             <p>Enviar e-mail para todos</p>
                         </a>
                     </div>
@@ -251,7 +252,7 @@
         </div>
         <div class="modal fade" id="modal-email" tabindex="-1" role="dialog"
              aria-labelledby="modal-email" aria-hidden="true">
-             <form method="POST" action="gerenciar_email.php">
+             <form method="POST" action="rotinas/gerenciar_email.php">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -274,9 +275,10 @@
                             rows="10"
                             placeholder="Mensagem"></textarea>
                         </div>
+                        <input type="hidden" id="sendType" name="sendType" value="todos">
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
-                            <a href="#" class="btn btn-success success">Sim</a>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success" >Enviar</button>
                         </div>
                     </div>
                 </div>
