@@ -19,6 +19,11 @@
                 $("#modal-fecha-turma").on('show.bs.modal', function(e) {
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
+
+                $("#modal-fecha-turma").on('show.bs.modal', function(e) {
+                    $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
+                });
+
             });
         </script>
     </head>
@@ -152,6 +157,7 @@
                         $query->execute();
 
                         $resultado = '<div class="flip-table"> <table class="table">
+                            <th style="font-weight: bold">Selecionar</th>
                             <th style="font-weight: bold">Registro do aluno</th>
                             <th style="font-weight: bold">Número de matrícula</th>
                             <th style="font-weight: bold">Nome do aluno</th>
@@ -178,6 +184,9 @@
 
                             $resultado .= '
                         <tr>
+                            <td> <input type="checkbox" name="inscricoes[]" 
+                                value="'.$linha['numeroInscricao'].'">
+                            </td>
                             <td>' . $linha['numeroInscricao'] . '</td>
                             <td>' . $linha['idMatricula'] . '</td>
                             <td>' . $linha['nome'] .'</td>
@@ -205,6 +214,13 @@
                         }
                         echo $resultado;
                     ?>
+                    <div class='btn btn-primary'>
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-email">
+                            <p>Enviar e-mail para todos</p>
+                        </a>
+                    </div>
+                    <input type="button" class="btn btn-primary pull-right" name="enviarSelecionados" 
+                    value="Enviar e-mail para selecionados" style="margin-right:2em">
 
                 </section>
             </div>
@@ -232,6 +248,39 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="modal fade" id="modal-email" tabindex="-1" role="dialog"
+             aria-labelledby="modal-email" aria-hidden="true">
+             <form method="POST" action="gerenciar_email.php">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Email para alunos</h4>
+                        </div>
+                        <div class="modal-body">
+                            <label for="title">Título do e-mail :</label>
+                            <input type='text' class="form-control" 
+                                name="title" id="title" placeholder="Título">
+
+                            <br>
+                            <label for="conteudo">Conteúdo do e-mail :</label>
+                            <br>
+                            <textarea name="conteudo" id="conteudo" 
+                            class="form-control" 
+                            cols="100"
+                            rows="10"
+                            placeholder="Mensagem"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                            <a href="#" class="btn btn-success success">Sim</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
         <?php
             }else{

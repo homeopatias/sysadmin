@@ -363,13 +363,16 @@
                             //Agora checamos a quantidade de alunos indicados por ele matriculados
                             // neste ano
 
-                            $textoQuery = "SELECT A.numeroInscricao
-                                            FROM Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
-                                            WHERE A.idIndicador = ? AND 
-                                            M.chaveAluno = A.numeroInscricao AND
-                                            M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())
-                                            AND Pg.chaveMatricula = M.idMatricula AND
-                                            Pg.numParcela = 0 AND Pg.fechado = 1";
+                            $textoQuery = "SELECT U.nome, A.numeroInscricao
+                                           FROM Usuario U, Aluno A, Matricula M, Cidade C, 
+                                           PgtoMensalidade Pg
+                                           WHERE U.id = A.idUsuario AND A.status = 'inscrito' AND
+                                           A.numeroInscricao = M.chaveAluno AND 
+                                           A.idIndicador = ? AND M.chaveCidade = C.idCidade AND
+                                           YEAR( CURDATE() ) = YEAR( U.dataInscricao ) 
+                                           AND Pg.chaveMatricula = M.idMatricula AND
+                                           Pg.numParcela = 0 AND Pg.fechado = 1
+                                           ORDER BY U.nome ASC";
 
                             $query = $conexao->prepare($textoQuery);
 
@@ -937,7 +940,7 @@
                             $textoQuery = "SELECT U.nome, A.numeroInscricao
                                            FROM Usuario U, Aluno A, Matricula M, Cidade C, 
                                            PgtoMensalidade Pg
-                                           WHERE U.id = A.idUsuario AND
+                                           WHERE U.id = A.idUsuario AND A.status = 'inscrito' AND
                                            A.numeroInscricao = M.chaveAluno AND 
                                            A.idIndicador = ? AND M.chaveCidade = C.idCidade AND
                                            YEAR( CURDATE() ) = YEAR( U.dataInscricao ) 
