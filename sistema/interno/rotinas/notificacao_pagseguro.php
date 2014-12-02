@@ -135,9 +135,9 @@ if ($tipoNotificacao === 'transaction') {
             $sucesso = 1;
 
             // agora registramos o pagamento genérico no banco
-            $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor,
+            $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor, data
                            metodo, objetivo, ano)
-                           VALUES (?, ?, "PagSeguro", "mensalidade", ?)';
+                           VALUES (?, ?, NOW(), "PagSeguro", "mensalidade", ?)';
             $query = $conexao->prepare($textoQuery);
 
             $query->bindParam(1, $idAluno);
