@@ -686,11 +686,11 @@
                                         <?php
                                             }else if(unserialize($_SESSION["usuario"])->getNivelAdmin() === "professor"){
                                         ?>
-                                            <th width="200px">Visualizar descrição</th>
+                                            <th width="130px">Visualizar descrição</th>
                                         <?php
                                                 if(unserialize($_SESSION["usuario"])->getCorrigeTrabalho()) {
                                         ?>
-                                            <th width="200px">Trabalhos recebidos</th> 
+                                            <th width="130px">Trabalhos recebidos</th> 
                                         <?php
                                                 }
                                             }
