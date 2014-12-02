@@ -144,3 +144,19 @@
   'SenderEmail' => 'herc@gmail.com',
 )) - begin 
 {2014/11/20 23:19:01} [Error] Exception: PagSeguroLibrary: cURL library is required. 
+{2014/12/02 10:40:56} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M1',
+  'SenderEmail' => 'victorcastrocarvalho@armyspy.com',
+)) - begin 
+{2014/12/02 10:41:04} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M1',
+  'SenderEmail' => 'victorcastrocarvalho@armyspy.com',
+)) - end {1}AEC60B6EA1A10B5AA4ACEFA879B33C67 
+{2014/12/02 10:49:35} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M7',
+  'SenderEmail' => 'antonio92@gmail.com',
+)) - begin 
+{2014/12/02 10:49:36} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M7',
+  'SenderEmail' => 'antonio92@gmail.com',
+)) - end {1}81481970B5B52A48843DCF9EED5484C4 

@@ -31,6 +31,27 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
 
     // descobrimos o quanto esse aluno vai pagar, e se os dados recebidos são válidos
     $valorRecebido = isset($_POST['pgto-valor']) ? $_POST['pgto-valor'] : -1;
+    if (isset($_POST['pagarInsc'])) {
+        $textoQuery  = "SELECT ((((100 - P.desconto)/100) * P.valorTotal) - P.valorPago) as
+                        valorPagar
+                        FROM PgtoMensalidade P
+                        INNER JOIN Matricula M ON M.idMatricula = P.chaveMatricula
+                        WHERE M.chaveAluno = ? AND P.fechado = 0 AND P.ano <= YEAR(NOW())
+                        AND P.numParcela = 0";
+
+        $query = $conexao->prepare($textoQuery);
+        $query->bindParam(1, $aluno->getNumeroInscricao());
+
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+        $query->execute();
+
+        if ($linha = $query->fetch()) {
+            $valorRecebido = $linha['valorPagar'];
+        } else {
+            $valorRecebido = -1;
+        }
+    }
+
     $valorValido = preg_match("/^[0-9]*\.?[0-9]+$/", $valorRecebido) && $valorRecebido != -1;
 
     if ($valorValido) {
