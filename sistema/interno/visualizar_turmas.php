@@ -24,6 +24,20 @@
                     $("#modal-email").find("#sendType").val("todos");
                 });
 
+                $("#sendSelecionados").click(function(e){
+                    $("#modal-email").find("#sendType").val("selecionados");
+                });
+
+                $("#email").submit(function(e){
+                    var selected = "";
+                    $("input:checked").each(function(){
+                        selected += $(this).val() + ",";
+                    });
+                    var element = $("<input type='hidden' id='selecionados' name='selecionados'>");
+                    element.val(selected);
+                    $(this).append(element);
+                });
+
             });
         </script>
     </head>
@@ -184,7 +198,7 @@
 
                             $resultado .= '
                         <tr>
-                            <td> <input type="checkbox" name="inscricoes[]" 
+                            <td> <input type="checkbox" name="inscricoes[]"
                                 value="'.$linha['numeroInscricao'].'">
                             </td>
                             <td>' . $linha['numeroInscricao'] . '</td>
@@ -214,14 +228,17 @@
                         }
                         echo $resultado;
                     ?>
-                    <div class='btn btn-primary'>
-                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-email"
-                            id="sendTodos">
-                            <p>Enviar e-mail para todos</p>
-                        </a>
-                    </div>
-                    <input type="button" class="btn btn-primary pull-right" name="enviarSelecionados" 
-                    value="Enviar e-mail para selecionados" style="margin-right:2em">
+
+                    <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-email"
+                        id="sendTodos">
+                        <p>Enviar e-mail para todos</p>
+                    </a>
+                    <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-email"
+                        id="sendSelecionados" style="margin-right:2em">
+                        <p>Enviar e-mail para os selecionados</p>
+                    </a>
+
+                    <br>
 
                 </section>
             </div>
@@ -252,7 +269,7 @@
         </div>
         <div class="modal fade" id="modal-email" tabindex="-1" role="dialog"
              aria-labelledby="modal-email" aria-hidden="true">
-             <form method="POST" action="rotinas/gerenciar_email.php">
+             <form method="POST" action="rotinas/gerenciar_email.php" id="email" name="email">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -264,7 +281,7 @@
                         <div class="modal-body">
                             <label for="title">Título do e-mail :</label>
                             <input type='text' class="form-control" 
-                                name="title" id="title" placeholder="Título">
+                                name="title" id="title" placeholder="Título" required>
 
                             <br>
                             <label for="conteudo">Conteúdo do e-mail :</label>
@@ -273,7 +290,8 @@
                             class="form-control" 
                             cols="100"
                             rows="10"
-                            placeholder="Mensagem"></textarea>
+                            placeholder="Mensagem"
+                            required></textarea>
                         </div>
                         <input type="hidden" id="sendType" name="sendType" value="todos">
                         <div class="modal-footer">
