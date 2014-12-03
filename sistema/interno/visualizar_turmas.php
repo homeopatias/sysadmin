@@ -20,6 +20,7 @@
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
 
+                //seta o tipo do e-mail a ser enviado
                 $("#sendTodos").click(function(e){
                     $("#modal-email").find("#sendType").val("todos");
                 });
@@ -28,14 +29,19 @@
                     $("#modal-email").find("#sendType").val("selecionados");
                 });
 
+                //prepara uma string com os ids selecionados para enviar o email
                 $("#email").submit(function(e){
+
+                    $(this).find("#url-send").val(window.location.href);
+
                     var selected = "";
-                    $("input:checked").each(function(){
+                    $("table input:checked").each(function(){
                         selected += $(this).val() + ",";
                     });
                     var element = $("<input type='hidden' id='selecionados' name='selecionados'>");
                     element.val(selected);
                     $(this).append(element);
+
                 });
 
             });
@@ -294,6 +300,8 @@
                             required></textarea>
                         </div>
                         <input type="hidden" id="sendType" name="sendType" value="todos">
+                        <input type="hidden" id="url-send" name="url-send">
+                        <input type="hidden" id="vetGet" name="vetGet" value=<?= json_encode($_GET) ?>>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-success" >Enviar</button>
