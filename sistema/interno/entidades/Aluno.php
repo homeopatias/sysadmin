@@ -444,7 +444,7 @@ class Aluno extends Usuario{
                 if($emDia && $this->status != $statusAnterior){
 
                     //Caso o aluno tenha desistido, notifica o indicador que ele perdeu o desconto
-                    if($this->status === "desistente"){
+                    if ($this->status !== "inscrito" {
                         $sucessoNotificacao = false;
 
                         //faremos 10 tentativas para notificar o aluno , se todas falharem
@@ -457,7 +457,7 @@ class Aluno extends Usuario{
 
                             $titulo = "Desconto por indicação";
 
-                            $texto  = "Um de seus indicados desistiu do curso, seu desconto de 10%";
+                            $texto  = "Um de seus indicados encerrou o curso/a etapa, seu desconto de 10%";
                             $texto  .= " por sua indicação foi removido das próximas parcelas";
 
                             $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
@@ -487,7 +487,7 @@ class Aluno extends Usuario{
 
                     } // if($this->status === "desistente")
 
-                    else if($this->status === "inscrito"  ) {
+                    else {
                         $sucessoNotificacao = false;
 
                         //faremos 10 tentativas para notificar o aluno , se todas falharem
