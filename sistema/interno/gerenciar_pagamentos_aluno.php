@@ -343,7 +343,7 @@
 
                                 $sucesso = $query->execute();
 
-                       head         for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
+                                for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
                                     if( $pagamentos[$anoPagamento][$i]['editado'] ){
                                         $textoQuery = "UPDATE PgtoMensalidade 
                                                     SET valorTotal = ?, valorPago = ?,

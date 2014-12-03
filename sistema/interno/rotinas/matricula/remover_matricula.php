@@ -38,6 +38,28 @@ if($adminValido || $alunoValido){
     // algum erro, as tabelas continuem consistentes
     $conexao->beginTransaction();
 
+    // armazenamos o aluno cuja matrícula estamos removendo
+    $aluno = null;
+    $sucessoAluno = false;
+    if ($alunoValido) {
+        $aluno = unserialize($_SESSION['usuario']);
+        $sucessoAluno = true;
+    } else {
+        $sql = "SELECT chaveAluno FROM Matricula WHERE idMatricula = ?";
+
+        $dados  = array($_GET["id"]);
+        $query  = $conexao->prepare($sql);
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+        $sucessoAluno = $query->execute($dados);
+
+        $idAluno = $query->fetch()['chaveAluno'];
+
+        $aluno = new Aluno("");
+        $aluno->setNumeroInscricao($idAluno);
+        $sucessoAluno = $sucessoAluno && 
+                        $aluno->recebeAlunoId($host, 'homeopatias', $usuario, $senhaBD);
+    }
+
     $sql = "DELETE FROM Matricula WHERE idMatricula = ?";
 
     // verificação de segurança para que um aluno não possa
@@ -49,12 +71,13 @@ if($adminValido || $alunoValido){
     $dados  = array($_GET["id"]);
     $query  = $conexao->prepare($sql);
 
-    // continuandio verificação de segurança acima
+    // continuando verificação de segurança acima
     if ($alunoValido) {
         $dados[] = unserialize($_SESSION['usuario'])->getNumeroInscricao();        
     }
 
     $sucessoMat = $query->execute($dados);
+    $numMat = $query->rowCount();
 
     /*$sql    = "DELETE FROM PgtoMensalidade WHERE chaveMatricula = ?
                AND valorPago = 0 AND fechado = 0";
@@ -63,7 +86,7 @@ if($adminValido || $alunoValido){
     $sucessoPgto = $query->execute($dados);
     */
 
-    if(!$sucessoMat || $query->rowCount() == 0) {
+    if(!$sucessoMat || $numMat == 0 || !$sucessoAluno) {
         $conexao->rollBack();
         $mensagem = "Erro na remoção de matrícula";
     } /*else if(!$sucessoPgto){
@@ -71,6 +94,9 @@ if($adminValido || $alunoValido){
         $mensagem = "Erro na remoção dos pagamentos referentes a essa matrícula";
     } */else {
         $conexao->commit();  
+        $aluno->setStatus('inativo');
+        $aluno->atualizar($host, 'homeopatias', $usuario, $senhaBD);
+        if ($alunoValido)   $_SESSION['usuario'] = serialize($aluno);
         $mensagem = "";
     }
 

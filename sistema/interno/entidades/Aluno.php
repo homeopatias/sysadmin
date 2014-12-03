@@ -336,9 +336,6 @@ class Aluno extends Usuario{
                     WHERE numeroInscricao = :numInsc";
         $query = $conexao->prepare($comando);
 
-
-
-
         $query->bindParam(":status", $this->status, PDO::PARAM_STR);
         if($this->idIndicador === ""){
             $query->bindValue(":indicador", null, PDO::PARAM_INT);
@@ -444,7 +441,7 @@ class Aluno extends Usuario{
                 if($emDia && $this->status != $statusAnterior){
 
                     //Caso o aluno tenha desistido, notifica o indicador que ele perdeu o desconto
-                    if ($this->status !== "inscrito" {
+                    if ($this->status !== "inscrito") {
                         $sucessoNotificacao = false;
 
                         //faremos 10 tentativas para notificar o aluno , se todas falharem
@@ -552,7 +549,6 @@ class Aluno extends Usuario{
             echo $e->getMessage();
         }
 
-
         //primeiro buscamos a matricula do aluno deste ano
         $textoQuery = "SELECT M.idMatricula
                         FROM Matricula M, Cidade C
@@ -565,50 +561,45 @@ class Aluno extends Usuario{
 
         if($linha = $query->fetch()){
             $idMatricula = $linha["idMatricula"];
-        }else{
-            return false;
+    
+            //buscamos agora os indicados que garantem desconto ao aluno
+            $textoQuery = "SELECT A.numeroInscricao
+                           FROM   Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
+                           WHERE  M.chaveAluno = A.numeroInscricao AND M.chaveCidade = C.idCidade
+                           AND    C.ano = YEAR( CURDATE()) AND Pg.chaveMatricula = M.idMatricula
+                           AND    Pg.numParcela = 0 AND Pg.fechado = 1 AND A.idIndicador = ? 
+                           AND    A.status = 'inscrito'";
+            $query = $conexao->prepare($textoQuery);
+            $query->bindParam(1,$this->numeroInscricao, PDO::PARAM_INT);
+            $query->execute();
+    
+            //O aluno ganha 10% de desconto para cada indicado e mais 10% por ser indicador/indicado,
+            // contamos as linhas da query que correspondem aos indicados
+    
+            $indicados = $query->rowCount();
+            $desconto = $indicados * 10;
+            if($this->idIndicador){
+                $desconto += 10;
+            }
+    
+            if($desconto > 100) $desconto = 100;
+    
+            //Agora atualizamos as tabelas alteradas e usaremos transaction para garantir 
+            //integridade de dados
+            $sucesso = true;
+            $textoQuery = "UPDATE PgtoMensalidade
+                            SET    desconto = :desconto
+                            WHERE  chaveMatricula = :idMatricula AND valorPago = 0";
+            $query = $conexao->prepare($textoQuery);
+            $query->bindParam(":desconto",$desconto,PDO::PARAM_INT);
+            $query->bindParam(":idMatricula",$idMatricula, PDO::PARAM_INT);
+            $sucesso = $query->execute();
+    
+            return $sucesso;
+    
         }
 
-        //buscamos agora os indicados que garantem desconto ao aluno
-        $textoQuery = "SELECT A.numeroInscricao
-                       FROM   Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
-                       WHERE  M.chaveAluno = A.numeroInscricao AND M.chaveCidade = C.idCidade
-                       AND    C.ano = YEAR( CURDATE()) AND Pg.chaveMatricula = M.idMatricula
-                       AND    Pg.numParcela = 0 AND Pg.fechado = 1 AND A.idIndicador = ? 
-                       AND    A.status = 'inscrito'";
-        $query = $conexao->prepare($textoQuery);
-        $query->bindParam(1,$this->numeroInscricao, PDO::PARAM_INT);
-        $query->execute();
-
-        //O aluno ganha 10% de desconto para cada indicado e mais 10% por ser indicador/indicado,
-        // contamos as linhas da query que correspondem aos indicados
-
-        $indicados = $query->rowCount();
-        $desconto = $indicados * 10;
-        if($this->idIndicador){
-            $desconto += 10;
-        }
-
-        if($desconto > 100) $desconto = 100;
-
-        //Agora atualizamos as tabelas alteradas e usaremos transaction para garantir 
-        //integridade de dados
-        $conexao->beginTransaction();
-        $sucesso = true;
-        $textoQuery = "UPDATE PgtoMensalidade
-                        SET    desconto = :desconto
-                        WHERE  chaveMatricula = :idMatricula AND valorPago = 0";
-        $query = $conexao->prepare($textoQuery);
-        $query->bindParam(":desconto",$desconto,PDO::PARAM_INT);
-        $query->bindParam(":idMatricula",$idMatricula, PDO::PARAM_INT);
-        $sucesso = $query->execute();
-
-        if($sucesso){
-            $conexao->commit();
-        }else{
-            $conexao->rollBack();
-        }
-        return $sucesso;
+        return true;
 
     }
 
