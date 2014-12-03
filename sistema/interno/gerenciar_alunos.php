@@ -278,11 +278,11 @@
                     podeMudarPagina = false;
                 });
 
-                //remove inputs em branco do form antes de enviar
+                // remove inputs em branco do form antes de enviar
                 $("#form-filtro").submit(function(){
 
                     $(':input', this).each(function() {
-                         this.disabled = !($(this).val());
+                         this.disabled = !($(this).val()) || $(this).val() == 0;
                     });
 
                 });

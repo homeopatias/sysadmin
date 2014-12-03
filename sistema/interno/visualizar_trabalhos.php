@@ -38,14 +38,14 @@
                     },
                     format: function(s,table) {
                         s = s.replace(/\-/g,"/");
-                        s = s.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/, "$3/$2/$1");
+                        s = s.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4}) às (\d{1,2}):(\d{2})/, "$3/$2/$1 $4:$5");
                         return $.tablesorter.formatFloat(new Date(s).getTime());
                     },
                     type: "numeric"
                 });
 
                 $("#trabalhos").tablesorter({ headers: {
-                    2 : { sorter: false },
+                    2 : { sorter: 'datetime' },
                     3 : { sorter: false },
                     4 : { sorter: false },
                     5 : { sorter: false }
@@ -76,6 +76,46 @@
                         );
                     }
                 });
+
+                $("#filtro-nome").hide();
+                $("#filtro-numero").hide();
+                $("#filtro-corrigido").hide();
+
+                // alterna campos de texto com campos de input
+                $("#label-nome").click(function(){
+                    $(this).hide();
+                    $("#filtro-nome").show(300);
+                    $("#filtro-nome").focus();
+                });
+                $("#label-numero").click(function(){
+                    $(this).hide();
+                    $("#filtro-numero").show(300);
+                    $("#filtro-numero").focus();
+                });
+                $("#label-corrigido").click(function(){
+                    $(this).hide();
+                    $("#filtro-corrigido").show(300);
+                    $("#filtro-corrigido").focus();
+                });
+
+                // se clicou na lupa, envia o formulário
+                $("#busca").click(function(e){
+                    atualizaPagina();
+                });
+
+                // se clicou na borracha, apaga todos os campos e envia o formulário limpo
+                $("#limpar").click(function(e){
+                    $("#filtro-nome").val("");
+                    $("#filtro-numero").val("");
+                    $("#filtro-corrigido").val("");
+                    atualizaPagina();
+                });
+
+                //atualiza formulário com a busca
+                function atualizaPagina(){
+                    $("#pagina").val(0);
+                    $("#form-filtro").submit();
+                }
             });
         </script>
     </head>
@@ -207,10 +247,54 @@
                                 T.nota, T.comentarioProfessor, 
                                 YEAR(T.dataEntrega) as ano FROM Trabalho T INNER JOIN Aluno A 
                                 ON A.numeroInscricao = T.chaveAluno INNER JOIN Usuario U ON 
-                                A.idUsuario = U.id WHERE T.chaveDefinicao = ? ORDER BY U.nome ASC";
+                                A.idUsuario = U.id WHERE T.chaveDefinicao = :idTDef";
+
+                // se algum filtro foi enviado, filtra os resultados da consulta
+                $filtroNome = $filtroNumero = $filtroCorrigido = false;
+
+                // como não há botão para submit, temos que checar se todas as variáveis
+                // existem
+                if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-numero"]) ||
+                   isset($_GET["filtro-corrigido"])){
+                    $filtroNome    =  htmlspecialchars($_GET["filtro-nome"]);
+                    $filtroNumero  =  htmlspecialchars($_GET["filtro-numero"]);
+                    $filtroCorrigido = htmlspecialchars($_GET["filtro-corrigido"]);
+
+                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                        // prepara o nome para ser colocado na query
+                        $filtroNome    =  "%".$filtroNome."%";
+                        $textoQuery .= "  AND U.nome LIKE :nome";
+                    }
+                    if(isset($filtroNumero) && mb_strlen($filtroNumero) > 0) {
+                        if(!is_nan($filtroNumero)){
+                            $textoQuery .= " AND A.numeroInscricao = :numInsc";
+                        }
+                    }
+                    if(isset($filtroCorrigido) && mb_strlen($filtroCorrigido) > 0){
+                        // prepara o status para ser colocado na query
+                        $textoQuery .= "  AND ";
+                        $textoQuery .= ($filtroCorrigido == 'true') ? "NOT" : "";
+                        $textoQuery .= " nota IS NULL";
+                    }
+                }  
+
+                $textoQuery .= " ORDER BY T.dataEntrega ASC";
 
                 $query = $conexao->prepare($textoQuery);
-                $query->bindParam(1, $idDefTrabalho, PDO::PARAM_INT);
+                $query->bindParam(':idTDef', $idDefTrabalho, PDO::PARAM_INT);
+
+                // passamos os parâmetros corretamente de acordo com os filtros passados
+                if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-numero"])){
+                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                        $query->bindParam(":nome", $filtroNome);
+                    }
+                    if(isset($filtroNumero) && mb_strlen($filtroNumero) > 0) {
+                        if(!is_nan($filtroNumero)){
+                            $query->bindParam(":numInsc", $filtroNumero);
+                        }
+                    }
+                }
+
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute();
 
@@ -222,9 +306,9 @@
                     // listamos os dados de cada trabalho
                     $tabela .= "<tr>";
                     $tabela .= "    <td>";
-                    $tabela .= htmlspecialchars($linha["nome"])   ."</td>";
-                    $tabela .= "    <td>";
                     $tabela .= htmlspecialchars($linha["numeroInscricao"])    ."</td>";
+                    $tabela .= "    <td>";
+                    $tabela .= htmlspecialchars($linha["nome"])   ."</td>";
 
                     $tabela .= "    <td>";
                     $tabela .= htmlspecialchars(date("d/m/Y à\s H:i", $linha["entrega"]))   ."</td>";
@@ -267,14 +351,91 @@
                     <b class="warning">Lembre-se, os trabalhos que os alunos enviaram 
                         após a data limite valem apenas 80% da nota! </b>
                     <br><br>
+                    <!-- formulario para implementar filtros -->
+                    <form method="GET" action="visualizar_trabalhos.php" id="form-filtro">
+                        <div class="form-group">
+                            <br/>
+                            <p>
+                                <b>Buscar por:</b>
+                            </p>
+                            <input type="hidden" name="id" value=<?= "\"" . $idDefTrabalho . "\"" ?>>
+                            <a id="label-nome" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-nome"]) && 
+                                        mb_strlen(($_GET["filtro-nome"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >
+                                Nome
+                            </a>
+                            <input  type="text" name="filtro-nome" id="filtro-nome"
+                                    placeholder="Nome" class="form-control" autocomplete="off"
+                                    style="display:inline;width:205px"
+                                    value= <?= isset($_GET["filtro-nome"]) ? 
+                                        htmlspecialchars($_GET["filtro-nome"]) : "" ?> >
+
+                            <a id="label-numero" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-numero"]) && 
+                                        mb_strlen(($_GET["filtro-numero"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Inscrição
+                            </a>
+
+                            <input type="text" name="filtro-numero"
+                                       id="filtro-numero"
+                                       placeholder="Nº insc" class="form-control"
+                                       style="display:inline;width:75px"
+                                       value= <?= isset($_GET["filtro-numero"]) ? 
+                                        htmlspecialchars($_GET["filtro-numero"]) : "" ?> >
+
+                            <a id="label-corrigido" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-corrigido"]) && 
+                                        mb_strlen(($_GET["filtro-corrigido"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Status
+                            </a>
+
+                            <select type="text" name="filtro-corrigido"
+                                       id="filtro-corrigido" class="form-control"
+                                       style="display:inline;width:150px">
+                                <option value="" 
+                                    <?=isset($_GET["filtro-corrigido"]) &&
+                                        htmlspecialchars($_GET["filtro-corrigido"]) == "" ?
+                                        'selected="selected"': '' ;?> >Nenhum
+                                </option>
+                                <option value="true"
+                                    <?=isset($_GET["filtro-corrigido"]) &&
+                                        htmlspecialchars($_GET["filtro-corrigido"]) == "true"?
+                                    'selected="selected"':'';?> >
+                                Corrigido</option>
+                                <option value="false"
+                                    <?=isset($_GET["filtro-corrigido"]) &&
+                                        htmlspecialchars($_GET["filtro-corrigido"]) == "false"?
+                                    'selected="selected"':'';?> >
+                                Não-corrigido</option>
+                            </select>
+                            <br><br>
+                            <a href="#" id="limpar" class="btn btn-info" >
+                                Limpar
+                                <i href="#" class="fa fa-eraser"></i>
+                            </a>
+                            <a href="#" id="busca" class="btn btn-info">
+                                Buscar
+                                <i href="#" class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </form>
+                    <!-- fim dos filtros -->
+                    <br>
                     <?php if($numeroRegistros !== 0){ ?>
                     <div class="flip-scroll">
                         <div class="wrapper-scroll">
                             <table class="table table-bordered table-striped" id="trabalhos">
                                 <thead style="background-color: #AAA">
                                     <tr>
-                                        <th width="350px">Nome do aluno</th>
                                         <th>Nº de inscrição</th>
+                                        <th width="350px">Nome do aluno</th>
                                         <th width="200px">Hora de envio</th>
                                         <th>Baixar trabalho</th>
                                         <th>Corrigido?</th>
