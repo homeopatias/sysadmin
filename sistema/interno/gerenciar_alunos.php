@@ -930,8 +930,9 @@
                         }
                     }
                 }
-                $filtroCidade    = null;
+                $filtroCidade     = null;
                 $queryAnoCidade   = null;
+                $filtroAnoCidade  = null;
                 if( isset($_GET["filtro-cidade"] ) ){
                     $filtroCidade    = $_GET["filtro-cidade"] ;
                 }

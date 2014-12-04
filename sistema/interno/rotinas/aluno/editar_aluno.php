@@ -48,7 +48,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
                         mb_strlen($nome, 'UTF-8') <= 100;
                         
 
-        $cpfValido = validaCpf($cpf);
+        $cpfValido = validaCpf($cpf,$id);
 
         $emailValido  = validaEmail($email, $id);
 
@@ -296,7 +296,7 @@ function ValidaCpf($cpf, $id){
     }
 
     //Checa se ja existe este cpf no sistema cadastrado como aluno
-    $textoQuery = "SELECT U.cpf
+    $textoQuery = "SELECT U.cpf, U.id
                    FROM Usuario U , Aluno A
                    WHERE U.id = A.idUsuario AND U.cpf = ?";
 

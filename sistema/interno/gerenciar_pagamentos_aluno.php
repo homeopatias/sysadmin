@@ -237,6 +237,8 @@
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
+                        $numPagamentos = $query->rowCount();
+
                         $anos = array();
                         $pagamentos = array();
                         while($linha = $query->fetch()){
@@ -259,8 +261,8 @@
 
                             
                             if(!$pagamentos[$anoPag][$numParcela]['fechado']){
-                                $pagamentos[$anoPag]['divida'] += $linha['valorTotal'] /*-
-                                ( ($linha['valorTotal']) * ($linha['desconto']/100) ) desconto */
+                                $pagamentos[$anoPag]['divida'] += $linha['valorTotal'] -
+                                ( ($linha['valorTotal']) * ($linha['desconto']/100) )
                                     - $linha['valorPago'];
                             }
                         }
@@ -287,16 +289,23 @@
 
                                             $pagamentos[$anoPagamento][$i]['pago'] += $valor;
 
-                                            $valor = $pagamentos[$anoPagamento][$i]['pago']  - $pagamentos[$anoPagamento][$i]['valor'] ;
+                                            $desconto = ($pagamentos[$anoPagamento][$i]['valor'] *
+                                                    $pagamentos[$anoPagamento][$i]['desconto'] /100);
+
+                                            $valor = $pagamentos[$anoPagamento][$i]['pago']  - 
+                                                $pagamentos[$anoPagamento][$i]['valor'] + $desconto ;
+
                                             $pagamentos[$anoPagamento][$i]['editado'] = 1;
                                             // Se o valor pago >= valor da parcela,
                                             // o pagamento foi suficiente para fechar a parcela
 
+
                                             if( $pagamentos[$anoPagamento][$i]['pago'] >= 
-                                                $pagamentos[$anoPagamento][$i]['valor']){
+                                                ($pagamentos[$anoPagamento][$i]['valor'] - $desconto))
+                                                {
 
                                                 $pagamentos[$anoPagamento][$i]['pago']  =
-                                                    $pagamentos[$anoPagamento][$i]['valor'];
+                                                    $pagamentos[$anoPagamento][$i]['valor'] - $desconto;
 
                                                 // se o pagamento foi suficiente para pagar o 
                                                 // restante da parcela, fecha a parcela
@@ -311,14 +320,7 @@
                                 for ($i = 0 ; $i < 12 ; $i++) {
                                     if(!$pagamentos[$anoPagamento][$i]['fechado']){
                                         $pagamentos[$anoPagamento]['divida'] +=
-                                            $pagamentos[$anoPagamento][$i]['valor'] /*-
-                                             (
-                                                //desconto
-                                                $pagamentos[$anoPagamento][$i]['valor'] *
-                                                $pagamentos[$anoPagamento][$i]['desconto'] /100
-
-                                             )
-                                            )*/
+                                            $pagamentos[$anoPagamento][$i]['valor'] - $desconto
                                             - $pagamentos[$anoPagamento][$i]['pago'];
                                     }
                                 }
@@ -400,7 +402,6 @@
                                 if($sucesso && $pagamentos[date("Y")][0]['editado']){
                                     
                                     if($pagamentos[date("Y")][0]['fechado']){
-                                        
                                         $textoQueryUpdate = "UPDATE Aluno 
                                                              SET status = 'inscrito'
                                                              WHERE numeroInscricao = ?";
@@ -408,6 +409,7 @@
                                         $query = $conexao->prepare($textoQueryUpdate);
                                         $query->bindParam(1, $idAluno, PDO::PARAM_INT);
                                         $sucesso = $query->execute();
+
                                     }
 
                                 }
@@ -431,7 +433,9 @@
                                     mail($aluno->getEmail(), $assunto, $msg, $headers);
 
                                     // agora registramos no sistema uma notificação para o aluno
-                                    $texto  = "Pagamento recebido:\nValor: R$" . $quantiaPaga;
+
+                                    $texto = "Pagamento recebido:\nValor: R$" . $quantiaPaga;
+
                                     $texto .= "\nData: " . date("d/m/Y") . "\nHorário: " . date("H:i");
                                     $texto .= "\nMétodo: " . $metodo;
                                     $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
@@ -439,11 +443,74 @@
                                     $dados = array("Pagamento recebido", $texto, $idAluno);
                                     $queryNotificacao->execute($dados);
 
-                                    $conexao->commit(); 
+                                    if($sucesso){
+                                        $conexao->commit(); 
+
+                                        //Se a inscrição foi paga, atualiza desconto
+                                        if($pagamentos[date("Y")][0]['fechado']){
+                                            require_once($_SERVER["DOCUMENT_ROOT"].
+                                                "/interno/entidades/Aluno.php");
+
+    
+                                            $aluno = new Aluno("");
+                                            $aluno->setNumeroInscricao($idAluno);
+                                            $aluno->recebeAlunoId($host, $db, $usuario, $senhaBD);
+            
+                                            $indicador = new Aluno("");
+                                            $indicador->setNumeroInscricao($aluno->getIdIndicador());
+                                            $indicador->recebeAlunoId($host, $db, $usuario, $senhaBD);
+                                            $indicador->atualizaDesconto($host, $db,
+                                                             $usuario, $senhaBD);
+                                            $sucessoNotificacao = false;
+
+                                            if($aluno->getIdIndicador()){
+                                                //faremos 10 tentativas para notificar o aluno , se todas falharem
+                                                //mostramos que não foi possível notificar o aluno
+                                                for($i = 0;$i < 10 && !$sucessoNotificacao;$i++){
+                                                    //gera notificação para o indicador que ele recebeu 10% de desconto
+                                                    //nas próximas parcelas
+                                                    $conexao->beginTransaction();
+
+                                                    $titulo = "Desconto por indicação";
+                                                    $texto  = "Você recebeu 10% de desconto por ter indicado ";
+                                                    $texto .= "o(a) aluno(a) : ".$aluno->getNome();
+
+                                                    $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
+                                                                    VALUES (:titulo, :texto,:idIndicador)";
+                                                    $query = $conexao->prepare($textoQuery);
+                                                    $query->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+                                                    $query->bindParam(":texto", $texto, PDO::PARAM_STR);
+                                                    $query->bindParam(":idIndicador", 
+                                                        $indicador->getNumeroInscricao(),PDO::PARAM_INT);
+
+                                                    $sucessoNotificacao = $query->execute();
+
+                                                    if(!$sucessoNotificacao){
+                                                        $conexao->rollback();
+                                                    }
+                                                
+                                                }
+
+                                                //se conseguiu notificar, confirma transação
+                                                if($sucessoNotificacao){
+                                                    $conexao->commit();
+                                                }else{
+                                                    //se não, mostra mensagem na tela
+                                                    $mensagem = "Não foi possível notificar o aluno 
+                                                                de seu desconto.";
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                    else{
+                                        $conexao->rollback();
+                                    }
                                 }
                                 else{
                                     $conexao->rollback();
                                 }
+
                             }
 
                             if(!$valorValido){
@@ -462,7 +529,7 @@
                                     <input type='hidden' name='id' id='id' value='".$idAluno."'>
                                     </form>
                                     <br>";
-                        if($query->rowCount() != 0) {
+                        if($numPagamentos != 0) {
                     ?>
 
                     <?php if($anoPagamento == date("Y")){ ?>
@@ -496,8 +563,11 @@
                                 <td style='background-color: #AAA'><b>Valor a pagar</b></td>
                     <?php
                         for($i = 0; $i < 12; $i ++) {
+                            $desconto = $pagamentos[$anoPagamento][$i]['valor'] *
+                                $pagamentos[$anoPagamento][$i]['desconto']/100;
                             echo "<td>R$ " . 
-                                 number_format($pagamentos[$anoPagamento][$i]['valor'], 2)
+                                 number_format($pagamentos[$anoPagamento][$i]['valor'] - 
+                                    $desconto, 2)
                                  . "</td>";
                         }
                         echo "</tr><tr>";
