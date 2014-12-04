@@ -218,6 +218,51 @@ if ($tipoNotificacao === 'transaction') {
                     $query = $conexao->prepare($textoQueryUpdate);
                     $query->bindParam(1, $idAluno, PDO::PARAM_INT);
                     $sucesso = $query->execute();
+
+                    // notificamos ao indicador que ele recebeu desconto por este aluno
+                    $sucessoNotificacao = false;
+
+                        //faremos 10 tentativas para notificar o aluno , se todas falharem
+                        //mostramos que não foi possível notificar o aluno
+                        for($i = 0;$i < 10 && !$sucessoNotificacao;$i++){
+
+                            //gera notificação para o indicador que ele recebeu 10% de desconto
+                            //nas próximas parcelas
+                            $conexao->beginTransaction();
+
+                            $titulo = "Desconto por indicação";
+
+                            $texto  = "Um de seus indicados deu inicio ao curso, seu desconto de 10%";
+                            $texto .= " por sua indicação foi adicionado às próximas";
+                            $texto .= " parcelas";
+
+                            $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
+                                            VALUES (:titulo, :texto,:idIndicador)";
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+                            $query->bindParam(":texto", $texto, PDO::PARAM_STR);
+                            $query->bindParam(":idIndicador", 
+                                $indicadorNovo->getNumeroInscricao(),PDO::PARAM_INT);
+
+                            $sucessoNotificacao = $query->execute();
+
+                            if(!$sucessoNotificacao){
+                                $conexao->rollback();
+                            }
+                        
+                        }
+
+                        //se conseguiu notificar, confirma transação
+                        if($sucessoNotificacao){
+                            $conexao->commit();
+                        }else{
+                            //se não, mostra mensagem na tela
+                            $mensagem = "Não foi possível notificar o aluno 
+                                        de seu desconto.";
+                        }
+
+                        // ----------------------------------------------------------------------
+                    }
                 }
             }
 

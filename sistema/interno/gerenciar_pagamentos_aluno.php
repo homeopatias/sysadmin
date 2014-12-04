@@ -471,9 +471,9 @@
                                                     //nas próximas parcelas
                                                     $conexao->beginTransaction();
 
-                                                    $titulo = "Desconto por indicação";
-                                                    $texto  = "Você recebeu 10% de desconto por ter indicado ";
-                                                    $texto .= "o(a) aluno(a) : ".$aluno->getNome();
+                                                    $texto  = " Um de seus indicados deu inicio ao curso, seu desconto de 10%";
+                                                    $texto .= " por sua indicação foi adicionado às próximas";
+                                                    $texto .= " parcelas";
 
                                                     $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
                                                                     VALUES (:titulo, :texto,:idIndicador)";
