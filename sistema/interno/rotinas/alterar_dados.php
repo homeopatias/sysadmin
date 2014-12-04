@@ -166,19 +166,21 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
         $enderecoValido = ($cepValido && $ruaValida && $numeroValido &&
                            $bairroValido && $cidadeValida && $estadoValido);
 
-        $usuarioLogado->setNome($nome);
-        $usuarioLogado->setCpf($cpf);
-        $usuarioLogado->setEmail($email);
-        $usuarioLogado->setLogin($login);
-        $usuarioLogado->setTelefone($telefone);
-        $usuarioLogado->setCep($cep);
-        $usuarioLogado->setRua($rua);
-        $usuarioLogado->setNumero($numero);
-        $usuarioLogado->setComplemento($complemento);
-        $usuarioLogado->setBairro($bairro);
-        $usuarioLogado->setCidade($cidade);
-        $usuarioLogado->setEstado($estado);
-        $sucesso = $usuarioLogado->atualizar($host, "homeopatias", $usuario, $senhaBD);
+        if($enderecoValido && $telefoneValido) {
+            $usuarioLogado->setNome($nome);
+            $usuarioLogado->setCpf($cpf);
+            $usuarioLogado->setEmail($email);
+            $usuarioLogado->setLogin($login);
+            $usuarioLogado->setTelefone($telefone);
+            $usuarioLogado->setCep($cep);
+            $usuarioLogado->setRua($rua);
+            $usuarioLogado->setNumero($numero);
+            $usuarioLogado->setComplemento($complemento);
+            $usuarioLogado->setBairro($bairro);
+            $usuarioLogado->setCidade($cidade);
+            $usuarioLogado->setEstado($estado);
+            $sucesso = $usuarioLogado->atualizar($host, "homeopatias", $usuario, $senhaBD);
+        }
 
         if(!$sucesso) {
             if (!$telefoneValido){
@@ -189,6 +191,7 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
                 $mensagem = "Cidade inválida!";
             } else if (!$estadoValido) {
                 $mensagem = "Estado inválido";
+            }
         }
     } else if($usuarioLogado instanceof Aluno) {
         // caso seja um aluno, validamos os estados restantes
@@ -201,6 +204,8 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
         $cidade          = $_POST["cidade"];
         $estado          = $_POST["estado"];
         $pais            = $_POST["id"];
+        $escolaridade   = $_POST["escolaridade"];
+        $curso          = $_POST["curso"];
 
         $telefoneValido  = isset($telefone) &&
                           preg_match("/^\(?\d{2}\)?\d{4}-?\d{4,7}$/", $telefone);
@@ -232,19 +237,46 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
         $enderecoValido = ($cepValido && $ruaValida && $numeroValido &&
                            $bairroValido && $cidadeValida && $estadoValido);
 
-        $usuarioLogado->setNome($nome);
-        $usuarioLogado->setCpf($cpf);
-        $usuarioLogado->setEmail($email);
-        $usuarioLogado->setLogin($login);
-        $usuarioLogado->setTelefone($telefone);
-        $usuarioLogado->setCep($cep);
-        $usuarioLogado->setRua($rua);
-        $usuarioLogado->setNumero($numero);
-        $usuarioLogado->setComplemento($complemento);
-        $usuarioLogado->setBairro($bairro);
-        $usuarioLogado->setCidade($cidade);
-        $usuarioLogado->setEstado($estado);
-        $sucesso = $usuarioLogado->atualizar($host, "homeopatias", $usuario, $senhaBD);
+        $escolaridadeValida = isset($escolaridade) &&
+                   ($escolaridade === "fundamental incompleto" ||
+                    $escolaridade === "fundamental completo"   ||
+                    $escolaridade === "médio incompleto"       ||
+                    $escolaridade === "médio completo"         ||
+                    $escolaridade === "superior incompleto"    ||
+                    $escolaridade === "superior completo"      ||
+                    $escolaridade === "mestrado"               ||
+                    $escolaridade === "doutorado");
+
+        // para permitir a validação do curso, conferimos se possui curso superior
+        $superior = ($escolaridade === "superior incompleto"    ||
+                     $escolaridade === "superior completo"      ||
+                     $escolaridade === "mestrado"               ||
+                     $escolaridade === "doutorado");
+        $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
+                       (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
+
+        if($enderecoValido && $telefoneValido && $escolaridadeValida && $cursoValido) {
+            $usuarioLogado->setNome($nome);
+            $usuarioLogado->setCpf($cpf);
+            $usuarioLogado->setEmail($email);
+            $usuarioLogado->setLogin($login);
+            $usuarioLogado->setTelefone($telefone);
+            $usuarioLogado->setCep($cep);
+            $usuarioLogado->setRua($rua);
+            $usuarioLogado->setNumero($numero);
+            $usuarioLogado->setComplemento($complemento);
+            $usuarioLogado->setBairro($bairro);
+            $usuarioLogado->setCidade($cidade);
+            $usuarioLogado->setEstado($estado);
+            $usuarioLogado->setEscolaridade($escolaridade);
+            if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
+               $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
+                $usuarioLogado->setCurso(isset($curso) ? $curso : null);
+            }else{
+                $usuarioLogado->setCurso(null);
+            }
+            $sucesso = $usuarioLogado->atualizar($host, "homeopatias", $usuario, $senhaBD);
+        }
 
         if(!$sucesso) {
             if (!$telefoneValido){
@@ -254,14 +286,20 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
             } else if (!$cidadeValida) {
                 $mensagem = "Cidade inválida!";
             } else if (!$estadoValido) {
-                $mensagem = "Estado inválido";
+                $mensagem = "Estado inválido!";
+            } else if (!$escolaridadeValida) {
+                $mensagem = "Escolaridade inválida!";
+            } else if(!$cursoValido) {
+                $mensagem = "Curso válido!";
+            }
         }
     }
 
-    if($sucesso){
+    if($sucesso) {
         $_SESSION["usuario"] = serialize($usuarioLogado);
     }
-}else{
+
+} else {
     // algum valor invalido foi enviado
     if(!$senhaValida)
         $mensagem = "Senha incorreta";

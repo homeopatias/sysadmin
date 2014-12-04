@@ -20,6 +20,15 @@
                         });
                     });
                 }
+
+                $("#modal-muda-dados #escolaridade").change(function(){
+                    if($(this).val() === "superior incompleto" || $(this).val() === "superior completo"   ||
+                       $(this).val() === "mestrado"            || $(this).val() === "doutorado" ){
+                        $("#modal-muda-dados #curso").parent().show(500);
+                    }else{
+                        $("#modal-muda-dados #curso").parent().hide(500);
+                    }
+                });
             });
         </script>
     </head>
@@ -615,7 +624,62 @@
                                     </div>
                                 </div>
                             </div>
-                            <?php } ?>
+                            <?php if($usuarioLogado instanceof Aluno) { ?>
+                            <div class="form-group">
+                                <label for="escolaridade">Nível de escolaridade:</label>
+                                <select name="escolaridade" id="escolaridade" class="form-control">
+                                    <option value="fundamental incompleto"
+                                        <?= ($usuarioLogado->getEscolaridade() === "fundamental incompleto") ?
+                                            "selected" : '' ?>>
+                                        Ensino Fundamental Incompleto
+                                    </option>
+                                    <option value="fundamental completo"
+                                        <?= ($usuarioLogado->getEscolaridade() === "fundamental completo") ?
+                                            "selected" : '' ?>>
+                                        Ensino Fundamental Completo
+                                    </option>
+                                    <option value="médio incompleto"
+                                        <?= ($usuarioLogado->getEscolaridade() === "médio incompleto") ?
+                                            "selected" : '' ?>>
+                                        Ensino Médio Incompleto
+                                    </option>
+                                    <option value="médio completo"
+                                        <?= ($usuarioLogado->getEscolaridade() === "médio completo") ?
+                                            "selected" : '' ?>>
+                                        Ensino Médio Completo
+                                    </option>
+                                    <option value="superior incompleto"
+                                        <?= ($usuarioLogado->getEscolaridade() === "superior incompleto") ?
+                                            "selected" : '' ?>>
+                                        Ensino Superior Incompleto
+                                    </option>
+                                    <option value="superior completo"
+                                        <?= ($usuarioLogado->getEscolaridade() === "superior completo") ?
+                                            "selected" : '' ?>>
+                                        Ensino Superior Completo
+                                    </option>
+                                    <option value="mestrado"
+                                        <?= ($usuarioLogado->getEscolaridade() === "mestrado") ?
+                                            "selected" : '' ?>>
+                                        Mestrado
+                                    </option>
+                                    <option value="doutorado"
+                                        <?= ($usuarioLogado->getEscolaridade() === "doutorado") ?
+                                            "selected" : '' ?>>
+                                        Doutorado
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group" <?= is_null($usuarioLogado->getCurso()) ? 
+                                                        "style=\"display: none\"" : "" ?>>
+                                <label for="curso">Curso superior cursado:</label>
+                                <input type="text" name="curso" id="curso"
+                                       pattern="^.{0,200}$" placeholder="Curso superior cursado"
+                                       title="O curso deve ter no máximo 200 caracteres"
+                                       class="form-control"
+                                       value=<?= "\"" . $usuarioLogado->getCurso() . "\""?>>
+                            </div>
+                            <?php } } ?>
                             <br>
                             <div class="form-group">
                                 <label for="senha">Insira sua senha:</label>
