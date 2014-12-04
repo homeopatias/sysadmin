@@ -149,9 +149,9 @@
             ?>
             <h4 class="sucesso">Senha alterada com sucesso</h4>
             <?php
-                } else if(isset($_GET["sucessoEmail"]) && $_GET["sucessoEmail"]) {
+                } else if(isset($_GET["sucessoEdicao"]) && $_GET["sucessoEdicao"]) {
             ?>
-            <h4 class="sucesso">E-mail alterado com sucesso</h4>
+            <h4 class="sucesso">Dados editados com sucesso</h4>
             <?php
                 } else if(isset($_GET["sucessoAval"]) && $_GET["sucessoAval"]){
             ?>
@@ -175,7 +175,7 @@
                data-target="#modal-muda-senha">Alterar senha</a>
             <br>
             <a href="#" data-toggle="modal"
-               data-target="#modal-muda-email">Alterar e-mail</a>
+               data-target="#modal-muda-dados">Alterar dados cadastrais</a>
             <br><br><br>
             <p><b>Tipo de usuário:</b>
                 <?php
@@ -390,34 +390,238 @@
                 </div>
             </div>
         </div>
-        <!-- modal para mudanca de e-mail -->
-        <div class="modal fade" id="modal-muda-email" tabindex="-1" role="dialog" 
-             aria-labelledby="modal-muda-email" aria-hidden="true">
+        <!-- modal para alteração de dados cadastrais -->
+        <div class="modal fade" id="modal-muda-dados" tabindex="-1" role="dialog" 
+             aria-labelledby="modal-muda-dados" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <!-- colocamos a tag form aqui para que possamos enviar o formulário
                         no rodapé do modal -->
-                    <form method="POST" action="rotinas/mudar_email.php">
+                    <form method="POST" action="rotinas/alterar_dados.php">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                 X
                             </button>
-                            <h4 class="modal-title">Mudança de E-mail</h4>
+                            <h4 class="modal-title">Alterar dados</h4>
                         </div>
                         <div class="modal-body">
                             <!-- o formulário em si fica dentro dessa div -->
+
+                            <div class="form-group">
+                                <label for="nome">Nome:</label>
+                                <input type="text" name="nome" id="nome" required
+                                       pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
+                                       placeholder="Nome" class="form-control" autocomplete="off"
+                                       value=<?= "\"" . $usuarioLogado->getNome() . "\"" ?>>
+                            </div>
+                            <div class="form-group">
+                                <label for="login">Nome de usuário:</label>
+                                <input type="text" name="login" id="login" required
+                                       pattern="^.{3,100}$" placeholder="Nome de usuário"
+                                       title="O login deve ter de 3 a 100 caracteres"
+                                       class="form-control"
+                                       value=<?= "\"" . $usuarioLogado->getLogin() . "\"" ?>>
+                            </div>
+                            <?php
+                                if(!($usuarioLogado instanceof Administrador) ||
+                                     $usuarioLogado->getNivelAdmin() !== 'administrador') {
+                                    // formatando o cpf
+
+                                    $cpfOriginal = str_split($usuarioLogado->getCPF());
+                                    $cpf  = implode("", array_slice($cpfOriginal, 0, 3)) . ".";
+                                    $cpf .= implode("", array_slice($cpfOriginal, 3, 3)) . ".";
+                                    $cpf .= implode("", array_slice($cpfOriginal, 6, 3)) . "-";
+                                    $cpf .= implode("", array_slice($cpfOriginal, 9, 2));
+                                    $cpf  = htmlspecialchars($cpf);
+                            ?>
+                            <div class="form-group">
+                                <label for="cpf">CPF:</label>
+                                <input type="text" name="cpf" id="cpf" required
+                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
+                                       placeholder="xxx.xxx.xxx-xx" class="form-control"
+                                       value=<?= "\"" . $cpf . "\"" ?>>
+                            </div>
+                            <?php } else { ?>
+                            <input type="hidden" name="cpf" value='999.999.999-99'>
+                            <?php } ?>
+                            <div class="form-group">
+                                <label for="email">E-mail:</label>
+                                <input type="email" name="email" id="email" required
+                                       placeholder="E-mail"
+                                       title="Insira um e-mail válido"
+                                       class="form-control"
+                                       value=<?= "\"" . $usuarioLogado->getEmail() . "\"" ?>>
+                            </div>
+                            <?php 
+                                // se o usuário atual é um aluno ou associado, permitimos
+                                // alterar o telefone e endereço
+                                if($usuarioLogado instanceof Aluno ||
+                                   $usuarioLogado instanceof Associado) {
+                                    $telefoneOriginal = $usuarioLogado->getTelefone();
+                                    $telefoneOriginal = str_split($telefoneOriginal);
+                                    $telefone  = '(';
+                                    $telefone .= implode('', array_slice($telefoneOriginal, 0, 2));
+                                    $telefone .= ')';
+                                    $telefone .= implode('', array_slice($telefoneOriginal, 2, 4));
+                                    $telefone .= '-';
+                                    $telefone .= implode('', array_slice($telefoneOriginal, 6));
+                            ?>
+                            <div class="form-group">
+                                <label for="telefone">Telefone do aluno:</label>
+                                <input type="tel" name="telefone" id="telefone" required
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       title="Insira um telefone válido"
+                                       class="form-control"
+                                       value=<?= "\"" . $telefone . "\"" ?>>
+                            </div>
+                            <div class="form-group col-sm-12" >
+                                <label for="">Endereço do aluno:</label>
+                                <div style="display:block">
+                                    <?php
+                                        $cepOriginal = str_split($usuarioLogado->getCep());
+
+                                        $cep  = implode("", array_slice($cepOriginal, 0, 5)) . "-"; ;
+                                        $cep .= implode("", array_slice($cepOriginal, 5, 8));
+                                    ?>
+                                    <div  class="col-sm-6 col-md-4 " 
+                                        style="padding-top:10px;padding-bot:10px">
+                                        <label for="cep" style="display:inline">CEP :</label>
+                                        <input type="text" name="cep" id="cep"
+                                            pattern="^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$" 
+                                            placeholder="xxxxx-xxx"
+                                            title="Insira um CEP válido"
+                                            class="form-control"
+                                            style="width:90px" required
+                                            value=<?= "\"". $cep . "\""?>>
+                                    </div>
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="rua">Rua :</label>
+                                        <input type="text" name="rua" id="rua"
+                                            pattern="^.{0,200}$" placeholder="Rua"
+                                            title="A rua deve ter no máximo 200 caracteres"
+                                            class="form-control"
+                                            style="width:150px " required
+                                            value=<?= "\"" . $usuarioLogado->getRua() . "\"" ?>>
+                                    </div>
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="numero">
+                                            Numero :</label>
+                                        <input type="text" name="numero" id="numero"
+                                            placeholder="xx"
+                                            title="Insira o numero de sua residência"
+                                            class="form-control"
+                                            style="width:80px ;" required
+                                            value=<?= "\"" . $usuarioLogado->getNumero() . "\"" ?>>
+
+                                    </div>
+        
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="bairro" >
+                                            Bairro :</label>
+                                        <input type="text" name="bairro" id="bairro"
+                                            placeholder="Bairro"
+                                            title="Insira o bairro de sua residência"
+                                            class="form-control"
+                                            style="width:120px ;" required
+                                            value=<?= "\"" . $usuarioLogado->getBairro() . "\"" ?>>
+                                    </div>
+        
+                                    
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="cidade" >
+                                            Cidade :</label>
+                                        <input type="text" name="cidade" id="cidade"
+                                            placeholder="Cidade"
+                                            title="Insira o nome de sua cidade"
+                                            class="form-control"
+                                            style="width:150px ;" required
+                                            value=<?= "\"" . $usuarioLogado->getCidade() . "\"" ?>>
+                                    </div>
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="estado">
+                                            Estado :</label>
+                                        <select name="estado" id="estado" class="form-control"
+                                        style="width:120px">
+                                            <option value="AC" 
+                                                <?= $usuarioLogado->getEstado() === 'AC' ? 'selected' : '' ?>>Acre</option>
+                                            <option value="AL" 
+                                                <?= $usuarioLogado->getEstado() === 'AL' ? 'selected' : '' ?>>Alagoas</option>
+                                            <option value="AM" 
+                                                <?= $usuarioLogado->getEstado() === 'AM' ? 'selected' : '' ?>>Amazonas</option>
+                                            <option value="AP" 
+                                                <?= $usuarioLogado->getEstado() === 'AP' ? 'selected' : '' ?>>Amapá</option>
+                                            <option value="BA" 
+                                                <?= $usuarioLogado->getEstado() === 'BA' ? 'selected' : '' ?>>Bahia</option>
+                                            <option value="CE" 
+                                                <?= $usuarioLogado->getEstado() === 'CE' ? 'selected' : '' ?>>Ceará</option>
+                                            <option value="DF" 
+                                                <?= $usuarioLogado->getEstado() === 'DF' ? 'selected' : '' ?>>Distrito Federal</option>
+                                            <option value="ES" 
+                                                <?= $usuarioLogado->getEstado() === 'ES' ? 'selected' : '' ?>>Espírito Santo</option>
+                                            <option value="GO" 
+                                                <?= $usuarioLogado->getEstado() === 'GO' ? 'selected' : '' ?>>Goiás</option>
+                                            <option value="MA" 
+                                                <?= $usuarioLogado->getEstado() === 'MA' ? 'selected' : '' ?>>Maranhão</option>
+                                            <option value="MT" 
+                                                <?= $usuarioLogado->getEstado() === 'MT' ? 'selected' : '' ?>>Mato Grosso</option>
+                                            <option value="MS" 
+                                                <?= $usuarioLogado->getEstado() === 'MS' ? 'selected' : '' ?>>Mato Grosso do Sul</option>
+                                            <option value="MG" 
+                                                <?= $usuarioLogado->getEstado() === 'MG' ? 'selected' : '' ?>>Minas Gerais</option>
+                                            <option value="PA" 
+                                                <?= $usuarioLogado->getEstado() === 'PA' ? 'selected' : '' ?>>Pará</option>
+                                            <option value="PB" 
+                                                <?= $usuarioLogado->getEstado() === 'PB' ? 'selected' : '' ?>>Paraíba</option>
+                                            <option value="PR" 
+                                                <?= $usuarioLogado->getEstado() === 'PR' ? 'selected' : '' ?>>Paraná</option>
+                                            <option value="PE" 
+                                                <?= $usuarioLogado->getEstado() === 'PE' ? 'selected' : '' ?>>Pernambuco</option>
+                                            <option value="PI" 
+                                                <?= $usuarioLogado->getEstado() === 'PI' ? 'selected' : '' ?>>Piauí</option>
+                                            <option value="RJ" 
+                                                <?= $usuarioLogado->getEstado() === 'RJ' ? 'selected' : '' ?>>Rio de Janeiro</option>
+                                            <option value="RN" 
+                                                <?= $usuarioLogado->getEstado() === 'RN' ? 'selected' : '' ?>>Rio Grande do Norte</option>
+                                            <option value="RO" 
+                                                <?= $usuarioLogado->getEstado() === 'RO' ? 'selected' : '' ?>>Rondônia</option>
+                                            <option value="RS" 
+                                                <?= $usuarioLogado->getEstado() === 'RS' ? 'selected' : '' ?>>Rio Grande do Sul</option>
+                                            <option value="RR" 
+                                                <?= $usuarioLogado->getEstado() === 'RR' ? 'selected' : '' ?>>Roraima</option>
+                                            <option value="SC" 
+                                                <?= $usuarioLogado->getEstado() === 'SC' ? 'selected' : '' ?>>Santa Catarina</option>
+                                            <option value="SE" 
+                                                <?= $usuarioLogado->getEstado() === 'SE' ? 'selected' : '' ?>>Sergipe</option>
+                                            <option value="SP" 
+                                                <?= $usuarioLogado->getEstado() === 'SP' ? 'selected' : '' ?>>São Paulo</option>
+                                            <option value="TO" 
+                                                <?= $usuarioLogado->getEstado() === 'TO' ? 'selected' : '' ?>>Tocantins</option>
+                                        </select>
+                                    </div>
+                                    <div  class="col-sm-6 col-md-12"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="complemento">
+                                            Complemento :</label>
+                                        <input type="text" name="complemento" id="complemento"
+                                            placeholder="Complemento"
+                                            title="Insira o complemento de sua residência"
+                                            class="form-control"
+                                            value=<?= "\"" . $usuarioLogado->getComplemento() . "\"" ?>>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php } ?>
+                            <br>
                             <div class="form-group">
                                 <label for="senha">Insira sua senha:</label>
                                 <input type="password" name="senha" id="senha" required
                                        pattern="^.{6,72}$" placeholder="Senha"
                                        title="A senha deve ter de 6 a 72 caracteres"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="novo">Insira seu e-mail novo:</label>
-                                <input type="email" name="novo" id="novo" required
-                                       placeholder="E-mail"
-                                       title="O E-mail deve ser válido"
                                        class="form-control">
                             </div>
                         </div>
@@ -426,7 +630,7 @@
                                 Cancelar
                             </button>
                             <button type="submit" name="submit" value="submit" class="btn btn-primary">
-                                Alterar E-mail
+                                Atualizar informações
                             </button>
                         </div>
                     </form>
