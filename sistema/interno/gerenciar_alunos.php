@@ -406,6 +406,27 @@
                          this.disabled = !($(this).val());
                     });
 
+                    if($('#filtro-ano').val() == 0) {
+                        $('#filtro-ano')[0].disabled = true;
+                    }
+
+                    if($('#filtro-etapa').val() == 0) {
+                        $('#filtro-etapa')[0].disabled = true;
+                    }
+
+                    if($('#pagina').val() == 0) {
+                        $('#pagina')[0].disabled = true;
+                    }
+                    if($('#pagina-ipp').val() == 10) {
+                        $('#pagina-ipp')[0].disabled = true;
+                    }
+                    if($('#numeroTableHeader').val() == -1) {
+                        $('#numeroTableHeader')[0].disabled = true;
+                    }
+                    if($('#cimaOuBaixo').val() == 2) {
+                        $('#cimaOuBaixo')[0].disabled = true;
+                    }
+
                 });
 
                 // se clicou na borracha, apaga todos os campos e envia o formulário limpo

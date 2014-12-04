@@ -323,6 +323,38 @@
                     podeMudarPagina = false;
                 });
 
+                //remove inputs em branco do form antes de enviar
+                $("#form-filtro").submit(function(){
+
+                    $(':input', this).each(function() {
+                         this.disabled = !($(this).val());
+                    });
+
+                    if($('#filtro-instituicao').val() == 0) {
+                        $('#filtro-instituicao')[0].disabled = true;
+                    }
+                    if($('#filtro-cidade').val() == 0) {
+                        $('#filtro-cidade').attr('disabled', '');
+                    }
+                    if($('#filtro-estado').val() == 0) {
+                        $('#filtro-estado').attr('disabled', '');
+                    }
+
+                    if($('#pagina').val() == 0) {
+                        $('#pagina')[0].disabled = true;
+                    }
+                    if($('#pagina-ipp').val() == 10) {
+                        $('#pagina-ipp')[0].disabled = true;
+                    }
+                    if($('#numeroTableHeader').val() == -1) {
+                        $('#numeroTableHeader')[0].disabled = true;
+                    }
+                    if($('#cimaOuBaixo').val() == 2) {
+                        $('#cimaOuBaixo')[0].disabled = true;
+                    }
+
+                });
+
                 // ------------ Muda de página usando as setas do teclado
                 $(window).keypress(function(e){
                     var keycode = (e.keyCode ? e.keyCode : e.which);
@@ -792,27 +824,37 @@
                     isset($_GET["filtro-instituicao"]) || isset($_GET["filtro-cidade"]) ||
                     isset($_GET["filtro-estado"])) {
 
-                    $filtroCpf            =  htmlspecialchars($_GET["filtro-cpf"]);
-                    $filtroNome           =  htmlspecialchars($_GET["filtro-nome"]);
-                    $filtroInstituicao    =  htmlspecialchars($_GET["filtro-instituicao"]);
-                    $filtroCidade         =  htmlspecialchars($_GET["filtro-cidade"]);
-                    $filtroEstado         =  htmlspecialchars($_GET["filtro-estado"]);
+                    $filtroCpf            =  isset($_GET["filtro-cpf"]) ?
+                                             htmlspecialchars($_GET["filtro-cpf"]) :
+                                             false;
+                    $filtroNome           =  isset($_GET["filtro-nome"]) ?
+                                             htmlspecialchars($_GET["filtro-nome"]) :
+                                             false;
+                    $filtroInstituicao    =  isset($_GET["filtro-instituicao"]) ?
+                                             htmlspecialchars($_GET["filtro-instituicao"]) :
+                                             false;
+                    $filtroCidade         =  isset($_GET["filtro-cidade"]) ?
+                                             htmlspecialchars($_GET["filtro-cidade"]) :
+                                             false;
+                    $filtroEstado         =  isset($_GET["filtro-estado"]) ?
+                                             htmlspecialchars($_GET["filtro-estado"]) :
+                                             false;
 
-                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                    if($filtroNome && mb_strlen($filtroNome) > 0){
                         $filtroNome    =  "%".mb_strtoupper($filtroNome)."%";
                         $textoQuery .= " AND UPPER(U.nome) LIKE :filtronomeassociado ";
                     } 
-                    if(isset($filtroCidade) && $filtroCidade != "0" ){
+                    if($filtroCidade && $filtroCidade != "0" ){
                         $filtroCidade = str_replace("+"," ",$filtroCidade);
                         $filtroCidade = trim($filtroCidade);
                         $textoQuery .= " AND A.cidade LIKE :filtrocidade ";
                     }  
-                    if(isset($filtroEstado) && $filtroEstado != "0" ){
+                    if($filtroEstado && $filtroEstado != "0" ){
                         $filtroEstado = str_replace("+"," ",$filtroEstado);
                         $filtroEstado = trim($filtroEstado);
                         $textoQuery .= " AND A.estado LIKE :filtroestado ";
                     }       
-                    if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
+                    if($filtroCpf && mb_strlen($filtroCpf) > 0){
 
                         // Remove os '.' e '-' para comparar com o cpf do bd
                         $filtroCpf = str_replace(".","",$filtroCpf);
@@ -821,7 +863,7 @@
                         $textoQuery .= " AND U.cpf LIKE :filtrocpf ";
                     }
 
-                    if(isset($filtroInstituicao) && mb_strlen($filtroInstituicao) > 0 && 
+                    if($filtroInstituicao && mb_strlen($filtroInstituicao) > 0 && 
                         $filtroInstituicao != "0"){
                         if($filtroInstituicao == 1){
                             $filtroInstituicao = "atenemg";
