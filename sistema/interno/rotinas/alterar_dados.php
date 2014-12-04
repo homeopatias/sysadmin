@@ -298,19 +298,18 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
     if($sucesso) {
         $_SESSION["usuario"] = serialize($usuarioLogado);
     }
-
-    // algum valor invalido foi enviado
-    if(!$senhaValida)
-        $mensagem = "Senha incorreta";
-    else if(!$emailValido)
-        $mensagem = "E-mail inválido";
-    else if(!$nomeValido)
-        $mensagem = "Nome inválido";
-    else if(!$loginValido)
-        $mensagem = "Login inválido";
-    else if(!$cpfValido)
-        $mensagem = "CPF inválido";
 }
+// algum valor invalido foi enviado
+else if(!$senhaValida)
+    $mensagem = "Senha incorreta";
+else if(!$emailValido)
+    $mensagem = "E-mail inválido";
+else if(!$nomeValido)
+    $mensagem = "Nome inválido";
+else if(!$loginValido)
+    $mensagem = "Login inválido";
+else if(!$cpfValido)
+    $mensagem = "CPF inválido";
 
 // fecha a conexão com o bd
 $conexao = null;
