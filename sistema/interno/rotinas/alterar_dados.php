@@ -299,7 +299,6 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
         $_SESSION["usuario"] = serialize($usuarioLogado);
     }
 
-} else {
     // algum valor invalido foi enviado
     if(!$senhaValida)
         $mensagem = "Senha incorreta";
