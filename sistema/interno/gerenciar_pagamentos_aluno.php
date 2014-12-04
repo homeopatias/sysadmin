@@ -120,6 +120,16 @@
                 //////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////
                          Dados principais do aluno -->
+                    <div id="foto">
+                        <img src=<?php 
+                            if( file_exists("fotos/".$aluno->getId().".png" ) ){
+                                echo "\"fotos/".$aluno->getId().".png\"";
+                            }else{
+                                echo "\"fotos/Padrao.png\"";;
+                            }
+                           ?>
+                           width="150px" height="200px">
+                    </div>
                     <div class="row">
                         <p style="display:inline" class="col-sm-3">
                             <b>Aluno:</b>
