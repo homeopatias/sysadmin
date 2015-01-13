@@ -37,10 +37,9 @@
                 });
 
                 $("#administradores").tablesorter({ headers: {
-                    2 : { sorter: false },
-                    4 : { sorter: "datetime" },
-                    5 : { sorter: false },
-                    6 : { sorter: false }
+                    3 : { sorter: "datetime" },
+                    4 : { sorter: false },
+                    5 : { sorter: false }
                 }});
                 // passa os dados do href para o modal de confirmação de deleção quando
                 // necessário
@@ -60,9 +59,6 @@
                     );
                     $(this).find('#nome').val(
                         $(e.relatedTarget).parent().siblings('.nome').text()
-                    );
-                    $(this).find('#cpf').val(
-                        $(e.relatedTarget).parent().siblings('.cpf').text()
                     );
                     $(this).find('#email').val(
                         $(e.relatedTarget).parent().siblings('.email').text()
@@ -104,7 +100,6 @@
                 // esconde inputs de busca
 
                 $("#filtro-nome").hide();
-                $("#filtro-cpf").hide();
                 $("#ipp").hide();  
 
                 // alterna campos de texto com campos de input
@@ -114,10 +109,11 @@
                     $("#filtro-nome").focus();
                 });
 
-                $("#label-cpf").click(function(){
-                    $(this).hide();
-                    $("#filtro-cpf").show(300);
-                    $("#filtro-cpf").focus();
+                $("#filtro-nome").blur(function(){
+                    if($(this).val() == ""){
+                        $(this).hide(300);
+                        $("#label-nome").show(300);   
+                    } 
                 });
 
                 $("#label-ipp").click(function(){
@@ -131,6 +127,19 @@
                     $("#label-ipp").show(300);   
                 });
 
+
+
+                // processa envio do formulário se enter for pressionado dentro de algum campo
+                // do formulário de filtro
+
+                // filtro-data-max e filtro-data-min envia o formulário usando .onblur()
+                $("#filtro-nome").keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == '13'){ // enter foi pressionado
+                       atualizaPagina();
+                    }
+                });
+
                 // se clicou na lupa, envia o formulário
                 $("#busca").click(function(e){
                     atualizaPagina();
@@ -139,7 +148,6 @@
                 // se clicou na borracha, apaga todos os campos e envia o formulário limpo
                 $("#limpar").click(function(e){
                     $("#filtro-nome").val("");
-                    $("#filtro-cpf").val("");
                     atualizaPagina();
                 });
 
@@ -313,7 +321,6 @@
                 if(isset($_POST["submit"])){
                     // validamos todos os dados recebidos
                     $nome        = $_POST["nome"];
-                    $cpf         = $_POST["cpf"];
                     $email       = $_POST["email"];
                     $login       = $_POST["login"];
                     $senha       = $_POST["senha"];
@@ -321,74 +328,6 @@
 
                     $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                     mb_strlen($nome,'UTF-8') <= 100;
-                    $cpfValido    = isset($cpf) &&
-                                    (preg_match("/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", $cpf) || 
-                                     preg_match("/^\d{11}$/", $cpf));
-                    
-                    if($cpfValido){
-                        // checamos se os dígitos verificadores do cpf conferem
-                        $cpfChecar = str_replace(".","",$cpf);
-                        $cpfChecar = str_replace("-","",$cpfChecar);
-                        $cpfChecar = str_split($cpfChecar);
-                        $somaChecagem = 0;
-
-                        for($i = 10; $i >= 2; $i = $i - 1){
-                            $somaChecagem += (int)($cpfChecar[10 - $i]) * $i;
-                        }
-                        $digito = ($somaChecagem % 11) < 2 ? 0 : 11 - ($somaChecagem % 11);
-                        if($digito != $cpfChecar[9]){
-                            $cpfValido = false;
-                        }else{
-                            // agora checamos o segundo dígito
-                            $somaChecagem = 0;
-                            for($i = 11; $i >= 2; $i = $i - 1){
-                                $somaChecagem += (int)($cpfChecar[11 - $i]) * $i;
-                            }
-                            $digito = floor($somaChecagem/11);
-                            $digito = ($somaChecagem % 11) < 2 ? 0 : 11 - ($somaChecagem % 11);
-                            if($digito != $cpfChecar[10]){
-                                $cpfValido = false;
-                            }
-                        }
-
-                        $todosZero = true;
-                        $todosNove = true;
-                        for($i = 0; $i <11; $i++){
-                            if($cpfChecar[$i] != '0'){
-                                $todosZero = false;
-                            }
-                            if($cpfChecar[$i] != '9'){
-                                $todosNove = false;
-                            }
-                        }
-
-                        if($todosZero || $todosNove){
-                            $cpfValido = false;
-                        }
-
-                    }
-
-                    $cpfExistente = false;
-                    if($cpfValido){
-                        //Checa se ja existe este cpf no sistema cadastrado como administrador
-                        $cpfNumerico = str_replace(".","",$cpf);
-                        $cpfNumerico = str_replace("-","",$cpfNumerico);
-                        $textoQuery = "SELECT U.cpf
-                                       FROM Usuario U , Administrador A
-                                       WHERE U.id = A.idUsuario AND U.cpf = ?
-                                       AND A.nivel LIKE 'administrador'";
-        
-                        $query = $conexao->prepare($textoQuery);
-                        $query->bindParam(1, $cpfNumerico, PDO::PARAM_STR);
-                        $query->setFetchMode(PDO::FETCH_ASSOC);
-                        $query->execute();
-    
-                        if($linha = $query->fetch()){
-                            $cpfValido = false;
-                            $cpfExistente = true;
-                        }
-                    }
-
 
                     $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
                                     preg_match("/^.+\@.+\..+$/", $email);
@@ -420,7 +359,7 @@
 
 
                     // se todos os dados estão válidos, o administrador é cadastrado
-                    if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida){
+                    if($nomeValido && $emailValido && $loginValido && $senhaValida){
 
                         // lemos as credenciais do banco de dados
                         $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -438,7 +377,6 @@
 
                         $novo = new Administrador($login);
                         $novo->setNome($nome);
-                        $novo->setCpf($cpf);
                         $novo->setEmail($email);
                         $novo->setPermissoes($permissoes);
                         $novo->setNivelAdmin("administrador");
@@ -451,10 +389,6 @@
                         }
                     }else if(!$nomeValido){
                         $mensagem = "Nome inválido!";
-                    }else if(!$cpfValido && !$cpfExistente){
-                        $mensagem = "CPF inválido!";
-                    }else if($cpfExistente){
-                        $mensagem = "CPF ja cadastrado!";
                     }else if(!$emailValido && !$emailExistente){
                         $mensagem = "E-mail inválido!";
                     }else if($emailExistente){
@@ -466,30 +400,21 @@
                     }
                 }
 
-                $textoQuery  = "SELECT U.id, U.cpf, U.dataInscricao, U.email, 
+                $textoQuery  = "SELECT U.id, U.dataInscricao, U.email, 
                                 U.nome, U.login, A.idAdmin , A.permissoes
                                 FROM Usuario U, Administrador A WHERE A.idUsuario = U.id AND 
                                 A.nivel = \"administrador\" ";
 
                 // Se algum filtro foi repassado, altera o query para filtrar
-                $filtroCpf = $filtroNome = false;
-                if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-cpf"])){
+                $filtroNome = false;
+                if(isset($_GET["filtro-nome"])){
 
-                    $filtroCpf     =  htmlspecialchars($_GET["filtro-cpf"]);
                     $filtroNome    =  htmlspecialchars($_GET["filtro-nome"], ENT_QUOTES, "UTF-8");
                     // Os dois argumentos acima são para o UTF-8 funcionar corretamente
                     // após a conversão
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         $filtroNome    =  "%".$filtroNome."%";
                         $textoQuery .= " AND U.nome LIKE :filtronomeadmin ";
-                    }            
-                    if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
-
-                        // Remove os '.' e '-' para comparar com o cpf do bd
-                        $filtroCpf = str_replace(".","",$filtroCpf);
-                        $filtroCpf = str_replace("-","",$filtroCpf);
-
-                        $textoQuery .= " AND U.cpf LIKE :filtrocpf ";
                     }
                 }
                 //------- Prepara o necessário para a ordenação
@@ -514,10 +439,10 @@
                             case '1':
                                 $orderBy = " ORDER BY U.login " ;
                                 break;
-                            case '3':
+                            case '2':
                                 $orderBy = " ORDER BY U.email " ;
                                 break;
-                            case '4':
+                            case '3':
                                 $orderBy = " ORDER BY U.dataInscricao " ;
                                 break;
                             
@@ -571,12 +496,9 @@
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
 
-                if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-cpf"])){
+                if(isset($_GET["filtro-nome"])){
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         $query->bindParam(":filtronomeadmin",$filtroNome);
-                    }
-                    if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
-                        $query->bindParam(":filtrocpf",$filtroCpf);
                     }
                 }
 
@@ -591,14 +513,6 @@
 
                 while ($linha = $query->fetch()){
                     if($contador != $itemsPorPagina && $linha['idAdmin'] != 1){
-                        // formatando o texto do cpf
-                        $cpfOriginal = str_split($linha["cpf"]);
-
-                        $cpf  = implode("", array_slice($cpfOriginal, 0, 3)) . ".";
-                        $cpf .= implode("", array_slice($cpfOriginal, 3, 3)) . ".";
-                        $cpf .= implode("", array_slice($cpfOriginal, 6, 3)) . "-";
-                        $cpf .= implode("", array_slice($cpfOriginal, 9, 2));
-                        $cpf  = htmlspecialchars($cpf);
 
                         // listamos os dados de cada usuário
                         $tabela .= "<tr>";
@@ -606,8 +520,6 @@
                         $tabela .= htmlspecialchars($linha["nome"])             ."</td>";
                         $tabela .= "    <td class=\"login\">";
                         $tabela .= htmlspecialchars($linha["login"])            ."</td>";
-                        $tabela .= "    <td class=\"cpf\">";
-                        $tabela .= $cpf                                     ."</td>";
                         $tabela .= "    <td class=\"email\">";
                         $tabela .= htmlspecialchars($linha["email"])            ."</td>";
                         $tabela .= "    <td class=\"datainsc\">";
@@ -665,21 +577,6 @@
                                     style="display:inline;width:205px"
                                     value= <?= isset($_GET["filtro-nome"]) ? 
                                         htmlspecialchars($_GET["filtro-nome"]) : "" ?> >
-                                    
-                            <a id="label-cpf" href="#" class="btn" 
-                                style=  <?= (isset($_GET["filtro-cpf"]) && 
-                                        mb_strlen(($_GET["filtro-cpf"])) > 0) ? 
-                                            "display:inline;color:#336600" : "display:inline";
-                                        ?> 
-                                >CPF
-                            </a>
-
-                            <input type="text" name="filtro-cpf" id="filtro-cpf"
-                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
-                                       placeholder="xxx.xxx.xxx-xx" class="form-control"
-                                       style="display:inline;width:120px"
-                                       value= <?= isset($_GET["filtro-cpf"]) ? 
-                                        htmlspecialchars($_GET["filtro-cpf"]) : "" ?> >
 
                             
                             <br><br>
@@ -730,11 +627,10 @@
                                         <th width="160px" <?= $indexHeader == 1 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Nome de usuário</th>
-                                        <th width="140px">CPF</th>
-                                        <th width="200px" <?= $indexHeader == 3 ? 
+                                        <th width="200px" <?= $indexHeader == 2 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>E-mail</th>
-                                        <th width="180px" <?= $indexHeader == 4 ? 
+                                        <th width="180px" <?= $indexHeader == 3 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Data e hora de inscrição</th>
                                         <th width="60px">Editar</th>
@@ -830,12 +726,6 @@
                                        placeholder="Nome" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="cpf-novo">CPF do administrador:</label>
-                                <input type="text" name="cpf" id="cpf-novo" required
-                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
-                                       placeholder="xxx.xxx.xxx-xx" class="form-control">
-                            </div>
-                            <div class="form-group">
                                 <label for="email-novo">E-mail do administrador:</label>
                                 <input type="email" name="email" id="email-novo" required
                                        placeholder="E-mail"
@@ -898,8 +788,8 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-
                             </div>
+                            <br><br>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -937,12 +827,6 @@
                                 <input type="text" name="nome" id="nome" required
                                        pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
                                        placeholder="Nome" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="cpf">CPF do administrador:</label>
-                                <input type="text" name="cpf" id="cpf" required
-                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
-                                       placeholder="xxx.xxx.xxx-xx" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="email">E-mail do administrador:</label>
@@ -1005,9 +889,8 @@
                                         class="form-control"
                                         style="display:inline">
                                 </div>
-
                             </div>
-
+                            <br><br>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -1060,32 +943,23 @@
                         <div class="modal-body">
                             <?php 
                             // se o usuario filtrou algo recentemente, mantem o filtro
-                            if(isset($_GET["submit"])){ ?>
+                            if(isset($_GET["submit"])) { ?>
                                 
                                 <label for="filtro-nome">Nome:</label>
                                 <input type="text" name="filtro-nome" 
                                        pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
                                        placeholder="Nome" class="form-control" autocomplete="off"
                                        value= <?= $_GET["filtro-nome"] ?> >
-                                <label for="filtro-cpf">CPF do administrador:</label>
-                                <input type="text" name="filtro-cpf" id="filtro-cpf"
-                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
-                                       placeholder="xxx.xxx.xxx-xx" class="form-control"
-                                       value= <?= $_GET["filtro-cpf"] ?> >
 
                             <?php
 
-                                }else{ // caso contrario, mostra um novo formulario
+                                } else { // caso contrario, mostra um novo formulario
                             ?>
 
                             <label for="filtro-nome">Nome:</label>
                             <input type="text" name="filtro-nome" 
                                        pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
                                        placeholder="Nome" class="form-control" autocomplete="off">
-                            <label for="filtro-cpf">CPF do administrador:</label>
-                            <input type="text" name="filtro-cpf" id="filtro-cpf"
-                                       pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
-                                       placeholder="xxx.xxx.xxx-xx" class="form-control">
                             <?php } ?>
                         </div>
                         <div class="modal-footer">
@@ -1101,7 +975,7 @@
             </div>
         </div>
         <?php
-            }else{
+            } else {
         ?>
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
