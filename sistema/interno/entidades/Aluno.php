@@ -435,13 +435,53 @@ class Aluno extends Usuario{
                 $indicadorNovo->recebeAlunoId($host, $bd, $usuario, $senha);
                 $sucesso = $indicadorNovo->atualizaDesconto($host, $bd, $usuario, $senha);
 
+                $sucessoNotificacao = false;
+
+                //faremos 10 tentativas para notificar o aluno , se todas falharem
+                //mostramos que não foi possível notificar o aluno
+                for($i = 0;$i < 10 && !$sucessoNotificacao;$i++){
+
+                    //gera notificação para o indicador que ele recebeu 10% de desconto
+                    //nas próximas parcelas
+                    $conexao->beginTransaction();
+
+                    $titulo = "Desconto por indicação";
+
+                    $texto  = "Por uma correção do sistema, um aluno corrigiu corrigiu seu indicador para";
+                    $texto .= " aluno correto, seu desconto de 10% foi removido das próximas parcelas";
+
+                    $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
+                                    VALUES (:titulo, :texto,:idIndicador)";
+                    $query = $conexao->prepare($textoQuery);
+                    $query->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+                    $query->bindParam(":texto", $texto, PDO::PARAM_STR);
+                    $query->bindParam(":idIndicador", 
+                        $indicadorNovo->getNumeroInscricao(),PDO::PARAM_INT);
+
+                    $sucessoNotificacao = $query->execute();
+
+                    if(!$sucessoNotificacao){
+                        $conexao->rollback();
+                    }
+                
+                }
+
+                //se conseguiu notificar, confirma transação
+                if($sucessoNotificacao){
+                    $conexao->commit();
+                }else{
+                    //se não, mostra mensagem na tela
+                    $mensagem = "Não foi possível notificar o aluno 
+                                de seu desconto.";
+                }
+
                 //Se o aluno estiver em dia e mudou de status,
                 // notifica o indicador que ele perdeu ou ganhou
                 // seu desconto novamente
                 if($emDia && $this->status != $statusAnterior){
 
                     //Caso o aluno tenha desistido, notifica o indicador que ele perdeu o desconto
-                    if ($this->status !== "inscrito") {
+                    if ($this->status !== "inscrito" && $statusAnterior === "inscrito") {
                         $sucessoNotificacao = false;
 
                         //faremos 10 tentativas para notificar o aluno , se todas falharem
@@ -484,7 +524,7 @@ class Aluno extends Usuario{
 
                     } // if($this->status === "desistente")
 
-                    else {
+                    else if($this->status === "inscrito" && $statusAnterior != "inscrito"){
                         $sucessoNotificacao = false;
 
                         //faremos 10 tentativas para notificar o aluno , se todas falharem

@@ -19,6 +19,31 @@
                 $("#modal-fecha-turma").on('show.bs.modal', function(e) {
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
+
+                //seta o tipo do e-mail a ser enviado
+                $("#sendTodos").click(function(e){
+                    $("#modal-email").find("#sendType").val("todos");
+                });
+
+                $("#sendSelecionados").click(function(e){
+                    $("#modal-email").find("#sendType").val("selecionados");
+                });
+
+                //prepara uma string com os ids selecionados para enviar o email
+                $("#email").submit(function(e){
+
+                    $(this).find("#url-send").val(window.location.href);
+
+                    var selected = "";
+                    $("table input:checked").each(function(){
+                        selected += $(this).val() + ",";
+                    });
+                    var element = $("<input type='hidden' id='selecionados' name='selecionados'>");
+                    element.val(selected);
+                    $(this).append(element);
+
+                });
+
             });
         </script>
     </head>
@@ -152,6 +177,7 @@
                         $query->execute();
 
                         $resultado = '<div class="flip-table"> <table class="table">
+                            <th style="font-weight: bold">Selecionar</th>
                             <th style="font-weight: bold">Registro do aluno</th>
                             <th style="font-weight: bold">Número de matrícula</th>
                             <th style="font-weight: bold">Nome do aluno</th>
@@ -178,6 +204,9 @@
 
                             $resultado .= '
                         <tr>
+                            <td> <input type="checkbox" name="inscricoes[]"
+                                value="'.$linha['numeroInscricao'].'">
+                            </td>
                             <td>' . $linha['numeroInscricao'] . '</td>
                             <td>' . $linha['idMatricula'] . '</td>
                             <td>' . $linha['nome'] .'</td>
@@ -206,6 +235,17 @@
                         echo $resultado;
                     ?>
 
+                    <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-email"
+                        id="sendTodos">
+                        <p>Enviar e-mail para todos</p>
+                    </a>
+                    <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-email"
+                        id="sendSelecionados" style="margin-right:2em">
+                        <p>Enviar e-mail para os selecionados</p>
+                    </a>
+
+                    <br>
+
                 </section>
             </div>
         </div>
@@ -232,6 +272,43 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="modal fade" id="modal-email" tabindex="-1" role="dialog"
+             aria-labelledby="modal-email" aria-hidden="true">
+             <form method="POST" action="rotinas/gerenciar_email.php" id="email" name="email">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Email para alunos</h4>
+                        </div>
+                        <div class="modal-body">
+                            <label for="title">Título do e-mail :</label>
+                            <input type='text' class="form-control" 
+                                name="title" id="title" placeholder="Título" required>
+
+                            <br>
+                            <label for="conteudo">Conteúdo do e-mail :</label>
+                            <br>
+                            <textarea name="conteudo" id="conteudo" 
+                            class="form-control" 
+                            cols="100"
+                            rows="10"
+                            placeholder="Mensagem"
+                            required></textarea>
+                        </div>
+                        <input type="hidden" id="sendType" name="sendType" value="todos">
+                        <input type="hidden" id="url-send" name="url-send">
+                        <input type="hidden" id="vetGet" name="vetGet" value=<?= json_encode($_GET) ?>>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success" >Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
         <?php
             }else{
