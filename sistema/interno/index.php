@@ -2,6 +2,7 @@
     ini_set('default_charset', 'utf-8');
     header('Content-Type: text/html; charset=utf-8');
     session_start();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -173,6 +174,23 @@
             </h1>
             <a href="#" data-toggle="modal"
                data-target="#modal-muda-senha">Alterar senha</a>
+            <div id="foto" class="pull-right" align="center">
+                <img src=<?php 
+                    $usuario = unserialize($_SESSION['usuario']);
+                    if( file_exists("fotos/".$usuario->getId().".png" ) ){
+                        echo "\"fotos/".$usuario->getId().".png\"";
+                    }else{
+                        echo "\"fotos/Padrao.png\"";;
+                    }
+                  ?>
+                  width="150px" height="200px">
+                  <br>
+                  <a href="#" data-toggle="modal"
+                    data-target="#modal-muda-foto">Alterar foto</a>
+                  <br>
+                  <a href="#" data-toggle="modal"
+                    data-target="#modal-exclui-foto">Excluir foto</a>
+            </div>
             <br>
             <a href="#" data-toggle="modal"
                data-target="#modal-muda-email">Alterar e-mail</a>
@@ -431,6 +449,68 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+
+        <!-- modal para mudanca de foto -->
+        <div class="modal fade" id="modal-muda-foto" tabindex="-1" role="dialog" 
+             aria-labelledby="modal-muda-foto" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- colocamos a tag form aqui para que possamos enviar o formulário
+                        no rodapé do modal -->
+                    <form method="POST" action="rotinas/mudar_foto.php" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                X
+                            </button>
+                            <h4 class="modal-title">Mudança de foto</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h4 class="warning">A imagem deve estar em um dos seguintes formatos:</h4>
+                            <h4 class="warning"> ( PNG, JPG, JPEG ou GIF )</h4>
+                            <br>
+                            <h4 class="warning"> Para uma melhor imagem, enviar na resolucao 150x200</h4>
+                            <!-- o formulário em si fica dentro dessa div -->
+                            <div class="form-group">
+                                <label for="foto">Selecione o arquivo:</label>
+                                <input type="file" name="foto" id="foto" style="width:100%">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Cancelar
+                            </button>
+                            <button type="submit" name="submit" value="submit" class="btn btn-primary">
+                                Alterar foto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+                <!-- popup "modal" do bootstrap para confirmação de remoção de reuniao -->
+        <div class="modal fade" id="modal-exclui-foto" tabindex="-1" role="dialog"
+             aria-labelledby="modal-exclui-foto" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="rotinas/mudar_foto.php">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Remoção de foto</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h3>Tem certeza que deseja remover sua foto?</h3>
+                        </div>
+                        <input type="hidden" name="excluir" id="excluir" value="1">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Não</button>
+                            <button type="submit" name="submit" id="submit" class="btn btn-danger" >Sim</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <?php

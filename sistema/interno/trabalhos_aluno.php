@@ -182,12 +182,8 @@
 
                     $tamanhoValido  = $trabalhoEnviado['size'] <= $tamanhoMaximo &&
                                       $trabalhoEnviado['size'] != 0;
-                    $extensaoValida = false;
-
-                    if(in_array($extensao, $extensoesPermitidas)) {
-                        // a extensão desse arquivo é permitida
-                        $extensaoValida = true;
-                    }
+                                      
+                    $extensaoValida = in_array($extensao, $extensoesPermitidas);
 
                     $numeroInscricao  = $_POST["numeroInscricao"];
                     $chaveDefTrabalho = $_POST["chaveDefTrabalho"];
