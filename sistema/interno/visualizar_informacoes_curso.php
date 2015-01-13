@@ -861,7 +861,8 @@
                         $textoQuery  = "SELECT
                                         sum( (((100 - P.desconto)/100) * P.valorTotal) - P.valorPago)
                                         as valorFaltante,
-                                        count(P.idPagMensalidade) as numParcelas FROM PgtoMensalidade P
+                                        count(P.idPagMensalidade) as numParcelas
+                                        FROM PgtoMensalidade P
                                         INNER JOIN Matricula M ON M.idMatricula = P.chaveMatricula
                                         WHERE M.chaveAluno = ? AND P.fechado = 0 AND P.ano <= YEAR(NOW())";
 
@@ -873,13 +874,18 @@
                         $linha = $query->fetch();
                         $parcelasAberto = htmlspecialchars($linha['numParcelas']);
                         $valorAberto = number_format($linha['valorFaltante'], 2, ',', ' ');
-
                     ?>
                     <h4>Você está com <?= $parcelasAberto ?> parcelas em aberto,
                        e seu saldo devedor é de R$ <?= $valorAberto ?>.</h4>
                     <p id="msg-erro" class="warning"></p>
                     <?php if($valorAberto != 0) { ?>
                     <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST">
+                        <?php if($parcelasAberto == 12) { ?>
+                        <input type="submit" name="pagarInsc"
+                               id="pgto-inscricao" value="Pagar inscrição"
+                               class="btn btn-primary" style="display: block; width: 300px">
+                        <br>
+                        <?php } ?>
                         <a id="label-valor" href="#" class="btn btn-primary" 
                             style="display:block; width:300px">
                             Pagar valor
