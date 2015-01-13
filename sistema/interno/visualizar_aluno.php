@@ -45,6 +45,10 @@
                 // ano sempre que estivermos utilizando-o pela primeira vez
                 $anos = [];
 
+                // Armazenamos uma lista de cidades do ano atual para facilitar a retificação
+                // de matrícula
+                $cidadesAnoAtual = array();
+
                 while ($linha = $query->fetch()){
                     // para cada cidade encontrada criamos um objeto no
                     // código javascript para representá-la
@@ -52,6 +56,12 @@
                     $uf     = "\"".htmlspecialchars($linha["UF"])."\"";
                     $nome   = "\"".htmlspecialchars($linha["nome"])."\"";
                     $ano    = "\"".htmlspecialchars($linha["ano"])."\"";
+
+                    if($linha["ano"] == date("Y")) {
+                        $nomeCidade = htmlspecialchars($linha["nome"]). "/" . htmlspecialchars($linha["UF"]);
+                        $cidadesAnoAtual[$nomeCidade] = htmlspecialchars($linha["idCidade"]);
+                    }
+
                     if(!in_array($linha["ano"], $anos)){
                         $anos[] = $linha["ano"];
             ?>
@@ -414,7 +424,7 @@
                         $idMatricula = -1;
 
                         $textoQuery  = "SELECT M.idMatricula, M.etapa, M.chaveCidade 
-                                        FROM Matricula M, Cidade C 
+                                        FROM Matricula M, Cidade C
                                         WHERE M.chaveAluno = ? AND M.chaveCidade = C.idCidade 
                                         AND C.ano = ?";
 
@@ -440,8 +450,24 @@
                             echo "<b style=\"margin-left: 20px\">Esse aluno está matrículado em
                                   duas cidades ao mesmo tempo, o que não deveria ocorrer.</b><br><br>";
                         }
-                    
-                    if($matriculado){ ?>
+   
+                        if($matriculado){ 
+
+                            // agora checamos se esse aluno já pagou a inscrição
+                            $textoQuery  = "SELECT P.valorPago
+                                            FROM PgtoMensalidade P INNER JOIN Matricula M
+                                            ON P.chaveMatricula = M.idMatricula
+                                            INNER JOIN Cidade C ON M.chaveCidade = C.idCidade
+                                            WHERE M.chaveAluno = ? AND C.ano = YEAR(CURDATE())
+                                            AND numParcela = 0";
+
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(1, $idAluno, PDO::PARAM_INT);
+                            $query->setFetchMode(PDO::FETCH_ASSOC);
+                            $query->execute();
+
+                            $inscricaoPaga = $query->fetch()['valorPago'] != 0;
+                        ?>
 
                     <!-- mostramos todos os dados da matricula atual do aluno -->
                     <br>
@@ -457,13 +483,24 @@
                                 Visualizar pagamentos do ano atual
                             </a>
                             
-                        <?php } ?>
+                        <?php
+                            } 
+                            if(!$inscricaoPaga) {
+                        ?>
+                            <a style="cursor: pointer" data-target="#modal-retificacao"
+                               data-toggle="modal">
+                                Retificar dados de matrícula
+                            </a>
+                        <?php
+                            }
+
+                        ?>
 
                         <p class="col-sm-2" id="cancelar-mat">
                             <a style="cursor: pointer" data-target="#modal-confirma-deleta"
                                data-toggle="modal"
                                data-href=<?= "\"rotinas/matricula/remover_matricula.php?id=" .
-                                                $idMatricula . "\"" ?> >
+                                                $idMatricula . "&aluno=" . $idAluno . "\"" ?> >
                                 Cancelar matrícula
                             </a>
                         </p>
@@ -809,8 +846,58 @@
 
                 </section>
             </div>
-        </div>        
+        </div>
 
+        <?php if($idMatricula != -1) { ?>
+            <!-- popup "modal" do bootstrap para retificação de matrícula -->
+            <div class="modal fade" id="modal-retificacao" tabindex="-1" role="dialog"
+                 aria-labelledby="modal-retificacao" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form action=<?= "\"rotinas/matricula/retificar_matricula.php?id=" .
+                                                    $idMatricula . "\""?> method="POST">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                X
+                            </button>
+                            <h4 class="modal-title">Retificação de matrícula</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="idaluno" value=<?= "\"" . $idAluno . "\"" ?>>
+                                <div class="form-group">
+                                    <label for="etapa-retificacao">Etapa:</label>
+                                    <select type="dropdown" name="etapa-retificacao" class="form-control">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cidade-retificacao">Cidade:</label>
+                                    <select name="cidade-retificacao" id="cidade-retificacao"
+                                            class="form-control" required>
+                                        <?php
+                                        foreach ($cidadesAnoAtual as $cidadeAtual => $idAtual) {
+                                        ?>
+                                        <option value=<?= "\"" . $idAtual . "\"" ?>>
+                                            <?= $cidadeAtual ?>
+                                        </option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" name="submit" value="Retificar dados"
+                                       class="btn btn-primary form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <?php } ?>
         <!-- popup "modal" do bootstrap para confirmação de cancelamento de matrícula -->
         <div class="modal fade" id="modal-confirma-deleta" tabindex="-1" role="dialog"
              aria-labelledby="modal-confirma-deleta" aria-hidden="true">
