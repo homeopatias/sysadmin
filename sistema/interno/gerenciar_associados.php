@@ -578,10 +578,14 @@
                         $cpfNumerico = str_replace("-","",$cpfNumerico);
                         $textoQuery = "SELECT U.cpf
                                        FROM Usuario U , Associado A
-                                       WHERE U.id = A.idUsuario AND U.cpf = ?";
+                                       WHERE U.id = A.idUsuario AND U.cpf = ?
+                                       AND A.instituicao = ?";
+
+                        $nomeInstituicao = ($instituicao == 1 ? "atenemg" : "conahom");
         
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $cpfNumerico, PDO::PARAM_STR);
+                        $query->bindParam(2, $nomeInstituicao, PDO::PARAM_STR);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
     
