@@ -144,20 +144,9 @@ if ($tipoNotificacao === 'transaction') {
             $sucesso = 1;
 
             // agora registramos o pagamento genérico no banco
-            // primeiro obtemos o id de usuário do aluno
-            $textoQuery = 'SELECT idUsuario FROM Aluno WHERE numeroInscricao = ?';
-            $query = $conexao->prepare($textoQuery);
-
-            $query->bindParam(1, $idAluno);
-            $query->setFetchMode(PDO::FETCH_ASSOC);
-
-            $query->execute();
-
-            $idUsuarioAluno = $query->fetch()['idUsuario'];
-
-            $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor,
+            $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor, data
                            metodo, objetivo, ano)
-                           VALUES (?, ?, "PagSeguro", "mensalidade", ?)';
+                           VALUES (?, ?, NOW(), "PagSeguro", "mensalidade", ?)';
             $query = $conexao->prepare($textoQuery);
 
             $query->bindParam(1, $idUsuarioAluno);

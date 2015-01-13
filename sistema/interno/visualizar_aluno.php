@@ -776,14 +776,18 @@
 
                         if($query->rowCount() != 0) {
                     ?>
+                    <br>
+                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-pgto">
+                        Visualizar lista de pagamentos
+                    </a>
 
                     <?php if($anoPagamento == date("Y")){ ?>
 
-                        <h3>Pagamentos do ano atual</h3>
+                        <h3>Parcelas do ano atual</h3>
 
                     <?php }else{ ?>
 
-                        <h3>Pagamentos do ano de <?= $anoPagamento ?></h3>
+                        <h3>Parcelas do ano de <?= $anoPagamento ?></h3>
 
                     <?php } ?>
 
@@ -839,14 +843,71 @@
 
                     <?php
                         }
-
-                        // fechamos a conexão
-                        $conexao = null;
                     ?>
 
                 </section>
             </div>
         </div>
+
+        <?php if(isset($aluno)) { ?>
+        <!-- popup "modal" do bootstrap para visualização dos dados de pagamento -->
+        <div class="modal fade" id="modal-pgto" tabindex="-1" role="dialog"
+             aria-labelledby="modal-pgto" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        X
+                    </button>
+                    <h4 class="modal-title">Pagamentos</h4>
+                    </div>
+                    <div class="modal-body">
+                        <?php
+                            $textoQuery = "SELECT valor, data, metodo, ano FROM Pagamento
+                                           WHERE chaveUsuario = ? AND objetivo = 'mensalidade'
+                                           ORDER BY idPagamento DESC";
+
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(1, $aluno->getId());
+                            $query->execute();
+
+                            if ($query->rowCount() == 0) {
+                                echo "<p>Nenhum pagamento registrado para esse aluno!</p>";
+                            } else {
+                                $tabela = "";
+                                while ($linha = $query->fetch()) {
+                                    $data = htmlspecialchars($linha['data']);
+                                    $data = strtotime($data);
+                                    $data = date("d/m/Y H:i:s", $data);
+                                    $tabela .= "<tr>";
+                                    $tabela .= "<td>" . htmlspecialchars($linha['valor'])  . "</td>";
+                                    $tabela .= "<td>" . $data                              . "</td>";
+                                    $tabela .= "<td>" . htmlspecialchars($linha['metodo']) . "</td>";
+                                    $tabela .= "<td>" . htmlspecialchars($linha['ano'])    . "</td>";
+                                    $tabela .= "</tr>";
+                                }
+                        ?>
+                        <table class="table table-bordered table-striped">
+                            <thead style="background-color: #AAA">
+                                <tr>
+                                    <th>Valor</th>
+                                    <th>Data do pagamento</th>
+                                    <th>Forma de pagamento</th>
+                                    <th>Ano referente ao pagamento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?= $tabela ?>
+                            </tbody>
+                        </table>
+                        <?php } ?>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
 
         <?php if($idMatricula != -1) { ?>
             <!-- popup "modal" do bootstrap para retificação de matrícula -->

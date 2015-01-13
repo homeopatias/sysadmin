@@ -339,9 +339,9 @@
                                 $sucesso = 1;
 
                                 // agora registramos o pagamento genérico no banco
-                                $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor,
+                                $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor, data,
                                                metodo, objetivo, ano)
-                                               VALUES (?, ?, ?, "mensalidade", ?)';
+                                               VALUES (?, ?, NOW(), ?, "mensalidade", ?)';
                                 $query = $conexao->prepare($textoQuery);
 
                                 $valorTotalPago = (float) $_POST["valor-pagamento"];
