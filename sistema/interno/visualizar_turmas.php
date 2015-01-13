@@ -88,6 +88,7 @@
             include("modulos/navegacao.php");
 
             $mensagem = "";
+            $sucesso  = false;
 
             // exibe listas de chamada apenas para coordenadores logados
             if(isset($_SESSION["usuario"]) &&
@@ -164,8 +165,8 @@
                         Suas turmas atuais - <?= $cidade['nome'] . '/' . $cidade['UF'] ?>
                     </h2>
                     <?php
-                        $mensagem = isset($_GET['mensagem']) ? $_GET['mensagem'] : false;
-                        $sucesso  = isset($_GET['sucesso']) ? $_GET['sucesso'] : false;
+                        $mensagem = isset($_GET['mensagem']) ? $_GET['mensagem'] : $mensagem;
+                        $sucesso  = isset($_GET['sucesso']) ? $_GET['sucesso'] : $sucesso;
                         if(mb_strlen($mensagem, 'UTF-8') !== 0 && !$sucesso){
                             echo "<br><br><p class=\"warning\">$mensagem</p>";
                         }

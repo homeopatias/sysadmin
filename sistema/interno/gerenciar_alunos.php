@@ -497,6 +497,7 @@
 
             // mensagem a ser exibida acima da listagem de alunos, caso seja necessário
             $mensagem = "";
+            $sucesso = "";
 
             if(isset($_GET["erro"])){
                 $mensagem = $_GET["erro"];
@@ -1129,7 +1130,6 @@
                 <section class="conteudo">
                     <h1>Alunos</h1>
                     <?php
-                        $sucesso = "";
                         if(isset($_GET["sucesso"])){
                             $sucesso = htmlspecialchars($_GET["sucesso"]);
                             $mensagem = isset($_GET["mensagem"]) ? htmlspecialchars($_GET["mensagem"]):
