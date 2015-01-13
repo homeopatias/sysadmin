@@ -433,9 +433,7 @@
                                     mail($aluno->getEmail(), $assunto, $msg, $headers);
 
                                     // agora registramos no sistema uma notificação para o aluno
-
                                     $texto = "Pagamento recebido:\nValor: R$" . $quantiaPaga;
-
                                     $texto .= "\nData: " . date("d/m/Y") . "\nHorário: " . date("H:i");
                                     $texto .= "\nMétodo: " . $metodo;
                                     $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
@@ -471,9 +469,15 @@
                                                     //nas próximas parcelas
                                                     $conexao->beginTransaction();
 
+<<<<<<< HEAD
                                                     $texto  = " Um de seus indicados deu inicio ao curso, seu desconto de 10%";
                                                     $texto .= " por sua indicação foi adicionado às próximas";
                                                     $texto .= " parcelas";
+=======
+                                                    $titulo = "Desconto por indicação";
+                                                    $texto  = "Você recebeu 10% de desconto por ter indicado ";
+                                                    $texto .= "o(a) aluno(a) : ".$aluno->getNome();
+>>>>>>> HOMEO-41
 
                                                     $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
                                                                     VALUES (:titulo, :texto,:idIndicador)";

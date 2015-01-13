@@ -463,7 +463,6 @@ class Aluno extends Usuario{
                     if(!$sucessoNotificacao){
                         $conexao->rollback();
                     }
-                
                 }
 
                 //se conseguiu notificar, confirma transação
