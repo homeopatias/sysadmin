@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 27, 2014 at 08:24 AM
+-- Generation Time: Dec 03, 2014 at 09:38 AM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -407,7 +407,7 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=103 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=108 ;
 
 --
 -- Dumping data for table `Notificacao`
@@ -415,11 +415,11 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
 
 INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `lida`) VALUES
 (1, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$150.00\nData: 13/11/2014\nHorário: 14:27\nMétodo: Dinheiro', 8, 1),
-(2, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$70.00\nData: 13/11/2014\nHorário: 16:36\nMétodo: Dinheiro', 7, 0),
-(3, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$1.50\nData: 13/11/2014\nHorário: 16:43\nMétodo: Dinheiro', 7, 0),
-(4, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$1,000.00\nData: 13/11/2014\nHorário: 16:49\nMétodo: Dinheiro', 7, 0),
-(5, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 16:50\nMétodo: Dinheiro', 7, 0),
-(6, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 17:05\nMétodo: Dinheiro', 7, 0),
+(2, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$70.00\nData: 13/11/2014\nHorário: 16:36\nMétodo: Dinheiro', 7, 1),
+(3, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$1.50\nData: 13/11/2014\nHorário: 16:43\nMétodo: Dinheiro', 7, 1),
+(4, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$1,000.00\nData: 13/11/2014\nHorário: 16:49\nMétodo: Dinheiro', 7, 1),
+(5, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 16:50\nMétodo: Dinheiro', 7, 1),
+(6, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 13/11/2014\nHorário: 17:05\nMétodo: Dinheiro', 7, 1),
 (18, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 17/11/2014\nHorário: 09:24\nMétodo: Dinheiro', 11, 1),
 (19, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 09:40\nMétodo: Dinheiro', 11, 1),
 (20, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$90.00\nData: 17/11/2014\nHorário: 10:00\nMétodo: Dinheiro', 2, 0),
@@ -471,7 +471,7 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (79, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 17/11/2014\nHorário: 11:13\nMétodo: Dinheiro', 2, 0),
 (80, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 17/11/2014\nHorário: 11:16\nMétodo: Dinheiro', 2, 0),
 (81, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 17/11/2014\nHorário: 11:18\nMétodo: Dinheiro', 2, 0),
-(82, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$569.00\nData: 17/11/2014\nHorário: 11:50\nMétodo: Dinheiro', 7, 0),
+(82, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$569.00\nData: 17/11/2014\nHorário: 11:50\nMétodo: Dinheiro', 7, 1),
 (83, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade.', 6, 1),
 (84, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade ou registrar uma justificativa no sistema.', 6, 1),
 (85, 'Ausência na aula do dia 02/02/2014', 'Uma ausência sua foi registrada para a aula do dia 02/02/2014\nCaso esse dado não esteja correto, favor contatar o coordenador da sua cidade ou registrar uma justificativa no sistema.', 6, 1),
@@ -490,7 +490,12 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (99, 'Desconto por indicação', 'Um de seus indicados desistiu do curso, seu desconto de 10% por sua indicação foi removido das próximas parcelas', 9, 1),
 (100, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$40.00\nData: 18/11/2014\nHorário: 08:48\nMétodo: Dinheiro', 9, 0),
 (101, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$30.00\nData: 18/11/2014\nHorário: 08:49\nMétodo: Dinheiro', 9, 0),
-(102, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$20.00\nData: 18/11/2014\nHorário: 08:50\nMétodo: Dinheiro', 9, 0);
+(102, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$20.00\nData: 18/11/2014\nHorário: 08:50\nMétodo: Dinheiro', 9, 0),
+(103, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$55.00\nData: 02/12/2014\nHorário: 09:40\nMétodo: Dinheiro', 6, 1),
+(104, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 02/12/2014\nHorário: 09:40\nMétodo: Cheque', 6, 1),
+(105, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$500.00\nData: 02/12/2014\nHorário: 09:41\nMétodo: Cheque', 6, 1),
+(106, 'Trabalho "Introdução à Homeopatia" corrigido', 'Trabalho "Introdução à Homeopatia"\nCorrigido dia 03/12/2014, às 09:31\nNota: 10\n"Muito bom"', 6, 1),
+(107, 'Trabalho "Introdução à Homeopatia" corrigido', 'Trabalho "Introdução à Homeopatia"\nCorrigido dia 03/12/2014, às 09:37\nNota: 8\n"Sensacional, só não tirou 10 por causa do atraso."', 8, 0);
 
 -- --------------------------------------------------------
 
@@ -502,6 +507,7 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
   `idPagamento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único desse pagamento',
   `chaveUsuario` int(11) NOT NULL,
   `valor` float NOT NULL COMMENT 'Valor pago nesse pagamento',
+  `data` datetime NOT NULL COMMENT 'Data em que o pagamento foi efetuado',
   `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento',
   `objetivo` enum('mensalidade','anuidade','livro','') NOT NULL COMMENT 'Especifica o que esse pagamento está pagando',
   `codigoTransacao` int(11) DEFAULT NULL COMMENT 'Código da transação no Pagseguro, quando houver',
@@ -514,10 +520,10 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
 -- Dumping data for table `Pagamento`
 --
 
-INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `metodo`, `objetivo`, `codigoTransacao`, `ano`) VALUES
-(1, 8, 500, 'Dinheiro', 'mensalidade', NULL, 2014),
-(2, 9, 150, 'Cheque', 'mensalidade', NULL, 2014),
-(3, 9, 70, 'Dinheiro', 'mensalidade', NULL, 2014);
+INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `data`, `metodo`, `objetivo`, `codigoTransacao`, `ano`) VALUES
+(4, 7, 55, '2014-12-02 09:40:35', 'Dinheiro', 'mensalidade', NULL, 2014),
+(5, 7, 500, '2014-12-02 09:40:53', 'Cheque', 'mensalidade', NULL, 2014),
+(6, 7, 500, '2014-12-02 09:41:00', 'Cheque', 'mensalidade', NULL, 2014);
 
 -- --------------------------------------------------------
 
@@ -608,7 +614,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
 --
 
 INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela`, `valorTotal`, `valorPago`, `desconto`, `metodo`, `data`, `ano`, `fechado`) VALUES
-(1, 1, 0, 100, 90, 10, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
+(1, 1, 0, 100, 90, 10, 'Dinheiro', '0000-00-00 00:00:00', 2014, 1),
 (2, 1, 1, 30, 0, 10, '', NULL, 2014, 0),
 (3, 1, 2, 30, 0, 10, '', NULL, 2014, 0),
 (4, 1, 3, 30, 0, 10, '', NULL, 2014, 0),
@@ -656,10 +662,10 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (46, 4, 9, 30, 0, 10, '', NULL, 2014, 0),
 (47, 4, 10, 30, 0, 10, '', NULL, 2014, 0),
 (48, 4, 11, 30, 0, 10, '', NULL, 2014, 0),
-(49, 5, 0, 100, 90, 10, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
-(50, 5, 1, 30, 30, 0, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
-(51, 5, 2, 30, 30, 0, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
-(52, 5, 3, 30, 30, 0, 'Dinheiro', '2014-11-18 00:00:00', 2014, 1),
+(49, 5, 0, 100, 90, 10, 'Dinheiro', '0000-00-00 00:00:00', 2014, 1),
+(50, 5, 1, 30, 30, 0, 'Dinheiro', '0000-00-00 00:00:00', 2014, 1),
+(51, 5, 2, 30, 30, 0, 'Dinheiro', '0000-00-00 00:00:00', 2014, 1),
+(52, 5, 3, 30, 30, 0, 'Dinheiro', '0000-00-00 00:00:00', 2014, 1),
 (53, 5, 4, 30, 0, 0, '', NULL, 2014, 0),
 (54, 5, 5, 30, 0, 0, '', NULL, 2014, 0),
 (55, 5, 6, 30, 0, 0, '', NULL, 2014, 0),
@@ -882,7 +888,17 @@ CREATE TABLE IF NOT EXISTS `Trabalho` (
   PRIMARY KEY (`idTrabalho`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveDefinicao` (`chaveDefinicao`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Trabalho enviado por aluno' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Trabalho enviado por aluno' AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `Trabalho`
+--
+
+INSERT INTO `Trabalho` (`idTrabalho`, `chaveAluno`, `dataEntrega`, `chaveDefinicao`, `nota`, `comentarioProfessor`, `extensao`) VALUES
+(1, 6, '2014-12-02 11:10:21', 5, NULL, NULL, 'doc'),
+(3, 8, '2014-12-02 11:11:01', 5, NULL, NULL, 'doc'),
+(4, 8, '2014-12-02 11:11:09', 1, 8, 'Sensacional, só não tirou 10 por causa do atraso.', 'doc'),
+(5, 6, '2014-12-03 09:36:44', 1, NULL, NULL, 'doc');
 
 -- --------------------------------------------------------
 
@@ -898,7 +914,7 @@ CREATE TABLE IF NOT EXISTS `TrabalhoDefinicao` (
   `dataLimite` datetime NOT NULL COMMENT 'Data e hora limite de entrega do trabalho',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse trabalho se refere',
   PRIMARY KEY (`idDefTrabalho`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Especificacao dada para a confeccao de um trabalho por parte dos alunos' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Especificacao dada para a confeccao de um trabalho por parte dos alunos' AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `TrabalhoDefinicao`
@@ -908,7 +924,8 @@ INSERT INTO `TrabalhoDefinicao` (`idDefTrabalho`, `titulo`, `etapa`, `descricao`
 (1, 'Introdução à Homeopatia', 1, 'Trabalho introdutório para as turmas:\r\n\r\nVocê deve fazer um trabalho que [...]', '2014-06-09 00:00:00', 2014),
 (2, 'Revisão do curso', 4, 'Esse trabalho deve resumir tudo o que você já aprendeu.\r\n\r\nVocê deve [...]', '2014-12-10 00:00:00', 2014),
 (3, 'Problemas de homeopatia', 3, 'Você deve listar todos os problemas no cenário da Homeopatia atual, fazendo [...]', '2015-09-09 00:00:00', 2014),
-(4, 'Trabalho orientado', 4, 'Com a ajuda do seu orientador, [...]', '2014-06-10 00:00:00', 2014);
+(4, 'Trabalho orientado', 4, 'Com a ajuda do seu orientador, [...]', '2014-06-10 00:00:00', 2014),
+(5, 'Trabalho adicional', 1, 'Trabalho adicional valendo ponto de bônus. Descrição [...]', '2014-12-09 00:00:00', 2014);
 
 -- --------------------------------------------------------
 
