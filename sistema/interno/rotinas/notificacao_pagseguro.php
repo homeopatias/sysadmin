@@ -49,6 +49,15 @@ if ($tipoNotificacao === 'transaction') {
         $referencia = $transacao->getReference();
         $codigoTipo = mb_substr($referencia, 0, 1);
         if ($codigoTipo === "M") {
+
+            ///////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
+            //////////////          MENSALIDADE               /////////////////////
+            ///////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
+
             // pagamento de mensalidade, registramos o pagamento do aluno
             $idAluno = intval(mb_substr($referencia, 1));
 
@@ -135,14 +144,25 @@ if ($tipoNotificacao === 'transaction') {
             $sucesso = 1;
 
             // agora registramos o pagamento genérico no banco
+            // primeiro obtemos o id de usuário do aluno
+            $textoQuery = 'SELECT idUsuario FROM Aluno WHERE numeroInscricao = ?';
+            $query = $conexao->prepare($textoQuery);
+
+            $query->bindParam(1, $idAluno);
+            $query->setFetchMode(PDO::FETCH_ASSOC);
+
+            $query->execute();
+
+            $idUsuarioAluno = $query->fetch()['idUsuario'];
+
             $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor,
                            metodo, objetivo, ano)
                            VALUES (?, ?, "PagSeguro", "mensalidade", ?)';
             $query = $conexao->prepare($textoQuery);
 
-            $query->bindParam(1, $idAluno);
+            $query->bindParam(1, $idUsuarioAluno);
             $query->bindParam(2, $valorTotalPago);
-            $query->bindParam(3, $anos[count($anos) - 1]);
+            $query->bindParam(3, date("Y"));
 
             $sucesso = $query->execute();
 
@@ -306,6 +326,209 @@ if ($tipoNotificacao === 'transaction') {
                 $conexao->rollback();
             }
 
-        }
+        } else if ($codigoTipo === "A") {
+
+            ///////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
+            /////////////////          ANUIDADE                  //////////////////
+            ///////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
+            
+            // pagamento de anuidade, registramos o pagamento do associado
+            $idAssoc = intval(mb_substr($referencia, 1));
+
+            $textoQuery = "SELECT P.idPagAnuidade, P.valorPago, P.valorTotal,
+                           P.inscricao, P.ano, P.metodo
+                           FROM Associado A INNER JOIN PgtoAnuidade P
+                           ON P.chaveAssoc = A.idAssoc
+                           WHERE A.idAssoc = ? AND P.fechado = 0";
+
+            $query = $conexao->prepare($textoQuery);
+            $query->bindParam(1, $idAssoc);
+
+            $query->setFetchMode(PDO::FETCH_ASSOC);
+
+            $query->execute();
+
+            $pagamentos = array();
+            $anos = array();
+
+            $menorAno = 0;
+
+            // essa área foi baseada no código de pagamento de mensalidade por coordenador
+            while ($linha = $query->fetch()) {
+                $anoPag = $linha['ano'];
+
+                if ($anoPag < $menorAno) {
+                    $menorAno = $anoPag;
+                }
+                if(!in_array($anoPag, $anos)){
+                    $anos[] = $anoPag;
+                }
+
+                // caso a seja inscrição, é a parcela de número 0, do contrário
+                // é de número 1
+                $numParcela = !$linha["inscricao"];
+
+                $pagamentos[$anoPag][$numParcela]['id'] = $linha['idPagAnuidade'];
+                $pagamentos[$anoPag][$numParcela]['valor'] = $linha['valorTotal'];
+                $pagamentos[$anoPag][$numParcela]['pago']   = $linha['valorPago'];
+                $pagamentos[$anoPag][$numParcela]['metodo']   = $linha['metodo'];                
+                $pagamentos[$anoPag][$numParcela]['fechado']  = 0;
+                $pagamentos[$anoPag][$numParcela]['editado'] = 0;
+            }
+
+            sort($anos);
+
+            $valorTotalPago = $valor = $transacao->getGrossAmount();
+
+            for ($i = 0; $i < count($anos) && $valor > 0; $i++) {
+                $ano = $anos[$i];
+
+                for($j = 0; $j < 2 && $valor > 0; $j++) {
+                    if (isset($pagamentos[$ano][$j])) {
+                        // Valor é o que sobrar do pagamento, 
+                        // ja que ele pode terminar de pagar,
+                        // e caso não feche o pagamento, retornará
+                        // um valor negativo
+
+                        $pagamentos[$ano][$j]['pago'] += $valor;
+
+                        $valor = $pagamentos[$ano][$j]['pago'] - $pagamentos[$ano][$j]['valor'];
+                        $pagamentos[$ano][$j]['editado'] = 1;
+                        // Se o valor pago >= valor da parcela,
+                        // o pagamento foi suficiente para fechar a parcela
+
+                        if( $pagamentos[$ano][$j]['pago'] >= 
+                            $pagamentos[$ano][$j]['valor']){
+
+                            $pagamentos[$ano][$j]['pago']  =
+                                $pagamentos[$ano][$j]['valor'];
+
+                            // se o pagamento foi suficiente para pagar o 
+                            // restante da parcela, fecha a parcela
+                            $pagamentos[$ano][$j]['fechado'] = "1";
+                        }
+                    }
+                }
+            }
+
+            $conexao->beginTransaction();
+            $sucesso = 1;
+
+            // agora registramos o pagamento genérico no banco
+            // primeiro obtemos o id de usuário do associado
+            $textoQuery = 'SELECT idUsuario FROM Associado WHERE idAssoc = ?';
+            $query = $conexao->prepare($textoQuery);
+
+            $query->bindParam(1, $idAssoc);
+            $query->setFetchMode(PDO::FETCH_ASSOC);
+
+            $query->execute();
+
+            $idUsuarioAssoc = $query->fetch()['idUsuario'];
+
+            $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor,
+                           metodo, objetivo, ano)
+                           VALUES (?, ?, "PagSeguro", "anuidade", ?)';
+            $query = $conexao->prepare($textoQuery);
+
+            $anoPagamento = date("Y");
+            $query->bindParam(1, $idUsuarioAssoc);
+            $query->bindParam(2, $valorTotalPago);
+            $query->bindParam(3, $anoPagamento);
+
+            $sucesso = $query->execute();
+
+            for ($i = 0; $i < count($anos); $i++) {
+                $ano = $anos[$i];
+
+                for ($j = 0 ; $j < 2 && $sucesso; $j++) {
+                    if( isset($pagamentos[$ano][$j]) &&
+                        $pagamentos[$ano][$j]['editado'] ){
+                        $textoQuery = "UPDATE PgtoAnuidade 
+                                    SET valorPago = ?,
+                                    fechado = ? , data = NOW(), metodo = ?
+                                    WHERE idPagAnuidade = ?";
+
+                        $metodosList= array();
+                        if(strrpos($pagamentos[$ano][$j]['metodo'], "|") ) {
+
+                            $metodosList = explode("|", 
+                            strtolower($pagamentos[$ano][$j]['metodo']));
+                        } else {
+                            $metodosList = array( 
+                                strtolower( 
+                                    $pagamentos[$ano][$j]['metodo'])
+                                    );
+                        }
+
+                        var_dump("entrei");
+                        // Se o método passado não está na lista de métodos, adiciona ele
+                        if(!in_array("pagseguro", $metodosList ) ){
+                            $metodosList[] = "pagseguro";
+                        }
+
+                        $metodoUpdate = "";
+                        // Separa os métodos por '|' no bd
+                        foreach ($metodosList as $metodo) {
+                            $metodo = ucfirst($metodo);
+                            if(strlen($metodoUpdate) == 0){
+                                $metodoUpdate = $metodo;
+                            }
+                            else{
+                                $append = "|".$metodo;
+                                $metodoUpdate = $metodoUpdate.$append; 
+                            }
+
+                        }
+                        $pagamentos[$ano][$j]['metodo'] = $metodoUpdate;
+
+                        $queryArray = array(
+                            $pagamentos[$ano][$j]['pago'],
+                            $pagamentos[$ano][$j]['fechado'],
+                            $pagamentos[$ano][$j]['metodo'],
+                            $pagamentos[$ano][$j]['id'],
+                            );
+                        $query = $conexao->prepare($textoQuery);
+                        $sucesso = $query->execute($queryArray);
+                    }
+                }
+            }
+
+            // se todos os pagamentos foram atualizados confirma a 
+            // atualização, se não, da rollback
+            if($sucesso){
+                include_once("../entidades/Associado.php");
+
+                $associado = new Associado("");
+                $associado->setIdAssoc($idAssoc);
+                $associado->recebeAssociadoId($host, "homeopatias", $usuario, $senhaBD);
+
+                // enviamos um email confirmando o envio do pagamento
+                $quantiaPaga = $valorTotalPago;
+                $quantiaPaga = number_format($quantiaPaga, 2);
+                $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
+                $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
+                $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
+                $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
+                $msg .= "<br><b>Método:</b> Pagamento através do sistema PagSeguro";
+                $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
+                $headers = "Content-type: text/html; charset=utf-8 " .
+                    "From: Sistema Financeiro Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+                    "Reply-To: noreply@homeopatias.com" . "\r\n" .
+                    "X-Mailer: PHP/" . phpversion();
+
+                mail($associado->getEmail(), $assunto, $msg, $headers);
+
+                $conexao->commit(); 
+            }
+            else{
+                $conexao->rollback();
+            }
+
+        } // fim pgto associado
     }
 }

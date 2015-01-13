@@ -53,7 +53,9 @@
                     2 : { sorter: false },
                     5 : { sorter: "datetime" },
                     6 : { sorter: false },
-                    7 : { sorter: false }
+                    7 : { sorter: false },
+                    8 : { sorter: false },
+                    9 : { sorter: false }
                 }});
                 // passa os dados do href para o modal de confirmação de deleção quando
                 // necessário

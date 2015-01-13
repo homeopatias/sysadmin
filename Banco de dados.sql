@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 19, 2014 at 01:24 PM
+-- Generation Time: Nov 26, 2014 at 12:27 AM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -312,6 +312,31 @@ INSERT INTO `Frequencia` (`chaveAluno`, `chaveAula`, `presenca`, `jaAvaliou`, `a
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `Instituicao`
+--
+
+CREATE TABLE IF NOT EXISTS `Instituicao` (
+  `idInstituicao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da instituição',
+  `nome` enum('atenemg','conahom') NOT NULL COMMENT 'Nome da instituição',
+  `valorInscricao` float NOT NULL COMMENT 'Preço da inscrição nessa instituição',
+  `valorAnuidade` float NOT NULL COMMENT 'Preço da anuidade nessa instituição',
+  `inicioInsc` datetime NOT NULL COMMENT 'Data a partir da qual os associados podem se associar',
+  `fimInsc` datetime NOT NULL COMMENT 'Data até qual os associados podem se associar',
+  `ano` int(11) NOT NULL COMMENT 'Ano para o qual as inscrições estão/estarão abertas',
+  PRIMARY KEY (`idInstituicao`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Instituição na qual podem ser feitas as associações' AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `Instituicao`
+--
+
+INSERT INTO `Instituicao` (`idInstituicao`, `nome`, `valorInscricao`, `valorAnuidade`, `inicioInsc`, `fimInsc`, `ano`) VALUES
+(1, 'atenemg', 30, 50, '2014-08-22 00:00:00', '2015-01-14 00:00:00', 2015),
+(2, 'conahom', 40, 40, '2014-07-14 00:00:00', '2014-12-31 00:00:00', 2014);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Livro`
 --
 
@@ -482,7 +507,8 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere',
   PRIMARY KEY (`idPagamento`),
   KEY `chaveUsuario` (`chaveUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=4 ;
+
 --
 -- Dumping data for table `Pagamento`
 --
@@ -530,9 +556,9 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
 -- Dumping data for table `PgtoAnuidade`
 --
 
-INSERT INTO `PgtoAnuidade` (`idPagAnuidade`, `chaveAssoc`, `inscricao`, `valorTotal`, `valorPago`, `data`, `ano`, `fechado`) VALUES
-(1, 1, 1, 300, 300, '2014-11-18 00:00:00', 2014, 1),
-(2, 1, 0, 1500, 0, NULL, 2014, 0);
+INSERT INTO `PgtoAnuidade` (`idPagAnuidade`, `chaveAssoc`, `inscricao`, `valorTotal`, `valorPago`, `metodo`, `data`, `ano`, `fechado`) VALUES
+(1, 1, 1, 300, 300, '', '2014-11-18 00:00:00', 2014, 1),
+(2, 1, 0, 1500, 0, '', NULL, 2014, 0);
 
 -- --------------------------------------------------------
 

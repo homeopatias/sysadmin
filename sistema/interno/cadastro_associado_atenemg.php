@@ -39,10 +39,29 @@
             // cria conexão com o banco para uso ao longo da página
             $conexao = null;
             $db      = "homeopatias";
-            try{
+            try {
                 $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
-            }catch (PDOException $e){
+            } catch (PDOException $e) {
                 echo $e->getMessage();
+            }
+
+            $sql = "SELECT nome FROM Instituicao WHERE inicioInsc <= CURDATE() AND
+                    fimInsc >= CURDATE() AND nome = 'atenemg'";
+            $query = $conexao->prepare($sql);
+            $query->setFetchMode(PDO::FETCH_ASSOC);
+            $query->execute();
+
+            if($query->rowCount() == 0) {
+            ?>
+
+            <!-- redireciona o usuário para o index.php -->
+            <meta http-equiv="refresh" content="0; url=index.php">
+            <script type="text/javascript">
+                window.location = "index.php?mensagem=O cadastro na ATENEMG ainda não está aberto!";
+            </script>
+
+            <?php
+                die();
             }
 
             // se o associado chegou até aqui através de um formulário, registra-o no sistema

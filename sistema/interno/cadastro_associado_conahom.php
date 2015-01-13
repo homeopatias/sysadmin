@@ -45,6 +45,25 @@
                 echo $e->getMessage();
             }
 
+            $sql = "SELECT nome FROM Instituicao WHERE inicioInsc <= CURDATE() AND
+                    fimInsc >= CURDATE() AND nome = 'conahom'";
+            $query = $conexao->prepare($sql);
+            $query->setFetchMode(PDO::FETCH_ASSOC);
+            $query->execute();
+
+            if($query->rowCount() == 0) {
+            ?>
+
+            <!-- redireciona o usuário para o index.php -->
+            <meta http-equiv="refresh" content="0; url=index.php">
+            <script type="text/javascript">
+                window.location = "index.php?mensagem=O cadastro na CONAHOM ainda não está aberto!";
+            </script>
+
+            <?php
+                die();
+            }
+
             // se o associado chegou até aqui através de um formulário, registra-o no sistema
             if(isset($_POST["submit"])){
                 // validamos todos os dados recebidos

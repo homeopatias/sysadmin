@@ -139,6 +139,69 @@ class Associado extends Usuario{
         return false;
     }
 
+    // Função que insere os dados do Associado armazenados no bd nesse objeto
+    // Utiliza $this->idAssoc para encontrar o associado no sistema
+    // Recebe: 
+    // $host:         host do banco de dados mysql
+    // $bd:           banco de dados a ser acessado
+    // $usuario:      nome de usuário a ser usado para acesso ao bd
+    // $senha:        senha a ser usada para acesso ao bd
+    //
+    // Retorna: true caso o associado seja encontrado, do contrário, false
+    public function recebeAssociadoId($host, $bd, $usuario, $senha){
+        $conexao = null;
+        try{
+            $conexao = new PDO("mysql:host=$host;dbname=$bd;charset=utf8", $usuario, $senha);
+        }catch (PDOException $e){
+            echo $e->getMessage();
+        }
+
+        $textoQuery = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email,
+                       U.senha, U.nome, A.idAssoc, A.instituicao, A.formacaoTerapeutica, 
+                       A.telefone, A.cep, A.rua, A.numero, A.complemento, A.bairro,
+                       A.cidade, A.estado, A.pais, A.enviouDocumentos, A.numObjeto,
+                       A.dataEnvioCarteirinha
+                       FROM Usuario U, Associado A
+                       WHERE A.idAssoc = ? AND A.idUsuario = U.id";
+
+        $query = $conexao->prepare($textoQuery);
+        $query->bindParam(1, $this->login, PDO::PARAM_STR);
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+        $query->execute();
+
+        if ($linha = $query->fetch()){
+            // encontramos o usuário no sistema
+            $this->id                   = $linha["id"];
+            $this->cpf                  = $linha["cpf"];
+            $this->dataInscricao        = $linha["data"];
+            $this->email                = $linha["email"];
+            $this->nome                 = $linha["nome"];
+            $this->idAssoc              = $linha["idAssoc"];
+            $this->instituicao          = $linha["instituicao"];
+            $this->formacaoTerapeutica  = $linha["formacaoTerapeutica"];
+            $this->telefone             = $linha["telefone"];
+            $this->cep                  = $linha["cep"];
+            $this->rua                  = $linha["rua"];
+            $this->numero               = $linha["numero"];
+            $this->complemento          = $linha["complemento"];
+            $this->bairro               = $linha["bairro"];
+            $this->cidade               = $linha["cidade"];
+            $this->estado               = $linha["estado"];
+            $this->pais                 = $linha["pais"];
+            $this->numObjeto            = $linha["numObjeto"];
+            $this->dataEnvioCarteirinha = $linha["dataEnvioCarteirinha"];
+            $this->enviouDocumentos     = $linha["enviouDocumentos"];
+
+            // encerramos a conexão com o BD
+            $conexao = null;
+            return true;
+        }
+        // encerramos a conexão com o BD
+        $conexao = null;
+
+        return false;
+    }
+
     // Função que cadastra um associado no sistema
     // Recebe: 
     // $host:    host do banco de dados mysql
@@ -201,8 +264,32 @@ class Associado extends Usuario{
 
         $query = $conexao->prepare($queryAssoc);
         $sucessoAssoc = $query->execute($dadosAssoc);
+        $idAssocInserido = $conexao->lastInsertId();
 
-        if($sucessoUsuario && $sucessoAssoc) {
+        // agora descobrimos o valor que deve ser pago por esse associado
+        // de acordo com a instituição que escolheu
+        $queryValor = "SELECT valorInscricao, ano FROM Instituicao WHERE nome = ?";
+        $query = $conexao->prepare($queryValor);
+        $query->bindParam(1, $this->instituicao);
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+
+        $query->execute();
+
+        $dados = $query->fetch();
+        $valorInscricao = $dados['valorInscricao'];
+        $valorAnuidade = $dados['valorAnuidade'];
+        $ano = $dados['ano'];
+
+        // por fim registramos os pagamentos que esse associado deverá fazer
+        $queryPgtos = "INSERT INTO PgtoAnuidade (chaveAssoc, inscricao,
+                       valorTotal, valorPago, data, ano, fechado) VALUES
+                       (?, 1, ?, 0, NULL, ?, 0), (?, 0, ?, 0, NULL, ?, 0)";
+        $query = $conexao->prepare($queryPgtos);
+        $dados = array($idAssocInserido, $valorInscricao, $ano, $idAssocInserido,
+                       $valorAnuidade, $ano);
+        $sucessoPgtos = $query->execute($dados);
+
+        if($sucessoUsuario && $sucessoAssoc && $sucessoPgtos) {
             // deu tudo certo, inserimos o associado
             $conexao->commit();
         } else {
@@ -212,7 +299,7 @@ class Associado extends Usuario{
 
         // Fecha a conexão 
         $conexao = null;
-        return $sucessoUsuario && $sucessoAssoc;
+        return $sucessoUsuario && $sucessoAssoc && $sucessoPgtos;
     }
 
     // Função que altera um associado no sistema, inserindo no associado de id igual a
