@@ -76,8 +76,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $estadoValido = (isset($estado) && mb_strlen($estado, 'UTF-8') ==2);
 
         $enderecoValido = ($cepValido && $ruaValida && $numeroValido &&
-                            $bairroValido && $cidadeValida
-                           && $estadoValido);
+                           $bairroValido && $cidadeValida && $estadoValido);
         $numObjetoValido = (!isset($numObjeto) || mb_strlen($numObjeto, 'UTF-8') === 0)
                         || (mb_strlen($numObjeto, 'UTF-8') >= 3 &&
                             mb_strlen($numObjeto, 'UTF-8') <= 100);

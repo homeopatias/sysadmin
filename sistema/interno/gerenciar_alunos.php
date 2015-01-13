@@ -1753,111 +1753,111 @@
                             </div>
                             <div class="form-group col-sm-12" >
                                 <label for="">Endereço do aluno:</label>
-                                    <div style="display:block">
-            
-                                        <div  class="col-sm-6 col-md-4 " 
-                                            style="padding-top:10px;padding-bot:10px">
-                                            <label for="cep" style="display:inline">CEP :</label>
-                                            <input type="text" name="cep" id="cep"
-                                                pattern="^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$" 
-                                                placeholder="xxxxx-xxx"
-                                                title="Insira um CEP válido"
-                                                class="form-control"
-                                                style="width:90px" required>
-                                        </div>
-                                        <div  class="col-sm-6 col-md-4"
+                                <div style="display:block">
+        
+                                    <div  class="col-sm-6 col-md-4 " 
                                         style="padding-top:10px;padding-bot:10px">
-                                            <label for="rua">Rua :</label>
-                                            <input type="text" name="rua" id="rua"
-                                                pattern="^.{0,200}$" placeholder="Rua"
-                                                title="A rua deve ter no máximo 200 caracteres"
-                                                class="form-control"
-                                                style="width:150px " required>
-                                        </div>
-                                        <div  class="col-sm-6 col-md-4"
-                                        style="padding-top:10px;padding-bot:10px">
-                                            <label for="numero">
-                                                Numero :</label>
-                                            <input type="text" name="numero" id="numero"
-                                                placeholder="xx"
-                                                title="Insira o numero da residência do aluno"
-                                                class="form-control"
-                                                style="width:80px ;" required>
-                                        </div>
-            
-                                        <div  class="col-sm-6 col-md-4"
-                                        style="padding-top:10px;padding-bot:10px">
-                                            <label for="bairro" >
-                                                Bairro :</label>
-                                            <input type="text" name="bairro" id="bairro"
-                                                placeholder="Bairro"
-                                                title="Insira o bairro da residência do aluno"
-                                                class="form-control"
-                                                style="width:120px ;" required>
-                                        </div>
-            
-                                        
-                                        <div  class="col-sm-6 col-md-4"
-                                        style="padding-top:10px;padding-bot:10px">
-                                            <label for="cidade" >
-                                                Cidade :</label>
-                                            <input type="text" name="cidade" id="cidade"
-                                                placeholder="Cidade"
-                                                title="Insira o nome da cidade do aluno"
-                                                class="form-control"
-                                                style="width:150px ;" required>
-                                        </div>
-                                        <div  class="col-sm-6 col-md-4"
-                                        style="padding-top:10px;padding-bot:10px">
-                                            <label for="estado">
-                                                Estado :</label>
-                                            <select name="estado" id="estado" class="form-control"
-                                            style="width:120px">
-                                                <option value="AC">Acre</option>
-                                                <option value="AL">Alagoas</option>
-                                                <option value="AM">Amazonas</option>
-                                                <option value="AP">Amapá</option>
-                                                <option value="BA">Bahia</option>
-                                                <option value="CE">Ceará</option>
-                                                <option value="DF">Distrito Federal</option>
-                                                <option value="ES">Espírito Santo</option>
-                                                <option value="GO">Goiás</option>
-                                                <option value="MA">Maranhão</option>
-                                                <option value="MT">Mato Grosso</option>
-                                                <option value="MS">Mato Grosso do Sul</option>
-                                                <option value="MG">Minas Gerais</option>
-                                                <option value="PA">Pará</option>
-                                                <option value="PB">Paraíba</option>
-                                                <option value="PR">Paraná</option>
-                                                <option value="PE">Pernambuco</option>
-                                                <option value="PI">Piauí</option>
-                                                <option value="RJ">Rio de Janeiro</option>
-                                                <option value="RN">Rio Grande do Norte</option>
-                                                <option value="RO">Rondônia</option>
-                                                <option value="RS">Rio Grande do Sul</option>
-                                                <option value="RR">Roraima</option>
-                                                <option value="SC">Santa Catarina</option>
-                                                <option value="SE">Sergipe</option>
-                                                <option value="SP">São Paulo</option>
-                                                <option value="TO">Tocantins</option>
-                                            </select>
-                                        </div>
-            
-            
-                                        <div  class="col-sm-6 col-md-12"
-                                        style="padding-top:10px;padding-bot:10px">
-                                            <label for="complemento">
-                                                Complemento :</label>
-                                            <input type="text" name="complemento" id="complemento"
-                                                placeholder="Complemento"
-                                                title="Insira o complemento da residência do aluno"
-                                                class="form-control"
-                                                style="width:200px" >
-                                        </div>
-            
+                                        <label for="cep" style="display:inline">CEP :</label>
+                                        <input type="text" name="cep" id="cep"
+                                            pattern="^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$" 
+                                            placeholder="xxxxx-xxx"
+                                            title="Insira um CEP válido"
+                                            class="form-control"
+                                            style="width:90px" required>
                                     </div>
-                                
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="rua">Rua :</label>
+                                        <input type="text" name="rua" id="rua"
+                                            pattern="^.{0,200}$" placeholder="Rua"
+                                            title="A rua deve ter no máximo 200 caracteres"
+                                            class="form-control"
+                                            style="width:150px " required>
+                                    </div>
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="numero">
+                                            Numero :</label>
+                                        <input type="text" name="numero" id="numero"
+                                            placeholder="xx"
+                                            title="Insira o numero da residência do aluno"
+                                            class="form-control"
+                                            style="width:80px ;" required>
+                                    </div>
+        
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="bairro" >
+                                            Bairro :</label>
+                                        <input type="text" name="bairro" id="bairro"
+                                            placeholder="Bairro"
+                                            title="Insira o bairro da residência do aluno"
+                                            class="form-control"
+                                            style="width:120px ;" required>
+                                    </div>
+        
+                                    
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="cidade" >
+                                            Cidade :</label>
+                                        <input type="text" name="cidade" id="cidade"
+                                            placeholder="Cidade"
+                                            title="Insira o nome da cidade do aluno"
+                                            class="form-control"
+                                            style="width:150px ;" required>
+                                    </div>
+                                    <div  class="col-sm-6 col-md-4"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="estado">
+                                            Estado :</label>
+                                        <select name="estado" id="estado" class="form-control"
+                                        style="width:120px">
+                                            <option value="AC">Acre</option>
+                                            <option value="AL">Alagoas</option>
+                                            <option value="AM">Amazonas</option>
+                                            <option value="AP">Amapá</option>
+                                            <option value="BA">Bahia</option>
+                                            <option value="CE">Ceará</option>
+                                            <option value="DF">Distrito Federal</option>
+                                            <option value="ES">Espírito Santo</option>
+                                            <option value="GO">Goiás</option>
+                                            <option value="MA">Maranhão</option>
+                                            <option value="MT">Mato Grosso</option>
+                                            <option value="MS">Mato Grosso do Sul</option>
+                                            <option value="MG">Minas Gerais</option>
+                                            <option value="PA">Pará</option>
+                                            <option value="PB">Paraíba</option>
+                                            <option value="PR">Paraná</option>
+                                            <option value="PE">Pernambuco</option>
+                                            <option value="PI">Piauí</option>
+                                            <option value="RJ">Rio de Janeiro</option>
+                                            <option value="RN">Rio Grande do Norte</option>
+                                            <option value="RO">Rondônia</option>
+                                            <option value="RS">Rio Grande do Sul</option>
+                                            <option value="RR">Roraima</option>
+                                            <option value="SC">Santa Catarina</option>
+                                            <option value="SE">Sergipe</option>
+                                            <option value="SP">São Paulo</option>
+                                            <option value="TO">Tocantins</option>
+                                        </select>
+                                    </div>
+        
+        
+                                    <div  class="col-sm-6 col-md-12"
+                                    style="padding-top:10px;padding-bot:10px">
+                                        <label for="complemento">
+                                            Complemento :</label>
+                                        <input type="text" name="complemento" id="complemento"
+                                            placeholder="Complemento"
+                                            title="Insira o complemento da residência do aluno"
+                                            class="form-control"
+                                            style="width:200px" >
+                                    </div>
+        
                                 </div>
+                                
+                            </div>
                             <div class="form-group">
                                 <label for="escolaridade">Nível de escolaridade:</label>
                                 <select name="escolaridade" id="escolaridade" class="form-control">
