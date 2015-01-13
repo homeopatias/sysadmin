@@ -269,6 +269,54 @@
                     podeMudarPagina = false;
                 });
 
+                //remove inputs em branco do form antes de enviar
+                $("#form-filtro").submit(function(){
+
+                    $(':input', this).each(function() {
+                         this.disabled = !($(this).val());
+                    });
+
+                    if($('#filtro-ano').val() == 0) {
+                        $('#filtro-ano')[0].disabled = true;
+                    }
+                    if($('#filtro-uf').val() == 0) {
+                        $('#filtro-uf')[0].disabled = true;
+                    }
+                    if($('#filtro-coordenador').val() == 0) {
+                        $('#filtro-coordenador')[0].disabled = true;
+                    }
+
+                    if($('#pagina').val() == 0) {
+                        $('#pagina')[0].disabled = true;
+                    }
+                    if($('#pagina-ipp').val() == 10) {
+                        $('#pagina-ipp')[0].disabled = true;
+                    }
+                    if($('#numeroTableHeader').val() == -1) {
+                        $('#numeroTableHeader')[0].disabled = true;
+                    }
+                    if($('#cimaOuBaixo').val() == 2) {
+                        $('#cimaOuBaixo')[0].disabled = true;
+                    }
+
+                });
+
+                // ------------ Muda de página usando as setas do teclado
+                $(window).keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == "37" && possuiPaginaAnterior && 
+                    document.activeElement.tagName == "BODY" ){
+                        
+                        $("#anterior").trigger("click");
+                    }
+                    
+                    else if(keycode == "39" && possuiProximaPagina && 
+                         document.activeElement.tagName == "BODY" ){
+                       
+                        $("#proxima").trigger("click");
+                    }
+                });
+
                 var anos = new Array();
                 <?php
                 // lemos as credenciais do banco de dados

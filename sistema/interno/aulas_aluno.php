@@ -205,6 +205,51 @@
                     podeMudarPagina = false;
                 });
 
+                //remove inputs em branco do form antes de enviar
+                $("#form-filtro").submit(function(){
+
+                    $(':input', this).each(function() {
+                         this.disabled = !($(this).val());
+                    });
+
+                    if($('#filtro-cidade').val() == 0) {
+                        $('#filtro-cidade')[0].disabled = true;
+                    }
+                    if($('#filtro-etapa').val() == 0) {
+                        $('#filtro-etapa')[0].disabled = true;
+                    }
+
+                    if($('#pagina').val() == 0) {
+                        $('#pagina')[0].disabled = true;
+                    }
+                    if($('#pagina-ipp').val() == 10) {
+                        $('#pagina-ipp')[0].disabled = true;
+                    }
+                    if($('#numeroTableHeader').val() == -1) {
+                        $('#numeroTableHeader')[0].disabled = true;
+                    }
+                    if($('#cimaOuBaixo').val() == 2) {
+                        $('#cimaOuBaixo')[0].disabled = true;
+                    }
+
+                });
+
+                // ------------ Muda de página usando as setas do teclado
+                $(window).keypress(function(e){
+                    var keycode = (e.keyCode ? e.keyCode : e.which);
+                    if(keycode == "37" && possuiPaginaAnterior && 
+                    document.activeElement.tagName == "BODY" ){
+                        
+                        $("#anterior").trigger("click");
+                    }
+                    
+                    else if(keycode == "39" && possuiProximaPagina && 
+                         document.activeElement.tagName == "BODY" ){
+                       
+                        $("#proxima").trigger("click");
+                    }
+                });
+
                 // se clicou na lupa, envia o formulário
                 $("#busca").click(function(e){
                     atualizaPagina();
