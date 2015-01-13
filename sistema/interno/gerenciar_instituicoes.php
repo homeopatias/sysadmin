@@ -38,9 +38,12 @@
                     echo $e->getMessage();
                 }
 
+
+                $mensagem = "";
+                $sucesso = false;
+
                 // caso tenha-se chegado aqui através de um formulário, alteramos os dados da instituição
                 if (isset($_POST['submit'])) {
-                    $mensagem = "";
                     $instituicoes = array('atenemg', 'conahom');
 
                     for ($i = 0; $i < count($instituicoes); $i++) {
@@ -77,6 +80,8 @@
                                 if ($mensagem !== ""){ $mensagem = " e " . lcfirst($mensagem); }
                                 $mensagem = "Erro de banco de dados para a instituição " .
                                              $instituicoes[$i] . $mensagem;
+                            } else {
+                                $mensagem = "Dados atualizados com sucesso!";
                             }
 
                         } else if(!$inscricaoValida) {
@@ -124,6 +129,13 @@
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
                     <h2 style="font-weight:bold">Editar Instituições</h2>
+                    <?php
+                        if ($mensagem) {
+                    ?>
+                    <p class=<?= $sucesso ? "\"sucesso\"" : "\"warning\"" ?>><?= $mensagem ?></p>
+                    <?php
+                        }
+                    ?>
                     <form method="POST">
         <?php
             $textoQuery = "SELECT idInstituicao, nome, valorInscricao, valorAnuidade, inicioInsc, fimInsc, ano

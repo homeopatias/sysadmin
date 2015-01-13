@@ -21,6 +21,12 @@
                         });
                     });
                 }
+
+                // permite a reassociação apenas caso o usuário confirme que leu os termos
+                $("#li-termos").change(function(){
+                    $("#btn-reassociar").prop('disabled', 
+                                        $('#li-termos').is(':checked') ? false : true);
+                });
             });
         </script>
     </head>
@@ -191,6 +197,10 @@
             ?>
             <p class="sucesso">A Homeobrás agradece seu apoio!</p>
             <?php
+                } else if(isset($_GET["assocRenovada"])) {
+            ?>
+            <p class="sucesso">Sua associação foi renovada!</p>
+            <?php
                 } else {
             ?>
             <p class="warning"><?= $mensagem ?></p>
@@ -223,10 +233,153 @@
             <br>
             <a href="#" data-toggle="modal"
                data-target="#modal-muda-email">Alterar e-mail</a>
-            <br><br>
+            <?php
 
+                if (unserialize($_SESSION['usuario']) instanceof Associado &&
+                    unserialize($_SESSION['usuario'])->getEnviouDocumentos()) {
+            ?>
+            <br><br>
             <a href="visualizar_pagamentos_associado.php">Visualizar pagamentos</a>
-            <br><br><br>
+            <?php
+
+                    $sql = "SELECT
+                                EXISTS(SELECT nome FROM Instituicao WHERE inicioInsc <= CURDATE() AND
+                                       fimInsc >= CURDATE() AND nome = ?)
+                                as inscAberta,
+                                
+                                EXISTS(SELECT P.idPagAnuidade FROM PgtoAnuidade P, Instituicao I
+                                       WHERE P.ano = I.ano AND I.nome = ? AND P.chaveAssoc = ?)
+                                as inscritoAno,
+
+                                valorInscricao, valorAnuidade
+
+                            FROM Instituicao WHERE inicioInsc <= CURDATE() AND
+                                       fimInsc >= CURDATE() AND nome = ?";
+                    $query = $conexao->prepare($sql);
+                    $query->bindParam(1, unserialize($_SESSION['usuario'])->getInstituicao());
+                    $query->bindParam(2, unserialize($_SESSION['usuario'])->getInstituicao());
+                    $query->bindParam(3, unserialize($_SESSION['usuario'])->getIdAssoc());
+                    $query->bindParam(4, unserialize($_SESSION['usuario'])->getInstituicao());
+                    $query->setFetchMode(PDO::FETCH_ASSOC);
+                    $query->execute();
+
+                    $linha = $query->fetch();
+                    $inscAberta = $linha['inscAberta'];
+                    $inscritoAno = $linha['inscritoAno'];
+
+                    if ($inscAberta && !$inscritoAno) {
+            ?>
+            <br>
+            <a href="#" data-toggle="modal" data-target="#modal-reassociar">Renovar associação</a>     
+            <!-- popup "modal" do bootstrap para reassociação -->
+            <div class="modal fade" id="modal-reassociar" tabindex="-1" role="dialog"
+                 aria-labelledby="modal-reassociar" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Renovação de associação</h4>
+                        </div>
+                        <div class="modal-body"
+                             style="font-size: 0.9em; white-space: pre-line; overflow: none">
+                            <?php
+                                $instituicao = unserialize($_SESSION['usuario'])->getInstituicao();
+
+                                $valorInscricao = htmlspecialchars($linha['valorInscricao']);
+                                $valorAnuidade  = htmlspecialchars($linha['valorAnuidade']);
+
+                                $valorInscricao = number_format($valorInscricao, 2);
+                                $valorAnuidade  = number_format($valorAnuidade, 2);
+                            ?>
+                            Inscrição: R$ <?= $valorInscricao ?>
+
+                            Anuidade: R$ <?= $valorAnuidade ?>
+
+                            Faça sua pré-inscrição e tenha acesso às formas de pagamento pelo PagSeguro.
+
+                            Sua inscrição será efetivada após confirmação do pagamento e aprovação dos documentos abaixo. 
+
+                            Documentos necessários:
+
+                            <b>1 Foto 3x4
+
+                            Curriculum vitae
+
+                            Xerox Autenticado em cartório de:
+
+                            1) Identidade;
+
+                            2) CPF;
+
+                            3) Comprovante de endereço;
+
+                            <?php
+                                if ($instituicao === "atenemg") {
+                            ?>
+
+                            4) Certificados de curso das terapias com as quais trabalha - Mínimo de 180 horas, por especialidade.</b>
+
+
+                            Sua documentação será analisada e a resposta será enviada por e-mail ou carta.
+
+
+                            Endereço para envio:
+
+                            ATENEMG
+                            Av. Antônio Abraão Caram, 430/701
+                            31275-000 Belo Horizonte/MG
+                            Telefone: (31) 3439 2500
+                            <?php
+                                } else if ($instituicao === "conahom") {
+                            ?>
+                            4) Certificados de curso de Homeopatia - Mínimo de 400 horas.
+
+                            5) Certificados de curso de Fitoterapia - Mínimo de 180 horas.</b>
+
+
+                            Sua documentação será analisada e a resposta será enviada por e-mail ou carta.
+
+                            Endereço para envio:
+
+                            CONAHOM
+                            Av. Antônio Abraão Caram, 430/701
+                            31275-000 Belo Horizonte/MG
+                            Telefone: (31) 3439-2500
+                            <?php
+                                }
+                            ?>
+                            <br>
+                            <label style="width: 100%; white-space: normal; font-size: 1.2em">
+                            Marcando a opção abaixo, você confirma que leu e compreendeu
+                            todas as informações do curso expostas na tela de informações
+                            referida acima. Confirma que concorda com todos os termos e
+                            está ciente dos procedimentos informados referentes às aulas,
+                            certificados, trancamento de inscrição, módulos do curso,
+                            e todas as outras abrangidas.
+                            </label>
+                            <br>
+                            <div style="white-space: normal">
+                                <input type="checkbox" id="li-termos" style="font-size: 1.1em">
+                                <label for="li-termos" style="font-size: 1.1em">Confirmo</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="rotinas/associado/renovar_associacao.php" method="POST">
+                                <input type="submit" class="btn btn-primary" id="btn-reassociar"
+                                name="submit" value="Reassociar" disabled>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <?php
+                    }
+                }
+            ?>
+            <br><br>
             <p><b>Tipo de usuário:</b>
                 <?php
                     if($usuarioLogado instanceof Administrador){
@@ -352,13 +505,13 @@
                 <?php
                         }
                 ?>
-                    <p class="col-sm-12">
-                        <a style="cursor: pointer"
-                           href= "visualizar_informacoes_curso.php">
-                            Visualizar dados de curso
-                        </a>
-                    </p>
-                    <br><br>
+            <p class="col-sm-12">
+                <a style="cursor: pointer"
+                   href= "visualizar_informacoes_curso.php">
+                    Visualizar dados de curso
+                </a>
+            </p>
+            <br><br>
                 <?php    }else if($usuarioLogado instanceof Associado){
                         echo "Associado";
                 ?>
