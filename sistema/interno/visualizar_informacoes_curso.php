@@ -466,10 +466,12 @@
                             // alunos matriculados no ano atual e que tenham sido indicados por ele
 
                             $textoQuery = "SELECT A.numeroInscricao
-                                           FROM Aluno A, Matricula M, Cidade C
+                                           FROM Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
                                            WHERE A.idIndicador = ? AND 
                                            M.chaveAluno = A.numeroInscricao AND
-                                           M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())";
+                                           M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())
+                                           AND Pg.chaveMatricula = M.idMatricula AND Pg.numParcela = 0
+                                           AND Pg.fechado = 1";
 
                             $query = $conexao->prepare($textoQuery);
 
@@ -807,8 +809,11 @@
                                 <td style='background-color: #AAA'><b>Valor total</b></td>
                     <?php
                         for($i = 0; $i < 12; $i ++) {
+                            $desconto = $pagamentos[$anoPagamento][$i]['valor'] *
+                                $pagamentos[$anoPagamento][$i]['desconto']/100;
                             echo "<td>R$ " . 
-                                 number_format($pagamentos[$anoPagamento][$i]['valor'], 2)
+                                 number_format($pagamentos[$anoPagamento][$i]['valor'] - 
+                                    $desconto, 2)
                                  . "</td>";
                         }
                         echo "</tr><tr>";
