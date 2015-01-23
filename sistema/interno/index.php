@@ -2,7 +2,6 @@
     ini_set('default_charset', 'utf-8');
     header('Content-Type: text/html; charset=utf-8');
     session_start();
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -140,6 +139,7 @@
                     <input type="submit" name="submit" value="Login" class="btn btn-primary pull-right">
                     <br>
                 </form>
+                
                 <div class="conteudo" style="position: relative; top: -70px">
                     <a href="cadastro_aluno.php">Cadastro no curso</a>
                     <br>
@@ -169,6 +169,7 @@
                         }
                     ?>
                 </div>
+               
             </div>
         </div>
         <?php
@@ -198,7 +199,7 @@
             <?php
                 } else if(isset($_GET["pgtoSucesso"])) {
             ?>
-            <p class="sucesso">A Homeobrás agradece seu apoio!</p>
+            <p class="sucesso">A Homeobrás agradece seu apoio!</p>   
             <?php
                 } else if(isset($_GET["assocRenovada"])) {
             ?>
@@ -216,23 +217,23 @@
             </h1>
             <a href="#" data-toggle="modal"
                data-target="#modal-muda-senha">Alterar senha</a>
-            <div id="foto" class="pull-right" align="center">
-                <img src=<?php 
-                    $usuario = unserialize($_SESSION['usuario']);
-                    if( file_exists("fotos/".$usuario->getId().".png" ) ){
-                        echo "\"fotos/".$usuario->getId().".png\"";
-                    }else{
-                        echo "\"fotos/Padrao.png\"";;
-                    }
-                  ?>
-                  width="150px" height="200px">
-                  <br>
-                  <a href="#" data-toggle="modal"
-                    data-target="#modal-muda-foto">Alterar foto</a>
-                  <br>
-                  <a href="#" data-toggle="modal"
-                    data-target="#modal-exclui-foto">Excluir foto</a>
-            </div>
+			<div id="foto" class="pull-right" align="center">
+				<img src=<?php 
+					$usuario = unserialize($_SESSION['usuario']);
+					if( file_exists("fotos/".$usuario->getId().".png" ) ){
+						echo "\"fotos/".$usuario->getId().".png\"";
+					}else{
+						echo "\"fotos/Padrao.png\"";;
+					}
+				?>
+				width="150px" height="200px">
+				<br>
+				<a href="#" data-toggle="modal"
+					data-target="#modal-muda-foto">Alterar foto</a>
+				<br>
+				<a href="#" data-toggle="modal"
+					data-target="#modal-exclui-foto">Excluir foto</a>
+			</div>
             <br>
             <a href="#" data-toggle="modal"
                data-target="#modal-muda-email">Alterar e-mail</a>
@@ -271,142 +272,144 @@
                     $inscritoAno = $linha['inscritoAno'];
 
                     if ($inscAberta && !$inscritoAno) {
-            ?>
-            <br>
-            <a href="#" data-toggle="modal" data-target="#modal-reassociar">Renovar associação</a>     
-            <!-- popup "modal" do bootstrap para reassociação -->
-            <div class="modal fade" id="modal-reassociar" tabindex="-1" role="dialog"
-                 aria-labelledby="modal-reassociar" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                            X
-                        </button>
-                        <h4 class="modal-title">Renovação de associação</h4>
-                        </div>
-                        <div class="modal-body"
-                             style="font-size: 0.9em; white-space: pre-line; overflow: none">
-                            <?php
-                                $instituicao = unserialize($_SESSION['usuario'])->getInstituicao();
+						?>
+						<br>
+						<a href="#" data-toggle="modal" data-target="#modal-reassociar">Renovar associação</a>     
+						<!-- popup "modal" do bootstrap para reassociação -->
+						<div class="modal fade" id="modal-reassociar" tabindex="-1" role="dialog"
+							aria-labelledby="modal-reassociar" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+										X
+									</button>
+									<h4 class="modal-title">Renovação de associação</h4>
+									</div>
+									<div class="modal-body"
+										style="font-size: 0.9em; white-space: pre-line; overflow: none">
+										<?php
+											$instituicao = unserialize($_SESSION['usuario'])->getInstituicao();
 
-                                $valorInscricao = htmlspecialchars($linha['valorInscricao']);
-                                $valorAnuidade  = htmlspecialchars($linha['valorAnuidade']);
+											$valorInscricao = htmlspecialchars($linha['valorInscricao']);
+											$valorAnuidade  = htmlspecialchars($linha['valorAnuidade']);
 
-                                $valorInscricao = number_format($valorInscricao, 2);
-                                $valorAnuidade  = number_format($valorAnuidade, 2);
-                            ?>
-                            Inscrição: R$ <?= $valorInscricao ?>
+											$valorInscricao = number_format($valorInscricao, 2);
+											$valorAnuidade  = number_format($valorAnuidade, 2);
+										?>
+										Inscrição: R$ <?= $valorInscricao ?>
 
-                            Anuidade: R$ <?= $valorAnuidade ?>
+										Anuidade: R$ <?= $valorAnuidade ?>
 
-                            Faça sua pré-inscrição e tenha acesso às formas de pagamento pelo PagSeguro.
+										Faça sua pré-inscrição e tenha acesso às formas de pagamento pelo PagSeguro.
 
-                            Sua inscrição será efetivada após confirmação do pagamento e aprovação dos documentos abaixo. 
+										Sua inscrição será efetivada após confirmação do pagamento e aprovação dos documentos abaixo. 
 
-                            Documentos necessários:
+										Documentos necessários:
 
-                            <b>1 Foto 3x4
+										<b>1 Foto 3x4
 
-                            Curriculum vitae
+										Curriculum vitae
 
-                            Xerox Autenticado em cartório de:
+										Xerox Autenticado em cartório de:
 
-                            1) Identidade;
+										1) Identidade;
 
-                            2) CPF;
+										2) CPF;
 
-                            3) Comprovante de endereço;
+										3) Comprovante de endereço;
 
-                            <?php
-                                if ($instituicao === "atenemg") {
-                            ?>
+										<?php
+											if ($instituicao === "atenemg") {
+										?>
 
-                            4) Certificados de curso das terapias com as quais trabalha - Mínimo de 180 horas, por especialidade.</b>
-
-
-                            Sua documentação será analisada e a resposta será enviada por e-mail ou carta.
+										4) Certificados de curso das terapias com as quais trabalha - Mínimo de 180 horas, por especialidade.</b>
 
 
-                            Endereço para envio:
-
-                            ATENEMG
-                            Av. Antônio Abraão Caram, 430/701
-                            31275-000 Belo Horizonte/MG
-                            Telefone: (31) 3439 2500
-                            <?php
-                                } else if ($instituicao === "conahom") {
-                            ?>
-                            4) Certificados de curso de Homeopatia - Mínimo de 400 horas.
-
-                            5) Certificados de curso de Fitoterapia - Mínimo de 180 horas.</b>
+										Sua documentação será analisada e a resposta será enviada por e-mail ou carta.
 
 
-                            Sua documentação será analisada e a resposta será enviada por e-mail ou carta.
+										Endereço para envio:
 
-                            Endereço para envio:
+										ATENEMG
+										Av. Antônio Abraão Caram, 430/701
+										31275-000 Belo Horizonte/MG
+										Telefone: (31) 3439 2500
+										<?php
+											} else if ($instituicao === "conahom") {
+										?>
+										4) Certificados de curso de Homeopatia - Mínimo de 400 horas.
 
-                            CONAHOM
-                            Av. Antônio Abraão Caram, 430/701
-                            31275-000 Belo Horizonte/MG
-                            Telefone: (31) 3439-2500
-                            <?php
-                                }
-                            ?>
-                            <br>
-                            <label style="width: 100%; white-space: normal; font-size: 1.2em">
-                            Marcando a opção abaixo, você confirma que leu e compreendeu
-                            todas as informações do curso expostas na tela de informações
-                            referida acima. Confirma que concorda com todos os termos e
-                            está ciente dos procedimentos informados referentes às aulas,
-                            certificados, trancamento de inscrição, módulos do curso,
-                            e todas as outras abrangidas.
-                            </label>
-                            <br>
-                            <div style="white-space: normal">
-                                <input type="checkbox" id="li-termos" style="font-size: 1.1em">
-                                <label for="li-termos" style="font-size: 1.1em">Confirmo</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <form action="rotinas/associado/renovar_associacao.php" method="POST">
-                                <input type="submit" class="btn btn-primary" id="btn-reassociar"
-                                name="submit" value="Reassociar" disabled>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <br><br>
-            <?php
-                if ($usuarioLogado instanceof Administrador &&
-                    $usuarioLogado->getNivelAdmin() === "administrador" &&
-                    ($usuarioLogado->getPermissoes() & 2) ) {
-                    // caso o usuário logado seja administrador de curso, avisamos
-                    // se existem justificativas de ausência a ser avaliadas
-                    $textoQuery = "SELECT count(aprovacaoPendente) as numPendentes
-                                   FROM Frequencia F WHERE aprovacaoPendente = 1
-                                   AND presenca = 0";
+										5) Certificados de curso de Fitoterapia - Mínimo de 180 horas.</b>
 
-                    $query = $conexao->prepare($textoQuery);
-                    $query->setFetchMode(PDO::FETCH_ASSOC);
-                    $query->execute();
 
-                    $numPendentes = $query->fetch()['numPendentes'];
-                    if ($numPendentes) {
-                        $numJustificativas = $numPendentes . " justificativa" .
-                                             ($numPendentes != 1 ? 's' : '');
-            ?>
-            <a href="avaliar_ausencias.php" style="text-decoration: none">
-                <b class="warning">
-                    Você tem <?= $numJustificativas ?> de ausência para avaliar
-                </b>
-            </a>
-            <br><br>
-            <?php
-                    }
-                }
+										Sua documentação será analisada e a resposta será enviada por e-mail ou carta.
+
+										Endereço para envio:
+
+										CONAHOM
+										Av. Antônio Abraão Caram, 430/701
+										31275-000 Belo Horizonte/MG
+										Telefone: (31) 3439-2500
+										<?php
+											}
+										?>
+										<br>
+										<label style="width: 100%; white-space: normal; font-size: 1.2em">
+										Marcando a opção abaixo, você confirma que leu e compreendeu
+										todas as informações do curso expostas na tela de informações
+										referida acima. Confirma que concorda com todos os termos e
+										está ciente dos procedimentos informados referentes às aulas,
+										certificados, trancamento de inscrição, módulos do curso,
+										e todas as outras abrangidas.
+										</label>
+										<br>
+										<div style="white-space: normal">
+											<input type="checkbox" id="li-termos" style="font-size: 1.1em">
+											<label for="li-termos" style="font-size: 1.1em">Confirmo</label>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<form action="rotinas/associado/renovar_associacao.php" method="POST">
+											<input type="submit" class="btn btn-primary" id="btn-reassociar"
+											name="submit" value="Reassociar" disabled>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<br>
+						<br><br>
+						<?php
+							if ($usuarioLogado instanceof Administrador &&
+								$usuarioLogado->getNivelAdmin() === "administrador" &&
+								($usuarioLogado->getPermissoes() & 2) ) {
+								// caso o usuário logado seja administrador de curso, avisamos
+								// se existem justificativas de ausência a ser avaliadas
+								$textoQuery = "SELECT count(aprovacaoPendente) as numPendentes
+											FROM Frequencia F WHERE aprovacaoPendente = 1
+											AND presenca = 0";
+
+								$query = $conexao->prepare($textoQuery);
+								$query->setFetchMode(PDO::FETCH_ASSOC);
+								$query->execute();
+
+								$numPendentes = $query->fetch()['numPendentes'];
+								if ($numPendentes) {
+									$numJustificativas = $numPendentes . " justificativa" .
+														($numPendentes != 1 ? 's' : '');
+						?>
+						<a href="avaliar_ausencias.php" style="text-decoration: none">
+							<b class="warning">
+								Você tem <?= $numJustificativas ?> de ausência para avaliar
+							</b>
+						</a>
+						<br><br>
+						<?php
+								}
+							}
+					}
+            }
             ?>
             <br><br>
             <p><b>Tipo de usuário:</b>
@@ -535,13 +538,13 @@
                 <?php
                         }
                 ?>
-            <p class="col-sm-12">
-                <a style="cursor: pointer"
-                   href= "visualizar_informacoes_curso.php">
-                    Visualizar dados de curso
-                </a>
-            </p>
-            <br><br>
+                    <p class="col-sm-12">
+                        <a style="cursor: pointer"
+                           href= "visualizar_informacoes_curso.php">
+                            Visualizar dados de curso
+                        </a>
+                    </p>
+                    <br><br>
                 <?php    }else if($usuarioLogado instanceof Associado){
                         echo "Associado";
                 ?>
@@ -970,9 +973,9 @@
                 <form method="POST" action="rotinas/mudar_foto.php">
                     <div class="modal-content">
                         <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                            X
-                        </button>
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+								X
+							</button>
                         <h4 class="modal-title">Remoção de foto</h4>
                         </div>
                         <div class="modal-body">
