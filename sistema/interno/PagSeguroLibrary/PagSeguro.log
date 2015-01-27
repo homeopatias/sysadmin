@@ -283,3 +283,8 @@
   'Reference' => 'A3',
   'SenderEmail' => 'juju.silva@gmail.com',
 )) - end {1}20444685ACAC709004C8CF9BD8B3F7BE
+{2015/01/27 10:30:55} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M9',
+  'SenderEmail' => 'getulio_covers@gmail.com',
+)) - begin 
+{2015/01/27 10:30:55} [Error] Exception: PagSeguroLibrary: cURL library is required. 
