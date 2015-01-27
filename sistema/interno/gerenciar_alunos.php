@@ -1402,7 +1402,7 @@
                             <table class="table table-bordered table-striped" id="alunos">
                                 <thead style="background-color: #AAA">
                                     <tr>
-                                        <th >Selecionar</th>
+                                        <th width= "80px">Selecionar</th>
                                         <th width="100px" <?= $indexHeader == 0 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >Nº inscrição</th>
