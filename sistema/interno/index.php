@@ -143,6 +143,8 @@
                 <div class="conteudo" style="position: relative; top: -70px">
                     <a href="cadastro_aluno.php">Cadastro no curso</a>
                     <br>
+                    <a href="recuperar_conta.php">Recuperar senha ou usuário</a>
+                    <br>
                     <?php
                         $sql = "SELECT nome FROM Instituicao WHERE inicioInsc <= CURDATE() AND
                                 fimInsc >= CURDATE()";
