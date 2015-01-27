@@ -175,7 +175,7 @@
                             $headers = "Content-type: text/plain; charset=utf-8 " .
                                         "From: Homeobras" . "\r\n" .
                                         "Reply-To: noreply@homeopatias.com" . "\r\n" .
-                                        "X-Mailer: PHP/" . phpversion()
+                                        "X-Mailer: PHP/" . phpversion();
 
                             // Prepara o conteudo do e-mail
 
