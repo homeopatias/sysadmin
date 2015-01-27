@@ -152,8 +152,6 @@
                         $hasher = new PasswordHash(8, false);
                         $hashSenha = $hasher->HashPassword($senhaAleatoria);
 
-                        var_dump($senhaAleatoria);
-
                         $conexao->beginTransaction();
 
                         //Altera as senhas das contas de usuário
