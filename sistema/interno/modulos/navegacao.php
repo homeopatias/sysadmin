@@ -228,12 +228,6 @@
                         <ul class="dropdown-menu drop">
                             <!-- dropdown de gerenciamento de miscelânea -->
                             <li>
-                                <a href="gerenciar_instituicoes.php">
-                                    <i class="fa fa-fw fa-institution"></i>
-                                    <p style="display:inline">Instituições</p>
-                                </a>
-                            </li>
-                            <li>
                                 <a href="gerenciar_livros.php">
                                     <i class="fa fa-fw fa-book"></i>
                                     <p style="display:inline">Livros</p>
