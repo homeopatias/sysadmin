@@ -106,6 +106,10 @@
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
 
+                $("#alterarDesconto").click(function(){
+                    $("#formDesconto").submit();
+                });
+
                 $("form #ano").change();                
             });
         </script>
@@ -157,6 +161,27 @@
             // exibe dados do aluno apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
                && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
+
+                // se receber um desconto por POST, altera o desconto do aluno atual
+                if( isset($_POST["desconto-individual"]) ){
+                    $desconto = (float)$_POST["desconto-individual"];
+
+                    if($desconto < 0 || $desconto > 100 || is_nan($desconto)){
+                        $mensagem = "Desconto Inválido!";
+                    }else{
+                        $textoQuery = "UPDATE Matricula M, Cidade C set M.desconto_individual = :desconto
+                        WHERE M.chaveAluno = :idAluno AND M.chaveCidade = C.idCidade AND C.ano = :ano";
+
+                        $query = $conexao->prepare($textoQuery);
+                        $query->bindParam(":desconto", $desconto, PDO::PARAM_INT);
+                        $query->bindParam(":idAluno" , $idAluno , PDO::PARAM_INT );
+                        $query->bindParam(":ano" , date("Y") );
+
+                        $query->execute();   
+
+                        $aluno->atualizar($host, $db, $usuario,$senhaBD);
+                    }
+                }
 
                 // caso o usuário tenha chegado aqui através de um formulário, cria a nova
                 // matrícula
@@ -752,7 +777,8 @@
                         }
 
                         $textoQuery  = "SELECT P.valorPago, P.valorTotal, P.data, P.desconto,
-                                        P.ano, P.numParcela FROM Matricula M, PgtoMensalidade P
+                                        P.ano, P.numParcela, M.desconto_individual
+                                        FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
                                         AND P.chaveMatricula = M.idMatricula
                                         AND P.ano = ?
@@ -765,8 +791,10 @@
                         $query->execute();
 
                         $pagamentos = array();
+                        $desconto_individual = 0;
                         while($linha = $query->fetch()){
                             $anoPag = $linha['ano'];
+                            $desconto_individual = $linha["desconto_individual"];
                             $numParcela = $linha['numParcela'];
                             $pagamentos[$anoPag][$numParcela]['valor'] = $linha['valorTotal'];
                             $pagamentos[$anoPag][$numParcela]['pago']  = $linha['valorPago'];
@@ -784,12 +812,25 @@
                     <?php if($anoPagamento == date("Y")){ ?>
 
                         <h3>Parcelas do ano atual</h3>
+                        <h4 >Desconto especial do aluno nesta matrícula : 
+                            <?= $desconto_individual ?>% 
+                            <a href="#" class="btn" data-toggle="modal" data-target="#modal-edita-desconto">
+                                Editar
+                            </a>
+
+                        </h4>
 
                     <?php }else{ ?>
 
                         <h3>Parcelas do ano de <?= $anoPagamento ?></h3>
+                        <h4 >Desconto especial do aluno nesta matrícula : 
+                            <?= $desconto_individual ?>% 
+                        </h4>
 
                     <?php } ?>
+
+
+                        
 
                     <table class="table table-bordered table-striped" id="alunos">
                         <thead style="background-color: #AAA">
@@ -959,6 +1000,7 @@
                 </div>
             </div>
         <?php } ?>
+        
         <!-- popup "modal" do bootstrap para confirmação de cancelamento de matrícula -->
         <div class="modal fade" id="modal-confirma-deleta" tabindex="-1" role="dialog"
              aria-labelledby="modal-confirma-deleta" aria-hidden="true">
@@ -978,6 +1020,33 @@
                         <a href="#" class="btn btn-danger danger">Sim</a>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- popup "modal" do bootstrap para edição do deconto individual do aluno -->
+        <div class="modal fade" id="modal-edita-desconto" tabindex="-1" role="dialog"
+             aria-labelledby="modal-edita-desconto" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="#" method="POST" id="formDesconto">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Edição de desconto individual</h4>
+                        </div>
+                        <div class="modal-body">
+                            <label for="desconto_individual">Desconto individual do aluno:</label>
+                            <input id="desconto-individual" name="desconto-individual" type="text"
+                                value=  <?= "\"".$desconto_individual."\"" ?> >
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn" id="alterarDesconto" 
+                                name="alterarDesconto">Alterar</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <?php
