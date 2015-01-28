@@ -66,6 +66,8 @@
                 $bairro         = $_POST["bairro"];
                 $cidade         = $_POST["cidade"];
                 $estado         = $_POST["estado"];
+                $tipoCurso      = $_POST["tipo-curso"];
+                $tipoCadastro   = $_POST["tipo-cadastro"];
 
                 $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                   mb_strlen($nome, 'UTF-8') <= 100;
