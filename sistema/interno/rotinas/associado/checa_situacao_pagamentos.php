@@ -1,6 +1,6 @@
 <?php
 
-require_once($_SERVER["DOCUMENT_ROOT"].'/interno/entidades/Associado.php');
+require_once(dirname(__FILE__).'/../../entidades/Associado.php');
 
 // função que confere se o associado logado está com todos os pagamentos em dia
 

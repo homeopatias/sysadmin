@@ -12,8 +12,8 @@
  *                                       *
  *****************************************/
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/interno/phpass-0.3/PasswordHash.php");
-require_once($_SERVER["DOCUMENT_ROOT"]."/interno/entidades/Usuario.php");
+require_once(dirname(__FILE__)."/../phpass-0.3/PasswordHash.php");
+require_once(dirname(__FILE__)."/../entidades/Usuario.php");
 
 class Aluno extends Usuario{
     private $numeroInscricao;
@@ -420,7 +420,7 @@ class Aluno extends Usuario{
             $conexao->commit();
 
             if($atualizaDescontosAntigo){
-                    require_once($_SERVER["DOCUMENT_ROOT"]."/interno/entidades/Aluno.php");
+                    require_once(dirname(__FILE__)."/../entidades/Aluno.php");
                     $indicadorAntigo = new Aluno;
                     $indicadorAntigo->setNumeroInscricao($indicadorAnterior);
                     $indicadorAntigo->recebeAlunoId($host, $bd, $usuario, $senha);
@@ -429,7 +429,7 @@ class Aluno extends Usuario{
             }
 
             if($this->idIndicador != null){
-                require_once($_SERVER["DOCUMENT_ROOT"]."/interno/entidades/Aluno.php");
+                require_once(dirname(__FILE__)."/../entidades/Aluno.php");
                 $indicadorNovo = new Aluno;
                 $indicadorNovo->setNumeroInscricao($this->idIndicador);
                 $indicadorNovo->recebeAlunoId($host, $bd, $usuario, $senha);

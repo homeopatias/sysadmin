@@ -13,9 +13,9 @@
  *                                       *
  *****************************************/
 
-require_once($_SERVER["DOCUMENT_ROOT"]."/interno/phpass-0.3/PasswordHash.php");
-require_once($_SERVER["DOCUMENT_ROOT"]."/interno/entidades/Administrador.php");
-require_once($_SERVER["DOCUMENT_ROOT"]."/interno/entidades/Cidade.php");
+require_once(dirname(__FILE__)."/../phpass-0.3/PasswordHash.php");
+require_once(dirname(__FILE__)."/../entidades/Administrador.php");
+require_once(dirname(__FILE__)."/../entidades/Cidade.php");
 
 class Aula{
     private $idAula;

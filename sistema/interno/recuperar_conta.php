@@ -147,7 +147,7 @@
                             $senhaAleatoria .= $alfanumerico[ $randKeys[$i] ];
                         }
 
-                        require_once($_SERVER["DOCUMENT_ROOT"]."/interno/phpass-0.3/PasswordHash.php");
+                        require_once(dirname(__FILE__)."/phpass-0.3/PasswordHash.php");
 
                         $hasher = new PasswordHash(8, false);
                         $hashSenha = $hasher->HashPassword($senhaAleatoria);

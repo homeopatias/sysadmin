@@ -6,8 +6,8 @@
  <link rel="stylesheet" href="../estilos/estilo.css">
 
  <?php
-	require_once($_SERVER["DOCUMENT_ROOT"].'/interno/entidades/Administrador.php');
-    require_once($_SERVER["DOCUMENT_ROOT"].'/interno/entidades/Aluno.php');
+	require_once(dirname(__FILE__).'/../entidades/Administrador.php');
+    require_once(dirname(__FILE__).'/../entidades/Aluno.php');
 	$admin = unserialize($_SESSION["usuario"]);
 	if(isset($_SESSION['usuario']) && ($admin instanceof Administrador ) && 
 		($admin->getNivelAdmin() === "administrador" || $admin->getNivelAdmin() === "coordenador") ){
