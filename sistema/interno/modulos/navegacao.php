@@ -171,12 +171,6 @@
                                     <p style="display:inline">Definições de trabalho</p>
                                 </a>
                             </li>
-                            <li>
-                                <a href="gerenciar_notas_professores.php">
-                                    <i class="fa fa-fw fa-thumbs-o-up"></i>
-                                    <p style="display:inline">Notas de professores</p>
-                                </a>
-                            </li>
                         </ul>
                     </li>
                     <?php  }

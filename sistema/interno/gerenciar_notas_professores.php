@@ -39,7 +39,7 @@
                 });
 
                 $("#notas").tablesorter({ headers: {
-                    4 : { sorter: "datetime" },
+                    3 : { sorter: "datetime" },
                 }});
 
                 checaTamanhoTela();
@@ -80,7 +80,7 @@
                 $mensagem = $_GET["erro"];
             }
 
-            // exibe notícias apenas para administradores logados
+            // exibe notas apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
                && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" && 
                2 & unserialize($_SESSION["usuario"])->getPermissoes() ){
@@ -106,27 +106,35 @@
                     echo $e->getMessage();
                 }
 
+                $idProfessor = isset($_GET["idProfessor"]) ? $_GET["idProfessor"] : '';
+                $idProfessor = intval($idProfessor);
+
                 $textoQuery  = "SELECT P.nome as nProf, C.nome, C.ano, C.UF, A.etapa, 
                                 UNIX_TIMESTAMP(A.data) as data, A.nota, COUNT(F.chaveAula) as numAval 
                                 FROM Frequencia F INNER JOIN Aula A ON A.idAula = F.chaveAula 
                                 INNER JOIN Administrador Ad ON Ad.idAdmin = A.idProfessor 
                                 INNER JOIN Usuario P ON P.id = Ad.idUsuario 
                                 INNER JOIN Cidade C ON C.idCidade = A.chaveCidade 
-                                WHERE A.nota IS NOT NULL AND jaAvaliou = 1 GROUP BY F.chaveAula";
+                                WHERE A.nota IS NOT NULL AND jaAvaliou = 1 AND A.idProfessor = ?
+                                GROUP BY F.chaveAula";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
+                $query->bindParam(1, $idProfessor);
                 $query->execute();
 
                 $numeroRegistros = 0;
                 $tabela = "";
+                $nomeProf = '';
 
                 while ($linha = $query->fetch()){
 
-                    // listamos os dados de cada noticia
+                    // listamos os dados de cada nota
+                    if(!$nomeProf){
+                        $nomeProf = htmlspecialchars($linha["nProf"]);
+                    }
+
                     $tabela .= "<tr>";
-                    $tabela .= "    <td>";
-                    $tabela .= htmlspecialchars($linha["nProf"])                             ."</td>";
                     $tabela .= "    <td>";
                     $tabela .= htmlspecialchars($linha["nome"] . "/" . $linha["UF"])         ."</td>";
                     $tabela .= "    <td>";
@@ -147,14 +155,14 @@
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
-                    <h1>Notas recebidas pelos professores</h1><br>    
+                    <h1>Notas recebidas por <?= $nomeProf ?></h1><br>    
                     <?php 
                         if(mb_strlen($mensagem, 'UTF-8') !== 0){
                             echo "<p class=\"warning\">$mensagem</p>";
                         }
                     ?>
                     <!-- opção para organizar as notas por etapa de cada ano, ao invés de por aula -->
-                    <a href="gerenciar_notas_professores_etapa.php" class="btn">
+                    <a href=<?= "\"gerenciar_notas_professores_etapa.php?idProfessor=" . $idProfessor . "\"" ?> class="btn">
                         <i href="#" class="fa fa-calendar"></i>
                         <p style="display:inline">Visualizar notas pelas etapas de cada ano</p>
                     </a>
@@ -165,7 +173,6 @@
                             <table class="table table-bordered table-striped" id="notas">
                                 <thead style="background-color: #AAA">
                                     <tr>
-                                        <th width="200px">Nome do professor</th>
                                         <th width="200px">Cidade</th>
                                         <th width="70px">Ano</th>
                                         <th width="70px">Etapa</th>
