@@ -43,6 +43,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $cidade         = $_POST["cidade"];
         $estado         = $_POST["estado"];
         $pais           = "BRL";
+        $senha       = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100;
@@ -145,11 +146,13 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
                             $bairroValido && $cidadeValida
                            && $estadoValido);
 
+        $senhaValida = !$senha || (mb_strlen($senha, 'UTF-8') >= 6 && mb_strlen($senha, 'UTF-8') <= 72);
+
         $sucesso = false;
         // se todos os dados estão válidos, o aluno é editado
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
            $statusValido && $loginIndicadorValido && $escolaridadeValida &&
-           $cursoValido && $inscValido && $idValido && $enderecoValido){
+           $cursoValido && $inscValido && $idValido && $enderecoValido && $senhaValida){
 
             require_once("../../entidades/Aluno.php");
 
@@ -186,6 +189,12 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
 
             if($sucesso){
                 $mensagem = "Aluno editado com sucesso";
+                if($senha) {
+                    $sucesso = $atualizar->mudaSenha($senha);
+                    if(!$sucesso){
+                        $mensagem = "Erro ao alterar a senha";
+                    }
+                }
             }else{
                 $mensagem = "Já existe alguém com esse nome de usuário no sistema";
             }
@@ -215,6 +224,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             }else{
                 $mensagem = "Curso inválido!";
             }
+        }else if(!$senhaValida){
+            $mensagem = "Nova senha inválida!";
         }
     }else{
         $mensagem = "Erro de envio de formulário";

@@ -254,6 +254,12 @@
                     atualizaPagina();
                 });
 
+                $("#btn-muda-senha").click(function(){
+                    $(this).hide();
+                    $("#senha").parent().show(300);
+                    $("#senha").focus();
+                });
+
                 // se clicou em anterior ou próxima muda a página da tabela
                 $("#anterior").click(function(e){
                     if(!podeMudarPagina){
@@ -1715,6 +1721,8 @@
                                        title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
                                        class="form-control" autocomplete="off">
                             </div>
+
+                            <br>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -1944,6 +1952,15 @@
                                        title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
                                        class="form-control" autocomplete="off">
                             </div>
+                            <div class="btn btn-primary" id="btn-muda-senha">Mudar senha</div>
+                            <div class="form-group" style="display:none">
+                                <label for="login">Nova senha:</label>
+                                <input type="password" name="senha" id="senha" pattern="^.{6,100}$|^$"
+                                       placeholder="Senha (deixe em branco caso não deseje mudar)"
+                                       title="A senha deve ter de 6 a 72 caracteres"
+                                       class="form-control">
+                            </div>
+                            <br><br>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">

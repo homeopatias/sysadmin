@@ -11,6 +11,8 @@
  *                                       *
  *****************************************/
 
+require_once(dirname(__FILE__)."/../phpass-0.3/PasswordHash.php");
+
 abstract class Usuario{
     protected $id;
     protected $cpf;
@@ -18,6 +20,47 @@ abstract class Usuario{
     protected $email;
     protected $login;
     protected $nome;
+
+    // Mudar a senha do usuário
+    public function mudaSenha($novaSenha){
+
+        // lemos as credenciais do banco de dados
+        $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
+        $dados = json_decode($dados, true);
+
+        foreach($dados as $chave => $valor) {
+            $dados[$chave] = str_rot13($valor);
+        }
+
+        $host    = $dados["host"];
+        $usuario = $dados["nome_usuario"];
+        $senhaBD = $dados["senha"];
+
+        // Cria conexão com o banco
+        $conexao = null;
+        try{
+            $conexao = new PDO("mysql:host=$host;dbname=homeopatias;charset=utf8", $usuario, $senhaBD);
+        }catch (PDOException $e){
+            echo $e->getMessage();
+        }
+
+        $comando = "UPDATE Usuario SET senha = :senha WHERE id = :id";
+        $query = $conexao->prepare($comando);
+
+        // Fazemos o hash da senha usando a biblioteca phppass
+        $hasher = new PasswordHash(8, false);
+        $hashSenha = $hasher->HashPassword($novaSenha);
+
+        $query->bindParam(":senha", $hashSenha, PDO::PARAM_STR);
+        $query->bindParam(":id", $this->id, PDO::PARAM_INT);
+
+        $sucesso = $query->execute();
+
+        // Encerramos a conexão com o BD
+        $conexao = null;
+
+        return $sucesso;
+    }
 
     // Getters e setters
     public function getId()
