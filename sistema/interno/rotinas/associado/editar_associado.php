@@ -33,6 +33,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $dataEnvio       = $_POST["data-envio"];
         $formTerapeutica = $_POST["form-terapeutica"];
         $documentos      = isset($_POST["documentos"]) ? $_POST["documentos"] === "on" : false;
+        $senha       = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100;
@@ -87,11 +88,13 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
                              mb_strlen($formTerapeutica, "UTF-8") >= 3 &&
                              mb_strlen($formTerapeutica, "UTF-8") <= 200;
 
+        $senhaValida = !$senha || (mb_strlen($senha, 'UTF-8') >= 6 && mb_strlen($senha, 'UTF-8') <= 72);
+
         // se todos os dados estão válidos, o associado é editado
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido &&
            $instituicaoValida && $idValido && $idAssocValido && $telefoneValido
            && $enderecoValido  && $numObjetoValido
-           && $dataEnvioValida && $formTerapeuticaValida){
+           && $dataEnvioValida && $formTerapeuticaValida && $senhaValida){
 
             // lemos as credenciais do banco de dados
             $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -132,6 +135,12 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
 
             if($sucesso){
                 $mensagem = "?sucesso=true&msg=Associado editado com sucesso";
+                if($senha) {
+                    $sucesso = $atualizar->mudaSenha($senha);
+                    if(!$sucesso){
+                        $mensagem = "Erro ao alterar a senha";
+                    }
+                }
             }else{
                 $mensagem = "Já existe alguém com esse nome de usuário no sistema";
             }
@@ -159,8 +168,10 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "Data de envio da carteirinha inválida";
         } else if (!$formTerapeuticaValida) {
             $mensagem = "Formação terapeutica inválida";
-        } else if (!$idValido || !$idAssocValido){
+        } else if (!$idValido || !$idAssocValido) {
             $mensagem = "Dados inconsistentes";
+        } else if(!$senhaValida) {
+            $mensagem = "Nova senha inválida!";
         }
     }else{
         $mensagem = "Erro de envio de formulário";
