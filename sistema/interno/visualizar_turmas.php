@@ -291,13 +291,10 @@
                         $query->execute();
 
                         $resultado = '<div class="flip-table"> <table class="table">
-<<<<<<< HEAD
                             <th style="font-weight: bold">Selecionar</th>
                             <th style="font-weight: bold">Registro do aluno</th>
                             <th style="font-weight: bold">Número de matrícula</th>
-=======
                             <th style="font-weight: bold">Nº de inscrição</th>
->>>>>>> origin/HOMEO-61
                             <th style="font-weight: bold">Nome do aluno</th>
                             <th style="font-weight: bold">CPF do aluno</th>
                             <th style="font-weight: bold">Visualizar pagamentos</th>';

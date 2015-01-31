@@ -106,6 +106,10 @@
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
 
+                $("#efetua_pagamento").click(function(){
+                    $("#form-lanca-pagamento").submit();
+                });
+
                 $("form #ano").change();                
             });
         </script>
@@ -119,6 +123,7 @@
                 // o id passado foi inválido
                 // redirecionamos o usuário para a página de gerenciamento de alunos
                 // com uma mensagem de erro
+
         ?>
 
         <!-- redireciona o usuário -->
@@ -157,6 +162,300 @@
             // exibe dados do aluno apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
                && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
+
+                //se receber um valor de pagamento e um  método, efetua o pagamento
+                if( isset( $_POST['valor-pagamento'] ) && isset( $_POST["metodo-pagamento"] ) ){
+
+                    // procuramos os pagamentos desse ano, tanto pendentes
+                    // como efetuados
+
+                    $anoPagamento = date("Y");
+                    if( isset($_GET["ano"]) ){
+                        $anoPagamento = $_GET["ano"];
+                    }
+
+                    $textoQuery  = "SELECT P.idPagMensalidade, P.valorPago, P.valorTotal, P.data, P.desconto,
+                                     P.metodo, P.ano, P.numParcela ,P.fechado 
+                                    FROM Matricula M, PgtoMensalidade P
+                                    WHERE M.chaveAluno = ?
+                                    AND P.chaveMatricula = M.idMatricula
+                                    AND P.ano = ?
+                                    ORDER BY P.data DESC";
+
+                    $query = $conexao->prepare($textoQuery);
+                    $query->bindParam(1, $idAluno, PDO::PARAM_INT);
+                    $query->bindParam(2, $anoPagamento, PDO::PARAM_STR);
+                    $query->setFetchMode(PDO::FETCH_ASSOC);
+                    $query->execute();
+
+                    $numPagamentos = $query->rowCount();
+
+                    $anos = array();
+                    $pagamentos = array();
+                    while($linha = $query->fetch()){
+                        $anoPag = $linha['ano'];
+
+                        // Inicia a divida para o ano atual caso não tenha sido iniciada ainda
+                        if(!in_array($anoPag, $anos)){
+                            $anos[] = $anoPag;
+                            $pagamentos[$anoPag]['divida'] = 0;
+                        }
+                        $numParcela = $linha['numParcela'];
+                        $pagamentos[$anoPag][$numParcela]['id'] = $linha['idPagMensalidade'];
+                        $pagamentos[$anoPag][$numParcela]['valor'] = $linha['valorTotal'];
+                        $pagamentos[$anoPag][$numParcela]['pago']   = $linha['valorPago'];
+                        $pagamentos[$anoPag][$numParcela]['data']  = $linha['data'];
+                        $pagamentos[$anoPag][$numParcela]['fechado']  = $linha['fechado'];
+                        $pagamentos[$anoPag][$numParcela]['desconto']  = $linha['desconto'];
+                        $pagamentos[$anoPag][$numParcela]['metodo'] = $linha['metodo'];
+                        $pagamentos[$anoPag][$numParcela]['editado'] = 0;
+
+                        
+                        if(!$pagamentos[$anoPag][$numParcela]['fechado']){
+                            $pagamentos[$anoPag]['divida'] += $linha['valorTotal'] -
+                            ( ($linha['valorTotal']) * ($linha['desconto']/100) )
+                                - $linha['valorPago'];
+                        }
+                    } // fim while($linha = $query->fetch()){
+
+
+                    $valor = isset( $_POST["valor-pagamento"] ) ? (float)$_POST["valor-pagamento"] : 0;
+                    $valorValido = !is_nan($valor) && $valor <= $pagamentos[$anoPagamento]["divida"];
+
+                    $metodo = isset( $_POST["metodo-pagamento"] ) ? $_POST["metodo-pagamento"] : "";
+                    $metodoValido =  ( isset($metodo) && 
+                                                mb_strlen($metodo, 'UTF-8') >= 3 && 
+                                                mb_strlen($metodo, 'UTF-8') <= 200
+                                             );
+
+                    if($valorValido && $metodoValido){
+
+                        // Varremos o vetor com os pagamentos do ano desejado fazendo o
+                        // cascateamento do valor pago
+
+                        for ($i = 0 ; $i < 12 && $valor > 0; $i++) {
+                            if(!$pagamentos[$anoPagamento][$i]['fechado']){
+                                if($valor > 0 ){
+                                    // Valor é o que sobrar do pagamento, 
+                                    // ja que ele pode terminar de pagar,
+                                    // e caso não feche o pagamento, retornará
+                                    // um valor negativo
+
+                                    $pagamentos[$anoPagamento][$i]['pago'] += $valor;
+
+                                    $desconto = ($pagamentos[$anoPagamento][$i]['valor'] *
+                                            $pagamentos[$anoPagamento][$i]['desconto'] /100);
+
+                                    $valor = $pagamentos[$anoPagamento][$i]['pago']  - 
+                                        $pagamentos[$anoPagamento][$i]['valor'] + $desconto ;
+
+                                    $pagamentos[$anoPagamento][$i]['editado'] = 1;
+                                    // Se o valor pago >= valor da parcela,
+                                    // o pagamento foi suficiente para fechar a parcela
+
+
+                                    if( $pagamentos[$anoPagamento][$i]['pago'] >= 
+                                        ($pagamentos[$anoPagamento][$i]['valor'] - $desconto))
+                                        {
+
+                                        $pagamentos[$anoPagamento][$i]['pago']  =
+                                            $pagamentos[$anoPagamento][$i]['valor'] - $desconto;
+
+                                        // se o pagamento foi suficiente para pagar o 
+                                        // restante da parcela, fecha a parcela
+                                        $pagamentos[$anoPagamento][$i]['fechado'] = "1";
+                                    }
+                                } // if($valor > 0 ){
+                            } // fim if(!$pagamentos[$anoPagamento][$i]['fechado']){
+                        } // fim for ($i = 0 ; $i < 12 && $valor > 0; $i++) {
+
+                        $conexao->beginTransaction();
+                        $sucesso = 1;
+
+                        // agora registramos o pagamento genérico no banco
+                        $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor, data,
+                                       metodo, objetivo, ano)
+                                       VALUES (?, ?, NOW(), ?, "mensalidade", ?)';
+                        $query = $conexao->prepare($textoQuery);
+
+                        $valorTotalPago = (float) $_POST["valor-pagamento"];
+
+                        $query->bindParam(1, $aluno->getId());
+                        $query->bindParam(2, $valorTotalPago);
+                        $query->bindParam(3, $metodo);
+                        $query->bindParam(4, $anoPagamento);
+
+                        $sucesso = $query->execute();
+
+                        for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
+                            if( $pagamentos[$anoPagamento][$i]['editado'] ){
+                                $textoQuery = "UPDATE PgtoMensalidade 
+                                            SET valorTotal = ?, valorPago = ?,
+                                            fechado = ? , data = CURDATE(), metodo = ?
+                                            WHERE idPagMensalidade = ?";
+
+                                $metodosList= array();
+                                if(strrpos($pagamentos[$anoPagamento][$i]['metodo'], "|") ){
+
+                                    $metodosList = explode("|", 
+                                    strtolower($pagamentos[$anoPagamento][$i]['metodo']));
+                                }else{
+                                    $metodosList = array( 
+                                        strtolower( 
+                                            $pagamentos[$anoPagamento][$i]['metodo'])
+                                            );
+                                }
+
+                                
+                                // Se o método passado não está na lista de métodos , adiciona ele
+                                if(!in_array(strtolower($metodo), $metodosList ) ){
+                                    $metodosList[] = $metodo;
+                                }
+
+                                $metodoUpdate = "";
+                                // Separa os métodos por '|' no bd
+                                foreach ($metodosList as $metodo) {
+                                    $metodo = ucfirst($metodo);
+                                    if(strlen($metodoUpdate) == 0){
+                                        $metodoUpdate = $metodo;
+                                    }
+                                    else{
+                                        $append = "|".$metodo;
+                                        $metodoUpdate = $metodoUpdate.$append; 
+                                    }
+
+                                }
+                                $pagamentos[$anoPagamento][$i]['metodo'] = $metodoUpdate;
+
+                                $queryArray = array(
+                                    $pagamentos[$anoPagamento][$i]['valor'],
+                                    $pagamentos[$anoPagamento][$i]['pago'],
+                                    $pagamentos[$anoPagamento][$i]['fechado'],
+                                    $pagamentos[$anoPagamento][$i]['metodo'],
+                                    $pagamentos[$anoPagamento][$i]['id'],
+                                    );
+                                $query = $conexao->prepare($textoQuery);
+                                $sucesso = $query->execute($queryArray);
+
+                            } // fim if( $pagamentos[$anoPagamento][$i]['editado'] ){
+                        } // fim for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
+
+                        // se conseguiu lançar o pagamento da inscrição do ano 
+                        // atual e
+                        // ela fechou, muda o status do aluno para inscrito
+                        if($sucesso && $pagamentos[date("Y")][0]['editado']){
+                            
+                            if($pagamentos[date("Y")][0]['fechado']){
+                                $textoQueryUpdate = "UPDATE Aluno 
+                                                     SET status = 'inscrito'
+                                                     WHERE numeroInscricao = ?";
+                                
+                                $query = $conexao->prepare($textoQueryUpdate);
+                                $query->bindParam(1, $idAluno, PDO::PARAM_INT);
+                                $sucesso = $query->execute();
+
+                            }
+
+                        }
+
+                        //se todos os pagamentos foram atualizados confirma a 
+                        // atualização , se não, da rollback
+                        if($sucesso){
+                            // enviamos um email confirmando o envio do pagamento
+                            $quantiaPaga = htmlspecialchars($_POST["valor-pagamento"]);
+                            $quantiaPaga = number_format($quantiaPaga, 2);
+                            $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
+                            $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
+                            $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
+                            $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
+                            $msg .= "<br><b>Método:</b> " . $metodo;
+                            $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
+                            $headers = "Content-type: text/html; charset=utf-8 " .
+                                "From: Sistema Financeiro Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+                                "Reply-To: noreply@homeopatias.com" . "\r\n" .
+                                "X-Mailer: PHP/" . phpversion();
+
+                            mail($aluno->getEmail(), $assunto, $msg, $headers);
+
+                            // agora registramos no sistema uma notificação para o aluno
+                            $texto = "Pagamento recebido:\nValor: R$" . $quantiaPaga;
+                            $texto .= "\nData: " . date("d/m/Y") . "\nHorário: " . date("H:i");
+                            $texto .= "\nMétodo: " . $metodo;
+                            $queryNotificacao = $conexao->prepare("INSERT INTO Notificacao 
+                                                (titulo, texto, chaveAluno, lida) VALUES (?, ?, ?, 0)");
+                            $dados = array("Pagamento recebido", $texto, $idAluno);
+                            $queryNotificacao->execute($dados);
+
+                            if($sucesso){
+                                $conexao->commit(); 
+
+                                //Se a inscrição foi paga, atualiza desconto
+                                if($pagamentos[date("Y")][0]['fechado']){
+                                    require_once($_SERVER["DOCUMENT_ROOT"].
+                                        "/interno/entidades/Aluno.php");
+
+    
+                                    $aluno = new Aluno("");
+                                    $aluno->setNumeroInscricao($idAluno);
+                                    $aluno->recebeAlunoId($host, $db, $usuario, $senhaBD);
+            
+                                    $indicador = new Aluno("");
+                                    $indicador->setNumeroInscricao($aluno->getIdIndicador());
+                                    $indicador->recebeAlunoId($host, $db, $usuario, $senhaBD);
+                                    $indicador->atualizaDesconto($host, $db,
+                                                     $usuario, $senhaBD);
+                                    $sucessoNotificacao = false;
+
+                                    if($aluno->getIdIndicador()){
+                                        //faremos 10 tentativas para notificar o aluno , se todas falharem
+                                        //mostramos que não foi possível notificar o aluno
+                                        for($i = 0;$i < 10 && !$sucessoNotificacao;$i++){
+                                            //gera notificação para o indicador que ele recebeu 10% de desconto
+                                            //nas próximas parcelas
+                                            $conexao->beginTransaction();
+                                            $titulo = "Desconto por indicação";
+                                            $texto  = "Você recebeu 10% de desconto por ter indicado ";
+                                            $texto .= "o(a) aluno(a) : ".$aluno->getNome();
+
+                                            $textoQuery = "INSERT INTO Notificacao(titulo,texto,chaveAluno)
+                                                            VALUES (:titulo, :texto,:idIndicador)";
+                                            $query = $conexao->prepare($textoQuery);
+                                            $query->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+                                            $query->bindParam(":texto", $texto, PDO::PARAM_STR);
+                                            $query->bindParam(":idIndicador", 
+                                                $indicador->getNumeroInscricao(),PDO::PARAM_INT);
+
+                                            $sucessoNotificacao = $query->execute();
+
+                                            if(!$sucessoNotificacao){
+                                                $conexao->rollback();
+                                            }
+                                        
+                                        }
+
+                                        //se conseguiu notificar, confirma transação
+                                        if($sucessoNotificacao){
+                                            $conexao->commit();
+                                        }else{
+                                            //se não, mostra mensagem na tela
+                                            $mensagem = "Não foi possível notificar o aluno 
+                                                        de seu desconto.";
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            else{
+                                $conexao->rollback();
+                            }
+                        }
+                        else{
+                            $conexao->rollback();
+                        }
+
+                    } // fim if($valorValido && $metodoValido){
+
+                } // fim  if( isset( $_POST['valor-pagamento'] ) && isset( $_POST["metodo-pagamento"] ) ){
 
                 // caso o usuário tenha chegado aqui através de um formulário, cria a nova
                 // matrícula
@@ -743,8 +1042,8 @@
                         // os pagamentos são criados na hora em que o aluno se matricula,
                         // e a medida que o aluno paga, eles vão sendo fechados.
 
-                        // procuramos os pagamentos desse ano, tanto pendentes
-                        // como efetuados
+                        // procuramos os pagamentos , tanto pendentes
+                        // como efetuados 
 
                         $anoPagamento = date("Y");
                         if( isset($_GET["ano"]) ){
@@ -755,16 +1054,15 @@
                                         P.ano, P.numParcela FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
                                         AND P.chaveMatricula = M.idMatricula
-                                        AND P.ano = ?
                                         ORDER BY P.data DESC";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $idAluno, PDO::PARAM_INT);
-                        $query->bindParam(2, $anoPagamento, PDO::PARAM_STR);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
                         $pagamentos = array();
+                        $divida = 0;
                         while($linha = $query->fetch()){
                             $anoPag = $linha['ano'];
                             $numParcela = $linha['numParcela'];
@@ -772,16 +1070,24 @@
                             $pagamentos[$anoPag][$numParcela]['pago']  = $linha['valorPago'];
                             $pagamentos[$anoPag][$numParcela]['data']  = $linha['data'];
                             $pagamentos[$anoPag][$numParcela]['desconto']  = $linha['desconto'];
+
+                            $divida += $linha['valorTotal'] - 
+                                    ($linha['valorTotal'] * $linha['desconto']/100) - $linha['valorPago'];
                         }
 
-                        if($query->rowCount() != 0) {
+                        if( isset( $pagamentos[$anoPagamento] ) ) {
                     ?>
                     <br>
                     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-pgto">
                         Visualizar lista de pagamentos
                     </a>
+                    <?php if($divida > 0) { ?>
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-lanca-pagamento">
+                            Efetuar pagamento manual
+                        </a>
 
-                    <?php if($anoPagamento == date("Y")){ ?>
+                    <?php }
+                        if($anoPagamento == date("Y")){ ?>
 
                         <h3>Parcelas do ano atual</h3>
 
@@ -980,6 +1286,67 @@
                 </div>
             </div>
         </div>
+
+        <!-- popup "modal" do bootstrap para lançamento de pagamento -->
+        <div class="modal fade" id="modal-lanca-pagamento" tabindex="-1" role="dialog"
+             aria-labelledby="modal-lanca-pagamento" aria-hidden="true">
+            <form method="POST" id="form-lanca-pagamento" action="#">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        X
+                    </button>
+                    <h4 class="modal-title">Lançamento de pagamento</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-sm-12">
+                            <div class="col-sm-12">
+                                <p> 
+                                Lançamento de pagamento para o aluno  <?= $aluno->getNome() ?> para o ano de <?= isset($_GET["ano"]) 
+                                                ? htmlspecialchars($_GET["ano"]) 
+                                                : date("Y")  ?>
+                                </p>
+                            </div>
+                            <div class="col-sm-12">
+                                <p>
+                                Divida total : <?= "R$".
+                                    number_format( $divida, 2)
+                                     ?>
+                                </p>
+                            </div>
+
+                                <div class="col-sm-12">
+                                <label for="valor-pagamento" class="col-sm-6">
+                                    Valor do Pagamento:
+                                </label>
+                                <input type="text" class="col-sm-6" id="valor-pagamento" name=" valor-pagamento" >
+
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="metodo-pagamento" class="col-sm-6">
+                                    Método de Pagamento:
+                                </label>
+                                <select id="metodo-pagamento" name="metodo-pagamento"
+                                        class="form-control" style="width: 100px">
+                                    <option value="Dinheiro">Dinheiro</option>
+                                    <option value="Cheque"  >Cheque</option>
+                                </select>
+                            </div><br>
+                            <div class="col-sm-12">
+                                <h5 class="warning">Não é permitido lançar um pagamento maior do que a divida total!</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" name="efetua_pagamento" id="efetua_pagamento" 
+                        value="Efetuar Pagamento" class="btn btn-primary">
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+
         <?php
             }else{
         ?>
