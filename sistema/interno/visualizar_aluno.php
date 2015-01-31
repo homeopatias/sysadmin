@@ -285,7 +285,11 @@
                         $query->bindParam(3, $metodo);
                         $query->bindParam(4, $anoPagamento);
 
+                        
+
                         $sucesso = $query->execute();
+
+                        var_dump($query->errorInfo());
 
                         for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
                             if( $pagamentos[$anoPagamento][$i]['editado'] ){
