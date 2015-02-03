@@ -127,7 +127,11 @@
                     $("#label-ipp").show(300);   
                 });
 
-
+                $("#btn-muda-senha").click(function(){
+                    $(this).hide();
+                    $("#senha").parent().show(300);
+                    $("#senha").focus();
+                });
 
                 // processa envio do formulário se enter for pressionado dentro de algum campo
                 // do formulário de filtro
@@ -858,12 +862,22 @@
                                        class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="login">Nome de usuário:</label>
+                                <label for="senha">Nome de usuário:</label>
                                 <input type="text" name="login" id="login" required
-                                       pattern="^.{3,100}$" placeholder="Nome de usuário"
+                                       pattern="^.{3,72}$" placeholder="Nome de usuário"
                                        title="O login deve ter de 3 a 100 caracteres"
                                        class="form-control">
                             </div>
+
+                            <div class="btn btn-primary" id="btn-muda-senha">Mudar senha</div>
+                            <div class="form-group" style="display:none">
+                                <label for="login">Nova senha:</label>
+                                <input type="password" name="senha" id="senha" pattern="^.{6,100}$|^$"
+                                       placeholder="Senha (deixe em branco caso não deseje mudar)"
+                                       title="A senha deve ter de 6 a 72 caracteres"
+                                       class="form-control">
+                            </div>
+                            <br><br>
 
                             <div style="display:block col-sm-12">
                                 <p> Permissões de administração:</p>

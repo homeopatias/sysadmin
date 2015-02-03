@@ -91,6 +91,12 @@
                     $("#label-ipp").show(300);   
                 });
 
+                $("#btn-muda-senha").click(function(){
+                    $(this).hide();
+                    $("#senha").parent().show(300);
+                    $("#senha").focus();
+                });
+
                 // se clicou na lupa, envia o formulário
                 $("#busca").click(function(e){
                     atualizaPagina();
@@ -907,6 +913,16 @@
                                        title="O login deve ter de 3 a 100 caracteres"
                                        class="form-control">
                             </div>
+
+                            <div class="btn btn-primary" id="btn-muda-senha">Mudar senha</div>
+                            <div class="form-group" style="display:none">
+                                <label for="login">Nova senha:</label>
+                                <input type="password" name="senha" id="senha" pattern="^.{6,100}$|^$"
+                                       placeholder="Senha (deixe em branco caso não deseje mudar)"
+                                       title="A senha deve ter de 6 a 72 caracteres"
+                                       class="form-control">
+                            </div>
+                            <br><br>
                             <div class="form-group">
                                 <br>
                                 <input type="checkbox" name="corrigeTrabalho" id="corrigeTrabalho">
