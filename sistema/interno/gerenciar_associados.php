@@ -1041,6 +1041,9 @@
                             echo "<p class=\"sucesso\">$msg</p>";
                         }
                     ?>
+                    <a href="gerenciar_instituicoes.php" class="pull-right">
+                        <i href="#" class="fa fa-cog fa-2x"></i>
+                    </a>
                     <a href="#" class="btn" data-toggle="modal" data-target="#modal-novo-associado">
                         <i href="#" class="fa fa-plus"></i>
                         <p style="display:inline">Novo associado</p>
