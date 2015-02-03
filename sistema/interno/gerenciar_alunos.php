@@ -53,13 +53,13 @@
 
                 $("#alunos").tablesorter({ headers: {
                     0 : { sorter: false },
-                    3 : { sorter: false },
-                    5 : { sorter: "datetime" },
+                    4 : { sorter: false },
+                    5 : { sorter: false },
                     6 : { sorter: false },
                     7 : { sorter: false },
-                    8 : { sorter: false },
                     9 : { sorter: false },
                     10 : { sorter: false },
+                    11 : { sorter: false }
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -113,6 +113,12 @@
                     $(this).find('#tipo_cadastro').val(
                         $(e.relatedTarget).data('tipo_cadastro')
                     );
+                    $(this).find('#cpf').val(
+                        $(e.relatedTarget).data('cpf')
+                    );
+                    $(this).find('#login').val(
+                        $(e.relatedTarget).data('login')
+                    );
 
                     //------------------------
                     $(this).find('#escolaridade').val(
@@ -132,14 +138,8 @@
                     $(this).find('#nome').val(
                         $(e.relatedTarget).parent().siblings('.nome').text()
                     );
-                    $(this).find('#cpf').val(
-                        $(e.relatedTarget).parent().siblings('.cpf').text()
-                    );
                     $(this).find('#email').val(
                         $(e.relatedTarget).parent().siblings('.email').text()
-                    );
-                    $(this).find('#login').val(
-                        $(e.relatedTarget).parent().siblings('.login').text()
                     );
                     $(this).find('#status').val(
                         $(e.relatedTarget).parent().siblings('.status').data("status")
@@ -849,8 +849,9 @@
                 $textoQuery  =  "SELECT U.id, U.cpf, U.dataInscricao, U.email,
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
-                                A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro
-                                FROM Usuario U, Aluno A ";
+                                A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
+                                MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula
+                                FROM Usuario U, Aluno A";
 
                 $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
                                  && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
@@ -858,7 +859,9 @@
                                             ? ", Cidade C, Matricula M "
                                             : "";
 
-                $textoQuery .=  " WHERE A.idUsuario = U.id ";
+                $textoQuery .=  " LEFT JOIN Matricula M ON M.chaveAluno = A.numeroInscricao
+                                  LEFT JOIN Cidade C ON M.chaveCidade = C.idCidade
+                                  WHERE A.idUsuario = U.id ";
 
                 $textoQuery .= ( mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
                                  && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
@@ -927,6 +930,8 @@
 
                 }
 
+                $textoQuery .= " GROUP BY U.id";
+
                 //------- Prepara o necessário para a ordenação
 
                 // variáveis com valores defaults
@@ -949,13 +954,10 @@
                                 $orderBy = " ORDER BY U.nome " ;
                                 break;
                             case '2':
-                                $orderBy = " ORDER BY U.login " ;
-                                break;
-                            case '4':
                                 $orderBy = " ORDER BY U.email " ;
                                 break;
-                            case '5':
-                                $orderBy = " ORDER BY U.dataInscricao " ;
+                            case '3':
+                                $orderBy = " ORDER BY U.status " ;
                                 break;
                             
                             default:
@@ -1087,15 +1089,41 @@
                     $tabela .= htmlspecialchars($linha["numeroInscricao"])  ."</td>";
                     $tabela .= "    <td class=\"nome\">";
                     $tabela .= htmlspecialchars($linha["nome"])             ."</td>";
-                    $tabela .= "    <td class=\"login\">";
-                    $tabela .= htmlspecialchars($linha["login"])            ."</td>";
-                    $tabela .= "    <td class=\"cpf\">";
-                    $tabela .= $cpf                                     ."</td>";
                     $tabela .= "    <td class=\"email\">";
                     $tabela .= htmlspecialchars($linha["email"])            ."</td>";
-                    $tabela .= "    <td class=\"datainsc\">";
-                    $tabela .= date("d/m/Y H:i:s",
-                               strtotime(htmlspecialchars($linha["dataInscricao"])))    ."</td>";
+                    $etapaMatricula = htmlspecialchars($linha["etapaMatricula"]);
+                    if($etapaMatricula == "") {
+                        $etapaMatricula = "N/A";
+                    }
+                    $tabela .= "    <td class=\"etapa\">";
+                    $tabela .= $etapaMatricula ."</td>";
+                    $anoMatricula = htmlspecialchars($linha["anoMatricula"]);
+                    if($anoMatricula == "") {
+                        $anoMatricula = "N/A";
+                    }
+                    $tabela .= "    <td class=\"ano\">";
+                    $tabela .= $anoMatricula   ."</td>";
+                    $tabela .= "    <td class=\"tipocurso\">";
+                    
+                    $tipocurso = htmlspecialchars($linha["tipo_curso"]);
+                    if($tipocurso == 'extensao') {
+                        $tabela .= "Extensão";
+                    } else if($tipocurso == 'pos') {
+                        $tabela .= "Pós";
+                    }
+
+                    $tabela .=  "</td>";
+                    $tabela .= "    <td class=\"tipocadastro\">";
+
+                    $tipocadastro = htmlspecialchars($linha["tipo_cadastro"]);
+                    if($tipocadastro == 'instituto') {
+                        $tabela .= "Instituto";
+                    } else if($tipocadastro == 'faculdade inspirar') {
+                        $tabela .= "Faculdade Inspirar";
+                    }
+
+                    $tabela .= "</td>";                    
+
                     $tabela .= "    <td class=\"status\" data-status=\"";
                     $tabela .= htmlspecialchars($linha["status"]). "\">";
                     if($linha["status"] === "inscrito"){
@@ -1128,6 +1156,10 @@
                     $tabela .= $linhaIndicador["login"];
                     $tabela .= "\" data-id=\"";
                     $tabela .= $linha["id"];
+                    $tabela .= "\" data-login=\"";
+                    $tabela .= htmlspecialchars($linha["login"]);
+                    $tabela .= "\" data-cpf=\"";
+                    $tabela .= $cpf;
                     $tabela .= "\" data-telefone=\"";
                     $tabela .= $linha["telefone"];
                     $tabela .= "\" data-escolaridade=\"";
@@ -1290,7 +1322,7 @@
                                         mb_strlen(($_GET["filtro-data-min"])) > 0) ? 
                                             "display:inline;color:#336600" : "display:inline";
                                         ?>
-                                >Datas desde
+                                >Inscritos desde
                             </a>
                             <div id="div-data-min" style="display: inline">
                                 <input type="date" name="filtro-data-min" id="filtro-data-min"
@@ -1304,7 +1336,7 @@
                                         mb_strlen(($_GET["filtro-data-max"])) > 0) ? 
                                             "display:inline;color:#336600" : "display:inline";
                                         ?>
-                                >Datas até
+                                >Inscritos até
                             </a>
                             <div id="div-data-max" style="display: inline">
                             <input type="date" name="filtro-data-max" id="filtro-data-max"
@@ -1428,27 +1460,25 @@
                                 <thead style="background-color: #AAA">
                                     <tr>
                                         <th width= "80px">Selecionar</th>
-                                        <th width="100px" <?= $indexHeader == 0 ? 
+                                        <th width="90px" <?= $indexHeader == 0 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?> >Nº inscrição</th>
+                                                "class =\"headerSortDown\"") : "" ?> >Inscrição</th>
                                         <th width="160px"
                                             <?= $indexHeader == 1 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >Nome</th>
-                                        <th width="100px" 
+                                        <th width="180px"
                                             <?= $indexHeader == 2 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?> >Nome de usuário</th>
-                                        <th width="110px">CPF</th>
-                                        <th width="150px"
-                                            <?= $indexHeader == 4 ? 
-                                            ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >E-mail</th>
-                                        <th width="130px"
-                                            <?= $indexHeader == 5 ? 
+                                        <th width="70px">Etapa</th>
+                                        <th width="70px">Ano</th>
+                                        <th width="100px">Tipo</th>
+                                        <th width="100px">Certificado</th>
+                                        <th width="100px"
+                                            <?= $indexHeader == 3 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?> >Data e hora de inscrição</th>
-                                        <th width="100px">Status</th>
+                                                "class =\"headerSortDown\"") : "" ?> >Status</th>
                                         <th width="60px">Visualizar</th>
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
