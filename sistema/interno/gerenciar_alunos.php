@@ -420,6 +420,14 @@
                     $("#modal-email").find("#sendType").val("selecionados");
                 });
 
+                $('.selc > input[type="checkbox"]').click(function() {
+                    var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
+                    if(numSelecionados)
+                        $("#send").fadeIn();
+                    else
+                        $("#send").fadeOut();
+                });
+
                 checaTamanhoTela();
             }); 
             
@@ -1414,7 +1422,7 @@
                             </a>
                             <a href="#" class="btn btn-primary pull-right" data-toggle="modal" 
                                 data-target="#modal-email"
-                                id="sendSelecionados" style="margin-right:2em">
+                                id="send" style="margin-right:2em; display:none">
                                 <p>Enviar e-mail para os selecionados</p>
                             </a>
                                 <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
