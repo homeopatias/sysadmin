@@ -456,8 +456,8 @@
 
                                         //Se a inscrição foi paga, atualiza desconto
                                         if($pagamentos[date("Y")][0]['fechado']){
-                                            require_once($_SERVER["DOCUMENT_ROOT"].
-                                                "/interno/entidades/Aluno.php");
+                                            require_once(dirname(__FILE__).
+                                                "/entidades/Aluno.php");
 
     
                                             $aluno = new Aluno("");

@@ -238,7 +238,7 @@
 			</div>
             <br>
             <a href="#" data-toggle="modal"
-               data-target="#modal-muda-email">Alterar e-mail</a>
+               data-target="#modal-muda-dados">Alterar dados cadastrais</a>
             <?php
 
                 if (unserialize($_SESSION['usuario']) instanceof Associado &&

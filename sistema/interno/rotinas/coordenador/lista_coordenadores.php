@@ -8,7 +8,7 @@
 // Retorna: Vetor de Administradores, com apenas id, nome e login preenchidos
 
 function listaCoordenadores($ano = false){
-    require_once($_SERVER["DOCUMENT_ROOT"] . "/interno/entidades/Administrador.php");
+    require_once(dirname(__FILE__) . "/../../entidades/Administrador.php");
 
     // lemos as credenciais do banco de dados
     $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
