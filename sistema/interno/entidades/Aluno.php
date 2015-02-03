@@ -602,7 +602,7 @@ class Aluno extends Usuario{
         }
 
         //primeiro buscamos a matricula do aluno deste ano
-        $textoQuery = "SELECT M.idMatricula
+        $textoQuery = "SELECT M.idMatricula, M.desconto_individual
                         FROM Matricula M, Cidade C
                         WHERE M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())
                         AND M.chaveAluno = :id";
@@ -613,6 +613,8 @@ class Aluno extends Usuario{
 
         if($linha = $query->fetch()){
             $idMatricula = $linha["idMatricula"];
+
+            $desconto_individual = $linha["desconto_individual"];
     
             //buscamos agora os indicados que garantem desconto ao aluno
             $textoQuery = "SELECT A.numeroInscricao
@@ -633,6 +635,8 @@ class Aluno extends Usuario{
             if($this->idIndicador){
                 $desconto += 10;
             }
+            // soma o desconto individual do aluno ao desconto das parcelas
+            $desconto += $desconto_individual;
     
             if($desconto > 100) $desconto = 100;
     
