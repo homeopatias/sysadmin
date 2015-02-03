@@ -24,23 +24,7 @@
 
                 // torna a tabela ordenavel pelas colunas
 
-                // parser para ordenar datas
-                $.tablesorter.addParser({
-                    id: "datetime",
-                    is: function(s) {
-                        return false; 
-                    },
-                    format: function(s,table) {
-                        s = s.replace(/\-/g,"/");
-                        s = s.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/, "$3/$2/$1");
-                        return $.tablesorter.formatFloat(new Date(s).getTime());
-                    },
-                    type: "numeric"
-                });
-
-                $("#notas").tablesorter({ headers: {
-                    4 : { sorter: "datetime" },
-                }});
+                $("#notas").tablesorter();
 
                 checaTamanhoTela();
             }); 
@@ -80,7 +64,7 @@
                 $mensagem = $_GET["erro"];
             }
 
-            // exibe notícias apenas para administradores logados
+            // exibe notas apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
                && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" && 
                2 & unserialize($_SESSION["usuario"])->getPermissoes()){
@@ -106,27 +90,35 @@
                     echo $e->getMessage();
                 }
 
+                $idProfessor = isset($_GET["idProfessor"]) ? $_GET["idProfessor"] : '';
+                $idProfessor = intval($idProfessor);
+
                 $textoQuery = "SELECT P.nome as nProf, YEAR(A.data) as ano, A.etapa, A.nota,
                                COUNT(F.chaveAula) as numAval FROM Frequencia F INNER JOIN
                                Aula A ON A.idAula = F.chaveAula INNER JOIN Administrador Ad
                                ON Ad.idAdmin = A.idProfessor INNER JOIN Usuario P ON P.id =
                                Ad.idUsuario WHERE A.nota IS NOT NULL AND jaAvaliou = 1
+                               AND A.idProfessor = ?
                                GROUP BY P.nome, A.etapa, YEAR(A.data) ORDER BY
                                YEAR(A.data) DESC, P.nome ASC, A.etapa DESC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
+                $query->bindParam(1, $idProfessor);
                 $query->execute();
 
                 $numeroRegistros = 0;
                 $tabela = "";
+                $nomeProf = '';
 
                 while ($linha = $query->fetch()){
 
-                    // listamos os dados de cada noticia
+                    // listamos os dados de cada nota
+                    if(!$nomeProf){
+                        $nomeProf = htmlspecialchars($linha["nProf"]);
+                    }
+
                     $tabela .= "<tr>";
-                    $tabela .= "    <td>";
-                    $tabela .= htmlspecialchars($linha["nProf"])                             ."</td>";
                     $tabela .= "    <td>";
                     $tabela .= htmlspecialchars($linha["ano"])                               ."</td>";
                     $tabela .= "    <td>";
@@ -143,14 +135,14 @@
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
-                    <h1>Notas recebidas pelos professores</h1><br>    
+                    <h1>Notas recebidas por <?= $nomeProf ?></h1><br>    
                     <?php 
                         if(mb_strlen($mensagem, 'UTF-8') !== 0){
                             echo "<p class=\"warning\">$mensagem</p>";
                         }
                     ?>
                     <!-- opção para organizar as notas por aula, ao invés de por etapa -->
-                    <a href="gerenciar_notas_professores.php" class="btn">
+                    <a href=<?= "\"gerenciar_notas_professores.php?idProfessor=".$idProfessor . "\"" ?> class="btn">
                         <i href="#" class="fa fa-calendar"></i>
                         <p style="display:inline">Visualizar notas por aula</p>
                     </a>
@@ -161,7 +153,6 @@
                             <table class="table table-bordered table-striped" id="notas">
                                 <thead style="background-color: #AAA">
                                     <tr>
-                                        <th width="200px">Nome do professor</th>
                                         <th width="70px">Ano</th>
                                         <th width="70px">Etapa</th>
                                         <th width="160px">Número de avaliações</th>

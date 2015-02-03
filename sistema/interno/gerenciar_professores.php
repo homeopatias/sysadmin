@@ -22,23 +22,8 @@
                 
                 // torna a tabela ordenavel pelas colunas
 
-                // parser para ordenar datas
-                $.tablesorter.addParser({
-                    id: "datetime",
-                    is: function(s) {
-                        return false; 
-                    },
-                    format: function(s,table) {
-                        s = s.replace(/\-/g,"/");
-                        s = s.replace(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/, "$3/$2/$1");
-                        return $.tablesorter.formatFloat(new Date(s).getTime());
-                    },
-                    type: "numeric"
-                });
-
                 $("#professores").tablesorter({ headers: {
                     2 : { sorter: false },
-                    4 : { sorter: "datetime" },
                     5 : { sorter: false },
                     6 : { sorter: false },
                     7 : { sorter: false }
@@ -449,9 +434,10 @@
                 }
 
                 $textoQuery  = "SELECT U.id, U.cpf, U.dataInscricao, U.email, 
-                                U.nome, U.login, A.idAdmin, A.corrigeTrabalho
-                                FROM Usuario U, Administrador A WHERE A.idUsuario = U.id AND 
-                                A.nivel = \"professor\" ";
+                                U.nome, U.login, Ad.idAdmin, Ad.corrigeTrabalho, AVG(A.nota) as nota
+                                FROM Usuario U, Administrador Ad LEFT JOIN Aula A ON A.idProfessor = Ad.idAdmin
+                                WHERE Ad.idUsuario = U.id AND Ad.nivel = \"professor\" GROUP BY
+                                A.idProfessor";
 
                 // Se algum filtro foi repassado, altera o query para filtrar
                 $filtroCpf = $filtroNome = false;
@@ -580,6 +566,14 @@
                         $cpf .= implode("", array_slice($cpfOriginal, 6, 3)) . "-";
                         $cpf .= implode("", array_slice($cpfOriginal, 9, 2));
                         $cpf  = htmlspecialchars($cpf);
+
+                        $nota = number_format(htmlspecialchars($linha["nota"]), 2);
+                        if (!$nota) {
+                            $nota = '-';
+                        } else {
+                            $nota  = "<a href=\"gerenciar_notas_professores.php?idProfessor="
+                                   . htmlspecialchars($linha["idAdmin"]) . "\">" . $nota . "</a>";
+                        }
     
                         // listamos os dados de cada usuário
                         $tabela .= "<tr>";
@@ -591,9 +585,8 @@
                         $tabela .= $cpf                                     ."</td>";
                         $tabela .= "    <td class=\"email\">";
                         $tabela .= htmlspecialchars($linha["email"])            ."</td>";
-                        $tabela .= "    <td class=\"datainsc\">";
-                        $tabela .= date("d/m/Y H:i:s", 
-                                        strtotime(htmlspecialchars($linha["dataInscricao"]))) ."</td>";
+                        $tabela .= "    <td class=\"nota\">";
+                        $tabela .= $nota . "</td>";
                         $tabela .= "    <td class=\"corrigeTrabalho\">";
                         $tabela .= $linha["corrigeTrabalho"] ?
                                         "<i class=\"fa fa-check sucesso\"></i>" :
@@ -726,7 +719,7 @@
                                                 "class =\"headerSortDown\"") : "" ?>>E-mail</th>
                                         <th width="170px"<?= $indexHeader == 4 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?>>Data e hora de inscrição</th>
+                                                "class =\"headerSortDown\"") : "" ?>>Nota média</th>
                                         <th width="70px">Avaliador?</th>
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
