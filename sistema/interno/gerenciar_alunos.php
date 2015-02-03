@@ -107,6 +107,12 @@
                     $(this).find('#complemento').val(
                         $(e.relatedTarget).data('complemento')
                     );
+                    $(this).find('#tipo_curso').val(
+                        $(e.relatedTarget).data('tipo_curso')
+                    );
+                    $(this).find('#tipo_cadastro').val(
+                        $(e.relatedTarget).data('tipo_cadastro')
+                    );
 
                     //------------------------
                     $(this).find('#escolaridade').val(
@@ -572,6 +578,8 @@
                     $bairro         = $_POST["bairro"];
                     $cidade         = $_POST["cidade"];
                     $estado         = $_POST["estado"];
+                    $tipoCurso      = $_POST["tipo_curso"];
+                    $tipoCadastro   = $_POST["tipo_cadastro"];
 
                     $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                       mb_strlen($nome, 'UTF-8') <= 100;
@@ -749,10 +757,15 @@
                     $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
                                    (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
 
+                    $tipoCursoValido = $tipoCurso == "extensao" || $tipoCurso == "pos" ;
+
+                    $tipoCadastroValido = $tipoCadastro == "instituto" || 
+                                          $tipoCadastro == "faculdade inspirar";
+
                     // se todos os dados estão válidos, o aluno é cadastrado
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida &&
                        $loginIndicadorValido && $telefoneValido && $enderecoValido &&
-                       $escolaridadeValida && $cursoValido){
+                       $escolaridadeValida && $cursoValido && $tipoCursoValido && $tipoCadastroValido){
 
                         require_once("entidades/Aluno.php");
 
@@ -770,6 +783,8 @@
                         $novo->setCidade($cidade);
                         $novo->setEstado($estado);
                         $novo->setPais("BRL");
+                        $novo->setTipoCurso($tipoCurso);
+                        $novo->setTipoCadastro($tipoCadastro);
                         if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
                            $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
                             $novo->setCurso(isset($curso) ? $curso : null);
@@ -814,6 +829,12 @@
                             $mensagem = "Curso inválido!";
                         }
                     }
+                    else if(!$tipoCursoValido){
+                        $mensagem = "Tipo de curso inválido";
+                    }
+                    else if(!$tipoCadastroValido){
+                        $mensagem = "Tipo de cadastro inválido";
+                    }
                 }
                 $filtroCidade     = null;
                 $queryAnoCidade   = null;
@@ -828,8 +849,8 @@
                 $textoQuery  =  "SELECT U.id, U.cpf, U.dataInscricao, U.email,
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
-                                A.complemento, A.escolaridade, A.curso FROM Usuario U, 
-                                Aluno A ";
+                                A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro
+                                FROM Usuario U, Aluno A ";
 
                 $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
                                  && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
@@ -865,7 +886,7 @@
                    isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
                    isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
-                   isset($_GET["filtro-etapa"])                                         ){
+                   isset($_GET["filtro-etapa"])                                  ){
                     $filtroNome    =  htmlspecialchars($_GET["filtro-nome"]);
                     $filtroCpf     =  htmlspecialchars($_GET["filtro-cpf"]);
                     $filtroStatus  =  htmlspecialchars($_GET["filtro-status"]);
@@ -1127,7 +1148,11 @@
                     $tabela .= $linha["estado"];
                     $tabela .= "\" data-complemento=\"";
                     $tabela .= $linha["complemento"];
-                    $tabela .= "\" href=\"#\" data-toggle=\"modal\"";
+                    $tabela .= "\" data-tipo_curso=\"";
+                    $tabela .= $linha["tipo_curso"];
+                    $tabela .= "\" data-tipo_cadastro=\"";
+                    $tabela .= $linha["tipo_cadastro"];
+                    $tabela .= "\"href=\"#\" data-toggle=\"modal\"";
                     $tabela .= " data-target=\"#modal-edita-aluno\">";
                     $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
                     $tabela .= "    <td><a data-href=\"rotinas/aluno/";
@@ -1930,6 +1955,20 @@
                                     <option value="desistente">Desistente</option>
                                     <option value="formado">Formado</option>
                                     <option value="inativo">Inativo</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tipo_curso">Tipo de curso</label>
+                                <select id="tipo_curso" name = "tipo_curso">
+                                    <option value="extensao">Extensão</option>
+                                    <option value="pos">Pós Graduação</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tipo_cadastro">Tipo de Cadastro</label>
+                                <select id="tipo_cadastro" name="tipo_cadastro">
+                                    <option value="instituto">Instituto</option>
+                                    <option value="faculdade inspirar">Faculdade Inspirar</option>
                                 </select>
                             </div>
                             <div class="form-group">

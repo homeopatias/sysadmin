@@ -22,6 +22,8 @@ class Aluno extends Usuario{
     private $telefone;
     private $escolaridade;
     private $curso;
+    private $tipoCurso;
+    private $tipoCadastro;
 
     //Variáveis relacionadas ao endereço
     private $cep;
@@ -58,6 +60,8 @@ class Aluno extends Usuario{
         $this->cidade          = "";
         $this->estado          = "";
         $this->pais            = "";
+        $this->tipoCurso       = "";
+        $this->tipoCadastro    = "";
     }
 
     // Função que confere os dados do aluno no sistema e
@@ -82,7 +86,7 @@ class Aluno extends Usuario{
         $textoQuery  = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email, U.senha, 
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone,
                         A.escolaridade, A.curso,A.cep, A.rua, A.numero, A.complemento,
-                        A.bairro, A.cidade, A.estado, A.pais 
+                        A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro
                         FROM Usuario U, Aluno A WHERE U.login=? AND A.idUsuario = U.id";
 
         $query = $conexao->prepare($textoQuery);
@@ -115,6 +119,8 @@ class Aluno extends Usuario{
                 $this->cidade          = $linha["cidade"];
                 $this->estado          = $linha["estado"];
                 $this->pais            = $linha["pais"];
+                $this->tipoCurso       = $linha["tipo_curso"];
+                $this->tipoCadastro    = $linha["tipo_cadastro"];
 
                 $_SESSION["usuario"] = serialize($this);
 
@@ -153,7 +159,7 @@ class Aluno extends Usuario{
         $textoQuery  = "SELECT U.id, U.cpf, U.login, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email, U.senha, 
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.escolaridade, 
                         A.curso ,A.cep, A.rua, A.numero, A.complemento,
-                        A.bairro, A.cidade, A.estado, A.pais 
+                        A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro
                         FROM Usuario U, Aluno A WHERE A.numeroInscricao=? AND A.idUsuario = U.id";
 
         $query = $conexao->prepare($textoQuery);
@@ -183,6 +189,8 @@ class Aluno extends Usuario{
             $this->cidade          = $linha["cidade"];
             $this->estado          = $linha["estado"];
             $this->pais            = $linha["pais"];
+            $this->tipoCurso       = $linha["tipo_curso"];
+            $this->tipoCadastro    = $linha["tipo_cadastro"];
 
             // encerramos a conexão com o BD
             $conexao = null;
@@ -249,22 +257,24 @@ class Aluno extends Usuario{
             $dadosAluno  = array($idUsuario, $this->status, $this->telefone, $this->escolaridade,
                                  $this->curso, $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
-                                 $this->cidade, $this->estado, $this->pais);
+                                 $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
+                                 $this->tipoCadastro);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, 
                              escolaridade, curso, cep, rua, numero , complemento, bairro,
-                             cidade, estado, pais) VALUES (?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?)";
+                             cidade, estado, pais, tipo_curso, tipo_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?,
+                             ?, ?, ?, ?, ?, ?, ?, ?)";
 
         }else{
             $dadosAluno  = array($idUsuario, $this->status, $this->telefone,
                                  $this->idIndicador, $this->escolaridade, $this->curso,
                                  $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
-                                 $this->cidade, $this->estado, $this->pais);
+                                 $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
+                                 $this->tipoCadastro);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone,  
                             idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
-                             cidade, estado, pais) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?)";
+                             cidade, estado, pais, tipo_curso, tipo_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
+                             ?, ?, ?, ?, ?, ?, ?)";
         }
         $query = $conexao->prepare($queryAluno);
         $sucessoAluno = $query->execute($dadosAluno);
@@ -332,7 +342,8 @@ class Aluno extends Usuario{
                     telefone = :telefone, escolaridade = :escolaridade, 
                     curso = :curso ,numeroInscricao = :numInsc,
                     cep = :cep, rua = :rua, numero = :numero, complemento = :complemento ,
-                    cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais 
+                    cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais ,
+                    tipo_curso = :tipo_curso, tipo_cadastro = :tipo_cadastro
                     WHERE numeroInscricao = :numInsc";
         $query = $conexao->prepare($comando);
 
@@ -355,6 +366,8 @@ class Aluno extends Usuario{
         $query->bindParam(":estado", $this->estado, PDO::PARAM_STR);
         $query->bindParam(":bairro", $this->bairro, PDO::PARAM_STR);
         $query->bindParam(":pais", $this->pais, PDO::PARAM_STR);
+        $query->bindParam(":tipo_curso", $this->tipoCurso, PDO::PARAM_STR);
+        $query->bindParam(":tipo_cadastro", $this->tipoCadastro, PDO::PARAM_STR);
 
         $sucessoAluno = $query->execute();
 
@@ -800,6 +813,21 @@ class Aluno extends Usuario{
         $this->pais = $pais;
 
         return $this;
+    }
+
+    public function setTipoCurso($tipoCurso)
+    {
+        return $this->tipoCurso = $tipoCurso;
+    }
+    public function getTipoCurso(){
+        return $this->tipoCurso;
+    }
+
+    public function setTipoCadastro($tipoCadastro){
+        return $this->tipoCadastro = $tipoCadastro;
+    }
+    public function getTipoCadastro(){
+        return $this->tipoCadastro;
     }
 
     // Função que retorna o indicador, não apenas seu ID

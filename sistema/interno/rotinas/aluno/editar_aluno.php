@@ -43,6 +43,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $cidade         = $_POST["cidade"];
         $estado         = $_POST["estado"];
         $pais           = "BRL";
+        $tipoCurso      = $_POST["tipo_curso"];
+        $tipoCadastro   = $_POST["tipo_cadastro"];
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100;
@@ -145,11 +147,17 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
                             $bairroValido && $cidadeValida
                            && $estadoValido);
 
+        $tipoCursoValido = $tipoCurso == "extensao" || $tipoCurso == "pos" ;
+
+        $tipoCadastroValido = $tipoCadastro == "instituto" || 
+                              $tipoCadastro == "faculdade inspirar";
+
         $sucesso = false;
         // se todos os dados estão válidos, o aluno é editado
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
            $statusValido && $loginIndicadorValido && $escolaridadeValida &&
-           $cursoValido && $inscValido && $idValido && $enderecoValido){
+           $cursoValido && $inscValido && $idValido && $enderecoValido && $tipoCadastroValido && 
+           $tipoCursoValido){
 
             require_once("../../entidades/Aluno.php");
 
@@ -168,6 +176,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setCidade($cidade);
             $atualizar->setEstado($estado);
             $atualizar->setPais("BRL");
+            $atualizar->setTipoCurso($tipoCurso);
+            $atualizar->setTipoCadastro($tipoCadastro);
             
             if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
                $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
