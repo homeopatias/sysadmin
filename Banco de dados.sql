@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Tempo de geração: 28/01/2015 às 10:58
+-- Tempo de geração: 31/01/2015 às 20:04
 -- Versão do servidor: 5.5.40-0ubuntu1
 -- Versão do PHP: 5.5.12-2ubuntu4.1
 
@@ -83,12 +83,12 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
 --
 
 INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `endereco`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `tipo_cadastro`) VALUES
-(1, 2, 'preinscrito', NULL, '1693018232', '', 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'extensao', 'instituto'),
+(1, 2, 'preinscrito', NULL, '1693018232', '', 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'instituto'),
 (2, 3, 'inscrito', 1, '1961438378', '', 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'instituto'),
 (3, 4, 'preinscrito', NULL, '8260134527', '', 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'instituto'),
 (4, 5, 'preinscrito', NULL, '6135342360', '', 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'instituto'),
 (5, 6, 'preinscrito', 4, '8698463979', '', 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'instituto'),
-(6, 7, 'inscrito', NULL, '2169357517', '', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'instituto'),
+(6, 7, 'preinscrito', NULL, '2169357517', '', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'instituto'),
 (7, 8, 'inscrito', NULL, '1184439221', '', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'instituto'),
 (8, 9, 'inscrito', NULL, '8498876543', '', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'instituto'),
 (9, 10, 'inscrito', NULL, '5787659485', '', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'instituto'),
@@ -143,18 +143,19 @@ CREATE TABLE IF NOT EXISTS `Associado` (
   `numero` int(11) NOT NULL COMMENT 'Numero do endereço do Associado',
   `bairro` varchar(255) NOT NULL COMMENT 'Bairro do Associado',
   `complemento` varchar(255) DEFAULT NULL COMMENT 'Complemento do Endereço',
-  `pais` varchar(3) NOT NULL COMMENT 'País que o Associado reside'
+  `pais` varchar(3) NOT NULL COMMENT 'País que o Associado reside',
+  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o associado'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Associado da CONAHOM/ATENEMG' AUTO_INCREMENT=5 ;
 
 --
 -- Fazendo dump de dados para tabela `Associado`
 --
 
-INSERT INTO `Associado` (`idAssoc`, `idUsuario`, `instituicao`, `formacaoTerapeutica`, `telefone`, `endereco`, `cidade`, `estado`, `numObjeto`, `dataEnvioCarteirinha`, `enviouDocumentos`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `pais`) VALUES
-(1, 13, 'conahom', 'Quiropraxia', '2487348942', '', 'Nova Lima', 'MG', NULL, NULL, 1, '43857654', 'Rua Nogueira', 98, 'Carijós', '', 'BRL'),
-(2, 14, 'atenemg', 'Florais', '2398575677', '', 'Belém', 'PA', NULL, NULL, 0, '30843030', 'Rua Lobo Soares', 87, 'Jordânia', '', 'BRL'),
-(3, 15, 'conahom', 'Tratamentos de longo prazo', '3372383294', '', 'Palmas', 'TO', NULL, NULL, 0, '44556544', 'Rua das Flores', 83, 'Especial', '', 'BRL'),
-(4, 22, 'atenemg', 'Homeopatia do sono', '3134921312', '', 'Belo Horizonte', 'MG', NULL, NULL, 0, '31540120', 'Rua Professor Clóvis de Faria', 103, 'Santa Amélia', 'Apto. 201', 'BRL');
+INSERT INTO `Associado` (`idAssoc`, `idUsuario`, `instituicao`, `formacaoTerapeutica`, `telefone`, `endereco`, `cidade`, `estado`, `numObjeto`, `dataEnvioCarteirinha`, `enviouDocumentos`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `pais`, `desconto_individual`) VALUES
+(1, 13, 'conahom', 'Quiropraxia', '2487348942', '', 'Nova Lima', 'MG', NULL, NULL, 1, '43857654', 'Rua Nogueira', 98, 'Carijós', '', 'BRL', 0),
+(2, 14, 'atenemg', 'Florais', '2398575677', '', 'Belém', 'PA', NULL, NULL, 0, '30843030', 'Rua Lobo Soares', 87, 'Jordânia', '', 'BRL', 0),
+(3, 15, 'conahom', 'Tratamentos de longo prazo', '3372383294', '', 'Palmas', 'TO', NULL, NULL, 0, '44556544', 'Rua das Flores', 83, 'Especial', '', 'BRL', 0),
+(4, 22, 'atenemg', 'Homeopatia do sono', '3134921312', '', 'Belo Horizonte', 'MG', NULL, NULL, 0, '31540120', 'Rua Professor Clóvis de Faria', 103, 'Santa Amélia', 'Apto. 201', 'BRL', 0);
 
 -- --------------------------------------------------------
 
@@ -330,23 +331,25 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   `chaveAluno` int(11) NOT NULL COMMENT 'Identificador do aluno ao qual essa matrícula se refere',
   `etapa` int(10) unsigned NOT NULL COMMENT 'Etapa a qual essa matrícula se refere',
   `aprovado` tinyint(1) DEFAULT NULL COMMENT 'Determina se o aluno (já) foi aprovado ou não',
-  `chaveCidade` int(11) NOT NULL COMMENT 'Identificador da cidade a qual essa matrícula se refere'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=12 ;
+  `chaveCidade` int(11) NOT NULL COMMENT 'Identificador da cidade a qual essa matrícula se refere',
+  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o aluno'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=13 ;
 
 --
 -- Fazendo dump de dados para tabela `Matricula`
 --
 
-INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chaveCidade`) VALUES
-(1, 11, 1, NULL, 1),
-(2, 10, 1, NULL, 1),
-(3, 2, 1, NULL, 1),
-(4, 1, 1, NULL, 1),
-(5, 9, 1, NULL, 1),
-(6, 8, 1, NULL, 4),
-(7, 7, 1, NULL, 4),
-(8, 6, 1, NULL, 4),
-(11, 11, 2, NULL, 6);
+INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chaveCidade`, `desconto_individual`) VALUES
+(1, 11, 1, NULL, 1, 0),
+(2, 10, 1, NULL, 1, 0),
+(3, 2, 1, NULL, 1, 0),
+(4, 1, 1, NULL, 1, 10),
+(5, 9, 1, NULL, 1, 0),
+(6, 8, 1, NULL, 4, 0),
+(7, 7, 1, NULL, 4, 0),
+(8, 6, 1, NULL, 4, 0),
+(11, 11, 2, NULL, 6, 0),
+(12, 6, 1, NULL, 6, 0);
 
 -- --------------------------------------------------------
 
@@ -360,7 +363,7 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `texto` varchar(500) NOT NULL COMMENT 'Texto da notificação a ser dada ao aluno',
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=103 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=104 ;
 
 --
 -- Fazendo dump de dados para tabela `Notificacao`
@@ -443,7 +446,8 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (99, 'Desconto por indicação', 'Um de seus indicados desistiu do curso, seu desconto de 10% por sua indicação foi removido das próximas parcelas', 9, 1),
 (100, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$40.00\nData: 18/11/2014\nHorário: 08:48\nMétodo: Dinheiro', 9, 1),
 (101, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$30.00\nData: 18/11/2014\nHorário: 08:49\nMétodo: Dinheiro', 9, 1),
-(102, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$20.00\nData: 18/11/2014\nHorário: 08:50\nMétodo: Dinheiro', 9, 1);
+(102, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$20.00\nData: 18/11/2014\nHorário: 08:50\nMétodo: Dinheiro', 9, 1),
+(103, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$150.00\nData: 31/01/2015\nHorário: 20:02\nMétodo: Dinheiro', 2, 0);
 
 -- --------------------------------------------------------
 
@@ -455,20 +459,22 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
 `idPagamento` int(11) NOT NULL COMMENT 'Identificador único desse pagamento',
   `chaveUsuario` int(11) NOT NULL,
   `valor` float NOT NULL COMMENT 'Valor pago nesse pagamento',
+  `data` datetime NOT NULL COMMENT 'Data em que o pagamento foi validado no sistema',
   `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento',
   `objetivo` enum('mensalidade','anuidade','livro','') NOT NULL COMMENT 'Especifica o que esse pagamento está pagando',
   `codigoTransacao` int(11) DEFAULT NULL COMMENT 'Código da transação no Pagseguro, quando houver',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=5 ;
 
 --
 -- Fazendo dump de dados para tabela `Pagamento`
 --
 
-INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `metodo`, `objetivo`, `codigoTransacao`, `ano`) VALUES
-(1, 8, 500, 'Dinheiro', 'mensalidade', NULL, 2014),
-(2, 9, 150, 'Cheque', 'mensalidade', NULL, 2014),
-(3, 9, 70, 'Dinheiro', 'mensalidade', NULL, 2014);
+INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `data`, `metodo`, `objetivo`, `codigoTransacao`, `ano`) VALUES
+(1, 8, 500, '0000-00-00 00:00:00', 'Dinheiro', 'mensalidade', NULL, 2014),
+(2, 9, 150, '0000-00-00 00:00:00', 'Cheque', 'mensalidade', NULL, 2014),
+(3, 9, 70, '0000-00-00 00:00:00', 'Dinheiro', 'mensalidade', NULL, 2014),
+(4, 3, 150, '2015-01-31 20:02:58', 'Dinheiro', 'mensalidade', NULL, 2014);
 
 -- --------------------------------------------------------
 
@@ -540,7 +546,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `data` datetime DEFAULT NULL COMMENT 'Data na qual essa mensalidade foi paga',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=133 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=145 ;
 
 --
 -- Fazendo dump de dados para tabela `PgtoMensalidade`
@@ -571,10 +577,10 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (22, 2, 9, 30, 0, 0, '', NULL, 2014, 0),
 (23, 2, 10, 30, 0, 0, '', NULL, 2014, 0),
 (24, 2, 11, 30, 0, 0, '', NULL, 2014, 0),
-(25, 3, 0, 100, 0, 10, '', NULL, 2014, 0),
-(26, 3, 1, 30, 0, 10, '', NULL, 2014, 0),
-(27, 3, 2, 30, 0, 10, '', NULL, 2014, 0),
-(28, 3, 3, 30, 0, 10, '', NULL, 2014, 0),
+(25, 3, 0, 100, 90, 10, 'Dinheiro', '2015-01-31 00:00:00', 2014, 1),
+(26, 3, 1, 30, 27, 10, 'Dinheiro', '2015-01-31 00:00:00', 2014, 1),
+(27, 3, 2, 30, 27, 10, 'Dinheiro', '2015-01-31 00:00:00', 2014, 1),
+(28, 3, 3, 30, 6, 10, 'Dinheiro', '2015-01-31 00:00:00', 2014, 0),
 (29, 3, 4, 30, 0, 10, '', NULL, 2014, 0),
 (30, 3, 5, 30, 0, 10, '', NULL, 2014, 0),
 (31, 3, 6, 30, 0, 10, '', NULL, 2014, 0),
@@ -678,7 +684,19 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (129, 11, 8, 80, 0, 0, '', NULL, 2015, 0),
 (130, 11, 9, 80, 0, 0, '', NULL, 2015, 0),
 (131, 11, 10, 80, 0, 0, '', NULL, 2015, 0),
-(132, 11, 11, 80, 0, 0, '', NULL, 2015, 0);
+(132, 11, 11, 80, 0, 0, '', NULL, 2015, 0),
+(133, 12, 0, 100, 0, 0, '', NULL, 2015, 0),
+(134, 12, 1, 80, 0, 0, '', NULL, 2015, 0),
+(135, 12, 2, 80, 0, 0, '', NULL, 2015, 0),
+(136, 12, 3, 80, 0, 0, '', NULL, 2015, 0),
+(137, 12, 4, 80, 0, 0, '', NULL, 2015, 0),
+(138, 12, 5, 80, 0, 0, '', NULL, 2015, 0),
+(139, 12, 6, 80, 0, 0, '', NULL, 2015, 0),
+(140, 12, 7, 80, 0, 0, '', NULL, 2015, 0),
+(141, 12, 8, 80, 0, 0, '', NULL, 2015, 0),
+(142, 12, 9, 80, 0, 0, '', NULL, 2015, 0),
+(143, 12, 10, 80, 0, 0, '', NULL, 2015, 0),
+(144, 12, 11, 80, 0, 0, '', NULL, 2015, 0);
 
 -- --------------------------------------------------------
 
@@ -764,7 +782,7 @@ CREATE TABLE IF NOT EXISTS `Usuario` (
 
 INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, `nome`) VALUES
 (1, '11989183654', '2014-07-14 11:31:56', 'luc.aug.freire@gmail.com', 'admin', '$2a$08$V9eCzv3d5CnRt2S.BFcs2uveSy8AkOXf1LjJ9YYdMkspk8YqT2nvO', 'Lucas'),
-(2, '81763492168', '2014-11-12 10:12:49', 'victorcastrocarvalho@armyspy.com', 'victor1994', '$2a$08$RpGAR3lVb3RdDDmRALqYCOFaRsfm7GP7PcdWu233ZGdNW2E6J5Q5e', 'Victor Castro Carvalho'),
+(2, '81763492168', '2014-11-12 10:12:49', 'victorcastrocarvalho@armyspy.com', 'victor1994', '$2a$08$z/UiLE9vtnQvH.6O0TfJV.YRE9ORaQkwp5NDicR4Om5UQn5rJQgaC', 'Victor Castro Carvalho'),
 (3, '64705249070', '2014-11-12 10:15:41', 'ViniciusAlvesSilva@teleworm.us', 'vinicius', '$2a$08$hJj9/hBGZfnrblpx.muqC.zlhru0j./kvn/9Hdz2HTQlsGUHlmJ26', 'Vinicius Alves Silva'),
 (4, '83834893315', '2014-11-12 10:21:24', 'MarianaFerreiraPinto@armyspy.com', 'mariana1234', '$2a$08$OsTyrZYsCSvMd4evTtFYA.O3UTY95oL05Y4t6M0JHYvlmbJ9m9NVC', 'Mariana Ferreira Pinto'),
 (5, '44236727315', '2014-11-12 10:24:16', 'annalimabarbosa@dayrep.com', 'annalima', '$2a$08$bwSrAdafNIsPRIkONKjWR.eZhRUioqwuGzHDFjM4jwxrIUKVtTtyi', 'Anna Lima Barbosa'),
@@ -973,17 +991,17 @@ MODIFY `idLivro` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de
 -- AUTO_INCREMENT de tabela `Matricula`
 --
 ALTER TABLE `Matricula`
-MODIFY `idMatricula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da matrícula feita por um aluno',AUTO_INCREMENT=12;
+MODIFY `idMatricula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da matrícula feita por um aluno',AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT de tabela `Notificacao`
 --
 ALTER TABLE `Notificacao`
-MODIFY `idNotificacao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único dessa notificação',AUTO_INCREMENT=103;
+MODIFY `idNotificacao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único dessa notificação',AUTO_INCREMENT=104;
 --
 -- AUTO_INCREMENT de tabela `Pagamento`
 --
 ALTER TABLE `Pagamento`
-MODIFY `idPagamento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único desse pagamento',AUTO_INCREMENT=4;
+MODIFY `idPagamento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único desse pagamento',AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de tabela `PgtoAnuidade`
 --
@@ -998,7 +1016,7 @@ MODIFY `idPagCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unic
 -- AUTO_INCREMENT de tabela `PgtoMensalidade`
 --
 ALTER TABLE `PgtoMensalidade`
-MODIFY `idPagMensalidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador do pagamento de mensalidade',AUTO_INCREMENT=133;
+MODIFY `idPagMensalidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador do pagamento de mensalidade',AUTO_INCREMENT=145;
 --
 -- AUTO_INCREMENT de tabela `Reuniao`
 --
