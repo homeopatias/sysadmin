@@ -659,6 +659,75 @@ class Aluno extends Usuario{
 
     }
 
+    public function atualizaDescontoAnteriores($host, $bd, $usuario, $senha, $ano){
+        //Abrimos a conexão com o banco de
+        $conexao = null;
+        try{
+            $conexao = new PDO("mysql:host=$host;dbname=$bd;charset=utf8", $usuario, $senha);
+        }catch (PDOException $e){
+            echo $e->getMessage();
+        }
+
+        //primeiro buscamos a matricula do aluno deste ano
+        $textoQuery = "SELECT M.idMatricula, M.desconto_individual
+                        FROM Matricula M, Cidade C
+                        WHERE M.chaveCidade = C.idCidade AND C.ano = :ano
+                        AND M.chaveAluno = :id";
+        $query = $conexao->prepare($textoQuery);
+        $query->bindParam(":id", $this->numeroInscricao, PDO::PARAM_INT);
+        $query->bindParam(":ano", $ano, PDO::PARAM_INT);
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+        $query->execute();
+
+        if($linha = $query->fetch()){
+            $idMatricula = $linha["idMatricula"];
+
+            $desconto_individual = $linha["desconto_individual"];
+    
+            //buscamos agora os indicados que garantem desconto ao aluno
+            $textoQuery = "SELECT A.numeroInscricao
+                           FROM   Aluno A, Matricula M, Cidade C, PgtoMensalidade Pg
+                           WHERE  M.chaveAluno = A.numeroInscricao AND M.chaveCidade = C.idCidade
+                           AND    C.ano = :ano AND Pg.chaveMatricula = M.idMatricula
+                           AND    Pg.numParcela = 0 AND Pg.fechado = 1 AND A.idIndicador = ? 
+                           AND    A.status = 'inscrito'";
+            $query = $conexao->prepare($textoQuery);
+            $query->bindParam(":ano", $ano, PDO::PARAM_INT);
+            $query->bindParam(1,$this->numeroInscricao, PDO::PARAM_INT);
+            $query->execute();
+    
+            //O aluno ganha 10% de desconto para cada indicado e mais 10% por ser indicador/indicado,
+            // contamos as linhas da query que correspondem aos indicados
+    
+            $indicados = $query->rowCount();
+            $desconto = $indicados * 10;
+            if($this->idIndicador){
+                $desconto += 10;
+            }
+            // soma o desconto individual do aluno ao desconto das parcelas
+            $desconto += $desconto_individual;
+    
+            if($desconto > 100) $desconto = 100;
+    
+            //Agora atualizamos as tabelas alteradas e usaremos transaction para garantir 
+            //integridade de dados
+            $sucesso = true;
+            $textoQuery = "UPDATE PgtoMensalidade
+                            SET    desconto = :desconto
+                            WHERE  chaveMatricula = :idMatricula AND valorPago = 0";
+            $query = $conexao->prepare($textoQuery);
+            $query->bindParam(":desconto",$desconto,PDO::PARAM_INT);
+            $query->bindParam(":idMatricula",$idMatricula, PDO::PARAM_INT);
+            $sucesso = $query->execute();
+    
+            return $sucesso;
+    
+        }
+
+        return true;
+
+    }
+
     // Getters e setters
     public function getNumeroInscricao()
     {

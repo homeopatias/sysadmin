@@ -108,6 +108,7 @@
 
                 $("#efetua_pagamento").click(function(){
                     $("#form-lanca-pagamento").submit();
+                });
                 $("#alterarDesconto").click(function(){
                     $("#formDesconto").submit();
                 });
@@ -462,9 +463,11 @@
                     } // fim if($valorValido && $metodoValido){
 
                 } // fim  if( isset( $_POST['valor-pagamento'] ) && isset( $_POST["metodo-pagamento"] ) ){
+
                 // se receber um desconto por POST, altera o desconto do aluno atual
                 if( isset($_POST["desconto-individual"]) ){
                     $desconto = (float)$_POST["desconto-individual"];
+                    $anoPagamento = isset($_GET["ano"]) ? $_GET["ano"] : date("Y");
 
                     if($desconto < 0 || $desconto > 100 || is_nan($desconto)){
                         $mensagem = "Desconto Inválido!";
@@ -475,11 +478,15 @@
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(":desconto", $desconto, PDO::PARAM_INT);
                         $query->bindParam(":idAluno" , $idAluno , PDO::PARAM_INT );
-                        $query->bindParam(":ano" , date("Y") );
+                        $query->bindParam(":ano" , $anoPagamento );
 
                         $query->execute();   
 
-                        $aluno->atualizar($host, $db, $usuario,$senhaBD);
+                        if($anoPagamento < date("Y")){
+                            $aluno->atualizaDescontoAnteriores($host, $db, $usuario,$senhaBD, $anoPagamento);   
+                        }else{
+                            $aluno->atualizar($host, $db, $usuario,$senhaBD);
+                        }
                     }
                 }
 
@@ -1080,11 +1087,13 @@
                                         P.ano, P.numParcela, M.desconto_individual
                                         FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
-                                        AND P.chaveMatricula = M.idMatricula
+                                        AND P.chaveMatricula = M.idMatricula 
+                                        AND P.ano = ?
                                         ORDER BY P.data DESC";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1, $idAluno, PDO::PARAM_INT);
+                        $query->bindParam(2, $anoPagamento, PDO::PARAM_INT);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
@@ -1116,7 +1125,7 @@
                         </a>
 
                     <?php }
-                        if($anoPagamento == date("Y")){ ?>
+                 ?>
 
                         <h3>Parcelas do ano atual</h3>
                         <h4 >Desconto especial do aluno nesta matrícula : 
@@ -1127,18 +1136,7 @@
 
                         </h4>
 
-                    <?php }else{ ?>
-
-                        <h3>Parcelas do ano de <?= $anoPagamento ?></h3>
-                        <h4 >Desconto especial do aluno nesta matrícula : 
-                            <?= $desconto_individual ?>% 
-                        </h4>
-
-                    <?php } ?>
-
-
-                        
-
+                
                     <table class="table table-bordered table-striped" id="alunos">
                         <thead style="background-color: #AAA">
                             <tr>
@@ -1390,7 +1388,7 @@
             </form>
         </div>
 
-        <!-- popup "modal" do bootstrap para edição do deconto individual do aluno -->
+        <!-- popup "modal" do bootstrap para edição do desconto individual do aluno -->
         <div class="modal fade" id="modal-edita-desconto" tabindex="-1" role="dialog"
              aria-labelledby="modal-edita-desconto" aria-hidden="true">
             <div class="modal-dialog">
