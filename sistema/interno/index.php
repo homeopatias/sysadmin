@@ -141,7 +141,7 @@
                 </form>
                 
                 <div class="conteudo" style="position: relative; top: -70px">
-                    <a href="cadastro_aluno.php">Cadastro no curso</a>
+                    <a href="cadastro_aluno_extensao.php">Cadastro no curso de extensão</a>
                     <br>
                     <a href="recuperar_conta.php">Recuperar senha ou usuário</a>
                     <br>
