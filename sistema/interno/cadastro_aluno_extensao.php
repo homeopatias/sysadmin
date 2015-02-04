@@ -14,6 +14,15 @@
                     $("#cadastro").prop('disabled', 
                                         $('#li-termos').is(':checked') ? false : true);
                 });
+
+                $("#escolaridade-novo").change(function(){
+                    if($(this).val() === "superior incompleto" || $(this).val() === "superior completo"   ||
+                       $(this).val() === "mestrado"            || $(this).val() === "doutorado" ){
+                        $("#curso-novo").parent().show(500);
+                    }else{
+                        $("#curso-novo").parent().hide(500);
+                    }
+                });
             });
         </script>
     </head>
@@ -56,7 +65,6 @@
                 $senha          = $_POST["senha"];
                 $loginIndicador = $_POST["indicador"];
                 $telefone       = $_POST["telefone"];
-                $endereco       = $_POST["endereco"];
                 $escolaridade   = $_POST["escolaridade"];
                 $curso          = $_POST["curso"];
                 $cep            = $_POST["cep"];
@@ -66,8 +74,6 @@
                 $bairro         = $_POST["bairro"];
                 $cidade         = $_POST["cidade"];
                 $estado         = $_POST["estado"];
-                $tipoCurso      = $_POST["tipo-curso"];
-                $tipoCadastro   = $_POST["tipo-cadastro"];
 
                 $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                   mb_strlen($nome, 'UTF-8') <= 100;
@@ -258,6 +264,7 @@
                     $novo->setBairro($bairro);
                     $novo->setCidade($cidade);
                     $novo->setEstado($estado);
+                    $novo->setPais("BRL");
                     $novo->setEscolaridade($escolaridade);
                     if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
                        $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
@@ -268,6 +275,9 @@
                     $novo->setStatus("preinscrito");
 
                     $novo->setIdIndicador($idIndicador);
+
+                    $novo->setTipoCurso("extensao");
+                    $novo->setTipoCadastro("faculdade inspirar");
 
                     $sucesso = $novo->cadastrar($host, "homeopatias", $usuario, $senhaBD, $senha);
 
@@ -535,7 +545,9 @@
                             referida acima. Confirma que concorda com todos os termos e
                             está ciente dos procedimentos informados referentes às aulas,
                             certificados, trancamento de inscrição, módulos do curso,
-                            e todas as outras abrangidas.
+                            e todas as outras abrangidas.<br><br>
+                            Para se cadastrar, você deve concordar com os
+                            termos e clicar no botão "Confirmo" abaixo.
                         </label>
                         <br>
                         <input type="checkbox" id="li-termos">
