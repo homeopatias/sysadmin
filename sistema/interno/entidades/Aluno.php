@@ -249,6 +249,8 @@ class Aluno extends Usuario{
                           VALUES (?,?,?,?,?,?)";
         $query         = $conexao->prepare($queryUsuario);
         $sucessoUsuario = $query->execute($dadosUsuario);
+        var_dump($query->errorInfo());
+
 
         // descobrimos o id do usuário que acabamos de inserir
         $idUsuario = $conexao->lastInsertId();
@@ -281,6 +283,11 @@ class Aluno extends Usuario{
         }
         $query = $conexao->prepare($queryAluno);
         $sucessoAluno = $query->execute($dadosAluno);
+
+        var_dump($query->errorInfo());
+
+        var_dump($sucessoUsuario);
+        var_dump($sucessoAluno);die();
 
         if($sucessoUsuario && $sucessoAluno) {
             // deu tudo certo, inserimos o aluno
