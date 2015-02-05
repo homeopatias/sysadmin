@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 04, 2015 at 07:26 PM
+-- Generation Time: Feb 04, 2015 at 08:55 PM
 -- Server version: 5.5.41-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.5
 
@@ -64,42 +64,43 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
   `idUsuario` int(11) NOT NULL COMMENT 'Identificador único do usuário que esse aluno representa',
   `status` enum('preinscrito','inscrito','desistente','formado','inativo') NOT NULL COMMENT 'Status desse aluno (pré-inscrito, inscrito, etc)',
   `idIndicador` int(11) DEFAULT NULL COMMENT 'Numero de inscricao do aluno que indicou esse aluno, caso aplicavel',
-  `telefone` text NOT NULL COMMENT 'Telefone do aluno',
-  `endereco` varchar(200) NOT NULL COMMENT 'Endereco completo do aluno',
-  `escolaridade` enum('fundamental incompleto','fundamental completo','médio incompleto','médio completo','superior incompleto','superior completo','mestrado','doutorado') NOT NULL COMMENT 'Nível de escolaridade do aluno',
+  `telefone` text COMMENT 'Telefone do aluno',
+  `escolaridade` enum('fundamental incompleto','fundamental completo','médio incompleto','médio completo','superior incompleto','superior completo','mestrado','doutorado') DEFAULT NULL COMMENT 'Nível de escolaridade do aluno',
   `curso` varchar(200) DEFAULT NULL COMMENT 'Curso que o aluno frequentou, caso esteja no nível superior ou acima',
-  `cep` varchar(8) NOT NULL COMMENT 'Código Postal do Aluno',
-  `rua` varchar(255) NOT NULL COMMENT 'Rua do Aluno',
-  `numero` int(11) NOT NULL COMMENT 'Numero do endereço do Aluno',
-  `bairro` varchar(255) NOT NULL COMMENT 'Bairro do Aluno',
+  `cep` varchar(8) DEFAULT NULL COMMENT 'Código Postal do Aluno',
+  `rua` varchar(255) DEFAULT NULL COMMENT 'Rua do Aluno',
+  `numero` int(11) DEFAULT NULL COMMENT 'Numero do endereço do Aluno',
+  `bairro` varchar(255) DEFAULT NULL COMMENT 'Bairro do Aluno',
   `complemento` varchar(255) DEFAULT NULL COMMENT 'Complemento do Endereço',
-  `estado` varchar(2) NOT NULL COMMENT 'Bairro em que o aluno reside',
-  `cidade` varchar(255) NOT NULL COMMENT 'Cidade em que o aluno reside',
-  `pais` varchar(3) NOT NULL COMMENT 'País que o aluno reside',
+  `estado` varchar(2) DEFAULT NULL COMMENT 'Bairro em que o aluno reside',
+  `cidade` varchar(255) DEFAULT NULL COMMENT 'Cidade em que o aluno reside',
+  `pais` varchar(3) DEFAULT NULL COMMENT 'País que o aluno reside',
   `tipo_curso` enum('extensao','pos','','') NOT NULL COMMENT 'tipo de curso do aluno',
   `tipo_cadastro` enum('instituto','faculdade inspirar') NOT NULL COMMENT 'tipo de cadastro do aluno',
   PRIMARY KEY (`numeroInscricao`),
   KEY `idIndicador` (`idIndicador`),
   KEY `idAluno` (`idUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=15 ;
 
 --
 -- Dumping data for table `Aluno`
 --
 
-INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `endereco`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `tipo_cadastro`) VALUES
-(1, 2, 'preinscrito', NULL, '1693018232', '', 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'instituto'),
-(2, 3, 'inscrito', 1, '1961438378', '', 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'instituto'),
-(3, 4, 'preinscrito', NULL, '8260134527', '', 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'instituto'),
-(4, 5, 'preinscrito', NULL, '6135342360', '', 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'instituto'),
-(5, 6, 'preinscrito', 4, '8698463979', '', 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'instituto'),
-(6, 7, 'preinscrito', NULL, '2169357517', '', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'instituto'),
-(7, 8, 'inscrito', NULL, '1184439221', '', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'instituto'),
-(8, 9, 'inscrito', NULL, '8498876543', '', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'instituto'),
-(9, 10, 'inscrito', NULL, '5787659485', '', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'instituto'),
-(10, 11, 'inscrito', 11, '2098764959', '', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'instituto'),
-(11, 12, 'inscrito', 9, '3498123232', '', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'instituto'),
-(12, 27, 'preinscrito', NULL, '3122334455', '', 'superior completo', 'Abacate', '33884555', 'TWOOOOO', 89, 'So needless to say', 'Say after me', 'AC', 'Don''t let away', '', '', '');
+INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `tipo_cadastro`) VALUES
+(1, 2, 'preinscrito', NULL, '1693018232', 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'instituto'),
+(2, 3, 'inscrito', 1, '1961438378', 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'instituto'),
+(3, 4, 'preinscrito', NULL, '8260134527', 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'instituto'),
+(4, 5, 'preinscrito', NULL, '6135342360', 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'instituto'),
+(5, 6, 'preinscrito', 4, '8698463979', 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'instituto'),
+(6, 7, 'preinscrito', NULL, '2169357517', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'instituto'),
+(7, 8, 'inscrito', NULL, '1184439221', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'instituto'),
+(8, 9, 'inscrito', NULL, '8498876543', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'instituto'),
+(9, 10, 'inscrito', NULL, '5787659485', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'instituto'),
+(10, 11, 'inscrito', 11, '2098764959', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'instituto'),
+(11, 12, 'inscrito', 9, '3498123232', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'instituto'),
+(12, 27, 'preinscrito', NULL, '3122334455', 'superior completo', 'Abacate', '33884555', 'TWOOOOO', 89, 'So needless to say', 'Say after me', 'AC', 'Don''t let away', '', '', ''),
+(13, 28, 'preinscrito', NULL, '3399448855', 'superior incompleto', 'abastece', '30495454', 'The birds and the bees', 39, 'Sowing the seeds', '', 'AC', 'Derpity derp', '', 'extensao', 'faculdade inspirar'),
+(14, 29, 'preinscrito', NULL, '3129394939', 'fundamental incompleto', NULL, '93945444', 'tesste', 34, 'marracuda', '', 'AC', 'macarruda', 'BRL', 'extensao', 'faculdade inspirar');
 
 -- --------------------------------------------------------
 
@@ -843,7 +844,7 @@ CREATE TABLE IF NOT EXISTS `Usuario` (
   KEY `cpf` (`cpf`),
   KEY `cpf_2` (`cpf`),
   KEY `dataInscricao` (`dataInscricao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=28 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=30 ;
 
 --
 -- Dumping data for table `Usuario`

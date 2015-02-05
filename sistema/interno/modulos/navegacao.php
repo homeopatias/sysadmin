@@ -17,7 +17,19 @@
                     Homeopatias.com - Sistema
                 </a>
 
-            <?php if(isset($_SESSION["usuario"])){ ?>
+            <?php
+                if(isset($_SESSION["usuario"])){
+                    if( unserialize($_SESSION["usuario"]) instanceof Aluno &&
+                        is_null(unserialize($_SESSION["usuario"])->getCep()) ) {
+            ?>
+            <!-- redireciona o usuário para a página de preenchimento de dados restantes -->
+            <meta http-equiv="refresh" content=<?= '"0; url=finalizar_cadastro.php"' ?>>
+            <script type="text/javascript">
+                window.location = "finalizar_cadastro.php";
+            </script>
+            <?php
+                    }
+            ?>
 
                 <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
                     <span class="icon-bar"></span>
