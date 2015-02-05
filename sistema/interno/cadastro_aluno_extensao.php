@@ -154,11 +154,41 @@
                         $mensagem = "Já existe um usuário com esse nome 
                                      de usuário no sistema";
                     } else {
+                        // criamos o aluno no Moodle
+                        $usuarioMoodle = $dados["usuario_moodle"];
+                        $senhaMoodle   = $dados["senha_moodle"];
+
+                        $sucessoMoodle = false;
+
+                        $conMoodle = null;
+                        try{
+                            $conMoodle = new PDO("mysql:host=$host;dbname=moodle;charset=utf8",
+                                                 $usuarioMoodle, $senhaMoodle);
+
+                            $queryMoodle = "INSERT INTO mdl_user
+                                            (firstname,lastname,email,username,password,
+                                             confirmed,mnethostid) VALUES
+                                           (?,?,?,?,MD5(?),1,1)";
+
+                            $arrayNome = split(" ", $nome);
+                            $dadosMoodle = array($arrayNome[0], array_pop($arrayNome), $email, $login, $senha);
+
+                            $query = $conMoodle->prepare($queryMoodle);
+                            $sucessoMoodle = $query->execute($dadosMoodle);
+
+                        }catch (PDOException $e){
+                            // echo $e->getMessage();
+                        }
+
+                        $mensagem = "";
+                        if(!$sucessoMoodle){
+                            $mensagem = "O registro foi efetuado, porém não foi possível registrar no Moodle";
+                        }
         ?>
         <!-- redireciona o usuário para o index.php -->
-        <meta http-equiv="refresh" content="index.php?sucessoAval=true">
+        <meta http-equiv="refresh" content=<?= '"index.php?sucessoAval=true&mensagem='.$mensagem.'"'?>>
         <script type="text/javascript">
-            window.location = "index.php?cadastroSucesso=true";
+            window.location = <?= '"index.php?sucessoAval=true&mensagem='.$mensagem.'"'?>;
         </script>
         <?php
                     }
