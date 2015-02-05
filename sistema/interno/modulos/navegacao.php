@@ -19,6 +19,7 @@
 
             <?php
                 if(isset($_SESSION["usuario"])){
+                    var_dump(unserialize($_SESSION["usuario"])->getCep());die();
                     if( unserialize($_SESSION["usuario"]) instanceof Aluno &&
                         is_null(unserialize($_SESSION["usuario"])->getCep()) ) {
             ?>
