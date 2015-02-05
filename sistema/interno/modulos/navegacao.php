@@ -19,9 +19,12 @@
 
             <?php
                 if(isset($_SESSION["usuario"])){
-                    var_dump(unserialize($_SESSION["usuario"])->getCep());die();
                     if( unserialize($_SESSION["usuario"]) instanceof Aluno &&
-                        is_null(unserialize($_SESSION["usuario"])->getCep()) ) {
+                            (
+                                is_null(unserialize($_SESSION["usuario"])->getCep()) || 
+                                mb_strlen(unserialize($_SESSION["usuario"])->getCep()) == 0
+                            )
+                        ) {
             ?>
             <!-- redireciona o usuário para a página de preenchimento de dados restantes -->
             <meta http-equiv="refresh" content=<?= '"0; url=finalizar_cadastro.php"' ?>>
