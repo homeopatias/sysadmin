@@ -70,6 +70,7 @@
                     $bairro         = $_POST["bairro"];
                     $cidade         = $_POST["cidade"];
                     $estado         = $_POST["estado"];
+                    $idCidadeMat    = $_POST["cidadeMat"];
 
                     $cpfValido      = isset($cpf) &&
                                       (preg_match("/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", $cpf) || 
@@ -214,8 +215,30 @@
                     $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
                                    (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
 
+                    // verificamos se a cidade na qual o aluno quer se matricular
+                    // é válida
+                    $cidadeMatValida = isset($idCidadeMat) && preg_match("/^\d*$/", $idCidadeMat);
+
+                    if($cidadeMatValida) {
+                        $textoQuery  = "SELECT idCidade FROM Cidade
+                                        WHERE idCidade = ? AND ano = YEAR(CURDATE())";
+
+                        $query = $conexao->prepare($textoQuery);
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $query->execute(array($idCidadeMat));
+                        if($linha = $query->fetch()){
+                            // cidade existente no ano atual
+                            // (trecho mantido apenas por clareza)
+                            $cidadeMatValida = true;
+                        } else {
+                            // o id de cidade passado não existe, ou
+                            // não é do ano atual
+                            $cidadeMatValida = false;
+                        }
+                    }
+
                     if($cpfValido && $loginIndicadorValido && $telefoneValido && $enderecoValido &&
-                       $escolaridadeValida && $cursoValido){
+                       $escolaridadeValida && $cursoValido && $cidadeMatValida){
 
                         $aluno = unserialize($_SESSION['usuario']);
 
@@ -243,13 +266,141 @@
                         if(!$sucesso) {
                             $mensagem = "Erro na inserção de dados";
                         } else {
+                            // agora fazemos a matrícula do aluno
+
+                            // Usamos as TRANSACTIONs do MySql para garantir que caso haja
+                            // algum erro, as tabelas continuem consistentes
+                            $conexao->beginTransaction();
+
+                            $idAluno = $aluno->getNumeroInscricao();
+
+                            $dadosMatricula  = array($idAluno, $idCidadeMat);
+                            $queryMatricula  = "INSERT INTO Matricula (chaveAluno, etapa, chaveCidade) 
+                                                VALUES (?,1,?)";
+                            $query  = $conexao->prepare($queryMatricula);
+                            $sucessoMatricula = $query->execute($dadosMatricula);
+                            $idUltimaMatricula = $conexao->lastInsertId();
+
+                            // agora fazemos com que o aluno passe a constar como pré-inscrito
+                            $queryInscrito  = "UPDATE Aluno SET status = 'preinscrito' 
+                                               WHERE numeroInscricao = ?";
+                            $query           = $conexao->prepare($queryInscrito);
+                            $query->bindParam(1, $idAluno);
+                            $sucessoInscrito = $query->execute();
+                            $aluno->setStatus('preinscrito');
+
+                            // agora tentamos criar os pagamentos
+
+                            // pega os valores de inscrição e parcelas da cidade
+                            $textoQuery = "SELECT C.precoInscricao, C.precoParcela, C.ano
+                                           FROM Cidade C, Matricula M
+                                           WHERE C.idCidade = M.chaveCidade AND
+                                           M.idMatricula = ?";
+
+                            $query = $conexao->prepare($textoQuery);
+                            $query->bindParam(1,$idUltimaMatricula);
+                            $query->setFetchMode(PDO::FETCH_ASSOC);
+                            $query->execute();
+
+                            
+                            $queryInsert = "";
+                            $insertArray = [];
+
+                            $sucessoPgto = false;
+
+                            if($linha = $query->fetch()){
+                                for($i = 0; $i < 12; $i++){
+
+                                    if($i == 0){ // parcela numero 0 será considerada valor da
+                                                 // inscrição
+                                        $queryInsert    = "INSERT INTO `homeopatias`.`PgtoMensalidade` 
+                                                        (`chaveMatricula`, `numParcela`, `ValorTotal`, `ValorPago`, 
+                                                            `desconto`, `fechado`,`ano`) 
+                                                        VALUES (?, '0', ?, '0', '0', '0', ?) ";
+                                        $insertArray  = array($idUltimaMatricula, $linha["precoInscricao"], $linha["ano"]);
+
+                                    } 
+                                    else{
+                                        $queryInsert    .= " , (?, ?, ?, '0', '0', '0', ?) ";
+                                        $insertArray[]  = $idUltimaMatricula;
+                                        $insertArray[]  = $i;
+                                        $insertArray[]  = $linha["precoParcela"];
+                                        $insertArray[]  = $linha["ano"];
+                                    }
+                                }
+                                $query = $conexao->prepare($queryInsert);
+                                $sucessoPgto = $query->execute($insertArray);
+                            } else {
+                                // a cidade não foi encontrada, cancela
+                                $conexao->rollBack();
+                                $mensagem = "Cidade não encontrada";
+                            }
+
+                            if(!$sucessoMatricula) {
+                                // erro na matrícula, desfazemos as mudanças
+                                $conexao->rollBack();
+                                $mensagem = "Erro na matrícula";
+                            } else if(!$sucessoInscrito) {
+                                // erro na mudança para inscrito, desfazemos as mudanças
+                                $conexao->rollBack();
+                                $mensagem = "Erro na atualização de status de aluno após matrícula";
+                            } else if(!$sucessoPgto) {
+                                // erro na criação dos pagamentos, desfazemos as mudanças
+                                $conexao->rollBack();
+                                $mensagem = "Erro na criação dos pagamentos do ano";
+                            } else {
+                                // tudo certo, inscrevemos o aluno no Moodle e confirmamos as mudanças
+
+                                $usuarioMoodle = $dados["usuario_moodle"];
+                                $senhaMoodle   = $dados["senha_moodle"];
+
+                                $sucessoMoodle = false;
+
+                                $conMoodle = null;
+                                try{
+                                    $conMoodle = new PDO("mysql:host=$host;dbname=moodle;charset=utf8",
+                                                         $usuarioMoodle, $senhaMoodle);
+
+                                    $queryMoodle = "SELECT id FROM mdl_user WHERE username = ?";
+
+                                    $query = $conMoodle->prepare($queryMoodle);
+                                    $query->bindParam(1, $aluno->getLogin());
+                                    $query->setFetchMode(PDO::FETCH_ASSOC);
+                                    $query->execute();
+
+                                    $idUsuarioMoodle = false;
+                                    if($linha = $query->fetch()) {
+                                        $idUsuarioMoodle = $linha["id"];
+
+                                        $queryMoodle = "INSERT INTO mdl_role_assignments (roleid,contextid,userid)
+                                                        VALUES (5,18,?)";
+
+                                        $query = $conMoodle->prepare($queryMoodle);
+                                        $query->bindParam(1, $idUsuarioMoodle);
+                                        $sucessoMoodle = $query->execute();
+                                    } else {
+                                        $sucessoMoodle = false;
+                                    }
+
+                                }catch (PDOException $e){
+                                    // echo $e->getMessage();
+                                }
+
+                                $mensagem = "";
+                                if(!$sucessoMoodle){
+                                    $mensagem = "O registro foi efetuado, porém não foi possível registrar no Moodle";
+                                }
+
+                                $_SESSION["usuario"] = serialize($aluno);
+                                $conexao->commit();
                 ?>
                 <!-- redireciona o usuário para o index -->
-                <meta http-equiv="refresh" content=<?= '"0; url=index.php"' ?>>
+                <meta http-equiv="refresh" content=<?= '"0; url=index.php?mensagem='.$mensagem.'"' ?>>
                 <script type="text/javascript">
-                    window.location = "index.php";
+                    window.location = <?= '"index.php?mensagem='.$mensagem.'"'?>;
                 </script>
                 <?php
+                            }
                         }
                     }else if(!$cpfValido && !$cpfExistente){
                         $mensagem = "CPF inválido!";
@@ -267,8 +418,29 @@
                         }else{
                             $mensagem = "Curso inválido!";
                         }
-                    }
+                    } else if (!$cidadeMatValida) {
+                        $mensagem = "Cidade de curso inválida!";
+                    } 
                 }
+
+                // listamos as cidades em que o aluno pode se matricular
+                // o aluno só pode entrar em cidades do ano atual
+                $textoQuery  = "SELECT idCidade, UF, nome FROM Cidade WHERE
+                CURDATE() < limiteInscricao AND ano = YEAR(CURDATE()) ORDER BY nome ASC";
+
+                $query = $conexao->prepare($textoQuery);
+                $query->setFetchMode(PDO::FETCH_ASSOC);
+                $query->execute();
+
+                $cidades = array();
+
+                while ($linha = $query->fetch()){
+                    $id     = htmlspecialchars($linha["idCidade"]);
+                    $uf     = htmlspecialchars($linha["UF"]);
+                    $nome   = htmlspecialchars($linha["nome"]);
+                    $cidades[] = array("nome" => $nome . "/" . $uf, "id" => $id);
+                }
+
         ?>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
@@ -285,6 +457,19 @@
                     seu registro:</h4>
                     <br>
                     <form action method="POST">
+                        <div class="form-group">
+                            <label for="cidadeMat">Escolha a cidade onde deseja fazer o curso:</label>
+                            <select name="cidadeMat" id="cidadeMat"
+                                    class="form-control" required>
+                                <?php
+                                    foreach($cidades as $cidade){
+                                        echo '<option value="' . $cidade["id"] . '">';
+                                        echo $cidade["nome"] . '</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <br><br>
                         <div class="form-group">
                             <label for="cpf-novo">CPF:</label>
                             <input type="text" name="cpf" id="cpf-novo" required
