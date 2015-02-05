@@ -499,6 +499,9 @@
                         echo "</p>";
                 ?>
             </p>
+            <p>
+                <a href="acessar_moodle.php">Acessar a área do aluno</a>
+            </p>
                 <?php
                         // agora vamos mostrar os dados de matrícula do aluno, para isso
                         // descobrimos se o aluno está matriculado atualmente

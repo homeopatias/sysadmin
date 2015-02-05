@@ -270,12 +270,15 @@
                                 // exibe os trabalhos e aulas apenas para alunos inscritos
                     ?>
 
+                    <?php /* Temporariamente desativado
                     <li>
                         <a href="trabalhos_aluno.php">
                             <i class="fa fa-fw fa-file-text"></i>
                             <p style="display:inline">Trabalhos</p>
                         </a>
                     </li>
+                        */
+                    ?>
                     <li>
                         <a href="aulas_aluno.php">
                             <i class="fa fa-fw fa-graduation-cap"></i>
