@@ -8,7 +8,7 @@
 
 $PagSeguroConfig = array();
 
-$PagSeguroConfig['environment'] = "sandbox"; // production, sandbox
+$PagSeguroConfig['environment'] = "production"; // production, sandbox
 
 $PagSeguroConfig['credentials'] = array();
 $PagSeguroConfig['credentials']['email'] = "duvidahomeopatia@terra.com.br";
