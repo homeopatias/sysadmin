@@ -500,7 +500,7 @@
                 ?>
             </p>
             <p>
-                <a href="acessar_moodle.php">Acessar a área do aluno</a>
+                <a href="rotinas/acessar_moodle.php">Acessar a área do aluno</a>
             </p>
                 <?php
                         // agora vamos mostrar os dados de matrícula do aluno, para isso

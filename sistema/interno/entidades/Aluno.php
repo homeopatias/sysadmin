@@ -17,6 +17,7 @@ require_once(dirname(__FILE__)."/../entidades/Usuario.php");
 
 class Aluno extends Usuario{
     private $numeroInscricao;
+    private $senha;
     private $status;
     private $idIndicador;
     private $telefone;
@@ -47,6 +48,7 @@ class Aluno extends Usuario{
         $this->email           = "";
         $this->nome            = "";
         $this->numeroInscricao = -1;
+        $this->senha           = "";
         $this->status          = "";
         $this->idIndicador     = -1;
         $this->telefone        = -1;
@@ -121,6 +123,7 @@ class Aluno extends Usuario{
                 $this->pais            = $linha["pais"];
                 $this->tipoCurso       = $linha["tipo_curso"];
                 $this->tipoCadastro    = $linha["tipo_cadastro"];
+                $this->senha           = $senhaUsuario;
 
                 $_SESSION["usuario"] = serialize($this);
 
@@ -736,6 +739,17 @@ class Aluno extends Usuario{
     public function setNumeroInscricao($numeroInscricao)
     {
         $this->numeroInscricao = $numeroInscricao;
+
+        return $this;
+    }
+
+    public function getSenha()
+    {
+        return $this->senha;
+    }
+    public function setSenha($senha)
+    {
+        $this->senha = $senha;
 
         return $this;
     }
