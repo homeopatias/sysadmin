@@ -218,7 +218,7 @@
                     ?>
                     <br>
                     <div class="form-group">
-                        <label for="nome-novo">Nome:</label>
+                        <label for="nome-novo">Nome Completo:</label>
                         <input type="text" name="nome" id="nome-novo" required
                                pattern="^.{3,50} .{1,50}$" title="O nome deve ter de 3 a 100 caracteres, insira seu nome completo"
                                placeholder="Nome" class="form-control" autocomplete="off">
