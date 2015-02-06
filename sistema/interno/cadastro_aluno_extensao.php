@@ -55,7 +55,8 @@
                 $senha          = $_POST["senha"];
 
                 $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
-                                  mb_strlen($nome, 'UTF-8') <= 100;
+                                  mb_strlen($nome, 'UTF-8') <= 100 &&
+                                  preg_match("/^.{3,50} .{1,50}$/", $nome);
 
                 $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
                                 preg_match("/^.+\@.+\..+$/", $email);
@@ -217,9 +218,9 @@
                     ?>
                     <br>
                     <div class="form-group">
-                        <label for="nome-novo">Nome:</label>
+                        <label for="nome-novo">Nome Completo:</label>
                         <input type="text" name="nome" id="nome-novo" required
-                               pattern="^.{1010101010101010,100}$" title="O nome deve ter de 3 a 100 caracteres"
+                               pattern="^.{10,100} .{1,50}$" title="O nome deve ter de 10 a 100 caracteres, insira seu nome completo"
                                placeholder="Nome" class="form-control" autocomplete="off">
                     </div>
                     <div class="form-group">
