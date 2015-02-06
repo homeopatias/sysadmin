@@ -349,6 +349,7 @@
                                 $conexao->rollBack();
                                 $mensagem = "Erro na criação dos pagamentos do ano";
                             } else {
+                                
                                 // tudo certo, inscrevemos o aluno no Moodle e confirmamos as mudanças
 
                                 $usuarioMoodle = $dados["usuario_moodle"];
@@ -372,12 +373,23 @@
                                     if($linha = $query->fetch()) {
                                         $idUsuarioMoodle = $linha["id"];
 
-                                        $queryMoodle = "INSERT INTO mdl_role_assignments (roleid,contextid,userid)
-                                                        VALUES (5,18,?)";
+                                        $queryMoodle = "INSERT INTO mdl_user_enrolments
+                                                        (status,enrolid,userid,timecreated,
+                                                         timemodified) VALUES (0,1,?,NOW(),NOW())";
 
                                         $query = $conMoodle->prepare($queryMoodle);
                                         $query->bindParam(1, $idUsuarioMoodle);
                                         $sucessoMoodle = $query->execute();
+
+                                        if($sucessoMoodle) {
+                                            $queryMoodle = "INSERT INTO mdl_role_assignments
+                                                            (roleid,contextid,userid,timemodified)
+                                                            VALUES (5,18,?,NOW())";
+
+                                            $query = $conMoodle->prepare($queryMoodle);
+                                            $query->bindParam(1, $idUsuarioMoodle);
+                                            $sucessoMoodle = $query->execute();
+                                        }
                                     } else {
                                         $sucessoMoodle = false;
                                     }
