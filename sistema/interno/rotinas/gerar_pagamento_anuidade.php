@@ -195,10 +195,6 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
     // seguida do id de Associado deste associado
     $reqPagamento->setReference("A" . $associado->getIdAssoc());
 
-    // adiciona um parâmetro para identificar que o pagamento é do sistema novo
-    // addParameter ( parameterName, parameterValue )
-    $reqPagamento->addParameter("sistema","novo");
-
     $credenciais = PagSeguroConfig::getAccountCredentials();
     $url = $reqPagamento->register($credenciais);
 

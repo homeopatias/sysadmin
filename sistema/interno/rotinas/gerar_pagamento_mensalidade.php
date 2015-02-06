@@ -118,10 +118,6 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
     // seguida do número de inscrição desse aluno
     $reqPagamento->setReference("M" . $aluno->getNumeroInscricao());
 
-    // adiciona um parâmetro para identificar que o pagamento é do sistema novo
-    // addParameter ( parameterName, parameterValue )
-    $reqPagamento->addParameter("sistema","novo"); 
-
     $credenciais = PagSeguroConfig::getAccountCredentials();
     $url = $reqPagamento->register($credenciais);
 

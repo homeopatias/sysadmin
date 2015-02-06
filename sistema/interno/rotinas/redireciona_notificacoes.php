@@ -24,12 +24,15 @@
 	if ($tipoNotificacao === 'transaction') {
     	$transacao = PagSeguroNotificationService::checkTransaction($credenciais,
                                                                 $codigoNotificacao);
-    	//se existe uma transacao valida, redireciona
-    	if($transacao){
+    	$statusPag = $transacao->getStatus();
 
-    		//se há um parametro de identificação do sistema novo envia para o novo
-    		//caso contrario, envia para o sistema atual
-    		if( isset($_POST["sistema"]) && $_POST == "novo" ){
+    	//se existe uma transacao valida, redireciona
+    	if ($statusPag->getValue() == 3) {
+        	$referencia = $transacao->getReference();
+        	$codigoTipo = mb_substr($referencia, 0, 1);
+
+        	// se a referencia possuir um dos códigos do sistema novo, envia ao sistema novo
+        	if ($codigoTipo === "M" || $codigoTipo =="A") {
     			header("Location:./notificacoes_pagseguro.php",true,307);
     		}else{
     			header("Location:".$_SERVER["DOCUMENT_ROOT"]."/sistema/curso/curso_notificacoes.php",true,307);
