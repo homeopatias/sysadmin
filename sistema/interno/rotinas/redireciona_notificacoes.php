@@ -36,7 +36,7 @@
     			//header("Location:./notificacoes_pagseguro.php",true,307);
     			    	?>
 
-    			<form action='./notificacoes_pagseguro.php' method='post' name='frm'>
+    			<form action='./notificacao_pagseguro.php' method='post' name='frm'>
 
 				<?php
 					foreach ($_POST as $parametro => $valor) {
