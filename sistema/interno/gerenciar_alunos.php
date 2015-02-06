@@ -596,7 +596,9 @@
                     $tipoCadastro   = $_POST["tipo_cadastro"];
 
                     $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
-                                      mb_strlen($nome, 'UTF-8') <= 100;
+                                      mb_strlen($nome, 'UTF-8') <= 100 &&
+                                      preg_match("/^.{3,50} .{1,50}$/", $nome);
+                                      
                     $cpfValido      = isset($cpf) &&
                                       (preg_match("/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", $cpf) || 
                                        preg_match("/^\d{11}$/", $cpf));
@@ -1590,7 +1592,7 @@
                             <div class="form-group">
                                 <label for="nome-novo">Nome do aluno:</label>
                                 <input type="text" name="nome" id="nome-novo" required
-                                       pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
+                                       pattern="^.{3,50} .{1,50}$" title="O nome deve ter de 3 a 100 caracteres, insira o nome completo"
                                        placeholder="Nome" class="form-control" autocomplete="off">
                             </div>
                             <div class="form-group">
@@ -1820,7 +1822,7 @@
                             <div class="form-group">
                                 <label for="nome">Nome do aluno:</label>
                                 <input type="text" name="nome" id="nome" required
-                                       pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
+                                       pattern="^.{3,50} .{1,50}$" title="O nome deve ter de 3 a 100 caracteres, insira o nome completo"
                                        placeholder="Nome" class="form-control" autocomplete="off">
                             </div>
                             <div class="form-group">

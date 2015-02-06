@@ -48,7 +48,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $senha       = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
-                        mb_strlen($nome, 'UTF-8') <= 100;
+                        mb_strlen($nome, 'UTF-8') <= 100 &&
+                        preg_match("/^.{3,50} .{1,50}$/", $nome);
                         
 
         $cpfValido = validaCpf($cpf,$id);
