@@ -1,5 +1,5 @@
 <?php 
-
+	session_start();
 	// se receber uma mensagem por POST, identifica se é uma notificação do pagseguro, 
 	// se for, redireciona para seu devido lugar
 	
