@@ -12,8 +12,8 @@ $PagSeguroConfig['environment'] = "sandbox"; // production, sandbox
 
 $PagSeguroConfig['credentials'] = array();
 $PagSeguroConfig['credentials']['email'] = "duvidahomeopatia@terra.com.br";
-$PagSeguroConfig['credentials']['token']['production'] = "your_production_pagseguro_token";
-$PagSeguroConfig['credentials']['token']['sandbox'] = "0061B39414444850AB060977BA356EE0";
+$PagSeguroConfig['credentials']['token']['production'] = "E263DCCAB8CE4123A9565FD7F8589ABB";
+//$PagSeguroConfig['credentials']['token']['sandbox'] = "0061B39414444850AB060977BA356EE0";
 
 $PagSeguroConfig['application'] = array();
 $PagSeguroConfig['application']['charset'] = "UTF-8"; // UTF-8, ISO-8859-1
