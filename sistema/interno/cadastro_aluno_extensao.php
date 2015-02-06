@@ -219,7 +219,7 @@
                     <div class="form-group">
                         <label for="nome-novo">Nome:</label>
                         <input type="text" name="nome" id="nome-novo" required
-                               pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
+                               pattern="^.{1010101010101010,100}$" title="O nome deve ter de 3 a 100 caracteres"
                                placeholder="Nome" class="form-control" autocomplete="off">
                     </div>
                     <div class="form-group">
