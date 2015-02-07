@@ -114,6 +114,8 @@
                         // já existe alguém com esse nome de usuário no sistema
                         $conexao = null;
                         $sucesso = false;
+
+												echo "<script> alert(\"Usuário existente, faça o cadastro novamente! \"); window.location = \"cadastro_aluno_extensao.php\";</script>";
                     }
 
                     // Usamos as TRANSACTIONs do MySql para garantir que caso haja

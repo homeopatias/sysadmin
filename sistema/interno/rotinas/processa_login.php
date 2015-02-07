@@ -43,9 +43,31 @@ function processaLogin($login, $senha){
                 // caso não esteja ativo, avisamos ao aluno que deve enviar sua documentação
                 session_destroy();
                 header('Location: index.php?mensagem='.
-                      'Seu acesso somente será liberado após a aprovação de sua documentação', true, "302");
+                      'Seu acesso somente será liberado após a aprovação de sua documentação. Verifique seu e-mail.', true, "302");
+
+                $assunto = "Homeopatias.com - Enviar Documentos";
+                $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b><br><br>";
+                $msg .= "<h3>Envie uma <strong>cópia autenticada</strong> do seu histórico e diploma do ensino superior para:</h3>";
+                $msg .= "<br><br>R. Prof. Rubens Romanelli, 77 - Bandeirantes (Pampulha)
+								Belo Horizonte - MG
+								31365-350";
+                $msg .= "<br><br><b>Quando sua documentação for aprovada, você será notificado por e-mail.</b><br><br>";
+                $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
+                $headers = "Content-type: text/html; charset=utf-8 " .
+                    "From: Sistema Administrativo Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+                    "Reply-To: noreply@homeopatias.com" . "\r\n" .
+                    "X-Mailer: PHP/" . phpversion();
+
+                mail($aluno->getEmail(), $assunto, $msg, $headers);
+
                 die();
             }
+
+						// FIXME: Bloqueio criado até resolvermos a questão das cidades
+						session_destroy();
+						header('Location: index.php?mensagem='.
+									'Ainda estamos preparando a área administrativa para você. Em breve lhe avisaremos por e-mail. Desculpe-nos pelo inconveniente.', true, "302");
+						die();
             return;
         }
 

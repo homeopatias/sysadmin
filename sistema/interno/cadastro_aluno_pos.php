@@ -124,6 +124,8 @@
                         // já existe alguém com esse nome de usuário no sistema
                         $conexao = null;
                         $sucesso = false;
+
+												echo "<script> alert(\"Usuário existente, faça o cadastro novamente! \"); window.location = \"cadastro_aluno_extensao.php\";</script>";
                     }
 
                     // Usamos as TRANSACTIONs do MySql para garantir que caso haja
@@ -153,6 +155,21 @@
                     if($sucessoUsuario && $sucessoAluno) {
                         // deu tudo certo, inserimos o aluno
                         $conexao->commit();
+
+												$assunto = "Homeopatias.com - Enviar Documentos";
+												$msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b><br><br>";
+												$msg .= "<h3>Envie uma <strong>cópia autenticada</strong> do seu histórico e diploma do ensino superior para:</h3>";
+												$msg .= "<br><br>R. Prof. Rubens Romanelli, 77 - Bandeirantes (Pampulha)
+												Belo Horizonte - MG
+												31365-350";
+												$msg .= "<br><br><b>Quando sua documentação for aprovada, você será notificado por e-mail.</b><br><br>";
+												$msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
+												$headers = "Content-type: text/html; charset=utf-8 " .
+														"From: Sistema Administrativo Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+														"Reply-To: noreply@homeopatias.com" . "\r\n" .
+														"X-Mailer: PHP/" . phpversion();
+
+												mail($email, $assunto, $msg, $headers);
                     } else {
                         // algo deu errado, desfazemos as mudanças
                         $conexao->rollBack();
