@@ -98,15 +98,6 @@
                             );
                         });
                     });
-
-                    $(this).find('#inscricao').val(
-                        $(e.relatedTarget).parent().siblings('.inscricao').text()
-                                          .substring(3).replace(/\s+/g, '')
-                    );
-                    $(this).find('#parcela').val(
-                        $(e.relatedTarget).parent().siblings('.parcela').text()
-                                          .substring(3).replace(/\s+/g, '')
-                    );
                     $(this).find("#limite").val(
                         $(e.relatedTarget).parent().siblings('.limite').data('limite')
                     );
@@ -120,7 +111,140 @@
                         $(e.relatedTarget).data('custo')
                     );
 
+                    if($(e.relatedTarget).data('cadastro-ativo') == 1){
+                        $(this).find('#cadastroAtivo').prop("checked", true);
+                    }else{
+                        $(this).find('#cadastroAtivo').prop("checked", false);
+                    }
+
+                    var extensao = $("#modal-edita-cidade #preco-extensao");
+                    var pos = $("#modal-edita-cidade #preco-pos");
+
+                    if($(e.relatedTarget).data('tipo-curso') == "extensão"){
+                        extensao.show();
+                        pos.hide(); 
+                    }else{
+                        if($(e.relatedTarget).data('tipo-curso') == "pós"){
+                            extensao.hide();
+                            pos.show();
+                        }else{
+                            extensao.show();
+                            pos.show();
+                        }
+                    }
+
+                    $(this).find('#inscricao-ext').val(
+                        $(e.relatedTarget).data('insc-ext')
+                    );
+                    $(this).find('#inscricao-pos').val(
+                        $(e.relatedTarget).data('insc-pos')
+                    );
+                    $(this).find('#parcela-ext').val(
+                        $(e.relatedTarget).data('parc-ext')
+                    );
+                    $(this).find('#parcela-pos').val(
+                        $(e.relatedTarget).data('parc-pos')
+                    );
+
+                    if( $(this).find('#cadastroAtivo').prop("checked")){
+                        $(this).find('#cadastroPermitido').show();
+                    }else{
+                        $(this).find('#cadastroPermitido').hide();
+                    }
                 });
+                /*
+                    Sempre que o tipo de curso da cidade for alterado, altera também
+                    os inputs de preço
+                */
+                $('#modal-edita-cidade #cadastroAtivo').change(function(){
+                    if( $(this).prop("checked")){
+                        $('#modal-edita-cidade #cadastroPermitido').show();
+                    }else{
+                        $('#modal-edita-cidade #cadastroPermitido').hide();
+                    }
+                });
+                        
+                    
+                // caso o tipo de curso seja trocado, muda os campos de preços
+                // em inserir nova e em editar uma cidade
+                $("#modal-nova-cidade #tipo-curso").change(function(){
+                    var extensao = $("#modal-nova-cidade #preco-extensao");
+                    var pos = $("#modal-nova-cidade #preco-pos");
+
+                    var inscricao_ext = $("#modal-nova-cidade #inscricao-nova-ext");
+                    var inscricao_pos = $("#modal-nova-cidade #inscricao-nova-pos");
+
+                    var parcela_ext = $("#modal-nova-cidade #parcela-nova-ext");
+                    var parcela_pos = $("#modal-nova-cidade #parcela-nova-pos");
+
+                    if( $(this).val() == "extensão" ){
+                        extensao.show();
+                        pos.hide(); 
+
+                        inscricao_ext.prop("required",true); 
+                        inscricao_pos.prop("required",true); 
+                        parcela_ext.prop("required",true);
+                        parcela_pos.prop("required",true);
+
+                    }else{
+                        if($(this).val() == "pós"){
+                            extensao.hide();
+                            pos.show();
+                            inscricao_ext.prop("required",false); 
+                            inscricao_pos.prop("required",true); 
+                            parcela_ext.prop("required",false);
+                            parcela_pos.prop("required",true);
+                        }else{
+                            extensao.show();
+                            pos.show();
+                            inscricao_ext.prop("required",true); 
+                            inscricao_pos.prop("required",true); 
+                            parcela_ext.prop("required",true);
+                            parcela_pos.prop("required",true);
+                        }
+                    }
+                });
+                
+                $("#modal-edita-cidade #tipo-curso").change(function(){
+                    var extensao = $("#modal-edita-cidade #preco-extensao");
+                    var pos = $("#modal-edita-cidade #preco-pos");
+
+                    var inscricao_ext = $("#modal-edita-cidade #inscricao-ext");
+                    var inscricao_pos = $("#modal-edita-cidade #inscricao-pos");
+
+                    var parcela_ext = $("#modal-edita-cidade #parcela-ext");
+                    var parcela_pos = $("#modal-edita-cidade #parcela-pos");
+
+                    if( $(this).val() == "extensão" ){
+                        extensao.show();
+                        pos.hide(); 
+
+                        inscricao_ext.prop("required",true); 
+                        inscricao_pos.prop("required",true); 
+                        parcela_ext.prop("required",true);
+                        parcela_pos.prop("required",true);
+
+                    }else{
+                        if($(this).val() == "pós"){
+                            extensao.hide();
+                            pos.show();
+                            inscricao_ext.prop("required",false); 
+                            inscricao_pos.prop("required",true); 
+                            parcela_ext.prop("required",false);
+                            parcela_pos.prop("required",true);
+                        }else{
+                            extensao.show();
+                            pos.show();
+                            inscricao_ext.prop("required",true); 
+                            inscricao_pos.prop("required",true); 
+                            parcela_ext.prop("required",true);
+                            parcela_pos.prop("required",true);
+                        }
+                    }
+                });
+
+                // seta por padrão os preços de pós ocultos
+                $("#modal-nova-cidade #preco-pos").hide();
 
 
                 // fazemos com que caso a entrada de ano da cidade seja mudada, os coordenadores
@@ -524,6 +648,24 @@
                     $nomeEmpresa = $_POST["nomeEmpresa"];
                     $cnpjEmpresa = $_POST["cnpjEmpresa"];
                     $custoCurso  = $_POST["custoCurso"];
+                    $tipoCurso   = $_POST["tipo-curso"];
+                    $InscExt     = $_POST["inscricao-ext"];
+                    $ParceExt    = $_POST["parcela-ext"];
+                    $InscPos     = $_POST["inscricao-pos"];
+                    $ParcePos    = $_POST["parcela-pos"];
+
+                    $tipoCursoValido = isset($_POST["tipo-curso"]) &&
+                                        $tipoCurso == "extensão" ||
+                                        $tipoCurso == "pós" ||
+                                        $tipoCurso == "ambos";
+
+                    if($tipoCurso == "extensão"){
+                        $InscPos     = 0;
+                        $ParcePos    = 0;
+                    }else if($tipoCurso == "pós"){
+                        $InscExt     = 0;
+                        $ParceExt    = 0;
+                    }
 
                     $nomeValido      = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                        mb_strlen($nome, 'UTF-8') <= 100;
@@ -532,8 +674,10 @@
                     $localValido     = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
                                        mb_strlen($local, 'UTF-8') <= 200;
                     $idCoordValido   = isset($idCoord) && preg_match("/^[0-9]*$/", $idCoord);
-                    $inscricaoValida = isset($inscricao) && preg_match("/^[0-9]*\.?[0-9]+$/", $inscricao);
-                    $parcelaValida   = isset($parcela) && preg_match("/^[0-9]*\.?[0-9]+$/", $parcela);
+                    $inscricaoExtValida = isset($InscExt) && preg_match("/^[0-9]*\.?[0-9]+$/", $InscExt);
+                    $parcelaExtValida   = isset($ParceExt) && preg_match("/^[0-9]*\.?[0-9]+$/", $ParceExt);
+                    $inscricaoPosValida = isset($InscPos) && preg_match("/^[0-9]*\.?[0-9]+$/", $InscPos);
+                    $parcelaPosValida   = isset($ParcePos) && preg_match("/^[0-9]*\.?[0-9]+$/", $ParcePos);
                     $limiteValido    = isset($limite) && preg_match("/^\d{4}-\d{2}-\d{2}$/", $limite);
                     $empresaValida   = isset($nomeEmpresa) && mb_strlen($nomeEmpresa, 'UTF-8') <= 100 &&
                                        mb_strlen($nomeEmpresa, 'UTF-8') >= 3;
@@ -590,8 +734,9 @@
 
                     // se todos os dados estão válidos, a cidade é cadastrada
                     if($nomeValido && $UfValido && $anoValido && $localValido && $idCoordValido &&
-                       $inscricaoValida && $parcelaValida && $limiteValido && $empresaValida && 
-                       $cnpjValido && $custoCursoValido){
+                       $inscricaoExtValida && $parcelaExtValida && $limiteValido && $empresaValida && 
+                       $inscricaoPosValida && $parcelaPosValida &&$cnpjValido && $custoCursoValido
+                       && $tipoCursoValido){
 
                         require_once("entidades/Cidade.php");
 
@@ -600,13 +745,17 @@
                         $nova->setUF($UF);
                         $nova->setAno($ano);
                         $nova->setLocal($local);
-                        $nova->setInscricao($inscricao);
-                        $nova->setParcela($parcela);
                         $nova->setLimiteInscricao($limite);
                         $nova->setNomeEmpresa($nomeEmpresa);
                         $nova->setCnpjEmpresa($cnpjEmpresa);
                         $nova->setCustoCurso($custoCurso);
                         $coordExiste = $nova->setCoordenadorId($idCoord);
+                        $nova->setCadastroAtivo(1);
+                        $nova->setTipoCurso($tipoCurso);
+                        $nova->setInscricaoExtensao($InscExt);
+                        $nova->setInscricaoPos($InscPos);
+                        $nova->setParcelaExtensao($ParceExt);
+                        $nova->setParcelaPos($ParcePos);
 
                         if($coordExiste){
                             $sucesso = $nova->cadastrar($host, "homeopatias", $usuario, $senhaBD);
@@ -630,17 +779,24 @@
                         $mensagem = "Local inválido!";
                     }else if(!$idCoordValido){
                         $mensagem = "Id de coordenador inválido!";
-                    }else if(!$inscricaoValida){
-                        $mensagem = "Preço de inscrição inválido!";
-                    }else if(!$parcelaValida){
-                        $mensagem = "Valor de parcela inválido!";
                     }else if(!$limiteValido){
                         $mensagem = "Data limite de inscrição inválida!";
                     }else if(!$empresaValida) {
                         $mensagem = "Nome da empresa inválida!";
                     }else if(!$cnpjValido) {
                         $mensagem = "CNPJ inválido!";
+                    }else if(!$tipoCursoValido){
+                        $mensagem = "Tipo de curso inválido";
+                    }else if(!$inscricaoExtValida){
+                        $mensagem = "Valor da inscrição de extensão inválida";
+                    }else if(!$inscricaoPosValida){
+                        $mensagem = "Valor da inscrição de pós-graduação inválida";
+                    }else if(!$parcelaExtValida){
+                        $mensagem = "Valor da parcela de extensão inválida";
+                    }else if(!$parcelaPosValida){
+                        $mensagem = "Valor da parcela de pós-graduação inválida";
                     }
+
                 }
             
                 // cria conexão com o banco
@@ -656,7 +812,9 @@
                 $textoQuery  = "SELECT C.idCidade, C.UF, C.ano, A.idAdmin, C.nome, 
                                 C.precoInscricao, C.precoParcela, C.idCoordenador, 
                                 C.local, C.limiteInscricao, C.nomeEmpresa, C.cnpjEmpresa,
-                                C.custoCurso
+                                C.custoCurso, C.cadastro_ativo, C.tipo_curso, 
+                                C.v_inscricao_extensao, C.v_inscricao_pos,
+                                C.v_parcela_extensao, C.v_parcela_pos
                                 FROM Cidade C, Administrador A WHERE C.idCoordenador 
                                 = A.idAdmin AND A.nivel = \"coordenador\" ";
 
@@ -880,7 +1038,13 @@
                         $tabela .= "\" data-cnpj=\"". $cnpj;
                         $tabela .= "\"href=\"#\" data-toggle=\"modal\"";
                         $tabela .= " data-custo=\"".$linha["custoCurso"]."\"";
-                        $tabela .= " data-target=\"#modal-edita-cidade\">";
+                        $tabela .= " data-target=\"#modal-edita-cidade\"";
+                        $tabela .= " data-tipo-curso=\"".$linha["tipo_curso"]."\"";
+                        $tabela .= " data-cadastro-ativo=\"".$linha["cadastro_ativo"]."\"";
+                        $tabela .= " data-insc-ext=\"".$linha["v_inscricao_extensao"]."\"";
+                        $tabela .= " data-insc-pos=\"".$linha["v_inscricao_pos"]."\"";
+                        $tabela .= " data-parc-ext=\"".$linha["v_parcela_extensao"]."\"";
+                        $tabela .= " data-parc-pos=\"".$linha["v_parcela_pos"]."\">";
                         $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
                         $tabela .= "    <td><a data-href=\"rotinas/cidade/";
                         $tabela .= "remover_cidade.php?id=";
@@ -1246,6 +1410,14 @@
                                        title="O local deve ter de 3 a 200 caracteres"
                                        class="form-control">
                             </div>
+                            <div class="florm-group">
+                                <label for="tipo-curso">Tipo de Curso:</label>
+                                <select name="tipo-curso" id="tipo-curso">
+                                    <option value="extensão">Extensão</option>
+                                    <option value="pós">Pós-Graduação</option>
+                                    <option value="ambos">Ambos</option>
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label for="limite-nova">Data limite para matrícula:</label>
                                 <input type="date" name="limite" id="limite-nova"
@@ -1257,20 +1429,38 @@
                                     <option value="">Escolha um ano acima...</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="inscricao-nova">Preço de inscrição:</label>
-                                <input type="text" name="inscricao" id="inscricao-nova" required
-                                       pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
-                                       title="O valor de inscrição deve ser um número real"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="parcela-nova">Valor da parcela:</label>
-                                <input type="text" name="parcela" id="parcela-nova" required
-                                       pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
-                                       title="A parcela deve ser um número real"
-                                       class="form-control">
-                            </div>
+                            <span id="preco-extensao" name="preco-extensao">
+                                <div class="form-group">
+                                    <label for="inscricao-nova">Preço de inscrição da extensão:</label>
+                                    <input type="text" name="inscricao-ext" id="inscricao-nova-ext" required
+                                           pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                           title="O valor de inscrição deve ser um número real"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="parcela-nova">Valor da parcela da extensão:</label>
+                                    <input type="text" name="parcela-ext" id="parcela-nova-ext" required
+                                           pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                           title="A parcela deve ser um número real"
+                                           class="form-control">
+                                </div>
+                            </span>
+                            <span id="preco-pos" name="preco-pos">
+                                <div class="form-group">
+                                    <label for="inscricao-nova">Preço de inscrição da pós-graduação:</label>
+                                    <input type="text" name="inscricao-pos" id="inscricao-nova-pos" required
+                                           pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                           title="O valor de inscrição deve ser um número real"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="parcela-nova">Valor da parcela da pós-graduação:</label>
+                                    <input type="text" name="parcela-pos" id="parcela-nova-pos" required
+                                           pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                           title="A parcela deve ser um número real"
+                                           class="form-control">
+                                </div>
+                            </span>
                             <div class="form-group">
                                 <label for="custo-curso-novo">Custo para efetivar o curso:</label>
                                 <input type="text" name="custoCurso" id="custo-curso-novo" 
@@ -1365,76 +1555,68 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="ano">Ano:</label>
-                                <select name="ano" id="ano" required
-                                        class="form-control">
-                                    <?php
-                                        $listagemAno = date("Y") + 3;
-                                        while($listagemAno >= 2000){
-                                            echo '<option value="' . ($listagemAno ) . 
-                                                  '">' . ($listagemAno ) . '</option>';
-                                            $listagemAno--;
-                                        }
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="local">Local:</label>
-                                <input type="text" name="local" id="local" required
-                                       pattern="^.{3,200}$" placeholder="Nome do local"
-                                       title="O local deve ter de 3 a 200 caracteres"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
                                 <label for="limite">Data limite para matrícula:</label>
                                 <input type="date" name="limite" id="limite"
                                        placeholder="dd/mm/aaaa" required class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="coord">Coordenador da cidade:</label>
-                                <select name="coord" id="coord" class="form-control" required>
-                                    <option value="">Escolha um ano acima...</option>
-                                </select>
+                                <div class="col-sm-6">
+                                    <label for="cadastroAtivo">Cadastro ativo : </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="checkbox" id="cadastroAtivo" 
+                                    name="cadastroAtivo" value="true">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="inscricao">Preço de inscrição:</label>
-                                <input type="text" name="inscricao" id="inscricao" required
-                                       pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
-                                       title="O valor de inscrição deve ser um número real"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="parcela">Valor da parcela:</label>
-                                <input type="text" name="parcela" id="parcela" required
-                                       pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
-                                       title="A parcela deve ser um número real"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="custoCurso">Custo para efetivar o curso:</label>
-                                <input type="text" name="custoCurso" id="custoCurso" 
-                                        required
-                                       pattern="^[0-9]*\.?[0-9]+$" placeholder="Custo do curso"
-                                       title="O valor de custo deve ser um número real"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="nomeEmpresa">Empresa que oferece 
-                                       o curso nessa cidade:</label>
-                                <input type="text" name="nomeEmpresa" id="nomeEmpresa" required
-                                       pattern="^.{3,100}$" placeholder="Nome da empresa"
-                                       title="O nome da empresa deve ter de 3 a 100 caracteres"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="cnpjEmpresa">CNPJ da empresa:</label>
-                                <input type="text" name="cnpjEmpresa" id="cnpjEmpresa" required
-                                       pattern="^(\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}|\d{14})$"
-                                       placeholder="xx.xxx.xxx/xxxx-xx"
-                                       title="O CNPJ da empresa deve estar no formado xx.xxx.xxx/xxx-xx ou
-                                       ser apenas numérico"
-                                       class="form-control">
-                            </div>
+
+                            <span id="cadastroPermitido">
+                                <div class="florm-group">
+                                    <label for="tipo-curso">Tipo de Curso:</label>
+                                    <select name="tipo-curso" id="tipo-curso">
+                                        <option value="extensão">Extensão</option>
+                                        <option value="pós">Pós-Graduação</option>
+                                        <option value="ambos">Ambos</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="coord">Coordenador da cidade:</label>
+                                    <select name="coord" id="coord" class="form-control">
+                                        <option value="">Escolha um ano acima...</option>
+                                    </select>
+                                </div>
+                                <span id="preco-extensao" name="preco-extensao">
+                                    <div class="form-group">
+                                        <label for="inscricao-nova">Preço de inscrição da extensão:</label>
+                                        <input type="text" name="inscricao-ext" id="inscricao-ext" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                               title="O valor de inscrição deve ser um número real"
+                                               class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parcela-nova">Valor da parcela da extensão:</label>
+                                        <input type="text" name="parcela-ext" id="parcela-ext" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                               title="A parcela deve ser um número real"
+                                               class="form-control">
+                                    </div>
+                                </span>
+                                <span id="preco-pos" name="preco-pos">
+                                    <div class="form-group">
+                                        <label for="inscricao-nova">Preço de inscrição da pós-graduação:</label>
+                                        <input type="text" name="inscricao-pos" id="inscricao-pos" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                               title="O valor de inscrição deve ser um número real"
+                                               class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parcela-nova">Valor da parcela da pós-graduação:</label>
+                                        <input type="text" name="parcela-pos" id="parcela-pos" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                               title="A parcela deve ser um número real"
+                                               class="form-control">
+                                    </div>
+                                </span>
+                            </span>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
