@@ -33,9 +33,46 @@
 
         	// se a referencia possuir um dos códigos do sistema novo, envia ao sistema novo
         	if ($codigoTipo === "M" || $codigoTipo =="A") {
-    			header("Location:./notificacoes_pagseguro.php",true,307);
+    			//header("Location:./notificacoes_pagseguro.php",true,307);
+    			    	?>
+
+    			<form action='./notificacao_pagseguro.php' method='post' name='frm'>
+
+				<?php
+					foreach ($_POST as $parametro => $valor) {
+						echo "<input type='hidden' name='".htmlentities($parametro ).
+							"' value='".htmlentities($valor)."'>";
+					}
+		
+				?>
+				</form>
+
+				<script language="JavaScript">
+					document.frm.submit();
+				</script>
+
+
+
+    	<?php
     		}else{
-    			header("Location:".$_SERVER["DOCUMENT_ROOT"]."/sistema/curso/curso_notificacoes.php",true,307);
+    			//header("Location:".$_SERVER["DOCUMENT_ROOT"]."/sistema/curso/curso_notificacoes.php",true,307);
+    			   	?>
+
+    			<form action=<?= "\"".$_SERVER["DOCUMENT_ROOT"]."/sistema/curso/curso_notificacoes.php\"" ?> 
+    				method='post' name='frm'>
+
+				<?php
+					foreach ($_POST as $parametro => $valor) {
+						echo "<input type='hidden' name='".htmlentities($parametro ).
+							"' value='".htmlentities($valor)."'>";
+					}
+		
+				?>
+				</form>
+
+				<script language="JavaScript">
+					document.frm.submit();
+				</script>
     		}
 
     	}
