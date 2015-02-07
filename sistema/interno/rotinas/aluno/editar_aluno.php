@@ -45,7 +45,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $pais           = "BRL";
         $tipoCurso      = $_POST["tipo_curso"];
         $tipoCadastro   = $_POST["tipo_cadastro"];
-        $senha       = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
+        $senha          = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100 &&

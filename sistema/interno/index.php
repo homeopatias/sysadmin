@@ -142,6 +142,7 @@
                 
                 <div class="conteudo" style="position: relative; top: -70px">
                     <a href="cadastro_aluno_extensao.php">Cadastro no curso de extensão</a>
+                    <a href="cadastro_aluno_pos.php">Cadastro no curso de pós graduação</a>
                     <br>
                     <a href="recuperar_conta.php">Recuperar senha ou usuário</a>
                     <br>

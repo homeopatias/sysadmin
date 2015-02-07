@@ -7,7 +7,7 @@
 <html>
     <head>
         <?php include("modulos/head.php"); ?>
-        <title>Cadastro no curso de extensão - Homeopatias.com</title>
+        <title>Cadastro no curso de Pós-Graduação - Homeopatias.com</title>
         <script>
             $(document).ready(function(){
                 $("#li-termos").change(function(){
@@ -53,6 +53,8 @@
                 $email          = $_POST["email"];
                 $login          = $_POST["login"];
                 $senha          = $_POST["senha"];
+                $escolaridade   = $_POST["escolaridade"];
+                $curso          = $_POST["curso"];
 
                 $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                   mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -84,10 +86,18 @@
                 $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                 mb_strlen($senha, 'UTF-8') <= 72;
 
+                $escolaridadeValida = isset($escolaridade) &&
+                           ($escolaridade === "superior completo"      ||
+                            $escolaridade === "mestrado"               ||
+                            $escolaridade === "doutorado");
+
+                $cursoValido = isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200;
+
                 $sucesso = true;
 
                 // se todos os dados estão válidos, o aluno é cadastrado
-                if($nomeValido && $emailValido && $loginValido && $senhaValida){
+                if($nomeValido && $emailValido && $loginValido && $senhaValida && $escolaridadeValida &&
+                   $cursoValido){
 
                     // nesse caso, para efetivar o cadastro conforme necessitamos
                     // fazemos a query diretamente
@@ -131,9 +141,10 @@
                     // descobrimos o id do usuário que acabamos de inserir
                     $idUsuario = $conexao->lastInsertId();
 
-                    $dadosAluno  = array($idUsuario);
-                    $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro, ativo) VALUES
-                                    (?, 'preinscrito', 'BRL', 'extensao', 'faculdade inspirar', 1)";
+                    $dadosAluno  = array($idUsuario, $escolaridade,  $curso);
+                    $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro,
+                                                       escolaridade, curso, ativo) VALUES
+                                    (?, 'preinscrito', 'BRL', 'pos', 'faculdade inspirar', ?, ?, 0)";
 
 
                     $query = $conexao->prepare($queryAluno);
@@ -203,7 +214,12 @@
                     $mensagem = "Nome de usuário inválido!";
                 }else if(!$senhaValida){
                     $mensagem = "Senha inválida!";
+                }else if(!$escolaridadeValida){
+                    $mensagem = "Escolaridade inválida!";
+                }else if(!$cursoValido){
+                    $mensagem = "Curso inválido!";
                 }
+
             }
 
         ?>
@@ -220,7 +236,7 @@
                     <div class="form-group">
                         <label for="nome-novo">Nome Completo:</label>
                         <input type="text" name="nome" id="nome-novo" required
-                               pattern="^.{3,50} .{1,50}$" title="O nome deve ter de 3 a 100 caracteres, insira seu nome completo"
+                               pattern="^.{3,100} .{1,50}$" title="O nome deve ter de 3 a 100 caracteres, insira seu nome completo"
                                placeholder="Nome" class="form-control" autocomplete="off">
                     </div>
                     <div class="form-group">
@@ -228,6 +244,27 @@
                         <input type="email" name="email" id="email-novo" required
                                placeholder="E-mail"
                                title="Insira um e-mail válido"
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="escolaridade-novo">Nível de escolaridade:</label>
+                        <select name="escolaridade" id="escolaridade-novo" class="form-control">
+                            <option value="superior completo">
+                                Ensino Superior Completo
+                            </option>
+                            <option value="mestrado">
+                                Mestrado
+                            </option>
+                            <option value="doutorado">
+                                Doutorado
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="curso-novo">Curso superior cursado:</label>
+                        <input type="text" name="curso" id="curso-novo" required
+                               pattern="^.{1,200}$" placeholder="Curso superior cursado"
+                               title="O curso deve estar preenchido e ter no máximo 200 caracteres"
                                class="form-control">
                     </div>
                     <div class="form-group">
@@ -268,7 +305,10 @@
                         <input type="checkbox" id="li-termos">
                         <label for="li-termos">Confirmo</label>
                     </div>
-                    <br>
+                    <h3>Seu acesso ao sistema só será permitido após o envio da documentação para a Homeobrás
+                        para avaliação e aprovação!
+                    </h3>
+                    <br><br>
                     <button type="submit" name="submit" value="submit" id="cadastro"
                             class="btn btn-primary pull-right" disabled>
                         Cadastrar

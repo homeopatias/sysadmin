@@ -37,8 +37,15 @@ function processaLogin($login, $senha){
         $sucesso = $aluno->autenticaSessao($host, "homeopatias",
                                            $usuario, $senhaBD, $senha);
         
-        // caso o login tenha sido bem sucedido, a função terminou seu trabalho
+        // caso o login tenha sido bem sucedido, checamos se esse aluno está ativo
         if($sucesso){
+            if(!$aluno->getAtivo()) {
+                // caso não esteja ativo, avisamos ao aluno que deve enviar sua documentação
+                session_destroy();
+                header('Location: index.php?mensagem='.
+                      'Seu acesso somente será liberado após a aprovação de sua documentação', true, "302");
+                die();
+            }
             return;
         }
 

@@ -59,7 +59,8 @@
                     7 : { sorter: false },
                     9 : { sorter: false },
                     10 : { sorter: false },
-                    11 : { sorter: false }
+                    11 : { sorter: false },
+                    12 : { sorter: false }
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -866,7 +867,7 @@
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
                                 A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
-                                MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula
+                                MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula, A.ativo
                                 FROM Usuario U, Aluno A";
 
                 $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
@@ -1167,6 +1168,15 @@
                     $tabela .= "    <td><a href=\"visualizar_aluno.php?id=";
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-eye\"></i></a></td>";
+
+                    if($linha["ativo"]) {
+                        $tabela .= "    <td>";
+                        $tabela .= "<i class=\"fa fa-check\" style=\"color: #0A0\"></i></td>";
+                    } else {
+                        $tabela .= "    <td><a href=\"rotinas/ativar_aluno.php?id=";
+                        $tabela .= $linha["numeroInscricao"] . "&pagina=" . $_GET["pagina"] . "\">";
+                        $tabela .= "<i class=\"fa fa-bolt\" style=\"color: orange\"></i></a></td>";
+                    }
 
                     $tabela .= "    <td><a data-indicador=\"";
                     $tabela .= $linhaIndicador["login"];
@@ -1496,6 +1506,7 @@
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >Status</th>
                                         <th width="60px">Visualizar</th>
+                                        <th width="60px">Ativar</th>
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
                                     </tr>
