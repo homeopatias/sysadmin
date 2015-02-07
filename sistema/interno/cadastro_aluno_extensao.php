@@ -7,7 +7,11 @@
 <html>
     <head>
         <?php include("modulos/head.php"); ?>
+<<<<<<< HEAD
         <title>Cadastro no curso de extensão - Homeopatias.com</title>
+=======
+        <title>Cadastro de aluno - Homeopatias.com</title>
+>>>>>>> edição de cidade alterado
         <script>
             $(document).ready(function(){
                 $("#li-termos").change(function(){
@@ -114,8 +118,11 @@
                         // já existe alguém com esse nome de usuário no sistema
                         $conexao = null;
                         $sucesso = false;
+<<<<<<< HEAD
 
 												echo "<script> alert(\"Usuário existente, faça o cadastro novamente! \"); window.location = \"cadastro_aluno_extensao.php\";</script>";
+=======
+>>>>>>> edição de cidade alterado
                     }
 
                     // Usamos as TRANSACTIONs do MySql para garantir que caso haja
@@ -134,8 +141,13 @@
                     $idUsuario = $conexao->lastInsertId();
 
                     $dadosAluno  = array($idUsuario);
+<<<<<<< HEAD
                     $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro, ativo) VALUES
                                     (?, 'preinscrito', 'BRL', 'extensao', 'faculdade inspirar', 1)";
+=======
+                    $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro) VALUES
+                                    (?, 'preinscrito', 'BRL', 'extensao', 'faculdade inspirar')";
+>>>>>>> edição de cidade alterado
 
 
                     $query = $conexao->prepare($queryAluno);
@@ -222,7 +234,11 @@
                     <div class="form-group">
                         <label for="nome-novo">Nome Completo:</label>
                         <input type="text" name="nome" id="nome-novo" required
+<<<<<<< HEAD
                                pattern="^.{3,50} .{1,50}$" title="O nome deve ter de 3 a 100 caracteres, insira seu nome completo"
+=======
+                               pattern="^.{10,100} .{1,50}$" title="O nome deve ter de 10 a 100 caracteres, insira seu nome completo"
+>>>>>>> edição de cidade alterado
                                placeholder="Nome" class="form-control" autocomplete="off">
                     </div>
                     <div class="form-group">
@@ -233,10 +249,17 @@
                                class="form-control">
                     </div>
                     <div class="form-group">
+<<<<<<< HEAD
                         <label for="login-novo">Nome de usuário <span style="font-weight: bold; color: red;" >(APENAS LETRAS E NÚMEROS SEM ESPAÇOS VAZIOS)</span>:</label>
                         <input type="text" name="login" id="login-novo" required
                                pattern="[a-z0-9]+" placeholder="Nome de usuário"
                                title="O login deve ter de 3 a 100 caracteres com apenas letras(minúsculas e sem acentos) e números!"
+=======
+                        <label for="login-novo">Nome de usuário:</label>
+                        <input type="text" name="login" id="login-novo" required
+                               pattern="^.{3,100}$" placeholder="Nome de usuário"
+                               title="O login deve ter de 3 a 100 caracteres"
+>>>>>>> edição de cidade alterado
                                class="form-control">
                     </div>
                     <div class="form-group">

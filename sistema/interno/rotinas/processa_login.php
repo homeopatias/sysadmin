@@ -37,6 +37,7 @@ function processaLogin($login, $senha){
         $sucesso = $aluno->autenticaSessao($host, "homeopatias",
                                            $usuario, $senhaBD, $senha);
         
+<<<<<<< HEAD
         // caso o login tenha sido bem sucedido, checamos se esse aluno está ativo
         if($sucesso){
             if(!$aluno->getAtivo()) {
@@ -71,6 +72,10 @@ function processaLogin($login, $senha){
 						header('Location: index.php?mensagem='.
 									'Ainda estamos preparando a área administrativa para você. Em breve lhe avisaremos por e-mail. Desculpe-nos pelo inconveniente.', true, "302");
 						die();
+=======
+        // caso o login tenha sido bem sucedido, a função terminou seu trabalho
+        if($sucesso){
+>>>>>>> edição de cidade alterado
             return;
         }
 
@@ -105,4 +110,8 @@ function processaLogin($login, $senha){
         else if(!$senhaValida)
             return "Senha inválida";
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> edição de cidade alterado

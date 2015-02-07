@@ -45,7 +45,11 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $pais           = "BRL";
         $tipoCurso      = $_POST["tipo_curso"];
         $tipoCadastro   = $_POST["tipo_cadastro"];
+<<<<<<< HEAD
         $senha          = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
+=======
+        $senha       = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
+>>>>>>> edição de cidade alterado
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -160,17 +164,29 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
            $statusValido && $loginIndicadorValido && $escolaridadeValida &&
            $cursoValido && $inscValido && $idValido && $enderecoValido && $tipoCadastroValido && 
+<<<<<<< HEAD
            $tipoCursoValido && $senhaValida ){
+=======
+           $tipoCursoValido){
+           $cursoValido && $inscValido && $idValido && $enderecoValido && $senhaValida){
+>>>>>>> edição de cidade alterado
 
             require_once("../../entidades/Aluno.php");
 
             $atualizar = new Aluno($login);
+<<<<<<< HEAD
             $atualizar->setId($id);
             $atualizar->setNumeroInscricao($insc);
             $atualizar->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
             $atualizar->setNome($nome);
             $atualizar->setCpf($cpf);
             $atualizar->setEmail($email);
+=======
+            $atualizar->setNome($nome);
+            $atualizar->setCpf($cpf);
+            $atualizar->setEmail($email);
+            $atualizar->setId($id);
+>>>>>>> edição de cidade alterado
             $atualizar->setNumeroInscricao($insc);
             $atualizar->setEscolaridade($escolaridade);
             $atualizar->setCep($cep);

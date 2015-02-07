@@ -75,38 +75,12 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
   `cidade` varchar(255) NOT NULL COMMENT 'Cidade em que o aluno reside',
   `pais` varchar(3) NOT NULL COMMENT 'País que o aluno reside',
   `tipo_curso` enum('extensao','pos','','') NOT NULL COMMENT 'tipo de curso do aluno',
-<<<<<<< HEAD
   `tipo_cadastro` enum('instituto','faculdade inspirar') NOT NULL COMMENT 'tipo de cadastro do aluno',
   `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da extensão que já enviaram os documentos)',
   PRIMARY KEY (`numeroInscricao`),
   KEY `idIndicador` (`idIndicador`),
   KEY `idAluno` (`idUsuario`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=17 ;
-
---
--- Dumping data for table `Aluno`
---
-
-INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `tipo_cadastro`, `ativo`) VALUES
-(1, 2, 'preinscrito', NULL, '1693018232', 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'instituto', 1),
-(2, 3, 'inscrito', 1, '1961438378', 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'instituto', 1),
-(3, 4, 'preinscrito', NULL, '8260134527', 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'instituto', 1),
-(4, 5, 'preinscrito', NULL, '6135342360', 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'instituto', 1),
-(5, 6, 'preinscrito', 4, '8698463979', 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'instituto', 1),
-(6, 7, 'preinscrito', NULL, '2169357517', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'instituto', 1),
-(7, 8, 'inscrito', NULL, '1184439221', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'instituto', 1),
-(8, 9, 'inscrito', NULL, '8498876543', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'instituto', 1),
-(9, 10, 'inscrito', NULL, '5787659485', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'instituto', 1),
-(10, 11, 'inscrito', 11, '2098764959', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'instituto', 1),
-(11, 12, 'inscrito', 9, '3498123232', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'instituto', 1),
-(12, 27, 'preinscrito', NULL, '3122334455', 'superior completo', 'Abacate', '33884555', 'TWOOOOO', 89, 'So needless to say', 'Say after me', 'AC', 'Don''t let away', '', '', '', 1),
-(13, 28, 'preinscrito', NULL, '3399448855', 'superior incompleto', 'abastece', '30495454', 'The birds and the bees', 39, 'Sowing the seeds', '', 'AC', 'Derpity derp', '', 'extensao', 'faculdade inspirar', 1),
-(14, 29, 'preinscrito', NULL, '3129394939', 'fundamental incompleto', NULL, '93945444', 'tesste', 34, 'marracuda', '', 'AC', 'macarruda', 'BRL', 'extensao', 'faculdade inspirar', 1),
-(15, 30, 'preinscrito', NULL, NULL, 'superior completo', 'Farmácia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BRL', 'pos', 'faculdade inspirar', 1),
-(16, 31, 'preinscrito', NULL, '9992929292', 'fundamental incompleto', NULL, '12345543', 'Armin', 12, 'Bairro', '', 'AC', 'Cidade', 'BRL', 'extensao', 'faculdade inspirar', 1);
-=======
-  `tipo_cadastro` enum('instituto','faculdade inspirar','','') NOT NULL COMMENT 'tipo de cadastro do aluno'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=13 ;
 
 --
 -- Fazendo dump de dados para tabela `Aluno`
@@ -125,7 +99,6 @@ INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `t
 (10, 11, 'inscrito', 11, '2098764959', '', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'instituto'),
 (11, 12, 'inscrito', 9, '3498123232', '', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'instituto'),
 (12, 27, 'preinscrito', NULL, '', '', 'fundamental incompleto', NULL, '', '', 0, '', NULL, '', '', 'BRL', 'extensao', 'faculdade inspirar');
->>>>>>> alterado edição de cidades
 
 -- --------------------------------------------------------
 
@@ -371,14 +344,10 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   `etapa` int(10) unsigned NOT NULL COMMENT 'Etapa a qual essa matrícula se refere',
   `aprovado` tinyint(1) DEFAULT NULL COMMENT 'Determina se o aluno (já) foi aprovado ou não',
   `chaveCidade` int(11) NOT NULL COMMENT 'Identificador da cidade a qual essa matrícula se refere',
-<<<<<<< HEAD
   `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o aluno',
   PRIMARY KEY (`idMatricula`),
   KEY `chaveAluno` (`chaveAluno`),
   KEY `chaveCidade` (`chaveCidade`)
-=======
-  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o aluno'
->>>>>>> alterado edição de cidades
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=14 ;
 
 --
@@ -395,13 +364,8 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (7, 7, 1, NULL, 4, 0),
 (8, 6, 1, NULL, 4, 10),
 (11, 11, 2, NULL, 6, 0),
-<<<<<<< HEAD
-(12, 6, 1, NULL, 6, 0),
-(13, 16, 1, NULL, 6, 0);
-=======
 (12, 6, 1, NULL, 6, 20),
 (13, 3, 1, NULL, 6, 0);
->>>>>>> alterado edição de cidades
 
 -- --------------------------------------------------------
 
@@ -414,14 +378,10 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `titulo` varchar(100) NOT NULL COMMENT 'Título da notificação a ser dada ao aluno',
   `texto` varchar(500) NOT NULL COMMENT 'Texto da notificação a ser dada ao aluno',
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
-<<<<<<< HEAD
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
   PRIMARY KEY (`idNotificacao`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=108 ;
-=======
-  `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=106 ;
->>>>>>> alterado edição de cidades
+
 
 --
 -- Fazendo dump de dados para tabela `Notificacao`
@@ -506,15 +466,11 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (101, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$30.00\nData: 18/11/2014\nHorário: 08:49\nMétodo: Dinheiro', 9, 1),
 (102, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$20.00\nData: 18/11/2014\nHorário: 08:50\nMétodo: Dinheiro', 9, 1),
 (103, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$150.00\nData: 31/01/2015\nHorário: 20:02\nMétodo: Dinheiro', 2, 0),
-<<<<<<< HEAD
 (104, 'Desconto por indicação', 'Por uma correção do sistema, um aluno corrigiu corrigiu seu indicador para aluno correto, seu desconto de 10% foi removido das próximas parcelas', -1, 0),
 (105, 'Desconto por indicação', 'Por uma correção do sistema, um aluno corrigiu corrigiu seu indicador para aluno correto, seu desconto de 10% foi removido das próximas parcelas', -1, 0),
 (106, 'Desconto por indicação', 'Por uma correção do sistema, um aluno corrigiu corrigiu seu indicador para aluno correto, seu desconto de 10% foi removido das próximas parcelas', -1, 0),
 (107, 'Desconto por indicação', 'Por uma correção do sistema, um aluno corrigiu corrigiu seu indicador para aluno correto, seu desconto de 10% foi removido das próximas parcelas', -1, 0);
-=======
-(104, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 31/01/2015\nHorário: 20:10\nMétodo: Dinheiro', 6, 0),
-(105, 'Pagamento recebido', 'Pagamento recebido:\nValor: R$100.00\nData: 31/01/2015\nHorário: 20:33\nMétodo: Dinheiro', 3, 0);
->>>>>>> alterado edição de cidades
+
 
 -- --------------------------------------------------------
 
@@ -614,13 +570,9 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento utilizado para essa mensalidade',
   `data` datetime DEFAULT NULL COMMENT 'Data na qual essa mensalidade foi paga',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
-<<<<<<< HEAD
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
   PRIMARY KEY (`idPagMensalidade`),
   KEY `chaveAluno` (`chaveMatricula`)
-=======
-  `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não'
->>>>>>> alterado edição de cidades
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=157 ;
 
 --
@@ -760,7 +712,6 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (130, 11, 9, 80, 0, 0, '', NULL, 2015, 0),
 (131, 11, 10, 80, 0, 0, '', NULL, 2015, 0),
 (132, 11, 11, 80, 0, 0, '', NULL, 2015, 0),
-<<<<<<< HEAD
 (133, 12, 0, 100, 0, 0, '', NULL, 2015, 0),
 (134, 12, 1, 80, 0, 0, '', NULL, 2015, 0),
 (135, 12, 2, 80, 0, 0, '', NULL, 2015, 0),
@@ -774,33 +725,6 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (143, 12, 10, 80, 0, 0, '', NULL, 2015, 0),
 (144, 12, 11, 80, 0, 0, '', NULL, 2015, 0),
 (145, 13, 0, 100, 0, 0, '', NULL, 2015, 0),
-=======
-(133, 12, 0, 100, 100, 0, 'Dinheiro', '2015-01-31 00:00:00', 2015, 1),
-(134, 12, 1, 80, 0, 20, '', NULL, 2015, 0),
-(135, 12, 2, 80, 0, 20, '', NULL, 2015, 0),
-(136, 12, 3, 80, 0, 20, '', NULL, 2015, 0),
-(137, 12, 4, 80, 0, 20, '', NULL, 2015, 0),
-(138, 12, 5, 80, 0, 20, '', NULL, 2015, 0),
-(139, 12, 6, 80, 0, 20, '', NULL, 2015, 0),
-(140, 12, 7, 80, 0, 20, '', NULL, 2015, 0),
-(141, 12, 8, 80, 0, 20, '', NULL, 2015, 0),
-(142, 12, 9, 80, 0, 20, '', NULL, 2015, 0),
-(143, 12, 10, 80, 0, 20, '', NULL, 2015, 0),
-(144, 12, 11, 80, 0, 20, '', NULL, 2015, 0),
-(145, 13, 0, 100, 100, 0, 'Dinheiro', '2015-01-31 00:00:00', 2015, 1),
->>>>>>> alterado edição de cidades
-(146, 13, 1, 80, 0, 0, '', NULL, 2015, 0),
-(147, 13, 2, 80, 0, 0, '', NULL, 2015, 0),
-(148, 13, 3, 80, 0, 0, '', NULL, 2015, 0),
-(149, 13, 4, 80, 0, 0, '', NULL, 2015, 0),
-(150, 13, 5, 80, 0, 0, '', NULL, 2015, 0),
-(151, 13, 6, 80, 0, 0, '', NULL, 2015, 0),
-(152, 13, 7, 80, 0, 0, '', NULL, 2015, 0),
-(153, 13, 8, 80, 0, 0, '', NULL, 2015, 0),
-(154, 13, 9, 80, 0, 0, '', NULL, 2015, 0),
-(155, 13, 10, 80, 0, 0, '', NULL, 2015, 0),
-(156, 13, 11, 80, 0, 0, '', NULL, 2015, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -876,7 +800,6 @@ CREATE TABLE IF NOT EXISTS `Usuario` (
   `email` varchar(100) NOT NULL,
   `login` varchar(100) NOT NULL,
   `senha` text NOT NULL,
-<<<<<<< HEAD
   `nome` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login` (`login`),
@@ -884,10 +807,7 @@ CREATE TABLE IF NOT EXISTS `Usuario` (
   KEY `cpf_2` (`cpf`),
   KEY `dataInscricao` (`dataInscricao`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=32 ;
-=======
-  `nome` varchar(100) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=28 ;
->>>>>>> alterado edição de cidades
+
 
 --
 -- Fazendo dump de dados para tabela `Usuario`
@@ -908,7 +828,7 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (12, '61055784748', '2014-11-12 11:00:44', 'herc@gmail.com', 'hercules', '$2a$08$UIKre.q/kHjOQrTAXQjB3.yYVVFW9l.y6BxiUlVbDyxzsk6p//5qK', 'Hernando Hércules Ferreira'),
 (13, '85479936492', '2014-11-12 11:06:36', 'joaojoao@gmail.com', 'joaocarlos', '$2a$08$4L7KmSz2RitcwdW9lkp48uI7uZM3a525FF7qotDhzVY7LEn4651rG', 'João Carlos Alberto'),
 (14, '77721252245', '2014-11-12 11:08:20', 'ame.joana@gmail.com', 'amelia_flor', '$2a$08$HcZfTXY/8Kdylekb/9dSYO9HE8JIn8pu31bQKDB7DhfQ8n6YXF5Sa', 'Amélia Joana Glória'),
-(15, '', '2014-11-12 11:10:44', '', '', '$2a$08$aCColQUnDPf.jOP93CKueuSeoSqDSIA82uI5dcqqUoaBI1gAtLgam', ''),
+(15, '77721252245', '2014-11-12 11:10:44', 'juju.silva@gmail.com', 'juju', '$2a$08$aCColQUnDPf.jOP93CKueuSeoSqDSIA82uI5dcqqUoaBI1gAtLgam', 'Júlia Silva'),
 (16, '17125261540', '2014-11-12 11:12:12', 'fernando.filho@gmail.com', 'nando', '$2a$08$axsrInHv6.bBo8J0Ef7qxOAASLAoH4FM2kVnXDmDZApZ5aV1Aes72', 'Fernando Faria Filho'),
 (17, '68322372787', '2014-11-12 11:13:36', 'cassio.murilo@gmail.com', 'camum', '$2a$08$JjcHZKPEMGXqcm2m4R5dsexqGE56BEFI0nj4oyMk6zvWFFTPdkncW', 'Cássio Murilo de Oliveira'),
 (18, '77702570776', '2014-11-12 11:14:14', 'jess1231@gmail.com', 'jessica', '$2a$08$dGC9vIFIC4ayGzwx3v16j.Gm9f.cYSfaf9Y.KqiEcA17J1lMvYj86', 'Jéssica Martins Pereira'),
@@ -920,10 +840,8 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (24, '32759893910', '2014-11-13 13:00:42', 'sandra_mp@gmail.com', 'sandramp', '$2a$08$5b6vrhQoXT1ak4.pkzGA/uCbDXtqqD.TXRaOQBY35pYP05s1jfiMu', 'Sandra Maria Passos'),
 (25, '84272313428', '2014-11-13 13:14:03', 'ednaldo@whatisthebrother.com', 'ednaldop', '$2a$08$7Biq7AD37sJdNBrxXM7CKerTwRbxku8uiVaubQZcXbOSfQ7.aZruq', 'Ednaldo Pereira'),
 (26, '81424367794', '2014-11-13 14:07:47', 'luiza.conceicao@gmail.com', 'luconceicao', '$2a$08$Eb4yjC5mPtgpLQ5cO.jJQ.UmnpMKXXkyj1i/MC1RtI6CGyK9G0Knq', 'Luíza Maria Conceição'),
-<<<<<<< HEAD
 (30, '99999999999', '2015-02-06 22:47:34', 'posgrad@gmail.com', 'posgrad', '$2a$08$D8RgxAEYmdjmXZkjw7fA8ePUhqROozbFH9pn5gOhPSH7Yz0K2Fowy', 'Amigo Pós'),
 (31, '13871725650', '2015-02-06 22:58:19', 'armindo@gmail.com', 'armin', '$2a$08$ffjv/3VlOb4Xu8ayiHEe4e7whvPjlbvwc1MitlMVFYKn0JXtxZsDa', 'Armin Silv');
-=======
 (27, '99999999999', '2015-02-06 09:33:17', 'kausousaoliveira@dayrep.com', 'Engs1994', '$2a$08$ajTILqM2IwcDyGih0Tz9IuZ/Rx4Y9.xNxW0sik89aurjdity/XAA2', 'Kauã Sousa Oliveira');
 
 --
@@ -1059,8 +977,6 @@ ALTER TABLE `Usuario`
 --
 -- AUTO_INCREMENT de tabelas apagadas
 --
->>>>>>> alterado edição de cidades
-
 --
 -- AUTO_INCREMENT de tabela `Administrador`
 --

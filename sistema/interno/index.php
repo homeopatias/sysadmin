@@ -141,6 +141,7 @@
                 </form>
                 
                 <div class="conteudo" style="position: relative; top: -70px">
+<<<<<<< HEAD
 								<!-- Estes links não serão exibidos aqui
 
                     <a href="cadastro_aluno_extensao.php">Cadastro no curso de extensão</a>
@@ -152,6 +153,11 @@
                     <a href="http://homeopatias.com/index.php?m=curso_homeopatia&n=login">Entrar no sistema antigo</a>
 										<br>
                     <a href="http://homeopatias.com/index.php?m=curso_homeopatia&n=login&ufv=true">Entrar no sistema antigo(UFV)</a>
+=======
+                    <a href="cadastro_aluno_extensao.php">Cadastro no curso de extensão</a>
+                    <br>
+                    <a href="recuperar_conta.php">Recuperar senha ou usuário</a>
+>>>>>>> edição de cidade alterado
                     <br>
                     <?php
                         $sql = "SELECT nome FROM Instituicao WHERE inicioInsc <= CURDATE() AND
@@ -1008,4 +1014,8 @@
             include("modulos/rodape.php");
         ?>
     </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> edição de cidade alterado
