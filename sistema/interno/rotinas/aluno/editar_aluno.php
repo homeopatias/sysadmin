@@ -160,8 +160,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
            $statusValido && $loginIndicadorValido && $escolaridadeValida &&
            $cursoValido && $inscValido && $idValido && $enderecoValido && $tipoCadastroValido && 
-           $tipoCursoValido){
-           $cursoValido && $inscValido && $idValido && $enderecoValido && $senhaValida){
+           $tipoCursoValido && $senhaValida ){
 
             require_once("../../entidades/Aluno.php");
 
