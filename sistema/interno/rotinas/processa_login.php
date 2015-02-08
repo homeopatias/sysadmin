@@ -45,18 +45,21 @@ function processaLogin($login, $senha){
                 header('Location: index.php?mensagem='.
                       'Seu acesso somente será liberado após a aprovação de sua documentação. Verifique seu e-mail.', true, "302");
 
-                $assunto = "Homeopatias.com - Enviar Documentos";
-                $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b><br><br>";
-                $msg .= "<h3>Envie uma <strong>cópia autenticada</strong> do seu histórico e diploma do ensino superior para:</h3>";
-                $msg .= "<br><br>R. Prof. Rubens Romanelli, 77 - Bandeirantes (Pampulha)
+								$assunto = "Homeopatias.com - Enviar Documentos";
+								$msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b><br><br>";
+								$msg .= "<h3>Você está pré-inscrito no Curso de Pós-Graduação, para a inscrição se concretizar, você deve enviar-nos:</h3><br>";
+								$msg .= "<ul><li>Cópia autenticada do diploma de Graduação</li><li>Cópia autenticada do CPF e RG</li><li>Copia de comprovante de residencia</li><li> Uma foto 3x4</ul><br>";
+								$msg .= "<br><h4>Endereço:</h4><br><br>R. Prof. Rubens Romanelli, 77 - Bandeirantes (Pampulha)
 								Belo Horizonte - MG
 								31365-350";
-                $msg .= "<br><br><b>Quando sua documentação for aprovada, você será notificado por e-mail.</b><br><br>";
-                $msg .= "<br><br>Obrigado,<br>Equipe Homeobrás.";
-                $headers = "Content-type: text/html; charset=utf-8 " .
-                    "From: Sistema Administrativo Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
-                    "Reply-To: noreply@homeopatias.com" . "\r\n" .
-                    "X-Mailer: PHP/" . phpversion();
+								$msg .= "<br><b>ou entregar ao coordenador local da sua cidade na primeira aula em março.</b><br>";
+								$msg .= "<br>Após a aprovação da sua documentação  e o pagamento da taxa de inscrição, sua inscrição estará concluida<br>";
+								$msg .= "<br><br><b>Quando sua documentação for aprovada, você será notificado por e-mail.</b><br>Qualquer dúvida envie mensagem para cursohomeopatias@terra.com.br / financeiro homeopatia@terra.com.br. Ligar para (31) 3439-2500 - central nacional custo de ligação local 3003-6777.<br><br>";
+								$msg .= "<br><br>Obrigado,<br>Equipe Homeobrás e Instituto Hahnemann.";
+								$headers = "Content-type: text/html; charset=utf-8 " .
+										"From: Sistema Administrativo Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+										"Reply-To: noreply@homeopatias.com" . "\r\n" .
+										"X-Mailer: PHP/" . phpversion();
 
                 mail($aluno->getEmail(), $assunto, $msg, $headers);
 
