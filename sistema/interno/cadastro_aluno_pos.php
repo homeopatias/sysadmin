@@ -285,10 +285,10 @@
                                class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="login-novo">Nome de usuário:</label>
+                        <label for="login-novo">Nome de usuário <span style="font-weight: bold; color: red;" >(APENAS LETRAS E NÚMEROS SEM ESPAÇOS VAZIOS)</span>:</label>
                         <input type="text" name="login" id="login-novo" required
-                               pattern="^.{3,100}$" placeholder="Nome de usuário"
-                               title="O login deve ter de 3 a 100 caracteres"
+                               pattern="[a-z0-9]+" placeholder="Nome de usuário"
+                               title="O login deve ter de 3 a 100 caracteres com apenas letras(minúsculas e sem acentos) e números!"
                                class="form-control">
                     </div>
                     <div class="form-group">
