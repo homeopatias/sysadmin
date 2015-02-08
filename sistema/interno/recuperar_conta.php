@@ -48,74 +48,20 @@
                 $mensagem = "";
                 $sucesso  = "";
 
-                //valida e-mail e CPF
-                $cpf    = isset( $_POST["cpf"] ) ? $_POST["cpf"] : false;
-                $email  = isset( $_POST["email"] ) ? $_POST["email"] : false;
+								$email  = isset( $_POST["email"] ) ? $_POST["email"] : false;
 
-                $cpfValido      = isset($cpf) &&
-                                  (preg_match("/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", $cpf) || 
-                                   preg_match("/^\d{11}$/", $cpf));
-
-                if($cpfValido){
-                        // checamos se os dígitos verificadores do cpf conferem
-                        $cpfBruto  = false;
-                        $cpfChecar = str_replace(".","",$cpf);
-                        $cpfChecar = str_replace("-","",$cpfChecar);
-
-                        $cpfBruto = $cpfChecar;
-
-                        $cpfChecar = str_split($cpfChecar);
-                        $somaChecagem = 0;
-
-                        for($i = 10; $i >= 2; $i = $i - 1){
-                            $somaChecagem += (int)($cpfChecar[10 - $i]) * $i;
-                        }
-                        $digito = ($somaChecagem % 11) < 2 ? 0 : 11 - ($somaChecagem % 11);
-                        if($digito != $cpfChecar[9]){
-                            $cpfValido = false;
-                        }else{
-                            // agora checamos o segundo dígito
-                            $somaChecagem = 0;
-                            for($i = 11; $i >= 2; $i = $i - 1){
-                                $somaChecagem += (int)($cpfChecar[11 - $i]) * $i;
-                            }
-                            $digito = floor($somaChecagem/11);
-                            $digito = ($somaChecagem % 11) < 2 ? 0 : 11 - ($somaChecagem % 11);
-                            if($digito != $cpfChecar[10]){
-                                $cpfValido = false;
-                            }
-                        }
-
-                        $todosZero = true;
-                        $todosNove = true;
-                        for($i = 0; $i <11; $i++){
-                            if($cpfChecar[$i] != '0'){
-                                $todosZero = false;
-                            }
-                            if($cpfChecar[$i] != '9'){
-                                $todosNove = false;
-                            }
-                        }
-
-                        if($todosZero || $todosNove){
-                            $cpfValido = false;
-                        }
-
-                    }
-
-                    $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
+								$emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
                                     preg_match("/^.+\@.+\..+$/", $email);
 
             // -------------------------------------------------------------------
 
-                //se e-mail e cpf forem válido, checamos as contas que possuem esta combinação
-                if($cpfValido && $emailValido){
+                //se e-mail forem válido, checamos as contas que possuem esta combinação
+                if($emailValido){
 
                     $textoQuery = "SELECT login FROM Usuario 
-                                    WHERE cpf = :cpf AND email=:email";
+                                    WHERE email=:email";
 
                     $query = $conexao->prepare($textoQuery);
-                    $query->bindParam(":cpf"   , $cpfBruto );
                     $query->bindParam(":email" , $email);
 
                     $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -157,12 +103,12 @@
                         //Altera as senhas das contas de usuário
                         $textoQuery = "UPDATE Usuario 
                                 SET senha=:senha
-                                WHERE email=:email AND cpf=:cpf";
+                                WHERE email=:email";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(":senha" , $hashSenha);
-                        $query->bindParam(":cpf"   , $cpfBruto);
                         $query->bindParam(":email" , $email);
+
 
                         $sucesso = $query->execute();
 
@@ -185,7 +131,7 @@
                             }
 
                             $conteudo .= "\nSua senha para acessar esta(s) conta(s) foi alterada para a senha";
-                            $conteudo .= ":".$senhaAleatoria." .";
+                            $conteudo .= ": ".$senhaAleatoria." .";
                             
                             $conteudo .= "\n\nEsta senha foi gerada aleatóriamente pelo nosso sistema, pedimos que altere";
                             $conteudo .= " esta senha na próxima vez em que você acessar nosso sistema.";
@@ -237,7 +183,7 @@
 
                     <h3>Recuperaçao de usuario e senha:</h3>
 
-                    <p>Por favor, entre com seu e-mail e CPF nos campos abaixo e lhe enviaremos um e-mail contendo
+                    <p>Por favor, entre com seu e-mail no campo abaixo e lhe enviaremos um e-mail contendo
                         seu(s) nome(s) de usuário e uma senha gerada pelo sistema para ser usada no seu próximo 
                         login</p>
                     
@@ -255,12 +201,6 @@
 
                         <br>
 
-                        <label for="cpf">CPF:</label>
-                        <input type="text" name="cpf" id="cpf" required
-                            pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
-                            placeholder="xxx.xxx.xxx-xx" class="form-control">
-
-                        <br><br>
                         <div align="center">
                             <button type="submit" name="submit" value="submit" id="recuperar"
                             class="btn btn-primary pull-right">
