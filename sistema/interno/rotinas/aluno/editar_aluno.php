@@ -160,16 +160,17 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
            $statusValido && $loginIndicadorValido && $escolaridadeValida &&
            $cursoValido && $inscValido && $idValido && $enderecoValido && $tipoCadastroValido && 
-           $tipoCursoValido){
-           $cursoValido && $inscValido && $idValido && $enderecoValido && $senhaValida){
+           $tipoCursoValido && $senhaValida ){
 
             require_once("../../entidades/Aluno.php");
 
             $atualizar = new Aluno($login);
+            $atualizar->setId($id);
+            $atualizar->setNumeroInscricao($insc);
+            $atualizar->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
             $atualizar->setNome($nome);
             $atualizar->setCpf($cpf);
             $atualizar->setEmail($email);
-            $atualizar->setId($id);
             $atualizar->setNumeroInscricao($insc);
             $atualizar->setEscolaridade($escolaridade);
             $atualizar->setCep($cep);

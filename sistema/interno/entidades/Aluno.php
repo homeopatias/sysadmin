@@ -203,6 +203,7 @@ class Aluno extends Usuario{
             $conexao = null;
             return true;
         }
+
         // encerramos a conexão com o BD
         $conexao = null;
 
