@@ -2018,14 +2018,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="tipo_curso">Tipo de curso</label>
-                                <select id="tipo_curso" name = "tipo_curso">
+                                <select id="tipo_curso" name = "tipo_curso" class="form-control">
                                     <option value="extensao">Extensão</option>
                                     <option value="pos">Pós Graduação</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="tipo_cadastro">Tipo de Cadastro</label>
-                                <select id="tipo_cadastro" name="tipo_cadastro">
+                                <select id="tipo_cadastro" name="tipo_cadastro" class="form-control">
                                     <option value="instituto">Instituto</option>
                                     <option value="faculdade inspirar">Faculdade Inspirar</option>
                                 </select>
