@@ -63,12 +63,14 @@
                             /////////////// OPÇÕES PARA PROFESSORES ///////////////
 
                     ?>
+                    <!-- Módulo de trabalhos inativo
                     <li>
                         <a href="gerenciar_definicoes_trabalho.php">
                             <i class="fa fa-fw fa-file-text"></i>
                             <p style="display:inline">Definições de trabalho</p>
                         </a>
                     </li>
+                    -->
                     <li>
                         <a href="aulas_professor.php">
                             <i class="fa fa-fw fa-graduation-cap"></i>
@@ -181,12 +183,14 @@
                                     <p style="display:inline">Justificativa de ausências</p>
                                 </a>
                             </li>
+                            <!-- Módulo de trabalhos inativo
                             <li>
                                 <a href="gerenciar_definicoes_trabalho.php">
                                     <i class="fa fa-fw fa-file-text"></i>
                                     <p style="display:inline">Definições de trabalho</p>
                                 </a>
                             </li>
+                            -->
                         </ul>
                     </li>
                     <?php  }
