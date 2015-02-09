@@ -200,6 +200,7 @@
                         </a>
                         <ul class="dropdown-menu drop">
                             <!-- dropdown de gerenciamento de informações -->
+                            <!-- Módulos relativos ao site inativos
                             <li>
                                 <a href="gerenciar_artigos.php">
                                     <i class="fa fa-fw fa-quote-left"></i>
@@ -218,6 +219,7 @@
                                     <p style="display:inline">Notícias</p>
                                 </a>
                             </li>
+                            -->
                             <li>
                                 <a href="gerenciar_reunioes.php">
                                     <i class="fa fa-fw fa-suitcase"></i>
