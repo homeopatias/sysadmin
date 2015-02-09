@@ -227,7 +227,8 @@
                         </ul>
                     </li>
                     <?php  }
-                        if(8 & $permissoes){
+                    // Módulo de livros inativo
+                    /*    if(8 & $permissoes){
                         ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle btn-toggle-dropdown"
@@ -245,7 +246,7 @@
                             </li>
                         </ul>
                     </li>
-                    <?php  } ?>
+                    <?php  } */ ?>
 
                     <?php
                         } // Fim das opções para administradores
