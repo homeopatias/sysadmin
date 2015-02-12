@@ -61,11 +61,6 @@
                     $cpf            = $_POST["cpf"];
                     $loginIndicador = $_POST["indicador"];
                     $telefone       = $_POST["telefone"];
-<<<<<<< HEAD
-=======
-                    $escolaridade   = $_POST["escolaridade"];
-                    $curso          = $_POST["curso"];
->>>>>>> edição de cidade alterado
                     $cep            = $_POST["cep"];
                     $rua            = $_POST["rua"];
                     $numero         = $_POST["numero"];
@@ -75,14 +70,11 @@
                     $estado         = $_POST["estado"];
                     $idCidadeMat    = $_POST["cidadeMat"];
 
-<<<<<<< HEAD
                     if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") {                  
                         $escolaridade   = $_POST["escolaridade"];
                         $curso          = $_POST["curso"];
                     }
 
-=======
->>>>>>> edição de cidade alterado
                     $cpfValido      = isset($cpf) &&
                                       (preg_match("/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", $cpf) || 
                                        preg_match("/^\d{11}$/", $cpf));
@@ -208,7 +200,6 @@
                                             $bairroValido && $cidadeValida
                                            && $estadoValido);
 
-<<<<<<< HEAD
                     $escolaridadeValida = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
                                 (isset($escolaridade) &&
                                    ($escolaridade === "fundamental incompleto" ||
@@ -229,24 +220,7 @@
                                  $escolaridade === "doutorado");
                     $cursoValido = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
                                    ((!isset($curso) || $curso === "") && !$superior) ||
-=======
-                    $escolaridadeValida = isset($escolaridade) &&
-                               ($escolaridade === "fundamental incompleto" ||
-                                $escolaridade === "fundamental completo"   ||
-                                $escolaridade === "médio incompleto"       ||
-                                $escolaridade === "médio completo"         ||
-                                $escolaridade === "superior incompleto"    ||
-                                $escolaridade === "superior completo"      ||
-                                $escolaridade === "mestrado"               ||
-                                $escolaridade === "doutorado");
 
-                    // para permitir a validação do curso, conferimos se possui curso superior
-                    $superior = ($escolaridade === "superior incompleto"    ||
-                                 $escolaridade === "superior completo"      ||
-                                 $escolaridade === "mestrado"               ||
-                                 $escolaridade === "doutorado");
-                    $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
->>>>>>> edição de cidade alterado
                                    (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
 
                     // verificamos se a cidade na qual o aluno quer se matricular
@@ -287,7 +261,6 @@
                         $aluno->setEstado($estado);
                         $aluno->setIdIndicador($idIndicador);
 
-<<<<<<< HEAD
                         if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") {
                             $aluno->setEscolaridade($escolaridade);
                             if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
@@ -296,14 +269,7 @@
                             }else{
                                 $aluno->setCurso(null);
                             }
-=======
-                        $aluno->setEscolaridade($escolaridade);
-                        if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
-                           $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
-                            $aluno->setCurso(isset($curso) ? $curso : null);
-                        }else{
-                            $aluno->setCurso(null);
->>>>>>> edição de cidade alterado
+
                         }
 
                         $sucesso = $aluno->atualizar($host, $db, $usuario, $senhaBD);
@@ -337,7 +303,8 @@
                             // agora tentamos criar os pagamentos
 
                             // pega os valores de inscrição e parcelas da cidade
-                            $textoQuery = "SELECT C.precoInscricao, C.precoParcela, C.ano
+                            $textoQuery = "SELECT C.nome, C.idCidade,C.ano, C.v_inscricao_extensao, C.v_parcela_extensao,
+                                                  C.v_inscricao_pos, C.v_parcela_pos
                                            FROM Cidade C, Matricula M
                                            WHERE C.idCidade = M.chaveCidade AND
                                            M.idMatricula = ?";
@@ -354,6 +321,14 @@
                             $sucessoPgto = false;
 
                             if($linha = $query->fetch()){
+
+                                if($aluno->getTipoCurso() == "extensao"){
+                                    $precoInscricao = $linha["v_inscricao_extensao"];
+                                    $precoParcela = $linha["v_parcela_extensao"];
+                                }else{
+                                    $precoInscricao = $linha["v_inscricao_pos"];
+                                    $precoParcela = $linha["v_parcela_pos"];
+                                }
                                 for($i = 0; $i < 12; $i++){
 
                                     if($i == 0){ // parcela numero 0 será considerada valor da
@@ -362,14 +337,14 @@
                                                         (`chaveMatricula`, `numParcela`, `ValorTotal`, `ValorPago`, 
                                                             `desconto`, `fechado`,`ano`) 
                                                         VALUES (?, '0', ?, '0', '0', '0', ?) ";
-                                        $insertArray  = array($idUltimaMatricula, $linha["precoInscricao"], $linha["ano"]);
+                                        $insertArray  = array($idUltimaMatricula, $precoInscricao, $linha["ano"]);
 
                                     } 
                                     else{
                                         $queryInsert    .= " , (?, ?, ?, '0', '0', '0', ?) ";
                                         $insertArray[]  = $idUltimaMatricula;
                                         $insertArray[]  = $i;
-                                        $insertArray[]  = $linha["precoParcela"];
+                                        $insertArray[]  = $precoParcela;
                                         $insertArray[]  = $linha["ano"];
                                     }
                                 }
@@ -394,11 +369,6 @@
                                 $conexao->rollBack();
                                 $mensagem = "Erro na criação dos pagamentos do ano";
                             } else {
-<<<<<<< HEAD
-
-=======
-                                
->>>>>>> edição de cidade alterado
                                 // tudo certo, inscrevemos o aluno no Moodle e confirmamos as mudanças
 
                                 $usuarioMoodle = $dados["usuario_moodle"];
@@ -424,13 +394,10 @@
 
                                         $queryMoodle = "INSERT INTO mdl_user_enrolments
                                                         (status,enrolid,userid,timecreated,
-<<<<<<< HEAD
                                                          timemodified) VALUES (0,";
                                         $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "4" : "1");
                                         $queryMoodle .= ",?,NOW(),NOW())";
-=======
-                                                         timemodified) VALUES (0,1,?,NOW(),NOW())";
->>>>>>> edição de cidade alterado
+
 
                                         $query = $conMoodle->prepare($queryMoodle);
                                         $query->bindParam(1, $idUsuarioMoodle);
@@ -439,13 +406,10 @@
                                         if($sucessoMoodle) {
                                             $queryMoodle = "INSERT INTO mdl_role_assignments
                                                             (roleid,contextid,userid,timemodified)
-<<<<<<< HEAD
                                                             VALUES (5,";
                                             $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "26" : "18");
                                             $queryMoodle .= ",?,NOW())";
-=======
-                                                            VALUES (5,18,?,NOW())";
->>>>>>> edição de cidade alterado
+
 
                                             $query = $conMoodle->prepare($queryMoodle);
                                             $query->bindParam(1, $idUsuarioMoodle);
@@ -665,10 +629,8 @@
                             </div>
                             
                         </div>
-<<<<<<< HEAD
                         <?php if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") { ?>
-=======
->>>>>>> edição de cidade alterado
+
                         <div class="form-group">
                             <label for="escolaridade-novo">Nível de escolaridade:</label>
                             <select name="escolaridade" id="escolaridade-novo" class="form-control">
@@ -705,10 +667,7 @@
                                    title="O curso deve ter no máximo 200 caracteres"
                                    class="form-control">
                         </div>
-<<<<<<< HEAD
                         <?php } ?>
-=======
->>>>>>> edição de cidade alterado
 
                         <div class="form-group">
                             <label for="indicador-novo">

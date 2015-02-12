@@ -25,10 +25,7 @@ class Aluno extends Usuario{
     private $curso;
     private $tipoCurso;
     private $tipoCadastro;
-<<<<<<< HEAD
     private $ativo;
-=======
->>>>>>> edição de cidade alterado
 
     //Variáveis relacionadas ao endereço
     private $cep;
@@ -68,10 +65,7 @@ class Aluno extends Usuario{
         $this->pais            = "";
         $this->tipoCurso       = "";
         $this->tipoCadastro    = "";
-<<<<<<< HEAD
         $this->ativo           = false;
-=======
->>>>>>> edição de cidade alterado
     }
 
     // Função que confere os dados do aluno no sistema e
@@ -96,11 +90,8 @@ class Aluno extends Usuario{
         $textoQuery  = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email, U.senha, 
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone,
                         A.escolaridade, A.curso,A.cep, A.rua, A.numero, A.complemento,
-<<<<<<< HEAD
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro, A.ativo
-=======
-                        A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro
->>>>>>> edição de cidade alterado
+
                         FROM Usuario U, Aluno A WHERE U.login=? AND A.idUsuario = U.id";
 
         $query = $conexao->prepare($textoQuery);
@@ -136,10 +127,7 @@ class Aluno extends Usuario{
                 $this->tipoCurso       = $linha["tipo_curso"];
                 $this->tipoCadastro    = $linha["tipo_cadastro"];
                 $this->senha           = $senhaUsuario;
-<<<<<<< HEAD
                 $this->ativo           = $linha["ativo"];
-=======
->>>>>>> edição de cidade alterado
 
                 $_SESSION["usuario"] = serialize($this);
 
@@ -178,11 +166,8 @@ class Aluno extends Usuario{
         $textoQuery  = "SELECT U.id, U.cpf, U.login, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email, U.senha, 
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.escolaridade, 
                         A.curso ,A.cep, A.rua, A.numero, A.complemento,
-<<<<<<< HEAD
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro, A.ativo
-=======
-                        A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro
->>>>>>> edição de cidade alterado
+
                         FROM Usuario U, Aluno A WHERE A.numeroInscricao=? AND A.idUsuario = U.id";
 
         $query = $conexao->prepare($textoQuery);
@@ -214,19 +199,13 @@ class Aluno extends Usuario{
             $this->pais            = $linha["pais"];
             $this->tipoCurso       = $linha["tipo_curso"];
             $this->tipoCadastro    = $linha["tipo_cadastro"];
-<<<<<<< HEAD
             $this->ativo           = $linha["ativo"];
-=======
->>>>>>> edição de cidade alterado
 
             // encerramos a conexão com o BD
             $conexao = null;
             return true;
         }
-<<<<<<< HEAD
 
-=======
->>>>>>> edição de cidade alterado
         // encerramos a conexão com o BD
         $conexao = null;
 
@@ -290,19 +269,12 @@ class Aluno extends Usuario{
                                  $this->curso, $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
-<<<<<<< HEAD
                                  $this->tipoCadastro, $this->ativo);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, 
                              escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso, tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?,
                              ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-=======
-                                 $this->tipoCadastro);
-            $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, 
-                             escolaridade, curso, cep, rua, numero , complemento, bairro,
-                             cidade, estado, pais, tipo_curso, tipo_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?, ?, ?)";
->>>>>>> edição de cidade alterado
+
 
         }else{
             $dadosAluno  = array($idUsuario, $this->status, $this->telefone,
@@ -310,19 +282,12 @@ class Aluno extends Usuario{
                                  $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
-<<<<<<< HEAD
                                  $this->tipoCadastro, $this->ativo);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone,  
                             idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso, tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
                              ?, ?, ?, ?, ?, ?, ?, ?)";
-=======
-                                 $this->tipoCadastro);
-            $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone,  
-                            idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
-                             cidade, estado, pais, tipo_curso, tipo_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?, ?)";
->>>>>>> edição de cidade alterado
+
         }
         $query = $conexao->prepare($queryAluno);
         $sucessoAluno = $query->execute($dadosAluno);
@@ -391,11 +356,8 @@ class Aluno extends Usuario{
                     curso = :curso ,numeroInscricao = :numInsc,
                     cep = :cep, rua = :rua, numero = :numero, complemento = :complemento ,
                     cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais ,
-<<<<<<< HEAD
                     tipo_curso = :tipo_curso, tipo_cadastro = :tipo_cadastro, ativo = :ativo
-=======
-                    tipo_curso = :tipo_curso, tipo_cadastro = :tipo_cadastro
->>>>>>> edição de cidade alterado
+
                     WHERE numeroInscricao = :numInsc";
         $query = $conexao->prepare($comando);
 
@@ -420,10 +382,7 @@ class Aluno extends Usuario{
         $query->bindParam(":pais", $this->pais, PDO::PARAM_STR);
         $query->bindParam(":tipo_curso", $this->tipoCurso, PDO::PARAM_STR);
         $query->bindParam(":tipo_cadastro", $this->tipoCadastro, PDO::PARAM_STR);
-<<<<<<< HEAD
         $query->bindParam(":ativo", $this->ativo, PDO::PARAM_STR);
-=======
->>>>>>> edição de cidade alterado
 
         $sucessoAluno = $query->execute();
 
@@ -865,7 +824,6 @@ class Aluno extends Usuario{
         return $this;
     }
 
-<<<<<<< HEAD
     public function getAtivo()
     {
         return $this->ativo;
@@ -877,8 +835,6 @@ class Aluno extends Usuario{
         return $this;
     }
 
-=======
->>>>>>> edição de cidade alterado
     public function getCep()
     {
         

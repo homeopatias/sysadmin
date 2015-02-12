@@ -59,12 +59,8 @@
                     7 : { sorter: false },
                     9 : { sorter: false },
                     10 : { sorter: false },
-<<<<<<< HEAD
                     11 : { sorter: false },
                     12 : { sorter: false }
-=======
-                    11 : { sorter: false }
->>>>>>> edição de cidade alterado
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -871,11 +867,8 @@
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
                                 A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
-<<<<<<< HEAD
                                 MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula, A.ativo
-=======
-                                MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula
->>>>>>> edição de cidade alterado
+
                                 FROM Usuario U, Aluno A";
 
                 $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
@@ -1177,7 +1170,6 @@
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-eye\"></i></a></td>";
 
-<<<<<<< HEAD
                     if($linha["ativo"]) {
                         $tabela .= "    <td>";
                         $tabela .= "<i class=\"fa fa-check\" style=\"color: #0A0\"></i></td>";
@@ -1186,9 +1178,6 @@
                         $tabela .= $linha["numeroInscricao"] . "&pagina=" . $_GET["pagina"] . "\">";
                         $tabela .= "<i class=\"fa fa-bolt\" style=\"color: orange\"></i></a></td>";
                     }
-
-=======
->>>>>>> edição de cidade alterado
                     $tabela .= "    <td><a data-indicador=\"";
                     $tabela .= $linhaIndicador["login"];
                     $tabela .= "\" data-id=\"";
@@ -1517,10 +1506,7 @@
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >Status</th>
                                         <th width="60px">Visualizar</th>
-<<<<<<< HEAD
                                         <th width="60px">Ativar</th>
-=======
->>>>>>> edição de cidade alterado
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
                                     </tr>
@@ -2032,22 +2018,16 @@
                             </div>
                             <div class="form-group">
                                 <label for="tipo_curso">Tipo de curso</label>
-<<<<<<< HEAD
                                 <select id="tipo_curso" name = "tipo_curso" class="form-control">
-=======
-                                <select id="tipo_curso" name = "tipo_curso">
->>>>>>> edição de cidade alterado
+
                                     <option value="extensao">Extensão</option>
                                     <option value="pos">Pós Graduação</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="tipo_cadastro">Tipo de Cadastro</label>
-<<<<<<< HEAD
                                 <select id="tipo_cadastro" name="tipo_cadastro" class="form-control">
-=======
-                                <select id="tipo_cadastro" name="tipo_cadastro">
->>>>>>> edição de cidade alterado
+
                                     <option value="instituto">Instituto</option>
                                     <option value="faculdade inspirar">Faculdade Inspirar</option>
                                 </select>

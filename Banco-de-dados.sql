@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Tempo de geração: 07/02/2015 às 20:25
+-- Tempo de geração: 12/02/2015 às 20:53
 -- Versão do servidor: 5.5.41-0ubuntu0.14.10.1
 -- Versão do PHP: 5.5.12-2ubuntu4.1
 
@@ -62,43 +62,51 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
   `idUsuario` int(11) NOT NULL COMMENT 'Identificador único do usuário que esse aluno representa',
   `status` enum('preinscrito','inscrito','desistente','formado','inativo') NOT NULL COMMENT 'Status desse aluno (pré-inscrito, inscrito, etc)',
   `idIndicador` int(11) DEFAULT NULL COMMENT 'Numero de inscricao do aluno que indicou esse aluno, caso aplicavel',
-  `telefone` text NOT NULL COMMENT 'Telefone do aluno',
-  `endereco` varchar(200) NOT NULL COMMENT 'Endereco completo do aluno',
-  `escolaridade` enum('fundamental incompleto','fundamental completo','médio incompleto','médio completo','superior incompleto','superior completo','mestrado','doutorado') NOT NULL COMMENT 'Nível de escolaridade do aluno',
+  `telefone` text COMMENT 'Telefone do aluno',
+  `escolaridade` enum('fundamental incompleto','fundamental completo','médio incompleto','médio completo','superior incompleto','superior completo','mestrado','doutorado') DEFAULT NULL COMMENT 'Nível de escolaridade do aluno',
   `curso` varchar(200) DEFAULT NULL COMMENT 'Curso que o aluno frequentou, caso esteja no nível superior ou acima',
-  `cep` varchar(8) NOT NULL COMMENT 'Código Postal do Aluno',
-  `rua` varchar(255) NOT NULL COMMENT 'Rua do Aluno',
-  `numero` int(11) NOT NULL COMMENT 'Numero do endereço do Aluno',
-  `bairro` varchar(255) NOT NULL COMMENT 'Bairro do Aluno',
+  `cep` varchar(8) DEFAULT NULL COMMENT 'Código Postal do Aluno',
+  `rua` varchar(255) DEFAULT NULL COMMENT 'Rua do Aluno',
+  `numero` int(11) DEFAULT NULL COMMENT 'Numero do endereço do Aluno',
+  `bairro` varchar(255) DEFAULT NULL COMMENT 'Bairro do Aluno',
   `complemento` varchar(255) DEFAULT NULL COMMENT 'Complemento do Endereço',
-  `estado` varchar(2) NOT NULL COMMENT 'Bairro em que o aluno reside',
-  `cidade` varchar(255) NOT NULL COMMENT 'Cidade em que o aluno reside',
-  `pais` varchar(3) NOT NULL COMMENT 'País que o aluno reside',
+  `estado` varchar(2) DEFAULT NULL COMMENT 'Bairro em que o aluno reside',
+  `cidade` varchar(255) DEFAULT NULL COMMENT 'Cidade em que o aluno reside',
+  `pais` varchar(3) DEFAULT NULL COMMENT 'País que o aluno reside',
   `tipo_curso` enum('extensao','pos','','') NOT NULL COMMENT 'tipo de curso do aluno',
   `tipo_cadastro` enum('instituto','faculdade inspirar') NOT NULL COMMENT 'tipo de cadastro do aluno',
-  `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da extensão que já enviaram os documentos)',
-  PRIMARY KEY (`numeroInscricao`),
-  KEY `idIndicador` (`idIndicador`),
-  KEY `idAluno` (`idUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=17 ;
+  `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da extensão que já enviaram os documentos)'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=26 ;
 
 --
 -- Fazendo dump de dados para tabela `Aluno`
 --
 
-INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `endereco`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `tipo_cadastro`) VALUES
-(1, 2, 'preinscrito', NULL, '1693018232', '', 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'instituto'),
-(2, 3, 'inscrito', 1, '1961438378', '', 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'instituto'),
-(3, 4, 'inscrito', NULL, '8260134527', '', 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'instituto'),
-(4, 5, 'preinscrito', NULL, '6135342360', '', 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'instituto'),
-(5, 6, 'preinscrito', 4, '8698463979', '', 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'instituto'),
-(6, 7, 'inscrito', NULL, '2169357517', '', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'instituto'),
-(7, 8, 'inscrito', NULL, '1184439221', '', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'instituto'),
-(8, 9, 'inscrito', NULL, '8498876543', '', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'instituto'),
-(9, 10, 'inscrito', NULL, '5787659485', '', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'instituto'),
-(10, 11, 'inscrito', 11, '2098764959', '', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'instituto'),
-(11, 12, 'inscrito', 9, '3498123232', '', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'instituto'),
-(12, 27, 'preinscrito', NULL, '', '', 'fundamental incompleto', NULL, '', '', 0, '', NULL, '', '', 'BRL', 'extensao', 'faculdade inspirar');
+INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `tipo_cadastro`, `ativo`) VALUES
+(1, 2, 'preinscrito', NULL, '1693018232', 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'instituto', 1),
+(2, 3, 'inscrito', 1, '1961438378', 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'instituto', 1),
+(3, 4, 'preinscrito', NULL, '8260134527', 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'instituto', 1),
+(4, 5, 'preinscrito', NULL, '6135342360', 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'instituto', 1),
+(5, 6, 'preinscrito', 4, '8698463979', 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'instituto', 1),
+(6, 7, 'preinscrito', NULL, '2169357517', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'instituto', 1),
+(7, 8, 'inscrito', NULL, '1184439221', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'instituto', 1),
+(8, 9, 'inscrito', NULL, '8498876543', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'instituto', 1),
+(9, 10, 'inscrito', NULL, '5787659485', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'instituto', 1),
+(10, 11, 'inscrito', 11, '2098764959', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'instituto', 1),
+(11, 12, 'inscrito', 9, '3498123232', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'instituto', 1),
+(12, 27, 'preinscrito', NULL, '3122334455', 'superior completo', 'Abacate', '33884555', 'TWOOOOO', 89, 'So needless to say', 'Say after me', 'AC', 'Don''t let away', '', '', '', 1),
+(13, 28, 'preinscrito', NULL, '3399448855', 'superior incompleto', 'abastece', '30495454', 'The birds and the bees', 39, 'Sowing the seeds', '', 'AC', 'Derpity derp', '', 'extensao', 'faculdade inspirar', 1),
+(14, 29, 'preinscrito', NULL, '3129394939', 'fundamental incompleto', NULL, '93945444', 'tesste', 34, 'marracuda', '', 'AC', 'macarruda', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(15, 30, 'preinscrito', NULL, NULL, 'superior completo', 'Farmácia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BRL', 'pos', 'faculdade inspirar', 1),
+(16, 31, 'preinscrito', NULL, '9992929292', 'fundamental incompleto', NULL, '12345543', 'Armin', 12, 'Bairro', '', 'AC', 'Cidade', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(17, 32, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(18, 33, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 12, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(19, 34, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(20, 35, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(21, 36, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(22, 37, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(23, 38, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'faculdade inspirar', 1),
+(24, 39, 'preinscrito', NULL, '3112344321', 'superior completo', 'Homepatias', '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'pos', 'faculdade inspirar', 1);
 
 -- --------------------------------------------------------
 
@@ -216,31 +224,31 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
   `nomeEmpresa` varchar(100) NOT NULL COMMENT 'Nome da empresa responsável por essa cidade',
   `cnpjEmpresa` char(14) NOT NULL COMMENT 'CNPJ da empresa responsável por essa cidade',
   `custoCurso` float NOT NULL COMMENT 'valor de custo para abertura do curso',
-  `cadastro_ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Define se a cidade está ativa para cadastro',
-  `tipo_curso` enum('extensão','pós','ambos','') NOT NULL COMMENT 'tipo de curso que a cidade suporta',
-  `v_inscricao_extensao` float NOT NULL DEFAULT '0' COMMENT 'Valor da parcela de  inscrição do curso de extensão',
-  `v_parcela_extensao` float NOT NULL DEFAULT '0' COMMENT 'Valor da parcela mensal do curso de extensão',
-  `v_inscricao_pos` float NOT NULL DEFAULT '0' COMMENT 'Valor da parcela de  inscrição do curso de pos',
-  `v_parcela_pos` float NOT NULL DEFAULT '0' COMMENT 'Valor da parcela mensal do curso de pós'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=15 ;
+  `tipo_curso` enum('extensao','pos','ambos') NOT NULL COMMENT 'Tipos de curso oferecidos na cidade',
+  `cadastro_ativo` tinyint(4) NOT NULL COMMENT 'Bool que indica se o cadastro da cidade está ativo ou não',
+  `v_parcela_extensao` float NOT NULL DEFAULT '0' COMMENT 'Preço da inscrição de extensão na cidade',
+  `v_inscricao_extensao` float NOT NULL COMMENT 'Preço da parcela de extensão na cidade',
+  `v_parcela_pos` float NOT NULL COMMENT 'Preço da inscrição de pos na cidade',
+  `v_inscricao_pos` float NOT NULL COMMENT 'Preço da parcela de pos na cidade'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=13 ;
 
 --
 -- Fazendo dump de dados para tabela `Cidade`
 --
 
-INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`, `precoInscricao`, `precoParcela`, `limiteInscricao`, `nomeEmpresa`, `cnpjEmpresa`, `custoCurso`, `cadastro_ativo`, `tipo_curso`, `v_inscricao_extensao`, `v_parcela_extensao`, `v_inscricao_pos`, `v_parcela_pos`) VALUES
-(1, 'MG', 2014, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 100, 30, '2014-05-02', 'Homeobrás', '56667868000102', 7500.5, 1, 'extensão', 0, 0, 0, 0),
-(2, 'RJ', 2014, 'Rio de Janeiro', 2, 'Faculdade de odontologia da UFRJ', 90, 85, '2014-05-02', 'Homeobrás', '56667868000102', 6750, 1, 'extensão', 0, 0, 0, 0),
-(3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750, 1, 'extensão', 0, 0, 0, 0),
-(4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000, 1, 'extensão', 0, 0, 0, 0),
-(5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0, 1, 'extensão', 0, 0, 0, 0),
-(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0, 1, 'extensão', 0, 0, 0, 0),
-(7, 'MG', 2014, 'Contagem', 3, 'Curso Homeopático Contagem', 300, 220, '2014-07-07', 'Curso Homeopático Contagem', '44732943000184', 0, 1, 'extensão', 0, 0, 0, 0),
-(8, 'TO', 2014, 'Palmas', 3, 'UFT', 300, 170, '2014-02-11', 'UFT', '65563135000100', 0, 1, 'extensão', 0, 0, 0, 0),
-(9, 'RN', 2014, 'Natal', 3, 'UFRN', 300, 220, '2014-03-12', 'UFRN', '27266655000162', 0, 1, 'extensão', 0, 0, 0, 0),
-(10, 'PA', 2014, 'Belém', 3, 'Homeopatias Paraense', 250, 220, '2014-05-11', 'Homeopatias Paraense', '37156271000140', 0, 1, 'extensão', 0, 0, 0, 0),
-(11, 'MG', 2015, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 250, 220, '2015-03-05', 'Faculdade de odontologia da UFMG', '56667868000102', 0, 1, 'extensão', 0, 0, 0, 0),
-(14, 'MG', 2015, 'Formigas', 2, 'Homep', 0, 0, '2015-03-18', 'Homep', '41556242000143', 15000, 1, 'ambos', 0, 0, 0, 0);
+INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`, `precoInscricao`, `precoParcela`, `limiteInscricao`, `nomeEmpresa`, `cnpjEmpresa`, `custoCurso`, `tipo_curso`, `cadastro_ativo`, `v_parcela_extensao`, `v_inscricao_extensao`, `v_parcela_pos`, `v_inscricao_pos`) VALUES
+(1, 'MG', 2014, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 100, 30, '2014-05-02', 'Homeobrás', '56667868000102', 7500.5, 'ambos', 1, 150, 155, 150, 200),
+(2, 'RJ', 2014, 'Rio de Janeiro', 2, 'Faculdade de odontologia da UFRJ', 90, 85, '2014-05-02', 'Homeobrás', '56667868000102', 6750, 'extensao', 0, 0, 0, 0, 0),
+(3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750, 'extensao', 0, 0, 0, 0, 0),
+(4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000, 'extensao', 0, 0, 0, 0, 0),
+(5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0, 'extensao', 0, 0, 0, 0, 0),
+(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0, 'extensao', 1, 200, 150, 120, 120),
+(7, 'MG', 2014, 'Contagem', 3, 'Curso Homeopático Contagem', 300, 220, '2014-07-07', 'Curso Homeopático Contagem', '44732943000184', 0, 'extensao', 0, 0, 0, 0, 0),
+(8, 'TO', 2014, 'Palmas', 3, 'UFT', 300, 170, '2014-02-11', 'UFT', '65563135000100', 0, 'extensao', 0, 0, 0, 0, 0),
+(9, 'RN', 2014, 'Natal', 3, 'UFRN', 300, 220, '2014-03-12', 'UFRN', '27266655000162', 0, 'extensao', 0, 0, 0, 0, 0),
+(10, 'PA', 2014, 'Belém', 3, 'Homeopatias Paraense', 250, 220, '2014-05-11', 'Homeopatias Paraense', '37156271000140', 0, 'extensao', 0, 0, 0, 0, 0),
+(11, 'MG', 2015, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 250, 220, '2015-03-05', 'Faculdade de odontologia da UFMG', '56667868000102', 0, 'extensao', 1, 150, 300, 0, 0),
+(12, 'MG', 2015, 'teste', 2, 'Homeos', 0, 0, '2015-03-15', 'Homep', '77974602000174', 15000, 'ambos', 1, 150, 200, 200, 250);
 
 -- --------------------------------------------------------
 
@@ -309,6 +317,30 @@ INSERT INTO `Frequencia` (`chaveAluno`, `chaveAula`, `presenca`, `jaAvaliou`, `a
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `Instituicao`
+--
+
+CREATE TABLE IF NOT EXISTS `Instituicao` (
+`idInstituicao` int(11) NOT NULL COMMENT 'Identificador único da instituição',
+  `nome` enum('atenemg','conahom') NOT NULL COMMENT 'Nome da instituição',
+  `valorInscricao` float NOT NULL COMMENT 'Preço da inscrição nessa instituição',
+  `valorAnuidade` float NOT NULL COMMENT 'Preço da anuidade nessa instituição',
+  `inicioInsc` datetime NOT NULL COMMENT 'Data a partir da qual os associados podem se associar',
+  `fimInsc` datetime NOT NULL COMMENT 'Data até qual os associados podem se associar',
+  `ano` int(11) NOT NULL COMMENT 'Ano para o qual as inscrições estão/estarão abertas'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Instituição na qual podem ser feitas as associações' AUTO_INCREMENT=3 ;
+
+--
+-- Fazendo dump de dados para tabela `Instituicao`
+--
+
+INSERT INTO `Instituicao` (`idInstituicao`, `nome`, `valorInscricao`, `valorAnuidade`, `inicioInsc`, `fimInsc`, `ano`) VALUES
+(1, 'atenemg', 30, 50, '2014-08-22 00:00:00', '2015-01-14 00:00:00', 2015),
+(2, 'conahom', 40, 40, '2014-07-14 00:00:00', '2014-12-31 00:00:00', 2014);
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `Livro`
 --
 
@@ -344,11 +376,8 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   `etapa` int(10) unsigned NOT NULL COMMENT 'Etapa a qual essa matrícula se refere',
   `aprovado` tinyint(1) DEFAULT NULL COMMENT 'Determina se o aluno (já) foi aprovado ou não',
   `chaveCidade` int(11) NOT NULL COMMENT 'Identificador da cidade a qual essa matrícula se refere',
-  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o aluno',
-  PRIMARY KEY (`idMatricula`),
-  KEY `chaveAluno` (`chaveAluno`),
-  KEY `chaveCidade` (`chaveCidade`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=14 ;
+  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o aluno'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=29 ;
 
 --
 -- Fazendo dump de dados para tabela `Matricula`
@@ -362,10 +391,19 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 (5, 9, 1, NULL, 1, 0),
 (6, 8, 1, NULL, 4, 0),
 (7, 7, 1, NULL, 4, 0),
-(8, 6, 1, NULL, 4, 10),
+(8, 6, 1, NULL, 4, 0),
 (11, 11, 2, NULL, 6, 0),
-(12, 6, 1, NULL, 6, 20),
-(13, 3, 1, NULL, 6, 0);
+(12, 6, 1, NULL, 6, 0),
+(13, 16, 1, NULL, 6, 0),
+(14, 17, 1, NULL, 6, 0),
+(15, 18, 1, NULL, 6, 0),
+(17, 19, 1, NULL, 6, 0),
+(18, 20, 1, NULL, 6, 0),
+(19, 21, 1, NULL, 6, 0),
+(20, 22, 1, NULL, 6, 0),
+(21, 23, 1, NULL, 6, 0),
+(22, 24, 1, NULL, 6, 0),
+(28, 25, 1, NULL, 6, 0);
 
 -- --------------------------------------------------------
 
@@ -378,10 +416,8 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `titulo` varchar(100) NOT NULL COMMENT 'Título da notificação a ser dada ao aluno',
   `texto` varchar(500) NOT NULL COMMENT 'Texto da notificação a ser dada ao aluno',
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
-  `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
-  PRIMARY KEY (`idNotificacao`)
+  `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=108 ;
-
 
 --
 -- Fazendo dump de dados para tabela `Notificacao`
@@ -471,7 +507,6 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 (106, 'Desconto por indicação', 'Por uma correção do sistema, um aluno corrigiu corrigiu seu indicador para aluno correto, seu desconto de 10% foi removido das próximas parcelas', -1, 0),
 (107, 'Desconto por indicação', 'Por uma correção do sistema, um aluno corrigiu corrigiu seu indicador para aluno correto, seu desconto de 10% foi removido das próximas parcelas', -1, 0);
 
-
 -- --------------------------------------------------------
 
 --
@@ -487,7 +522,7 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
   `objetivo` enum('mensalidade','anuidade','livro','') NOT NULL COMMENT 'Especifica o que esse pagamento está pagando',
   `codigoTransacao` int(11) DEFAULT NULL COMMENT 'Código da transação no Pagseguro, quando houver',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=5 ;
 
 --
 -- Fazendo dump de dados para tabela `Pagamento`
@@ -497,9 +532,7 @@ INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `data`, `metodo
 (1, 8, 500, '0000-00-00 00:00:00', 'Dinheiro', 'mensalidade', NULL, 2014),
 (2, 9, 150, '0000-00-00 00:00:00', 'Cheque', 'mensalidade', NULL, 2014),
 (3, 9, 70, '0000-00-00 00:00:00', 'Dinheiro', 'mensalidade', NULL, 2014),
-(4, 3, 150, '2015-01-31 20:02:58', 'Dinheiro', 'mensalidade', NULL, 2014),
-(5, 7, 100, '2015-01-31 20:10:16', 'Dinheiro', 'mensalidade', NULL, 2015),
-(6, 4, 100, '2015-01-31 20:33:45', 'Dinheiro', 'mensalidade', NULL, 2015);
+(4, 3, 150, '2015-01-31 20:02:58', 'Dinheiro', 'mensalidade', NULL, 2014);
 
 -- --------------------------------------------------------
 
@@ -570,10 +603,8 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento utilizado para essa mensalidade',
   `data` datetime DEFAULT NULL COMMENT 'Data na qual essa mensalidade foi paga',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
-  `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
-  PRIMARY KEY (`idPagMensalidade`),
-  KEY `chaveAluno` (`chaveMatricula`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=157 ;
+  `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=277 ;
 
 --
 -- Fazendo dump de dados para tabela `PgtoMensalidade`
@@ -664,18 +695,18 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (82, 7, 9, 220, 0, 0, '', NULL, 2014, 0),
 (83, 7, 10, 220, 0, 0, '', NULL, 2014, 0),
 (84, 7, 11, 220, 0, 0, '', NULL, 2014, 0),
-(85, 8, 0, 150, 0, 10, '', NULL, 2014, 0),
-(86, 8, 1, 220, 0, 10, '', NULL, 2014, 0),
-(87, 8, 2, 220, 0, 10, '', NULL, 2014, 0),
-(88, 8, 3, 220, 0, 10, '', NULL, 2014, 0),
-(89, 8, 4, 220, 0, 10, '', NULL, 2014, 0),
-(90, 8, 5, 220, 0, 10, '', NULL, 2014, 0),
-(91, 8, 6, 220, 0, 10, '', NULL, 2014, 0),
-(92, 8, 7, 220, 0, 10, '', NULL, 2014, 0),
-(93, 8, 8, 220, 0, 10, '', NULL, 2014, 0),
-(94, 8, 9, 220, 0, 10, '', NULL, 2014, 0),
-(95, 8, 10, 220, 0, 10, '', NULL, 2014, 0),
-(96, 8, 11, 220, 0, 10, '', NULL, 2014, 0),
+(85, 8, 0, 150, 0, 0, '', NULL, 2014, 0),
+(86, 8, 1, 220, 0, 0, '', NULL, 2014, 0),
+(87, 8, 2, 220, 0, 0, '', NULL, 2014, 0),
+(88, 8, 3, 220, 0, 0, '', NULL, 2014, 0),
+(89, 8, 4, 220, 0, 0, '', NULL, 2014, 0),
+(90, 8, 5, 220, 0, 0, '', NULL, 2014, 0),
+(91, 8, 6, 220, 0, 0, '', NULL, 2014, 0),
+(92, 8, 7, 220, 0, 0, '', NULL, 2014, 0),
+(93, 8, 8, 220, 0, 0, '', NULL, 2014, 0),
+(94, 8, 9, 220, 0, 0, '', NULL, 2014, 0),
+(95, 8, 10, 220, 0, 0, '', NULL, 2014, 0),
+(96, 8, 11, 220, 0, 0, '', NULL, 2014, 0),
 (97, NULL, 0, 100, 0, 0, '', NULL, 2015, 0),
 (98, NULL, 1, 80, 0, 0, '', NULL, 2015, 0),
 (99, NULL, 2, 80, 0, 0, '', NULL, 2015, 0),
@@ -725,6 +756,138 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 (143, 12, 10, 80, 0, 0, '', NULL, 2015, 0),
 (144, 12, 11, 80, 0, 0, '', NULL, 2015, 0),
 (145, 13, 0, 100, 0, 0, '', NULL, 2015, 0),
+(146, 13, 1, 80, 0, 0, '', NULL, 2015, 0),
+(147, 13, 2, 80, 0, 0, '', NULL, 2015, 0),
+(148, 13, 3, 80, 0, 0, '', NULL, 2015, 0),
+(149, 13, 4, 80, 0, 0, '', NULL, 2015, 0),
+(150, 13, 5, 80, 0, 0, '', NULL, 2015, 0),
+(151, 13, 6, 80, 0, 0, '', NULL, 2015, 0),
+(152, 13, 7, 80, 0, 0, '', NULL, 2015, 0),
+(153, 13, 8, 80, 0, 0, '', NULL, 2015, 0),
+(154, 13, 9, 80, 0, 0, '', NULL, 2015, 0),
+(155, 13, 10, 80, 0, 0, '', NULL, 2015, 0),
+(156, 13, 11, 80, 0, 0, '', NULL, 2015, 0),
+(157, 14, 0, 100, 0, 0, '', NULL, 2015, 0),
+(158, 14, 1, 80, 0, 0, '', NULL, 2015, 0),
+(159, 14, 2, 80, 0, 0, '', NULL, 2015, 0),
+(160, 14, 3, 80, 0, 0, '', NULL, 2015, 0),
+(161, 14, 4, 80, 0, 0, '', NULL, 2015, 0),
+(162, 14, 5, 80, 0, 0, '', NULL, 2015, 0),
+(163, 14, 6, 80, 0, 0, '', NULL, 2015, 0),
+(164, 14, 7, 80, 0, 0, '', NULL, 2015, 0),
+(165, 14, 8, 80, 0, 0, '', NULL, 2015, 0),
+(166, 14, 9, 80, 0, 0, '', NULL, 2015, 0),
+(167, 14, 10, 80, 0, 0, '', NULL, 2015, 0),
+(168, 14, 11, 80, 0, 0, '', NULL, 2015, 0),
+(169, 15, 0, 0, 0, 0, '', NULL, 2015, 0),
+(170, 15, 1, 0, 0, 0, '', NULL, 2015, 0),
+(171, 15, 2, 0, 0, 0, '', NULL, 2015, 0),
+(172, 15, 3, 0, 0, 0, '', NULL, 2015, 0),
+(173, 15, 4, 0, 0, 0, '', NULL, 2015, 0),
+(174, 15, 5, 0, 0, 0, '', NULL, 2015, 0),
+(175, 15, 6, 0, 0, 0, '', NULL, 2015, 0),
+(176, 15, 7, 0, 0, 0, '', NULL, 2015, 0),
+(177, 15, 8, 0, 0, 0, '', NULL, 2015, 0),
+(178, 15, 9, 0, 0, 0, '', NULL, 2015, 0),
+(179, 15, 10, 0, 0, 0, '', NULL, 2015, 0),
+(180, 15, 11, 0, 0, 0, '', NULL, 2015, 0),
+(181, 16, 0, 0, 0, 0, '', NULL, 2015, 0),
+(182, 16, 1, 0, 0, 0, '', NULL, 2015, 0),
+(183, 16, 2, 0, 0, 0, '', NULL, 2015, 0),
+(184, 16, 3, 0, 0, 0, '', NULL, 2015, 0),
+(185, 16, 4, 0, 0, 0, '', NULL, 2015, 0),
+(186, 16, 5, 0, 0, 0, '', NULL, 2015, 0),
+(187, 16, 6, 0, 0, 0, '', NULL, 2015, 0),
+(188, 16, 7, 0, 0, 0, '', NULL, 2015, 0),
+(189, 16, 8, 0, 0, 0, '', NULL, 2015, 0),
+(190, 16, 9, 0, 0, 0, '', NULL, 2015, 0),
+(191, 16, 10, 0, 0, 0, '', NULL, 2015, 0),
+(192, 16, 11, 0, 0, 0, '', NULL, 2015, 0),
+(193, 17, 0, 100, 0, 0, '', NULL, 2015, 0),
+(194, 17, 1, 80, 0, 0, '', NULL, 2015, 0),
+(195, 17, 2, 80, 0, 0, '', NULL, 2015, 0),
+(196, 17, 3, 80, 0, 0, '', NULL, 2015, 0),
+(197, 17, 4, 80, 0, 0, '', NULL, 2015, 0),
+(198, 17, 5, 80, 0, 0, '', NULL, 2015, 0),
+(199, 17, 6, 80, 0, 0, '', NULL, 2015, 0),
+(200, 17, 7, 80, 0, 0, '', NULL, 2015, 0),
+(201, 17, 8, 80, 0, 0, '', NULL, 2015, 0),
+(202, 17, 9, 80, 0, 0, '', NULL, 2015, 0),
+(203, 17, 10, 80, 0, 0, '', NULL, 2015, 0),
+(204, 17, 11, 80, 0, 0, '', NULL, 2015, 0),
+(205, 18, 0, 0, 0, 0, '', NULL, 2015, 0),
+(206, 18, 1, 0, 0, 0, '', NULL, 2015, 0),
+(207, 18, 2, 0, 0, 0, '', NULL, 2015, 0),
+(208, 18, 3, 0, 0, 0, '', NULL, 2015, 0),
+(209, 18, 4, 0, 0, 0, '', NULL, 2015, 0),
+(210, 18, 5, 0, 0, 0, '', NULL, 2015, 0),
+(211, 18, 6, 0, 0, 0, '', NULL, 2015, 0),
+(212, 18, 7, 0, 0, 0, '', NULL, 2015, 0),
+(213, 18, 8, 0, 0, 0, '', NULL, 2015, 0),
+(214, 18, 9, 0, 0, 0, '', NULL, 2015, 0),
+(215, 18, 10, 0, 0, 0, '', NULL, 2015, 0),
+(216, 18, 11, 0, 0, 0, '', NULL, 2015, 0),
+(217, 19, 0, 0, 0, 0, '', NULL, 2015, 0),
+(218, 19, 1, 0, 0, 0, '', NULL, 2015, 0),
+(219, 19, 2, 0, 0, 0, '', NULL, 2015, 0),
+(220, 19, 3, 0, 0, 0, '', NULL, 2015, 0),
+(221, 19, 4, 0, 0, 0, '', NULL, 2015, 0),
+(222, 19, 5, 0, 0, 0, '', NULL, 2015, 0),
+(223, 19, 6, 0, 0, 0, '', NULL, 2015, 0),
+(224, 19, 7, 0, 0, 0, '', NULL, 2015, 0),
+(225, 19, 8, 0, 0, 0, '', NULL, 2015, 0),
+(226, 19, 9, 0, 0, 0, '', NULL, 2015, 0),
+(227, 19, 10, 0, 0, 0, '', NULL, 2015, 0),
+(228, 19, 11, 0, 0, 0, '', NULL, 2015, 0),
+(229, 20, 0, 150, 0, 0, '', NULL, 2015, 0),
+(230, 20, 1, 0, 0, 0, '', NULL, 2015, 0),
+(231, 20, 2, 0, 0, 0, '', NULL, 2015, 0),
+(232, 20, 3, 0, 0, 0, '', NULL, 2015, 0),
+(233, 20, 4, 0, 0, 0, '', NULL, 2015, 0),
+(234, 20, 5, 0, 0, 0, '', NULL, 2015, 0),
+(235, 20, 6, 0, 0, 0, '', NULL, 2015, 0),
+(236, 20, 7, 0, 0, 0, '', NULL, 2015, 0),
+(237, 20, 8, 0, 0, 0, '', NULL, 2015, 0),
+(238, 20, 9, 0, 0, 0, '', NULL, 2015, 0),
+(239, 20, 10, 0, 0, 0, '', NULL, 2015, 0),
+(240, 20, 11, 0, 0, 0, '', NULL, 2015, 0),
+(241, 21, 0, 150, 0, 0, '', NULL, 2015, 0),
+(242, 21, 1, 200, 0, 0, '', NULL, 2015, 0),
+(243, 21, 2, 200, 0, 0, '', NULL, 2015, 0),
+(244, 21, 3, 200, 0, 0, '', NULL, 2015, 0),
+(245, 21, 4, 200, 0, 0, '', NULL, 2015, 0),
+(246, 21, 5, 200, 0, 0, '', NULL, 2015, 0),
+(247, 21, 6, 200, 0, 0, '', NULL, 2015, 0),
+(248, 21, 7, 200, 0, 0, '', NULL, 2015, 0),
+(249, 21, 8, 200, 0, 0, '', NULL, 2015, 0),
+(250, 21, 9, 200, 0, 0, '', NULL, 2015, 0),
+(251, 21, 10, 200, 0, 0, '', NULL, 2015, 0),
+(252, 21, 11, 200, 0, 0, '', NULL, 2015, 0),
+(253, 22, 0, 0, 0, 0, '', NULL, 2015, 0),
+(254, 22, 1, 0, 0, 0, '', NULL, 2015, 0),
+(255, 22, 2, 0, 0, 0, '', NULL, 2015, 0),
+(256, 22, 3, 0, 0, 0, '', NULL, 2015, 0),
+(257, 22, 4, 0, 0, 0, '', NULL, 2015, 0),
+(258, 22, 5, 0, 0, 0, '', NULL, 2015, 0),
+(259, 22, 6, 0, 0, 0, '', NULL, 2015, 0),
+(260, 22, 7, 0, 0, 0, '', NULL, 2015, 0),
+(261, 22, 8, 0, 0, 0, '', NULL, 2015, 0),
+(262, 22, 9, 0, 0, 0, '', NULL, 2015, 0),
+(263, 22, 10, 0, 0, 0, '', NULL, 2015, 0),
+(264, 22, 11, 0, 0, 0, '', NULL, 2015, 0),
+(265, 28, 0, 120, 0, 0, '', NULL, 2015, 0),
+(266, 28, 1, 120, 0, 0, '', NULL, 2015, 0),
+(267, 28, 2, 120, 0, 0, '', NULL, 2015, 0),
+(268, 28, 3, 120, 0, 0, '', NULL, 2015, 0),
+(269, 28, 4, 120, 0, 0, '', NULL, 2015, 0),
+(270, 28, 5, 120, 0, 0, '', NULL, 2015, 0),
+(271, 28, 6, 120, 0, 0, '', NULL, 2015, 0),
+(272, 28, 7, 120, 0, 0, '', NULL, 2015, 0),
+(273, 28, 8, 120, 0, 0, '', NULL, 2015, 0),
+(274, 28, 9, 120, 0, 0, '', NULL, 2015, 0),
+(275, 28, 10, 120, 0, 0, '', NULL, 2015, 0),
+(276, 28, 11, 120, 0, 0, '', NULL, 2015, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -800,14 +963,8 @@ CREATE TABLE IF NOT EXISTS `Usuario` (
   `email` varchar(100) NOT NULL,
   `login` varchar(100) NOT NULL,
   `senha` text NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `login` (`login`),
-  KEY `cpf` (`cpf`),
-  KEY `cpf_2` (`cpf`),
-  KEY `dataInscricao` (`dataInscricao`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=32 ;
-
+  `nome` varchar(100) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=41 ;
 
 --
 -- Fazendo dump de dados para tabela `Usuario`
@@ -828,7 +985,7 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (12, '61055784748', '2014-11-12 11:00:44', 'herc@gmail.com', 'hercules', '$2a$08$UIKre.q/kHjOQrTAXQjB3.yYVVFW9l.y6BxiUlVbDyxzsk6p//5qK', 'Hernando Hércules Ferreira'),
 (13, '85479936492', '2014-11-12 11:06:36', 'joaojoao@gmail.com', 'joaocarlos', '$2a$08$4L7KmSz2RitcwdW9lkp48uI7uZM3a525FF7qotDhzVY7LEn4651rG', 'João Carlos Alberto'),
 (14, '77721252245', '2014-11-12 11:08:20', 'ame.joana@gmail.com', 'amelia_flor', '$2a$08$HcZfTXY/8Kdylekb/9dSYO9HE8JIn8pu31bQKDB7DhfQ8n6YXF5Sa', 'Amélia Joana Glória'),
-(15, '77721252245', '2014-11-12 11:10:44', 'juju.silva@gmail.com', 'juju', '$2a$08$aCColQUnDPf.jOP93CKueuSeoSqDSIA82uI5dcqqUoaBI1gAtLgam', 'Júlia Silva'),
+(15, '', '2014-11-12 11:10:44', '', '', '$2a$08$aCColQUnDPf.jOP93CKueuSeoSqDSIA82uI5dcqqUoaBI1gAtLgam', ''),
 (16, '17125261540', '2014-11-12 11:12:12', 'fernando.filho@gmail.com', 'nando', '$2a$08$axsrInHv6.bBo8J0Ef7qxOAASLAoH4FM2kVnXDmDZApZ5aV1Aes72', 'Fernando Faria Filho'),
 (17, '68322372787', '2014-11-12 11:13:36', 'cassio.murilo@gmail.com', 'camum', '$2a$08$JjcHZKPEMGXqcm2m4R5dsexqGE56BEFI0nj4oyMk6zvWFFTPdkncW', 'Cássio Murilo de Oliveira'),
 (18, '77702570776', '2014-11-12 11:14:14', 'jess1231@gmail.com', 'jessica', '$2a$08$dGC9vIFIC4ayGzwx3v16j.Gm9f.cYSfaf9Y.KqiEcA17J1lMvYj86', 'Jéssica Martins Pereira'),
@@ -841,8 +998,9 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (25, '84272313428', '2014-11-13 13:14:03', 'ednaldo@whatisthebrother.com', 'ednaldop', '$2a$08$7Biq7AD37sJdNBrxXM7CKerTwRbxku8uiVaubQZcXbOSfQ7.aZruq', 'Ednaldo Pereira'),
 (26, '81424367794', '2014-11-13 14:07:47', 'luiza.conceicao@gmail.com', 'luconceicao', '$2a$08$Eb4yjC5mPtgpLQ5cO.jJQ.UmnpMKXXkyj1i/MC1RtI6CGyK9G0Knq', 'Luíza Maria Conceição'),
 (30, '99999999999', '2015-02-06 22:47:34', 'posgrad@gmail.com', 'posgrad', '$2a$08$D8RgxAEYmdjmXZkjw7fA8ePUhqROozbFH9pn5gOhPSH7Yz0K2Fowy', 'Amigo Pós'),
-(31, '13871725650', '2015-02-06 22:58:19', 'armindo@gmail.com', 'armin', '$2a$08$ffjv/3VlOb4Xu8ayiHEe4e7whvPjlbvwc1MitlMVFYKn0JXtxZsDa', 'Armin Silv');
-(27, '99999999999', '2015-02-06 09:33:17', 'kausousaoliveira@dayrep.com', 'Engs1994', '$2a$08$ajTILqM2IwcDyGih0Tz9IuZ/Rx4Y9.xNxW0sik89aurjdity/XAA2', 'Kauã Sousa Oliveira');
+(31, '13871725650', '2015-02-06 22:58:19', 'armindo@gmail.com', 'armin', '$2a$08$ffjv/3VlOb4Xu8ayiHEe4e7whvPjlbvwc1MitlMVFYKn0JXtxZsDa', 'Armin Silv'),
+(38, '43211590595', '2015-02-12 20:39:36', 'teste@tes.te', 'testando', '$2a$08$9w2p6anX3kMU4Z2Hk/A3nOARyH72KjoW7Ab5Bv9OQFrHdPkCoOGea', 'Aluno Para Teste'),
+(40, '70059746890', '2015-02-12 20:49:05', 'teste2@tes.te', 'testando2', '$2a$08$f2CxJkugLp34Ta82hPqDouRm1GOYmviu6N1G.KLro9oxyAB300TtK', 'Aluno Teste Pos');
 
 --
 -- Índices de tabelas apagadas
@@ -901,6 +1059,12 @@ ALTER TABLE `Evento`
 --
 ALTER TABLE `Frequencia`
  ADD PRIMARY KEY (`chaveAula`,`chaveAluno`), ADD KEY `chaveAluno` (`chaveAluno`), ADD KEY `chaveAula` (`chaveAula`);
+
+--
+-- Índices de tabela `Instituicao`
+--
+ALTER TABLE `Instituicao`
+ ADD PRIMARY KEY (`idInstituicao`);
 
 --
 -- Índices de tabela `Livro`
@@ -977,6 +1141,7 @@ ALTER TABLE `Usuario`
 --
 -- AUTO_INCREMENT de tabelas apagadas
 --
+
 --
 -- AUTO_INCREMENT de tabela `Administrador`
 --
@@ -986,7 +1151,7 @@ MODIFY `idAdmin` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico do
 -- AUTO_INCREMENT de tabela `Aluno`
 --
 ALTER TABLE `Aluno`
-MODIFY `numeroInscricao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Numero de inscricao do aluno',AUTO_INCREMENT=13;
+MODIFY `numeroInscricao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Numero de inscricao do aluno',AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT de tabela `Artigo`
 --
@@ -1006,7 +1171,7 @@ MODIFY `idAula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de 
 -- AUTO_INCREMENT de tabela `Cidade`
 --
 ALTER TABLE `Cidade`
-MODIFY `idCidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de cidade',AUTO_INCREMENT=15;
+MODIFY `idCidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de cidade',AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT de tabela `Compra`
 --
@@ -1018,6 +1183,11 @@ MODIFY `idCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico d
 ALTER TABLE `Evento`
 MODIFY `idEvento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico',AUTO_INCREMENT=3;
 --
+-- AUTO_INCREMENT de tabela `Instituicao`
+--
+ALTER TABLE `Instituicao`
+MODIFY `idInstituicao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da instituição',AUTO_INCREMENT=3;
+--
 -- AUTO_INCREMENT de tabela `Livro`
 --
 ALTER TABLE `Livro`
@@ -1026,17 +1196,17 @@ MODIFY `idLivro` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de
 -- AUTO_INCREMENT de tabela `Matricula`
 --
 ALTER TABLE `Matricula`
-MODIFY `idMatricula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da matrícula feita por um aluno',AUTO_INCREMENT=14;
+MODIFY `idMatricula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da matrícula feita por um aluno',AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT de tabela `Notificacao`
 --
 ALTER TABLE `Notificacao`
-MODIFY `idNotificacao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único dessa notificação',AUTO_INCREMENT=106;
+MODIFY `idNotificacao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único dessa notificação',AUTO_INCREMENT=108;
 --
 -- AUTO_INCREMENT de tabela `Pagamento`
 --
 ALTER TABLE `Pagamento`
-MODIFY `idPagamento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único desse pagamento',AUTO_INCREMENT=7;
+MODIFY `idPagamento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único desse pagamento',AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de tabela `PgtoAnuidade`
 --
@@ -1051,7 +1221,7 @@ MODIFY `idPagCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unic
 -- AUTO_INCREMENT de tabela `PgtoMensalidade`
 --
 ALTER TABLE `PgtoMensalidade`
-MODIFY `idPagMensalidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador do pagamento de mensalidade',AUTO_INCREMENT=157;
+MODIFY `idPagMensalidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador do pagamento de mensalidade',AUTO_INCREMENT=277;
 --
 -- AUTO_INCREMENT de tabela `Reuniao`
 --
@@ -1071,7 +1241,7 @@ MODIFY `idDefTrabalho` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador un
 -- AUTO_INCREMENT de tabela `Usuario`
 --
 ALTER TABLE `Usuario`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de usuário',AUTO_INCREMENT=28;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de usuário',AUTO_INCREMENT=41;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
