@@ -1126,7 +1126,7 @@
                     if($tipocurso == 'extensao') {
                         $tabela .= "Extensão";
                     } else if($tipocurso == 'pos') {
-                        $tabela .= "Pós";
+                        $tabela .= "Pós-graduação";
                     }
 
                     $tabela .=  "</td>";
