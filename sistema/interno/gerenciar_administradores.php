@@ -807,9 +807,9 @@
                                         style="display:inline">
                                 </div>
                                 <div  class="col-sm-2" 
-                                    style="padding-top:10px;padding-bot:10px">
+                                    style="padding-top:10px;padding-bot:10px;display:none">
                                     <label for="miscelanea">Outros :</label>
-                                    <input type="checkbox" name="miscelanea" id="miscelanea"
+                                    <input type="hidden" name="miscelanea" id="miscelanea"
                                         title="Permite acesso a edição de informações adicionais"
                                         class="form-control"
                                         style="display:inline">
@@ -918,9 +918,9 @@
                                         style="display:inline">
                                 </div>
                                 <div  class="col-sm-2" 
-                                    style="padding-top:10px;padding-bot:10px">
+                                    style="padding-top:10px;padding-bot:10px;display:none">
                                     <label for="miscelanea">Outros :</label>
-                                    <input type="checkbox" name="miscelanea" id="miscelanea"
+                                    <input type="hidden" name="miscelanea" id="miscelanea"
                                         title="Permite acesso a edição de informações adicionais"
                                         class="form-control"
                                         style="display:inline">
