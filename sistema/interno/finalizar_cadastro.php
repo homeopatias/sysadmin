@@ -459,6 +459,20 @@
 
                 $cidades = array();
 
+                if(!($query->rowCount())) {
+                    // caso não hajam cidades abertas para inscrição, avisa o aluno
+                    session_destroy();
+        ?>
+        <meta http-equiv="refresh" content=<?= '"0; url=finalizar_cadastro.php"' ?>>
+        <script type="text/javascript">
+            window.location = "index.php?mensagem=No momento não há nenhuma cidade aberta para matrícula." +
+                              " Desculpe-nos o transtorno, em breve as inscrições serão abertas novamente." +
+                              " Agradecemos o interesse!";
+        </script>
+        <?php
+                    die();
+                }
+
                 while ($linha = $query->fetch()){
                     $id     = htmlspecialchars($linha["idCidade"]);
                     $uf     = htmlspecialchars($linha["UF"]);
