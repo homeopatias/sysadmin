@@ -460,11 +460,12 @@
                     } 
                 }
 
+                $aluno = unserialize($_SESSION['usuario']);
                 // listamos as cidades em que o aluno pode se matricular
                 // o aluno só pode entrar em cidades do ano atual
                 $textoQuery  = "SELECT idCidade, UF, nome FROM Cidade WHERE
                 CURDATE() < limiteInscricao AND ano = YEAR(CURDATE()) AND 
-                        tipo_curso =" .$aluno->getTipoCurso(). " OR tipo_curso = 'ambos'
+                        tipo_curso = '" .$aluno->getTipoCurso(). "' OR tipo_curso = 'ambos'
                         ORDER BY nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
