@@ -792,7 +792,7 @@
                                 </div>
                                 <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
-                                    <label for="site">Site :</label>
+                                    <label for="site">Info :</label>
                                     <input type="checkbox" name="site" id="site"
                                         title="Permite acesso a edição de informações do site"
                                         class="form-control"
@@ -903,7 +903,7 @@
                                 </div>
                                 <div  class="col-sm-2" 
                                     style="padding-top:10px;padding-bot:10px">
-                                    <label for="site">Site :</label>
+                                    <label for="site">Info :</label>
                                     <input type="checkbox" name="site" id="site"
                                         title="Permite acesso a edição de informações do site"
                                         class="form-control"
