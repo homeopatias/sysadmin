@@ -559,6 +559,9 @@
                     $idProfessor = $_POST["prof"];
                     $descricao   = $_POST["descricao"];
 
+                    $idProfessorAdicional  = $_POST["prof-adicional"];
+                    $idProfessorSecundario = $_POST["prof-secundario"];
+
                     $dataValida        = isset($data) && preg_match("/^\d{4}-\d{2}-\d{2}$/", $data);
                     $horarioValido     = isset($horario) && preg_match("/^\d{2}:\d{2}$/", $horario);
                     $idCidadeValido    = isset($idCidade) && preg_match("/^[0-9]+$/", $idCidade);
@@ -566,6 +569,16 @@
                     $idProfessorValido = isset($idProfessor) && 
                                          (preg_match("/^[0-9]+$/", $idProfessor) || $idProfessor == -1);
                     $descricaoValida = isset($descricao) && mb_strlen($descricao, 'UTF-8') <= 10000;
+
+
+                    $idProfessorPrimarioValido   = isset($idProfessorAdicional) && 
+                                         (preg_match("/^[0-9]+$/", $idProfessorAdicional) 
+                                            || $idProfessorAdicional == -1);
+                    $idProfessorSecundarioValido = isset($idProfessorSecundario) && 
+                                         (preg_match("/^[0-9]+$/", $idProfessorSecundario) 
+                                            || $idProfessorSecundario == -1);
+
+
 
                     // checamos se a cidade recebida pertence ao ano recebido e se existe
                     if($dataValida && $idCidadeValido){
@@ -600,7 +613,8 @@
 
                     // se todos os dados estão válidos, a aula é inserida
                     if($dataValida && $horarioValido && $idCidadeValido && $etapaValida &&
-                       $idProfessorValido && $descricaoValida){
+                       $idProfessorValido && $descricaoValida && $idProfessorPrimarioValido &&
+                       $idProfessorSecundarioValido){
 
                         require_once("entidades/Aula.php");
 
@@ -609,6 +623,8 @@
                         $nova->setEtapa($etapa);
                         $nova->setData(strtotime($data . " " . $horario . ":00"));
                         $nova->setProfessorId($idProfessor);
+                        $nova->setProfessorAdicionalPrimarioId($idProfessorAdicional);
+                        $nova->setProfessorAdicionalSecundarioId($idProfessorSecundario);
                         $nova->setNota(null);
                         $nova->setDescricao($descricao);
 
@@ -1181,6 +1197,35 @@
                                         }
                                     ?>
                                 </select>
+                                
+                            </div>
+                            <div class="form-group">
+                                <label for="#">Professores adicionais:</label>
+                                <select name="prof-adicional" id="prof-adicional-nova-aula" class="form-control">
+                                    <option value="-1">Indeterminado</option>
+                                    <?php
+                                        require_once("rotinas/professor/lista_professores.php");
+                                        $lista = listaProfessores();
+                                        for($i = 0; $i < count($lista); $i++){
+                                            echo "<option value=\"";
+                                            echo $lista[$i]->getIdAdmin()."\">";
+                                            echo $lista[$i]->getNome()."</option>";
+                                        }
+                                    ?>
+                                </select>
+                                <select name="prof-secundario" id="prof-secundario-nova-aula" 
+                                class="form-control">
+                                    <option value="-1">Indeterminado</option>
+                                    <?php
+                                        require_once("rotinas/professor/lista_professores.php");
+                                        $lista = listaProfessores();
+                                        for($i = 0; $i < count($lista); $i++){
+                                            echo "<option value=\"";
+                                            echo $lista[$i]->getIdAdmin()."\">";
+                                            echo $lista[$i]->getNome()."</option>";
+                                        }
+                                    ?>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="descricao-nova-aula">Descrição:</label>
@@ -1251,6 +1296,34 @@
                             <div class="form-group">
                                 <label for="prof">Professor da aula:</label>
                                 <select name="prof" id="prof" class="form-control">
+                                    <option value="-1">Indeterminado</option>
+                                    <?php
+                                        require_once("rotinas/professor/lista_professores.php");
+                                        $lista = listaProfessores();
+                                        for($i = 0; $i < count($lista); $i++){
+                                            echo "<option value=\"";
+                                            echo $lista[$i]->getIdAdmin()."\">";
+                                            echo $lista[$i]->getNome()."</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="#">Professores adicionais:</label>
+                                <select name="prof-adicional" id="prof-adicional-aula" class="form-control">
+                                    <option value="-1">Indeterminado</option>
+                                    <?php
+                                        require_once("rotinas/professor/lista_professores.php");
+                                        $lista = listaProfessores();
+                                        for($i = 0; $i < count($lista); $i++){
+                                            echo "<option value=\"";
+                                            echo $lista[$i]->getIdAdmin()."\">";
+                                            echo $lista[$i]->getNome()."</option>";
+                                        }
+                                    ?>
+                                </select>
+                                <select name="prof-secundario" id="prof-secundario-aula" 
+                                class="form-control">
                                     <option value="-1">Indeterminado</option>
                                     <?php
                                         require_once("rotinas/professor/lista_professores.php");

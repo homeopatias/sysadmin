@@ -25,6 +25,8 @@ class Aula{
     private $professor;
     private $nota;
     private $descricao;
+    private $professorAdicionalPrimario;
+    private $professorAdicionalSecundario;
 
     // Construtor
     public function __construct(){
@@ -35,6 +37,9 @@ class Aula{
         $this->professor = null;
         $this->nota      = null;
         $this->descricao = null;
+
+        $this->professorAdicionalPrimario      = null;
+        $this->professorAdicionalSecundario    = null;
     }
 
     // Função que cadastra uma aula no sistema
@@ -76,10 +81,16 @@ class Aula{
         }
 
         $idProfessor = $this->professor != null ? $this->professor->getIdAdmin() : null;
+        $idProfessorPrimario   = $this->professorAdicionalPrimario != null ? 
+                                 $this->professorAdicionalPrimario->getIdAdmin() : null;
+        $idProfessorSecundario = $this->professorAdicionalSecundario != null ?
+                                 $this->professorAdicionalSecundario->getIdAdmin() : null; 
         $dados  = array($this->cidade->getIdCidade(), $this->etapa, date("Y-m-d H:i:s",
-                        $this->data), $idProfessor, $this->nota, $this->descricao);
-        $textoQuery  = "INSERT INTO Aula (chaveCidade, etapa, data, idProfessor, nota, descricao) 
-                        VALUES (?,?,?,?,?,?)";
+                        $this->data), $idProfessor, $this->nota, $this->descricao,
+                        $idProfessorPrimario, $idProfessorSecundario);
+        $textoQuery  = "INSERT INTO Aula (chaveCidade, etapa, data, idProfessor, nota, descricao,
+                        idProfAdicionalPrimario, idProfAdicionalSecundario) 
+                        VALUES (?,?,?,?,?,?,?,?)";
         $query  = $conexao->prepare($textoQuery);
         $sucesso = $query->execute($dados);
 
@@ -107,12 +118,18 @@ class Aula{
         }
 
         $idProfessor = $this->professor != null ? $this->professor->getIdAdmin() : null;
+        $idProfessorPrimario   = $this->professorAdicionalPrimario != null ? 
+                                 $this->professorAdicionalPrimario->getIdAdmin() : null;
+        $idProfessorSecundario = $this->professorAdicionalSecundario != null ? 
+                               $this->professorAdicionalSecundariox->getIdAdmin() : null;
         $comando  = "UPDATE Aula SET chaveCidade=?, etapa=?, data=?, idProfessor=?, nota=?,
-                     descricao=? WHERE idAula = ?";
+                     descricao=?, idProfAdicionalPrimario=?, idProfessorAdicionalSecundario=? 
+                     WHERE idAula = ?";
         $query = $conexao->prepare($comando);
         $dados  = array($this->cidade->getIdCidade(), $this->etapa, date("Y-m-d H:i:s",
                         $this->data), $idProfessor, $this->nota, $this->descricao,
-                        $this->idAula);
+                        $this->idAula, $this->idProfAdicionalPrimario,
+                        $this->idProfessorAdicionalSecundario);
         $sucesso = $query->execute($dados);
 
         // Encerramos a conexão com o BD
@@ -271,6 +288,101 @@ class Aula{
         $this->descricao = $descricao;
 
         return $this;
+    }
+
+    //get e set professores adicionais
+    public function getProfessorAdicionalPrimario()
+    {
+        return $this->professorAdicionalPrimario;
+    }
+    public function setProfessorAdicionalPrimario($professor)
+    {
+        $this->professor = $professorAdicionalPrimario;
+
+        return $this;
+    }
+    // Faz o mesmo que a função acima, porém recebe o id do professor e o valida
+    // antes de armazená-lo
+    // Recebe: 
+    // $idProfessor: id do professor a ser colocado na Aula
+    //
+    // Retorna: true em caso de sucesso, false em caso de falha
+    public function setProfessorAdicionalPrimarioId($idprofessor){
+        // caso idprofessor seja -1, devemos criar um professor nulo
+        if($idprofessor == -1){
+            $this->professorAdicionalPrimario = null;
+        }
+
+        // lemos as credenciais do banco de dados
+        $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
+        $dados = json_decode($dados, true);
+
+        foreach($dados as $chave => $valor) {
+            $dados[$chave] = str_rot13($valor);
+        }
+
+        $host    = $dados["host"];
+        $usuario = $dados["nome_usuario"];
+        $senhaBD = $dados["senha"];
+
+        $prof = new Administrador("");
+        $prof->setIdAdmin($idprofessor);
+        $sucesso = $prof->recebeAdminId($host, "homeopatias", $usuario, $senhaBD, "professor");
+        
+        if($sucesso){
+            // esse professor existe no sistema
+            $this->professorAdicionalPrimario = $prof;
+            return true;
+        }
+        // esse professor não existe no sistema
+        return false;
+    }
+
+    public function getProfessorAdicionalSecundario()
+    {
+        return $this->professorAdicionalSecundario;
+    }
+    public function setProfessorAdicionalSecundario($professor)
+    {
+        $this->professorAdicionalSecundario = $professor;
+
+        return $this;
+    }
+    // Faz o mesmo que a função acima, porém recebe o id do professor e o valida
+    // antes de armazená-lo
+    // Recebe: 
+    // $idProfessor: id do professor a ser colocado na Aula
+    //
+    // Retorna: true em caso de sucesso, false em caso de falha
+    public function setProfessorAdicionalSecundarioId($idprofessor){
+        // caso idprofessor seja -1, devemos criar um professor nulo
+        if($idprofessor == -1){
+            $this->professorAdicionalSecundario = null;
+        }
+
+        // lemos as credenciais do banco de dados
+        $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
+        $dados = json_decode($dados, true);
+
+        foreach($dados as $chave => $valor) {
+            $dados[$chave] = str_rot13($valor);
+        }
+
+        $host    = $dados["host"];
+        $usuario = $dados["nome_usuario"];
+        $senhaBD = $dados["senha"];
+
+        $prof = new Administrador("");
+        $prof->setIdAdmin($idprofessor);
+        $sucesso = $prof->recebeAdminId($host, "homeopatias", $usuario, $senhaBD, "professor");
+        
+        if($sucesso){
+            // esse professor existe no sistema
+            $this->professorAdicionalSecundario = $prof;
+            return true;
+        }
+        // esse professor não existe no sistema
+        return false;
     }
 }
 ?>
