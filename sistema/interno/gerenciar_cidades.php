@@ -121,13 +121,16 @@
                     var pos = $("#modal-edita-cidade #preco-pos");
 
                     if($(e.relatedTarget).data('tipo-curso') == "extensão"){
+												$("#modal-edita-cidade #tipo-curso #extensao").prop('selected', true);
                         extensao.show();
                         pos.hide(); 
                     }else{
                         if($(e.relatedTarget).data('tipo-curso') == "pós"){
+														$("#modal-edita-cidade #tipo-curso #pos").prop('selected', true);
                             extensao.hide();
                             pos.show();
                         }else{
+														$("#modal-edita-cidade #tipo-curso #ambos").prop('selected', true);
                             extensao.show();
                             pos.show();
                         }
@@ -893,14 +896,6 @@
                             case '5':
                                 $orderBy = " ORDER BY C.idCoordenador " ;
                                 break;
-                            case '6':
-                                $orderBy = " ORDER BY C.precoInscricao " ;
-                                break;
-                            case '7':
-                                $orderBy = " ORDER BY C.precoParcela " ;
-                                break;
-
-                            
                             default:
                                 $indexHeader = -1;
                                 break;
@@ -1024,14 +1019,14 @@
                         $tabela .= "data-nome-coord=\"" . htmlspecialchars($coord->getNome());
                         $tabela .= "\">";
                         $tabela .= htmlspecialchars($coord->getNome())."</td>";
-    
+/*    
                         $tabela .= "    <td class=\"inscricao\">R$ ";
                         $tabela .= number_format(htmlspecialchars($linha["precoInscricao"]), 2, ".", " ")."</td>";
                         $tabela .= "    <td class=\"parcela\">R$ ";
                         $tabela .= number_format(htmlspecialchars($linha["precoParcela"]), 2, ".", " ")."</td>";
                         $tabela .= "    <td class=\"custo\">R$ ";
                         $tabela .= number_format(htmlspecialchars($linha["custoCurso"]), 2, ".", " ")."</td>";
-    
+    */
                         $tabela .= "    <td><a data-id=\"";
                         $tabela .= $linha['idCidade'];
                         $tabela .= "\" data-empresa=\"" . $linha['nomeEmpresa'];
@@ -1253,15 +1248,6 @@
                                         <th width="110px" <?= $indexHeader == 5 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Coordenador</th>
-                                        <th width="90px" <?= $indexHeader == 6 ? 
-                                            ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?>>Inscrição</th>
-                                        <th width="80px" <?= $indexHeader == 7 ? 
-                                            ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?>>Parcela</th>
-                                        <th width="80px" <?= $indexHeader == 8 ? 
-                                            ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?>>Custo</th>
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
                                     </tr>
@@ -1410,9 +1396,15 @@
                                        title="O local deve ter de 3 a 200 caracteres"
                                        class="form-control">
                             </div>
+                            <div class="form-group">
+                                <label for="coord-nova">Coordenador da cidade:</label>
+                                <select name="coord" id="coord-nova" class="form-control" required>
+                                    <option value="">Escolha um ano acima...</option>
+                                </select>
+                            </div>
                             <div class="florm-group">
                                 <label for="tipo-curso">Tipo de Curso:</label>
-                                <select name="tipo-curso" id="tipo-curso">
+                                <select name="tipo-curso" id="tipo-curso" class="form-control">
                                     <option value="extensão">Extensão</option>
                                     <option value="pós">Pós-Graduação</option>
                                     <option value="ambos">Ambos</option>
@@ -1422,12 +1414,6 @@
                                 <label for="limite-nova">Data limite para matrícula:</label>
                                 <input type="date" name="limite" id="limite-nova"
                                        placeholder="dd/mm/aaaa" required class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="coord-nova">Coordenador da cidade:</label>
-                                <select name="coord" id="coord-nova" class="form-control" required>
-                                    <option value="">Escolha um ano acima...</option>
-                                </select>
                             </div>
                             <span id="preco-extensao" name="preco-extensao">
                                 <div class="form-group">
@@ -1563,28 +1549,28 @@
                                        placeholder="dd/mm/aaaa" required class="form-control">
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="text-align: left">
                                     <label for="cadastroAtivo">Cadastro ativo : </label>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input type="checkbox" id="cadastroAtivo" 
-                                    name="cadastroAtivo" value="true">
+                                    <input type="checkbox" id="cadastroAtivo" class="form-control"
+                                    name="cadastroAtivo" value="true" />
                                 </div>
                             </div>
 
                             <span id="cadastroPermitido">
-                                <div class="florm-group">
-                                    <label for="tipo-curso">Tipo de Curso:</label>
-                                    <select name="tipo-curso" id="tipo-curso">
-                                        <option value="extensão">Extensão</option>
-                                        <option value="pós">Pós-Graduação</option>
-                                        <option value="ambos">Ambos</option>
-                                    </select>
-                                </div>
                                 <div class="form-group">
                                     <label for="coord">Coordenador da cidade:</label>
                                     <select name="coord" id="coord" class="form-control">
                                         <option value="">Escolha um ano acima...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tipo-curso">Tipo de Curso:</label>
+                                    <select name="tipo-curso" id="tipo-curso" class="form-control">
+                                        <option id="extensao" value="extensão">Extensão</option>
+                                        <option id="pos" value="pós">Pós-Graduação</option>
+                                        <option id="ambos" value="ambos">Ambos</option>
                                     </select>
                                 </div>
                                 <span id="preco-extensao" name="preco-extensao">
