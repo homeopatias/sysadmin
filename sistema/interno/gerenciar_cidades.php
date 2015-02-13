@@ -645,9 +645,9 @@
                     $inscricao   = $_POST["inscricao"];
                     $parcela     = $_POST["parcela"];
                     $limite      = $_POST["limite"];
-                    $nomeEmpresa = $_POST["nomeEmpresa"];
-                    $cnpjEmpresa = $_POST["cnpjEmpresa"];
-                    $custoCurso  = $_POST["custoCurso"];
+                    $nomeEmpresa = "disabled";
+                    $cnpjEmpresa = "00.000.000/0000-00";
+                    $custoCurso  = 0;
                     $tipoCurso   = $_POST["tipo-curso"];
                     $InscExt     = $_POST["inscricao-ext"];
                     $ParceExt    = $_POST["parcela-ext"];
@@ -1435,14 +1435,14 @@
                                     <input type="text" name="inscricao-ext" id="inscricao-nova-ext" required
                                            pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
                                            title="O valor de inscrição deve ser um número real"
-                                           class="form-control">
+                                           class="form-control" value="0">
                                 </div>
                                 <div class="form-group">
                                     <label for="parcela-nova">Valor da parcela da extensão:</label>
                                     <input type="text" name="parcela-ext" id="parcela-nova-ext" required
                                            pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                            title="A parcela deve ser um número real"
-                                           class="form-control">
+                                           class="form-control" value="0">
                                 </div>
                             </span>
                             <span id="preco-pos" name="preco-pos">
@@ -1451,16 +1451,17 @@
                                     <input type="text" name="inscricao-pos" id="inscricao-nova-pos" required
                                            pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
                                            title="O valor de inscrição deve ser um número real"
-                                           class="form-control">
+                                           class="form-control" value="0">
                                 </div>
                                 <div class="form-group">
                                     <label for="parcela-nova">Valor da parcela da pós-graduação:</label>
                                     <input type="text" name="parcela-pos" id="parcela-nova-pos" required
                                            pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                            title="A parcela deve ser um número real"
-                                           class="form-control">
+                                           class="form-control" value="0">
                                 </div>
                             </span>
+                            <!-- Disabled pois não é necessário no momento
                             <div class="form-group">
                                 <label for="custo-curso-novo">Custo para efetivar o curso:</label>
                                 <input type="text" name="custoCurso" id="custo-curso-novo" 
@@ -1486,6 +1487,8 @@
                                        ser apenas numérico"
                                        class="form-control">
                             </div>
+
+                            !-->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
