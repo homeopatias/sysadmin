@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.10deb1
+-- version 4.2.6deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 07, 2015 at 12:01 AM
--- Server version: 5.5.41-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.5
+-- Tempo de geração: 13/02/2015 às 16:58
+-- Versão do servidor: 5.5.41-0ubuntu0.14.10.1
+-- Versão do PHP: 5.5.12-2ubuntu4.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,27 +17,25 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `homeopatias`
+-- Banco de dados: `homeopatias`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Administrador`
+-- Estrutura para tabela `Administrador`
 --
 
 CREATE TABLE IF NOT EXISTS `Administrador` (
-  `idAdmin` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico do administrador',
+`idAdmin` int(11) NOT NULL COMMENT 'Identificador unico do administrador',
   `idUsuario` int(11) NOT NULL COMMENT 'Identificador único do usuário que esse administrador representa',
   `nivel` enum('professor','coordenador','administrador') NOT NULL COMMENT 'Nivel de privilegio desse administrador no sistema',
   `corrigeTrabalho` tinyint(1) NOT NULL COMMENT 'Caso esse administrador seja um professor, determina se ele pode corrigir trabalhos ou não',
-  `permissoes` int(5) NOT NULL DEFAULT '0' COMMENT 'Bitflag de acesso de admins',
-  PRIMARY KEY (`idAdmin`),
-  KEY `idUsuario` (`idUsuario`)
+  `permissoes` int(5) NOT NULL DEFAULT '0' COMMENT 'Bitflag de acesso de admins'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Administradores do sistema' AUTO_INCREMENT=12 ;
 
 --
--- Dumping data for table `Administrador`
+-- Fazendo dump de dados para tabela `Administrador`
 --
 
 INSERT INTO `Administrador` (`idAdmin`, `idUsuario`, `nivel`, `corrigeTrabalho`, `permissoes`) VALUES
@@ -56,11 +54,11 @@ INSERT INTO `Administrador` (`idAdmin`, `idUsuario`, `nivel`, `corrigeTrabalho`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Aluno`
+-- Estrutura para tabela `Aluno`
 --
 
 CREATE TABLE IF NOT EXISTS `Aluno` (
-  `numeroInscricao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Numero de inscricao do aluno',
+`numeroInscricao` int(11) NOT NULL COMMENT 'Numero de inscricao do aluno',
   `idUsuario` int(11) NOT NULL COMMENT 'Identificador único do usuário que esse aluno representa',
   `status` enum('preinscrito','inscrito','desistente','formado','inativo') NOT NULL COMMENT 'Status desse aluno (pré-inscrito, inscrito, etc)',
   `idIndicador` int(11) DEFAULT NULL COMMENT 'Numero de inscricao do aluno que indicou esse aluno, caso aplicavel',
@@ -77,14 +75,11 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
   `pais` varchar(3) DEFAULT NULL COMMENT 'País que o aluno reside',
   `tipo_curso` enum('extensao','pos','','') NOT NULL COMMENT 'tipo de curso do aluno',
   `tipo_cadastro` enum('instituto','faculdade inspirar') NOT NULL COMMENT 'tipo de cadastro do aluno',
-  `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da extensão que já enviaram os documentos)',
-  PRIMARY KEY (`numeroInscricao`),
-  KEY `idIndicador` (`idIndicador`),
-  KEY `idAluno` (`idUsuario`)
+  `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da extensão que já enviaram os documentos)'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=17 ;
 
 --
--- Dumping data for table `Aluno`
+-- Fazendo dump de dados para tabela `Aluno`
 --
 
 INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `tipo_cadastro`, `ativo`) VALUES
@@ -108,21 +103,20 @@ INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `t
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Artigo`
+-- Estrutura para tabela `Artigo`
 --
 
 CREATE TABLE IF NOT EXISTS `Artigo` (
-  `idArtigo` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico',
+`idArtigo` int(11) NOT NULL COMMENT 'Identificador unico',
   `autor` varchar(100) NOT NULL,
   `titulo` varchar(100) NOT NULL,
   `conteudo` text NOT NULL,
   `dataPublic` datetime NOT NULL COMMENT 'Data de publicacao do artigo',
-  `tipo` enum('artigo','noticia') NOT NULL COMMENT 'Determina se é um artigo ou notícia',
-  PRIMARY KEY (`idArtigo`)
+  `tipo` enum('artigo','noticia') NOT NULL COMMENT 'Determina se é um artigo ou notícia'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Artigo ou noticia a ser mostrada no site' AUTO_INCREMENT=5 ;
 
 --
--- Dumping data for table `Artigo`
+-- Fazendo dump de dados para tabela `Artigo`
 --
 
 INSERT INTO `Artigo` (`idArtigo`, `autor`, `titulo`, `conteudo`, `dataPublic`, `tipo`) VALUES
@@ -134,11 +128,11 @@ INSERT INTO `Artigo` (`idArtigo`, `autor`, `titulo`, `conteudo`, `dataPublic`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Associado`
+-- Estrutura para tabela `Associado`
 --
 
 CREATE TABLE IF NOT EXISTS `Associado` (
-  `idAssoc` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico do associado',
+`idAssoc` int(11) NOT NULL COMMENT 'Identificador unico do associado',
   `idUsuario` int(11) NOT NULL COMMENT 'Identificador único do usuário que esse associado representa',
   `instituicao` enum('atenemg','conahom') NOT NULL COMMENT 'Nome da instituicao associada',
   `formacaoTerapeutica` varchar(200) NOT NULL COMMENT 'Formação terapêutica desse associado',
@@ -155,13 +149,11 @@ CREATE TABLE IF NOT EXISTS `Associado` (
   `bairro` varchar(255) NOT NULL COMMENT 'Bairro do Associado',
   `complemento` varchar(255) DEFAULT NULL COMMENT 'Complemento do Endereço',
   `pais` varchar(3) NOT NULL COMMENT 'País que o Associado reside',
-  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o associado',
-  PRIMARY KEY (`idAssoc`),
-  KEY `idUsuario` (`idUsuario`)
+  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o associado'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Associado da CONAHOM/ATENEMG' AUTO_INCREMENT=5 ;
 
 --
--- Dumping data for table `Associado`
+-- Fazendo dump de dados para tabela `Associado`
 --
 
 INSERT INTO `Associado` (`idAssoc`, `idUsuario`, `instituicao`, `formacaoTerapeutica`, `telefone`, `endereco`, `cidade`, `estado`, `numObjeto`, `dataEnvioCarteirinha`, `enviouDocumentos`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `pais`, `desconto_individual`) VALUES
@@ -173,49 +165,50 @@ INSERT INTO `Associado` (`idAssoc`, `idUsuario`, `instituicao`, `formacaoTerapeu
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Aula`
+-- Estrutura para tabela `Aula`
 --
 
 CREATE TABLE IF NOT EXISTS `Aula` (
-  `idAula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de aula',
+`idAula` int(11) NOT NULL COMMENT 'Identificador unico de aula',
   `chaveCidade` int(11) NOT NULL COMMENT 'Identificador da cidade onde ocorrera essa aula',
   `etapa` int(11) NOT NULL COMMENT 'Numero da etapa a qual essa aula se refere',
   `data` datetime NOT NULL COMMENT 'Data e horario da aula',
   `idProfessor` int(11) DEFAULT NULL COMMENT 'Identificador único do professor que ministrara a aula',
+  `idProfAdicionalPrimario` int(11) DEFAULT NULL COMMENT 'Id de professor adicional da aula',
+  `idProfAdicionalSecundario` int(11) DEFAULT NULL COMMENT 'Id de professor adicional da aula',
   `nota` float DEFAULT NULL COMMENT 'Media das notas dadas a essa aula pelos alunos',
-  `descricao` varchar(10000) NOT NULL COMMENT 'Descrição do conteúdo que será dado nessa aula',
-  PRIMARY KEY (`idAula`),
-  KEY `chaveCidade` (`chaveCidade`),
-  KEY `idProfessor` (`idProfessor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aula lancada no sistema' AUTO_INCREMENT=14 ;
+  `descricao` varchar(10000) NOT NULL COMMENT 'Descrição do conteúdo que será dado nessa aula'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aula lancada no sistema' AUTO_INCREMENT=19 ;
 
 --
--- Dumping data for table `Aula`
+-- Fazendo dump de dados para tabela `Aula`
 --
 
-INSERT INTO `Aula` (`idAula`, `chaveCidade`, `etapa`, `data`, `idProfessor`, `nota`, `descricao`) VALUES
-(1, 1, 1, '2014-03-03 12:30:00', 5, NULL, 'Introdução à Homeopatia'),
-(2, 1, 2, '2014-04-03 12:30:00', 5, NULL, 'Continuando as bases da alopatia'),
-(3, 2, 1, '2014-06-05 14:30:00', 7, NULL, 'Conceitos homeopáticos básicos'),
-(4, 2, 1, '2014-09-03 08:30:00', 7, NULL, 'Conclusões da etapa'),
-(5, 2, 1, '2014-12-10 09:00:00', 7, NULL, 'Guia de estudos para as férias'),
-(6, 2, 3, '2014-03-03 08:00:00', 7, NULL, 'Continuação dos estudos sobre florais'),
-(7, 2, 4, '2014-07-05 17:00:00', 7, NULL, 'Grandes homeopatas da história'),
-(8, 1, 1, '2014-12-18 09:00:00', 5, NULL, 'Finalização de curso'),
-(9, 2, 1, '2014-12-18 09:00:00', 7, NULL, 'Finalização de curso'),
-(10, 3, 1, '2014-12-18 09:00:00', 6, NULL, 'Finalização de curso'),
-(11, 1, 1, '2014-11-19 09:00:00', 7, NULL, 'Aula prática de técnicas homeopáticas.'),
-(12, 4, 1, '2014-02-02 12:30:00', 5, 44.4444, 'Aula introdutória'),
-(13, 4, 1, '2014-09-05 08:10:00', 5, 66.6667, 'Aula final');
+INSERT INTO `Aula` (`idAula`, `chaveCidade`, `etapa`, `data`, `idProfessor`, `idProfAdicionalPrimario`, `idProfAdicionalSecundario`, `nota`, `descricao`) VALUES
+(1, 1, 1, '2014-03-03 12:30:00', 5, 0, 0, NULL, 'Introdução à Homeopatia'),
+(2, 1, 2, '2014-04-03 12:30:00', 5, 0, 0, NULL, 'Continuando as bases da alopatia'),
+(3, 2, 1, '2014-06-05 14:30:00', 5, 9, NULL, NULL, 'Conceitos homeopáticos básicos'),
+(4, 2, 1, '2014-09-03 08:30:00', 7, 0, 0, NULL, 'Conclusões da etapa'),
+(5, 2, 1, '2014-06-05 14:30:00', 7, 3, NULL, NULL, 'Conceitos homeopáticos básicos'),
+(6, 2, 1, '2014-06-05 14:30:00', 7, 3, NULL, NULL, 'Conceitos homeopáticos básicos'),
+(7, 2, 4, '2014-07-05 17:00:00', 7, 0, 0, NULL, 'Grandes homeopatas da história'),
+(8, 1, 1, '2014-12-18 09:00:00', 5, 0, 0, NULL, 'Finalização de curso'),
+(9, 2, 1, '2014-12-18 09:00:00', 7, 0, 0, NULL, 'Finalização de curso'),
+(10, 3, 1, '2014-12-18 09:00:00', 6, 0, 0, NULL, 'Finalização de curso'),
+(11, 1, 1, '2014-11-19 09:00:00', 7, 0, 0, NULL, 'Aula prática de técnicas homeopáticas.'),
+(12, 4, 1, '2014-02-02 12:30:00', 5, 0, 0, 44.4444, 'Aula introdutória'),
+(13, 4, 1, '2014-09-05 08:10:00', 5, 0, 0, 66.6667, 'Aula final'),
+(17, 6, 1, '2015-03-15 03:00:00', 9, 7, 5, NULL, 'Aula para teste'),
+(18, 6, 1, '2015-04-18 05:00:00', 6, 5, NULL, NULL, 'Aula Teste');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Cidade`
+-- Estrutura para tabela `Cidade`
 --
 
 CREATE TABLE IF NOT EXISTS `Cidade` (
-  `idCidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de cidade',
+`idCidade` int(11) NOT NULL COMMENT 'Identificador unico de cidade',
   `UF` text NOT NULL,
   `ano` int(10) unsigned NOT NULL COMMENT 'Ano para o qual essa oferta do curso vale',
   `nome` varchar(100) NOT NULL,
@@ -226,13 +219,11 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
   `limiteInscricao` date NOT NULL COMMENT 'Data limite para matrícula nessa cidade',
   `nomeEmpresa` varchar(100) NOT NULL COMMENT 'Nome da empresa responsável por essa cidade',
   `cnpjEmpresa` char(14) NOT NULL COMMENT 'CNPJ da empresa responsável por essa cidade',
-  `custoCurso` float NOT NULL COMMENT 'valor de custo para abertura do curso',
-  PRIMARY KEY (`idCidade`),
-  KEY `idCoordenador` (`idCoordenador`)
+  `custoCurso` float NOT NULL COMMENT 'valor de custo para abertura do curso'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=12 ;
 
 --
--- Dumping data for table `Cidade`
+-- Fazendo dump de dados para tabela `Cidade`
 --
 
 INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`, `precoInscricao`, `precoParcela`, `limiteInscricao`, `nomeEmpresa`, `cnpjEmpresa`, `custoCurso`) VALUES
@@ -251,36 +242,34 @@ INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Compra`
+-- Estrutura para tabela `Compra`
 --
 
 CREATE TABLE IF NOT EXISTS `Compra` (
-  `idCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de compra',
+`idCompra` int(11) NOT NULL COMMENT 'Identificador unico de compra',
   `cpf` char(11) NOT NULL COMMENT 'CPF do comprador',
   `nome` varchar(100) NOT NULL,
   `data` date NOT NULL COMMENT 'Data da compra',
-  `contato` varchar(15) NOT NULL,
-  PRIMARY KEY (`idCompra`)
+  `contato` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Compra de produtos' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Evento`
+-- Estrutura para tabela `Evento`
 --
 
 CREATE TABLE IF NOT EXISTS `Evento` (
-  `idEvento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico',
+`idEvento` int(11) NOT NULL COMMENT 'Identificador unico',
   `dataPublic` datetime NOT NULL COMMENT 'Data de publicacao dos dados do evento no site',
   `dataEvento` datetime NOT NULL COMMENT 'Data em que ocorrera o evento',
   `titulo` varchar(100) NOT NULL,
   `local` varchar(500) NOT NULL,
-  `descricao` varchar(3000) NOT NULL,
-  PRIMARY KEY (`idEvento`)
+  `descricao` varchar(3000) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Dados de um evento a serem mostrados no site' AUTO_INCREMENT=3 ;
 
 --
--- Dumping data for table `Evento`
+-- Fazendo dump de dados para tabela `Evento`
 --
 
 INSERT INTO `Evento` (`idEvento`, `dataPublic`, `dataEvento`, `titulo`, `local`, `descricao`) VALUES
@@ -290,7 +279,7 @@ INSERT INTO `Evento` (`idEvento`, `dataPublic`, `dataEvento`, `titulo`, `local`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Frequencia`
+-- Estrutura para tabela `Frequencia`
 --
 
 CREATE TABLE IF NOT EXISTS `Frequencia` (
@@ -299,14 +288,11 @@ CREATE TABLE IF NOT EXISTS `Frequencia` (
   `presenca` tinyint(1) NOT NULL COMMENT 'Representa se o aluno estava presente nessa aula ou nao',
   `jaAvaliou` tinyint(1) NOT NULL COMMENT 'Determina se o aluno já avaliou essa aula ou não',
   `aprovacaoPendente` tinyint(1) NOT NULL COMMENT 'Determina se essa frequência requer avaliação por parte de um administrador',
-  `justificativaAusencia` varchar(10000) DEFAULT NULL COMMENT 'Justificativa pela ausência em um dia de aula',
-  PRIMARY KEY (`chaveAula`,`chaveAluno`),
-  KEY `chaveAluno` (`chaveAluno`),
-  KEY `chaveAula` (`chaveAula`)
+  `justificativaAusencia` varchar(10000) DEFAULT NULL COMMENT 'Justificativa pela ausência em um dia de aula'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Lancamento da presenca ou ausencia de um aluno em uma aula';
 
 --
--- Dumping data for table `Frequencia`
+-- Fazendo dump de dados para tabela `Frequencia`
 --
 
 INSERT INTO `Frequencia` (`chaveAluno`, `chaveAula`, `presenca`, `jaAvaliou`, `aprovacaoPendente`, `justificativaAusencia`) VALUES
@@ -320,22 +306,21 @@ INSERT INTO `Frequencia` (`chaveAluno`, `chaveAula`, `presenca`, `jaAvaliou`, `a
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Instituicao`
+-- Estrutura para tabela `Instituicao`
 --
 
 CREATE TABLE IF NOT EXISTS `Instituicao` (
-  `idInstituicao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da instituição',
+`idInstituicao` int(11) NOT NULL COMMENT 'Identificador único da instituição',
   `nome` enum('atenemg','conahom') NOT NULL COMMENT 'Nome da instituição',
   `valorInscricao` float NOT NULL COMMENT 'Preço da inscrição nessa instituição',
   `valorAnuidade` float NOT NULL COMMENT 'Preço da anuidade nessa instituição',
   `inicioInsc` datetime NOT NULL COMMENT 'Data a partir da qual os associados podem se associar',
   `fimInsc` datetime NOT NULL COMMENT 'Data até qual os associados podem se associar',
-  `ano` int(11) NOT NULL COMMENT 'Ano para o qual as inscrições estão/estarão abertas',
-  PRIMARY KEY (`idInstituicao`)
+  `ano` int(11) NOT NULL COMMENT 'Ano para o qual as inscrições estão/estarão abertas'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Instituição na qual podem ser feitas as associações' AUTO_INCREMENT=3 ;
 
 --
--- Dumping data for table `Instituicao`
+-- Fazendo dump de dados para tabela `Instituicao`
 --
 
 INSERT INTO `Instituicao` (`idInstituicao`, `nome`, `valorInscricao`, `valorAnuidade`, `inicioInsc`, `fimInsc`, `ano`) VALUES
@@ -345,11 +330,11 @@ INSERT INTO `Instituicao` (`idInstituicao`, `nome`, `valorInscricao`, `valorAnui
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Livro`
+-- Estrutura para tabela `Livro`
 --
 
 CREATE TABLE IF NOT EXISTS `Livro` (
-  `idLivro` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de livro',
+`idLivro` int(11) NOT NULL COMMENT 'Identificador unico de livro',
   `valor` float NOT NULL COMMENT 'Preco do livro',
   `quantidade` int(10) unsigned NOT NULL COMMENT 'Quantidade do livro em estoque',
   `nome` varchar(500) NOT NULL,
@@ -357,12 +342,11 @@ CREATE TABLE IF NOT EXISTS `Livro` (
   `editora` varchar(100) NOT NULL,
   `dataPublic` date NOT NULL COMMENT 'Data da publicacao do livro',
   `edicao` int(10) unsigned NOT NULL COMMENT 'Numero da edicao do livro',
-  `fornecedor` varchar(200) NOT NULL,
-  PRIMARY KEY (`idLivro`)
+  `fornecedor` varchar(200) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Livros a venda no sistema' AUTO_INCREMENT=3 ;
 
 --
--- Dumping data for table `Livro`
+-- Fazendo dump de dados para tabela `Livro`
 --
 
 INSERT INTO `Livro` (`idLivro`, `valor`, `quantidade`, `nome`, `autor`, `editora`, `dataPublic`, `edicao`, `fornecedor`) VALUES
@@ -372,23 +356,20 @@ INSERT INTO `Livro` (`idLivro`, `valor`, `quantidade`, `nome`, `autor`, `editora
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Matricula`
+-- Estrutura para tabela `Matricula`
 --
 
 CREATE TABLE IF NOT EXISTS `Matricula` (
-  `idMatricula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da matrícula feita por um aluno',
+`idMatricula` int(11) NOT NULL COMMENT 'Identificador único da matrícula feita por um aluno',
   `chaveAluno` int(11) NOT NULL COMMENT 'Identificador do aluno ao qual essa matrícula se refere',
   `etapa` int(10) unsigned NOT NULL COMMENT 'Etapa a qual essa matrícula se refere',
   `aprovado` tinyint(1) DEFAULT NULL COMMENT 'Determina se o aluno (já) foi aprovado ou não',
   `chaveCidade` int(11) NOT NULL COMMENT 'Identificador da cidade a qual essa matrícula se refere',
-  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o aluno',
-  PRIMARY KEY (`idMatricula`),
-  KEY `chaveAluno` (`chaveAluno`),
-  KEY `chaveCidade` (`chaveCidade`)
+  `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o aluno'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=14 ;
 
 --
--- Dumping data for table `Matricula`
+-- Fazendo dump de dados para tabela `Matricula`
 --
 
 INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chaveCidade`, `desconto_individual`) VALUES
@@ -407,20 +388,19 @@ INSERT INTO `Matricula` (`idMatricula`, `chaveAluno`, `etapa`, `aprovado`, `chav
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Notificacao`
+-- Estrutura para tabela `Notificacao`
 --
 
 CREATE TABLE IF NOT EXISTS `Notificacao` (
-  `idNotificacao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único dessa notificação',
+`idNotificacao` int(11) NOT NULL COMMENT 'Identificador único dessa notificação',
   `titulo` varchar(100) NOT NULL COMMENT 'Título da notificação a ser dada ao aluno',
   `texto` varchar(500) NOT NULL COMMENT 'Texto da notificação a ser dada ao aluno',
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
-  `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não',
-  PRIMARY KEY (`idNotificacao`)
+  `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=108 ;
 
 --
--- Dumping data for table `Notificacao`
+-- Fazendo dump de dados para tabela `Notificacao`
 --
 
 INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `lida`) VALUES
@@ -510,24 +490,22 @@ INSERT INTO `Notificacao` (`idNotificacao`, `titulo`, `texto`, `chaveAluno`, `li
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Pagamento`
+-- Estrutura para tabela `Pagamento`
 --
 
 CREATE TABLE IF NOT EXISTS `Pagamento` (
-  `idPagamento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único desse pagamento',
+`idPagamento` int(11) NOT NULL COMMENT 'Identificador único desse pagamento',
   `chaveUsuario` int(11) NOT NULL,
   `valor` float NOT NULL COMMENT 'Valor pago nesse pagamento',
   `data` datetime NOT NULL COMMENT 'Data em que o pagamento foi validado no sistema',
   `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento',
   `objetivo` enum('mensalidade','anuidade','livro','') NOT NULL COMMENT 'Especifica o que esse pagamento está pagando',
   `codigoTransacao` int(11) DEFAULT NULL COMMENT 'Código da transação no Pagseguro, quando houver',
-  `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere',
-  PRIMARY KEY (`idPagamento`),
-  KEY `chaveUsuario` (`chaveUsuario`)
+  `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=5 ;
 
 --
--- Dumping data for table `Pagamento`
+-- Fazendo dump de dados para tabela `Pagamento`
 --
 
 INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `data`, `metodo`, `objetivo`, `codigoTransacao`, `ano`) VALUES
@@ -539,25 +517,23 @@ INSERT INTO `Pagamento` (`idPagamento`, `chaveUsuario`, `valor`, `data`, `metodo
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Pedido`
+-- Estrutura para tabela `Pedido`
 --
 
 CREATE TABLE IF NOT EXISTS `Pedido` (
   `chaveProduto` int(11) NOT NULL COMMENT 'Identificador unico do produto sendo comprado',
   `chaveCompra` int(11) NOT NULL COMMENT 'Identificador unico da compra a qual esse pedido pertence',
-  `quantidade` int(10) unsigned NOT NULL COMMENT 'Quantidade desse produto que sera comprada',
-  PRIMARY KEY (`chaveCompra`,`chaveProduto`),
-  KEY `livroComprado` (`chaveProduto`)
+  `quantidade` int(10) unsigned NOT NULL COMMENT 'Quantidade desse produto que sera comprada'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Compra de um produto especifico,referenciado por uma compra de mais produtos';
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `PgtoAnuidade`
+-- Estrutura para tabela `PgtoAnuidade`
 --
 
 CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
-  `idPagAnuidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de pagamento de anuidade',
+`idPagAnuidade` int(11) NOT NULL COMMENT 'Identificador unico de pagamento de anuidade',
   `chaveAssoc` int(11) NOT NULL COMMENT 'Identificador do associado ao qual esse pagamento se refere',
   `inscricao` tinyint(1) NOT NULL COMMENT 'Determina se esse pagamento se refere a uma inscricao ou a uma anuidade',
   `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa anuidade/inscrição',
@@ -565,13 +541,11 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
   `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento utilizado para essa anuidade',
   `data` datetime DEFAULT NULL COMMENT 'Data do pagamento da anuidade',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
-  `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
-  PRIMARY KEY (`idPagAnuidade`),
-  KEY `chaveAssoc` (`chaveAssoc`)
+  `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado' AUTO_INCREMENT=3 ;
 
 --
--- Dumping data for table `PgtoAnuidade`
+-- Fazendo dump de dados para tabela `PgtoAnuidade`
 --
 
 INSERT INTO `PgtoAnuidade` (`idPagAnuidade`, `chaveAssoc`, `inscricao`, `valorTotal`, `valorPago`, `metodo`, `data`, `ano`, `fechado`) VALUES
@@ -581,28 +555,26 @@ INSERT INTO `PgtoAnuidade` (`idPagAnuidade`, `chaveAssoc`, `inscricao`, `valorTo
 -- --------------------------------------------------------
 
 --
--- Table structure for table `PgtoCompra`
+-- Estrutura para tabela `PgtoCompra`
 --
 
 CREATE TABLE IF NOT EXISTS `PgtoCompra` (
-  `idPagCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de pagamento de uma compra',
+`idPagCompra` int(11) NOT NULL COMMENT 'Identificador unico de pagamento de uma compra',
   `cpf` int(11) NOT NULL COMMENT 'CPF do comprador do produto',
   `valor` float NOT NULL COMMENT 'Valor pago na compra',
   `metodo` int(11) NOT NULL COMMENT 'Método de pagamento utilizado para essa compra',
   `chaveCompra` int(11) NOT NULL COMMENT 'Identificador unico da compra feita, ao qual esse pagamento se refere',
-  `data` datetime NOT NULL COMMENT 'Data do pagamento',
-  PRIMARY KEY (`idPagCompra`),
-  KEY `chaveCompra` (`chaveCompra`)
+  `data` datetime NOT NULL COMMENT 'Data do pagamento'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Pagamento de algum produto' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `PgtoMensalidade`
+-- Estrutura para tabela `PgtoMensalidade`
 --
 
 CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
-  `idPagMensalidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador do pagamento de mensalidade',
+`idPagMensalidade` int(11) NOT NULL COMMENT 'Identificador do pagamento de mensalidade',
   `chaveMatricula` int(11) DEFAULT NULL COMMENT 'Numero da matrícula à qual esse pagamento se refere',
   `numParcela` int(11) NOT NULL COMMENT 'Numero da parcela ao qual esse pagamento se refere (deve ser 0 caso esse pagamento seja de inscrição)',
   `valorTotal` float NOT NULL COMMENT 'Valor total a ser pago nessa mensalidade',
@@ -611,13 +583,11 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `metodo` varchar(100) NOT NULL COMMENT 'Método de pagamento utilizado para essa mensalidade',
   `data` datetime DEFAULT NULL COMMENT 'Data na qual essa mensalidade foi paga',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
-  `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não',
-  PRIMARY KEY (`idPagMensalidade`),
-  KEY `chaveAluno` (`chaveMatricula`)
+  `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=157 ;
 
 --
--- Dumping data for table `PgtoMensalidade`
+-- Fazendo dump de dados para tabela `PgtoMensalidade`
 --
 
 INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela`, `valorTotal`, `valorPago`, `desconto`, `metodo`, `data`, `ano`, `fechado`) VALUES
@@ -781,20 +751,19 @@ INSERT INTO `PgtoMensalidade` (`idPagMensalidade`, `chaveMatricula`, `numParcela
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Reuniao`
+-- Estrutura para tabela `Reuniao`
 --
 
 CREATE TABLE IF NOT EXISTS `Reuniao` (
-  `idReuniao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico',
+`idReuniao` int(11) NOT NULL COMMENT 'Identificador unico',
   `tema` varchar(200) NOT NULL,
   `data` datetime NOT NULL COMMENT 'Data em que ocorrera a reuniao',
   `descricao` varchar(3000) NOT NULL,
-  `local` varchar(500) NOT NULL,
-  PRIMARY KEY (`idReuniao`)
+  `local` varchar(500) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Dados de reunião a serem mostrados no site' AUTO_INCREMENT=2 ;
 
 --
--- Dumping data for table `Reuniao`
+-- Fazendo dump de dados para tabela `Reuniao`
 --
 
 INSERT INTO `Reuniao` (`idReuniao`, `tema`, `data`, `descricao`, `local`) VALUES
@@ -803,40 +772,36 @@ INSERT INTO `Reuniao` (`idReuniao`, `tema`, `data`, `descricao`, `local`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Trabalho`
+-- Estrutura para tabela `Trabalho`
 --
 
 CREATE TABLE IF NOT EXISTS `Trabalho` (
-  `idTrabalho` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico do trabalho',
+`idTrabalho` int(11) NOT NULL COMMENT 'Identificador unico do trabalho',
   `chaveAluno` int(11) NOT NULL COMMENT 'Numero de inscricao do aluno que fez esse trabalho',
   `dataEntrega` datetime NOT NULL COMMENT 'Data e hora em que esse trabalho foi entregue',
   `chaveDefinicao` int(11) NOT NULL COMMENT 'Identificador unico da especificacao do trabalho enviado',
   `nota` int(10) unsigned DEFAULT NULL COMMENT 'Nota do trabalho',
   `comentarioProfessor` varchar(5000) DEFAULT NULL COMMENT 'Comentário do professor sobre o trabalho do aluno',
-  `extensao` char(10) NOT NULL COMMENT 'Tipo de arquivo enviado (pdf, doc, ppt, etc)',
-  PRIMARY KEY (`idTrabalho`),
-  KEY `chaveAluno` (`chaveAluno`),
-  KEY `chaveDefinicao` (`chaveDefinicao`)
+  `extensao` char(10) NOT NULL COMMENT 'Tipo de arquivo enviado (pdf, doc, ppt, etc)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Trabalho enviado por aluno' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `TrabalhoDefinicao`
+-- Estrutura para tabela `TrabalhoDefinicao`
 --
 
 CREATE TABLE IF NOT EXISTS `TrabalhoDefinicao` (
-  `idDefTrabalho` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de definicao de trabalho',
+`idDefTrabalho` int(11) NOT NULL COMMENT 'Identificador unico de definicao de trabalho',
   `titulo` varchar(300) NOT NULL COMMENT 'Titulo do trabalho',
   `etapa` int(10) unsigned NOT NULL COMMENT 'Etapa do curso a qual se refere esse trabalho',
   `descricao` varchar(10000) NOT NULL,
   `dataLimite` datetime NOT NULL COMMENT 'Data e hora limite de entrega do trabalho',
-  `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse trabalho se refere',
-  PRIMARY KEY (`idDefTrabalho`)
+  `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse trabalho se refere'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Especificacao dada para a confeccao de um trabalho por parte dos alunos' AUTO_INCREMENT=5 ;
 
 --
--- Dumping data for table `TrabalhoDefinicao`
+-- Fazendo dump de dados para tabela `TrabalhoDefinicao`
 --
 
 INSERT INTO `TrabalhoDefinicao` (`idDefTrabalho`, `titulo`, `etapa`, `descricao`, `dataLimite`, `ano`) VALUES
@@ -848,26 +813,21 @@ INSERT INTO `TrabalhoDefinicao` (`idDefTrabalho`, `titulo`, `etapa`, `descricao`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Usuario`
+-- Estrutura para tabela `Usuario`
 --
 
 CREATE TABLE IF NOT EXISTS `Usuario` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de usuário',
+`id` int(11) NOT NULL COMMENT 'Identificador único de usuário',
   `cpf` char(11) NOT NULL COMMENT 'Cadastro de Pessoa Fisica do usuario',
   `dataInscricao` datetime NOT NULL COMMENT 'Data de inscricao no sistema',
   `email` varchar(100) NOT NULL,
   `login` varchar(100) NOT NULL,
   `senha` text NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `login` (`login`),
-  KEY `cpf` (`cpf`),
-  KEY `cpf_2` (`cpf`),
-  KEY `dataInscricao` (`dataInscricao`)
+  `nome` varchar(100) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=32 ;
 
 --
--- Dumping data for table `Usuario`
+-- Fazendo dump de dados para tabela `Usuario`
 --
 
 INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, `nome`) VALUES
@@ -900,6 +860,246 @@ INSERT INTO `Usuario` (`id`, `cpf`, `dataInscricao`, `email`, `login`, `senha`, 
 (30, '99999999999', '2015-02-06 22:47:34', 'posgrad@gmail.com', 'posgrad', '$2a$08$D8RgxAEYmdjmXZkjw7fA8ePUhqROozbFH9pn5gOhPSH7Yz0K2Fowy', 'Amigo Pós'),
 (31, '13871725650', '2015-02-06 22:58:19', 'armindo@gmail.com', 'armin', '$2a$08$ffjv/3VlOb4Xu8ayiHEe4e7whvPjlbvwc1MitlMVFYKn0JXtxZsDa', 'Armin Silv');
 
+--
+-- Índices de tabelas apagadas
+--
+
+--
+-- Índices de tabela `Administrador`
+--
+ALTER TABLE `Administrador`
+ ADD PRIMARY KEY (`idAdmin`), ADD KEY `idUsuario` (`idUsuario`);
+
+--
+-- Índices de tabela `Aluno`
+--
+ALTER TABLE `Aluno`
+ ADD PRIMARY KEY (`numeroInscricao`), ADD KEY `idIndicador` (`idIndicador`), ADD KEY `idAluno` (`idUsuario`);
+
+--
+-- Índices de tabela `Artigo`
+--
+ALTER TABLE `Artigo`
+ ADD PRIMARY KEY (`idArtigo`);
+
+--
+-- Índices de tabela `Associado`
+--
+ALTER TABLE `Associado`
+ ADD PRIMARY KEY (`idAssoc`), ADD KEY `idUsuario` (`idUsuario`);
+
+--
+-- Índices de tabela `Aula`
+--
+ALTER TABLE `Aula`
+ ADD PRIMARY KEY (`idAula`), ADD KEY `chaveCidade` (`chaveCidade`), ADD KEY `idProfessor` (`idProfessor`);
+
+--
+-- Índices de tabela `Cidade`
+--
+ALTER TABLE `Cidade`
+ ADD PRIMARY KEY (`idCidade`), ADD KEY `idCoordenador` (`idCoordenador`);
+
+--
+-- Índices de tabela `Compra`
+--
+ALTER TABLE `Compra`
+ ADD PRIMARY KEY (`idCompra`);
+
+--
+-- Índices de tabela `Evento`
+--
+ALTER TABLE `Evento`
+ ADD PRIMARY KEY (`idEvento`);
+
+--
+-- Índices de tabela `Frequencia`
+--
+ALTER TABLE `Frequencia`
+ ADD PRIMARY KEY (`chaveAula`,`chaveAluno`), ADD KEY `chaveAluno` (`chaveAluno`), ADD KEY `chaveAula` (`chaveAula`);
+
+--
+-- Índices de tabela `Instituicao`
+--
+ALTER TABLE `Instituicao`
+ ADD PRIMARY KEY (`idInstituicao`);
+
+--
+-- Índices de tabela `Livro`
+--
+ALTER TABLE `Livro`
+ ADD PRIMARY KEY (`idLivro`);
+
+--
+-- Índices de tabela `Matricula`
+--
+ALTER TABLE `Matricula`
+ ADD PRIMARY KEY (`idMatricula`), ADD KEY `chaveAluno` (`chaveAluno`), ADD KEY `chaveCidade` (`chaveCidade`);
+
+--
+-- Índices de tabela `Notificacao`
+--
+ALTER TABLE `Notificacao`
+ ADD PRIMARY KEY (`idNotificacao`);
+
+--
+-- Índices de tabela `Pagamento`
+--
+ALTER TABLE `Pagamento`
+ ADD PRIMARY KEY (`idPagamento`), ADD KEY `chaveUsuario` (`chaveUsuario`);
+
+--
+-- Índices de tabela `Pedido`
+--
+ALTER TABLE `Pedido`
+ ADD PRIMARY KEY (`chaveCompra`,`chaveProduto`), ADD KEY `livroComprado` (`chaveProduto`);
+
+--
+-- Índices de tabela `PgtoAnuidade`
+--
+ALTER TABLE `PgtoAnuidade`
+ ADD PRIMARY KEY (`idPagAnuidade`), ADD KEY `chaveAssoc` (`chaveAssoc`);
+
+--
+-- Índices de tabela `PgtoCompra`
+--
+ALTER TABLE `PgtoCompra`
+ ADD PRIMARY KEY (`idPagCompra`), ADD KEY `chaveCompra` (`chaveCompra`);
+
+--
+-- Índices de tabela `PgtoMensalidade`
+--
+ALTER TABLE `PgtoMensalidade`
+ ADD PRIMARY KEY (`idPagMensalidade`), ADD KEY `chaveAluno` (`chaveMatricula`);
+
+--
+-- Índices de tabela `Reuniao`
+--
+ALTER TABLE `Reuniao`
+ ADD PRIMARY KEY (`idReuniao`);
+
+--
+-- Índices de tabela `Trabalho`
+--
+ALTER TABLE `Trabalho`
+ ADD PRIMARY KEY (`idTrabalho`), ADD KEY `chaveAluno` (`chaveAluno`), ADD KEY `chaveDefinicao` (`chaveDefinicao`);
+
+--
+-- Índices de tabela `TrabalhoDefinicao`
+--
+ALTER TABLE `TrabalhoDefinicao`
+ ADD PRIMARY KEY (`idDefTrabalho`);
+
+--
+-- Índices de tabela `Usuario`
+--
+ALTER TABLE `Usuario`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `login` (`login`), ADD KEY `cpf` (`cpf`), ADD KEY `cpf_2` (`cpf`), ADD KEY `dataInscricao` (`dataInscricao`);
+
+--
+-- AUTO_INCREMENT de tabelas apagadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `Administrador`
+--
+ALTER TABLE `Administrador`
+MODIFY `idAdmin` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico do administrador',AUTO_INCREMENT=12;
+--
+-- AUTO_INCREMENT de tabela `Aluno`
+--
+ALTER TABLE `Aluno`
+MODIFY `numeroInscricao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Numero de inscricao do aluno',AUTO_INCREMENT=17;
+--
+-- AUTO_INCREMENT de tabela `Artigo`
+--
+ALTER TABLE `Artigo`
+MODIFY `idArtigo` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico',AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT de tabela `Associado`
+--
+ALTER TABLE `Associado`
+MODIFY `idAssoc` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico do associado',AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT de tabela `Aula`
+--
+ALTER TABLE `Aula`
+MODIFY `idAula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de aula',AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT de tabela `Cidade`
+--
+ALTER TABLE `Cidade`
+MODIFY `idCidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de cidade',AUTO_INCREMENT=12;
+--
+-- AUTO_INCREMENT de tabela `Compra`
+--
+ALTER TABLE `Compra`
+MODIFY `idCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de compra';
+--
+-- AUTO_INCREMENT de tabela `Evento`
+--
+ALTER TABLE `Evento`
+MODIFY `idEvento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico',AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT de tabela `Instituicao`
+--
+ALTER TABLE `Instituicao`
+MODIFY `idInstituicao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da instituição',AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT de tabela `Livro`
+--
+ALTER TABLE `Livro`
+MODIFY `idLivro` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de livro',AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT de tabela `Matricula`
+--
+ALTER TABLE `Matricula`
+MODIFY `idMatricula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único da matrícula feita por um aluno',AUTO_INCREMENT=14;
+--
+-- AUTO_INCREMENT de tabela `Notificacao`
+--
+ALTER TABLE `Notificacao`
+MODIFY `idNotificacao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único dessa notificação',AUTO_INCREMENT=108;
+--
+-- AUTO_INCREMENT de tabela `Pagamento`
+--
+ALTER TABLE `Pagamento`
+MODIFY `idPagamento` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único desse pagamento',AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT de tabela `PgtoAnuidade`
+--
+ALTER TABLE `PgtoAnuidade`
+MODIFY `idPagAnuidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de pagamento de anuidade',AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT de tabela `PgtoCompra`
+--
+ALTER TABLE `PgtoCompra`
+MODIFY `idPagCompra` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de pagamento de uma compra';
+--
+-- AUTO_INCREMENT de tabela `PgtoMensalidade`
+--
+ALTER TABLE `PgtoMensalidade`
+MODIFY `idPagMensalidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador do pagamento de mensalidade',AUTO_INCREMENT=157;
+--
+-- AUTO_INCREMENT de tabela `Reuniao`
+--
+ALTER TABLE `Reuniao`
+MODIFY `idReuniao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico',AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT de tabela `Trabalho`
+--
+ALTER TABLE `Trabalho`
+MODIFY `idTrabalho` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico do trabalho';
+--
+-- AUTO_INCREMENT de tabela `TrabalhoDefinicao`
+--
+ALTER TABLE `TrabalhoDefinicao`
+MODIFY `idDefTrabalho` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de definicao de trabalho',AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT de tabela `Usuario`
+--
+ALTER TABLE `Usuario`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de usuário',AUTO_INCREMENT=32;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -190,6 +190,18 @@
                         $(this).find('#prof').val(
                             $(e.relatedTarget).parent().siblings('.professor').data('id-professor')
                         );
+                        $(this).find('#prof-adicional-aula').val(
+                            $(e.relatedTarget).parent().siblings('.professor').data('id-primario')
+                        );
+                        $(this).find('#prof-secundario-aula').val(
+                            $(e.relatedTarget).parent().siblings('.professor').data('id-secundario')
+                        );
+                        if($(this).find('#prof-adicional-aula').val() == null){
+                            $(this).find('#prof-adicional-aula').val(-1);
+                        }
+                        if($(this).find('#prof-secundario-aula').val() == null){
+                            $(this).find('#prof-secundario-aula').val(-1);
+                        }
                     }else{
                         $("#cidade-edita-aula")
                             .append('<option selected>Não existe cidade cadastrada no ano dado</option>');
@@ -647,7 +659,9 @@
                 }
 
                 $textoQuery  = "SELECT A.idAula, A.chaveCidade, A.etapa, A.data, 
-                                A.idProfessor, A.nota, A.descricao FROM Aula A, 
+                                A.idProfessor, A.nota, A.descricao , 
+                                A.idProfAdicionalPrimario, A.idProfAdicionalSecundario
+                                FROM Aula A, 
                                 Cidade C WHERE C.idCidade = A.chaveCidade";
                 
                 // Se algum filtro foi repassado, altera o query para filtrar
@@ -850,7 +864,8 @@
     
                         $tabela .= "    <td class=\"professor\" data-id-professor=\"";
                         $tabela .= htmlspecialchars($idProfessor);
-                        $tabela .= "\">";
+                        $tabela .= "\" data-id-primario =\"".$linha["idProfAdicionalPrimario"]."\" ";
+                        $tabela .= " data-id-secundario = \"".$linha["idProfAdicionalSecundario"]."\">";
                         $tabela .= htmlspecialchars($nomeProfessor)           ."</td>";
                         $tabela .= "    <td class=\"nota\">";
                         if(!isset($linha["nota"]) || $linha["nota"] === ""){

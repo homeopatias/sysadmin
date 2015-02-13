@@ -33,6 +33,9 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $idProfessor = $_POST["prof"];
         $descricao   = $_POST["descricao"];
 
+        $idProfessorAdicional  = $_POST["prof-adicional"];
+        $idProfessorSecundario = $_POST["prof-secundario"];
+
         $idValido          = isset($id) && preg_match("/^[0-9]+$/", $id);
         $dataValida        = isset($data) && preg_match("/^\d{4}-\d{2}-\d{2}$/", $data);
         $horarioValido     = isset($horario) && preg_match("/^\d{2}:\d{2}$/", $horario);
@@ -41,6 +44,13 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $idProfessorValido = isset($idProfessor) && 
                              (preg_match("/^[0-9]+$/", $idProfessor) || $idProfessor == -1);
         $descricaoValida = isset($descricao) && mb_strlen($descricao, 'UTF-8') <= 10000;
+
+        $idProfessorPrimarioValido   = isset($idProfessorAdicional) && 
+                             (preg_match("/^[0-9]+$/", $idProfessorAdicional) 
+                                || $idProfessorAdicional == -1);
+        $idProfessorSecundarioValido = isset($idProfessorSecundario) && 
+                             (preg_match("/^[0-9]+$/", $idProfessorSecundario) 
+                                || $idProfessorSecundario == -1);
 
 
         // checamos se a cidade recebida pertence ao ano recebido
@@ -74,10 +84,37 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
                 $mensagem = "Esse professor não foi encontrado no sistema";
             }
         }
+        // agora checamos se o professor adicional 1 recebido existe
+        if($idProfessorPrimarioValido && $idProfessorAdicional != -1){
+            require_once("../../entidades/Administrador.php");
+
+            $admin = new Administrador("");
+            $admin->setIdAdmin($idProfessorAdicional);
+            $encontrado = $admin->recebeAdminId($host, "homeopatias", $usuario,
+                                                $senhaBD, "professor");
+            if(!$encontrado){
+                $idProfessorValido = false;
+                $mensagem = "Esse professor não foi encontrado no sistema";
+            }
+        }
+        // agora checamos se o professor recebido existe
+        if($idProfessorSecundarioValido && $idProfessorSecundario != -1){
+            require_once("../../entidades/Administrador.php");
+
+            $admin = new Administrador("");
+            $admin->setIdAdmin($idProfessorSecundario);
+            $encontrado = $admin->recebeAdminId($host, "homeopatias", $usuario,
+                                                $senhaBD, "professor");
+            if(!$encontrado){
+                $idProfessorValido = false;
+                $mensagem = "Esse professor não foi encontrado no sistema";
+            }
+        }
 
         // se todos os dados estão válidos, a aula é editada
         if($idValido && $dataValida && $horarioValido && $idCidadeValido && $etapaValida &&
-           $idProfessorValido && $descricaoValida){
+           $idProfessorValido && $descricaoValida && $idProfessorPrimarioValido &&
+           $idProfessorSecundarioValido){
 
             require_once("../../entidades/Aula.php");
 
@@ -87,7 +124,10 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setEtapa($etapa);
             $atualizar->setData(strtotime($data . " " . $horario . ":00"));
             $atualizar->setProfessorId($idProfessor);
+            $atualizar->setProfessorAdicionalPrimarioId($idProfessorAdicional);
+            $atualizar->setProfessorAdicionalSecundarioId($idProfessorSecundario);
             $atualizar->setDescricao($descricao);
+            //var_dump($atualizar->getProfessorAdicionalSecundario());die();
 
             $sucesso = $atualizar->atualizar($host, "homeopatias", $usuario, $senhaBD);
 

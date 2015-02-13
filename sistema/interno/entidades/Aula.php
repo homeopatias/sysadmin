@@ -86,7 +86,7 @@ class Aula{
         $idProfessorSecundario = $this->professorAdicionalSecundario != null ?
                                  $this->professorAdicionalSecundario->getIdAdmin() : null; 
         $dados  = array($this->cidade->getIdCidade(), $this->etapa, date("Y-m-d H:i:s",
-                        $this->data), $idProfessor, $this->nota, $this->descricao,
+                        $this->data), $idProfessor, $this->nota, $this->descricao, 
                         $idProfessorPrimario, $idProfessorSecundario);
         $textoQuery  = "INSERT INTO Aula (chaveCidade, etapa, data, idProfessor, nota, descricao,
                         idProfAdicionalPrimario, idProfAdicionalSecundario) 
@@ -120,16 +120,15 @@ class Aula{
         $idProfessor = $this->professor != null ? $this->professor->getIdAdmin() : null;
         $idProfessorPrimario   = $this->professorAdicionalPrimario != null ? 
                                  $this->professorAdicionalPrimario->getIdAdmin() : null;
-        $idProfessorSecundario = $this->professorAdicionalSecundario != null ? 
-                               $this->professorAdicionalSecundariox->getIdAdmin() : null;
+        $idProfessorSecundario = $this->professorAdicionalSecundario != null ?
+                                 $this->professorAdicionalSecundario->getIdAdmin() : null;
         $comando  = "UPDATE Aula SET chaveCidade=?, etapa=?, data=?, idProfessor=?, nota=?,
-                     descricao=?, idProfAdicionalPrimario=?, idProfessorAdicionalSecundario=? 
+                     descricao=?, idProfAdicionalPrimario=?, idProfAdicionalSecundario=? 
                      WHERE idAula = ?";
         $query = $conexao->prepare($comando);
         $dados  = array($this->cidade->getIdCidade(), $this->etapa, date("Y-m-d H:i:s",
                         $this->data), $idProfessor, $this->nota, $this->descricao,
-                        $this->idAula, $this->idProfAdicionalPrimario,
-                        $this->idProfessorAdicionalSecundario);
+                        $idProfessorPrimario, $idProfessorSecundario, $this->idAula);
         $sucesso = $query->execute($dados);
 
         // Encerramos a conexão com o BD
