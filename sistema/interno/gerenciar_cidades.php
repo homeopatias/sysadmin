@@ -121,16 +121,13 @@
                     var pos = $("#modal-edita-cidade #preco-pos");
 
                     if($(e.relatedTarget).data('tipo-curso') == "extensão"){
-												$("#modal-edita-cidade #tipo-curso #extensao").prop('selected', true);
                         extensao.show();
                         pos.hide(); 
                     }else{
                         if($(e.relatedTarget).data('tipo-curso') == "pós"){
-														$("#modal-edita-cidade #tipo-curso #pos").prop('selected', true);
                             extensao.hide();
                             pos.show();
                         }else{
-														$("#modal-edita-cidade #tipo-curso #ambos").prop('selected', true);
                             extensao.show();
                             pos.show();
                         }
@@ -1396,6 +1393,14 @@
                                        title="O local deve ter de 3 a 200 caracteres"
                                        class="form-control">
                             </div>
+                            <div class="florm-group">
+                                <label for="tipo-curso">Tipo de Curso:</label>
+                                <select name="tipo-curso" id="tipo-curso">
+                                    <option value="extensão">Extensão</option>
+                                    <option value="pós">Pós-Graduação</option>
+                                    <option value="ambos">Ambos</option>
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label for="coord-nova">Coordenador da cidade:</label>
                                 <select name="coord" id="coord-nova" class="form-control" required>
@@ -1558,7 +1563,6 @@
                                 </div>
                             </div>
 
-                            <span id="cadastroPermitido">
                                 <div class="form-group">
                                     <label for="coord">Coordenador da cidade:</label>
                                     <select name="coord" id="coord" class="form-control">
