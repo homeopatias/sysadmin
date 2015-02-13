@@ -33,7 +33,6 @@
 
         	// se a referencia possuir um dos códigos do sistema novo, envia ao sistema novo
         	if ($codigoTipo === "M" || $codigoTipo =="A") {
-<<<<<<< HEAD
     			//header("Location:./notificacoes_pagseguro.php",true,307);
     			    	?>
 
@@ -74,11 +73,7 @@
 				<script language="JavaScript">
 					document.frm.submit();
 				</script>
-=======
-    			header("Location:./notificacoes_pagseguro.php",true,307);
-    		}else{
-    			header("Location:".$_SERVER["DOCUMENT_ROOT"]."/sistema/curso/curso_notificacoes.php",true,307);
->>>>>>> edição de cidade alterado
+				<?php
     		}
 
     	}
