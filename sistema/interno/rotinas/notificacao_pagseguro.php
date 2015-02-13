@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD
 //var_dump("abacate");die();
+=======
+
+>>>>>>> edição de cidade alterado
 error_reporting(-1);
 ini_set('display_errors', 'On');
 ini_set("log_errors", 1);
@@ -60,7 +64,11 @@ if ($tipoNotificacao === 'transaction') {
 
             // pagamento de mensalidade, registramos o pagamento do aluno
             $idAluno = intval(mb_substr($referencia, 1));
+<<<<<<< HEAD
 						$idUsuarioAluno = $idAluno;
+=======
+
+>>>>>>> edição de cidade alterado
             $textoQuery = "SELECT P.idPagMensalidade, P.valorPago, P.valorTotal, P.desconto,
                            P.numParcela, P.ano, P.metodo
                            FROM Matricula M INNER JOIN PgtoMensalidade P
@@ -144,6 +152,7 @@ if ($tipoNotificacao === 'transaction') {
             $sucesso = 1;
 
             // agora registramos o pagamento genérico no banco
+<<<<<<< HEAD
             $textoQuery = 'INSERT INTO `Pagamento` SET `chaveUsuario` = ?,`valor` = ?,`data`= NOW(),`metodo`= "PagSeguro",`objetivo`="mensalidade",`ano`= ?';
 													 	//var_dump( $textoQuery);
             $query = $conexao->prepare($textoQuery);
@@ -159,6 +168,18 @@ if ($tipoNotificacao === 'transaction') {
 						var_dump( $idUsuarioAluno);
 						var_dump( $valorTotalPago);
 						var_dump( $dateY);
+=======
+            $textoQuery = 'INSERT INTO Pagamento (chaveUsuario, valor, data
+                           metodo, objetivo, ano)
+                           VALUES (?, ?, NOW(), "PagSeguro", "mensalidade", ?)';
+            $query = $conexao->prepare($textoQuery);
+
+            $query->bindParam(1, $idUsuarioAluno);
+            $query->bindParam(2, $valorTotalPago);
+            $query->bindParam(3, date("Y"));
+
+            $sucesso = $query->execute();
+>>>>>>> edição de cidade alterado
 
             for ($i = 0; $i < count($anos); $i++) {
                 $ano = $anos[$i];
@@ -217,7 +238,10 @@ if ($tipoNotificacao === 'transaction') {
                 }
             }
 
+<<<<<<< HEAD
 						$conexao->commit();
+=======
+>>>>>>> edição de cidade alterado
             // se conseguiu lançar o pagamento da inscrição do ano 
             // atual e
             // ela fechou, muda o status do aluno para inscrito
@@ -241,10 +265,13 @@ if ($tipoNotificacao === 'transaction') {
                         //mostramos que não foi possível notificar o aluno
                         for($i = 0;$i < 10 && !$sucessoNotificacao;$i++){
 
+<<<<<<< HEAD
 														$aluno = new Aluno("");
 														$aluno->setNumeroInscricao($idAluno);
 														$aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
 
+=======
+>>>>>>> edição de cidade alterado
                             //gera notificação para o indicador que ele recebeu 10% de desconto
                             //nas próximas parcelas
                             $conexao->beginTransaction();
@@ -260,7 +287,12 @@ if ($tipoNotificacao === 'transaction') {
                             $query = $conexao->prepare($textoQuery);
                             $query->bindParam(":titulo", $titulo, PDO::PARAM_STR);
                             $query->bindParam(":texto", $texto, PDO::PARAM_STR);
+<<<<<<< HEAD
                             $query->bindParam(":idIndicador",$aluno->getIndicador(),PDO::PARAM_INT);
+=======
+                            $query->bindParam(":idIndicador", 
+                                $indicadorNovo->getNumeroInscricao(),PDO::PARAM_INT);
+>>>>>>> edição de cidade alterado
 
                             $sucessoNotificacao = $query->execute();
 
@@ -280,7 +312,11 @@ if ($tipoNotificacao === 'transaction') {
                         }
 
                         // ----------------------------------------------------------------------
+<<<<<<< HEAD
                //
+=======
+                    }
+>>>>>>> edição de cidade alterado
                 }
             }
 
@@ -308,7 +344,10 @@ if ($tipoNotificacao === 'transaction') {
                     "X-Mailer: PHP/" . phpversion();
 
                 mail($aluno->getEmail(), $assunto, $msg, $headers);
+<<<<<<< HEAD
 								$conexao->beginTransaction();
+=======
+>>>>>>> edição de cidade alterado
 
                 // agora registramos no sistema uma notificação para o aluno
                 $texto  = "Pagamento recebido:\nValor: R$" . $quantiaPaga;

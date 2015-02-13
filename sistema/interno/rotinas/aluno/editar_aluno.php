@@ -1,4 +1,4 @@
-<?php
+f<?php
 ini_set('default_charset', 'utf-8');
 header('Content-Type: text/html; charset=utf-8');
 session_start();
@@ -46,6 +46,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $tipoCurso      = $_POST["tipo_curso"];
         $tipoCadastro   = $_POST["tipo_cadastro"];
         $senha          = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
+
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                         mb_strlen($nome, 'UTF-8') <= 100 &&

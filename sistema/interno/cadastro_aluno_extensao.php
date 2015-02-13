@@ -114,8 +114,7 @@
                         // já existe alguém com esse nome de usuário no sistema
                         $conexao = null;
                         $sucesso = false;
-
-												echo "<script> alert(\"Usuário existente, faça o cadastro novamente! \"); window.location = \"cadastro_aluno_extensao.php\";</script>";
+                        echo "<script> alert(\"Usuário existente, faça o cadastro novamente! \"); window.location = \"cadastro_aluno_extensao.php\";</script>";
                     }
 
                     // Usamos as TRANSACTIONs do MySql para garantir que caso haja
@@ -136,6 +135,7 @@
                     $dadosAluno  = array($idUsuario);
                     $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro, ativo) VALUES
                                     (?, 'preinscrito', 'BRL', 'extensao', 'faculdade inspirar', 1)";
+
 
 
                     $query = $conexao->prepare($queryAluno);
@@ -223,6 +223,7 @@
                         <label for="nome-novo">Nome Completo:</label>
                         <input type="text" name="nome" id="nome-novo" required
                                pattern="^.{3,50} .{1,50}$" title="O nome deve ter de 3 a 100 caracteres, insira seu nome completo"
+
                                placeholder="Nome" class="form-control" autocomplete="off">
                     </div>
                     <div class="form-group">
@@ -237,6 +238,7 @@
                         <input type="text" name="login" id="login-novo" required
                                pattern="[a-z0-9]+" placeholder="Nome de usuário"
                                title="O login deve ter de 3 a 100 caracteres com apenas letras(minúsculas e sem acentos) e números!"
+
                                class="form-control">
                     </div>
                     <div class="form-group">

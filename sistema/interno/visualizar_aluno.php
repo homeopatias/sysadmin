@@ -34,8 +34,16 @@
                     echo $e->getMessage();
                 }
 
-                $textoQuery  = "SELECT idCidade, UF, nome, ano FROM Cidade 
-                                ORDER BY ano DESC, nome ASC";
+                // procuramos o aluno desejado no banco de dados
+                require_once("entidades/Aluno.php");
+                $aluno = new Aluno("");
+                $aluno->setNumeroInscricao($_GET["id"]);
+                $sucesso = $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
+
+                $textoQuery  = "SELECT idCidade, UF, nome, ano FROM Cidade WHERE
+                                CURDATE() < limiteInscricao AND 
+                                tipo_curso = '" .$aluno->getTipoCurso(). "' 
+                                OR tipo_curso = 'ambos' ORDER BY ano DESC, nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);

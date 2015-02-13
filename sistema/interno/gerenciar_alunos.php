@@ -876,6 +876,7 @@
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
                                 A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
                                 MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula, A.ativo
+
                                 FROM Usuario U, Aluno A";
 
                 $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
@@ -1198,7 +1199,6 @@
                         $tabela .= $linha["numeroInscricao"] . "&pagina=" . $_GET["pagina"] . "\">";
                         $tabela .= "<i class=\"fa fa-bolt\" style=\"color: orange\"></i></a></td>";
                     }
-
                     $tabela .= "    <td><a data-indicador=\"";
                     $tabela .= $linhaIndicador["login"];
                     $tabela .= "\" data-id=\"";
@@ -2085,6 +2085,7 @@
                             <div class="form-group">
                                 <label for="tipo_curso">Tipo de curso</label>
                                 <select id="tipo_curso" name = "tipo_curso" class="form-control">
+
                                     <option value="extensao">Extensão</option>
                                     <option value="pos">Pós Graduação</option>
                                 </select>
