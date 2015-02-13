@@ -204,7 +204,7 @@
                         }
                     }
                 });
-                
+
                 $("#modal-edita-cidade #tipo-curso").change(function(){
                     var extensao = $("#modal-edita-cidade #preco-extensao");
                     var pos = $("#modal-edita-cidade #preco-pos");
@@ -242,6 +242,9 @@
                         }
                     }
                 });
+
+                // seta por padrão os preços de pós ocultos
+                $("#modal-nova-cidade #preco-pos").hide();
 
                 // seta por padrão os preços de pós ocultos
                 $("#modal-nova-cidade #preco-pos").hide();
@@ -1393,14 +1396,6 @@
                                        title="O local deve ter de 3 a 200 caracteres"
                                        class="form-control">
                             </div>
-                            <div class="florm-group">
-                                <label for="tipo-curso">Tipo de Curso:</label>
-                                <select name="tipo-curso" id="tipo-curso">
-                                    <option value="extensão">Extensão</option>
-                                    <option value="pós">Pós-Graduação</option>
-                                    <option value="ambos">Ambos</option>
-                                </select>
-                            </div>
                             <div class="form-group">
                                 <label for="coord-nova">Coordenador da cidade:</label>
                                 <select name="coord" id="coord-nova" class="form-control" required>
@@ -1563,6 +1558,7 @@
                                 </div>
                             </div>
 
+                            <span id="cadastroPermitido">
                                 <div class="form-group">
                                     <label for="coord">Coordenador da cidade:</label>
                                     <select name="coord" id="coord" class="form-control">

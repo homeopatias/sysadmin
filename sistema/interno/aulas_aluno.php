@@ -358,6 +358,7 @@
                 unserialize($_SESSION['usuario'])->getStatus() === 'inscrito'){
 
                 $textoQuery  = "SELECT A.chaveCidade, A.etapa, A.data, A.descricao,
+                                A.idProfAdicionalPrimario, A.idProfAdicionalSecundario,
                                 P.nome FROM Aula A INNER JOIN Administrador Ad
                                 ON Ad.idAdmin = A.idProfessor INNER JOIN Usuario P ON 
                                 Ad.idUsuario = P.id INNER JOIN Cidade C ON
@@ -559,8 +560,27 @@
                 $contador = 0;
                 $tabela = "";
 
+                require_once("./entidades/Administrador.php");
+                $professorAdicional  = null;
+                $professorAdicional2 = null;
                 while ($linha = $query->fetch()){
                     if($contador != $itemsPorPagina){
+                        if($linha["idProfAdicionalPrimario"] != null){
+                            $professorAdicional  = new Administrador("");
+                            $professorAdicional->setIdAdmin($linha["idProfAdicionalPrimario"]);
+                            $professorAdicional->recebeAdminId($host, "homeopatias", $usuario,
+                                                            $senhaBD, "professor");
+                        }else{
+                            $professorAdicional = null;
+                        }
+                        if($linha["idProfAdicionalSecundario"] != null){
+                            $professorAdicional2  = new Administrador("");
+                            $professorAdicional2->setIdAdmin($linha["idProfAdicionalSecundario"]);
+                            $professorAdicional2->recebeAdminId($host, "homeopatias", $usuario,
+                                                            $senhaBD, "professor");
+                        }else{
+                            $professorAdicional2  = null;
+                        }
 
                         // listamos os dados de cada aula
                         $tabela .= "<tr>";
@@ -574,7 +594,15 @@
                         $tabela .= $linha["chaveCidade"]."\">";
                         $tabela .= htmlspecialchars($cidade->getNome())             ."</td>";
                         $tabela .= "    <td class=\"professor\">";
-                        $tabela .= htmlspecialchars($linha["nome"])             ."</td>";
+                        $tabela .= "<ul>";
+                        $tabela .= "<li>".htmlspecialchars($linha["nome"])             ."</li>";
+                        if($professorAdicional){
+                            $tabela .= "<li>".$professorAdicional->getNome()."</li>";
+                        }
+                        if($professorAdicional2){
+                            $tabela .= "<li>".$professorAdicional2->getNome()."</li>";
+                        }
+                        $tabela .= "</ul></td>";
                         $tabela .= "    <td class=\"etapa\">";
                         $tabela .= htmlspecialchars($linha["etapa"])                ."</td>";
                         $tabela .= "    <td class=\"data\" data-data-html=\"";

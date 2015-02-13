@@ -190,6 +190,18 @@
                         $(this).find('#prof').val(
                             $(e.relatedTarget).parent().siblings('.professor').data('id-professor')
                         );
+                        $(this).find('#prof-adicional-aula').val(
+                            $(e.relatedTarget).parent().siblings('.professor').data('id-primario')
+                        );
+                        $(this).find('#prof-secundario-aula').val(
+                            $(e.relatedTarget).parent().siblings('.professor').data('id-secundario')
+                        );
+                        if($(this).find('#prof-adicional-aula').val() == null){
+                            $(this).find('#prof-adicional-aula').val(-1);
+                        }
+                        if($(this).find('#prof-secundario-aula').val() == null){
+                            $(this).find('#prof-secundario-aula').val(-1);
+                        }
                     }else{
                         $("#cidade-edita-aula")
                             .append('<option selected>Não existe cidade cadastrada no ano dado</option>');
@@ -559,6 +571,9 @@
                     $idProfessor = $_POST["prof"];
                     $descricao   = $_POST["descricao"];
 
+                    $idProfessorAdicional  = $_POST["prof-adicional"];
+                    $idProfessorSecundario = $_POST["prof-secundario"];
+
                     $dataValida        = isset($data) && preg_match("/^\d{4}-\d{2}-\d{2}$/", $data);
                     $horarioValido     = isset($horario) && preg_match("/^\d{2}:\d{2}$/", $horario);
                     $idCidadeValido    = isset($idCidade) && preg_match("/^[0-9]+$/", $idCidade);
@@ -566,6 +581,16 @@
                     $idProfessorValido = isset($idProfessor) && 
                                          (preg_match("/^[0-9]+$/", $idProfessor) || $idProfessor == -1);
                     $descricaoValida = isset($descricao) && mb_strlen($descricao, 'UTF-8') <= 10000;
+
+
+                    $idProfessorPrimarioValido   = isset($idProfessorAdicional) && 
+                                         (preg_match("/^[0-9]+$/", $idProfessorAdicional) 
+                                            || $idProfessorAdicional == -1);
+                    $idProfessorSecundarioValido = isset($idProfessorSecundario) && 
+                                         (preg_match("/^[0-9]+$/", $idProfessorSecundario) 
+                                            || $idProfessorSecundario == -1);
+
+
 
                     // checamos se a cidade recebida pertence ao ano recebido e se existe
                     if($dataValida && $idCidadeValido){
@@ -600,7 +625,8 @@
 
                     // se todos os dados estão válidos, a aula é inserida
                     if($dataValida && $horarioValido && $idCidadeValido && $etapaValida &&
-                       $idProfessorValido && $descricaoValida){
+                       $idProfessorValido && $descricaoValida && $idProfessorPrimarioValido &&
+                       $idProfessorSecundarioValido){
 
                         require_once("entidades/Aula.php");
 
@@ -609,6 +635,8 @@
                         $nova->setEtapa($etapa);
                         $nova->setData(strtotime($data . " " . $horario . ":00"));
                         $nova->setProfessorId($idProfessor);
+                        $nova->setProfessorAdicionalPrimarioId($idProfessorAdicional);
+                        $nova->setProfessorAdicionalSecundarioId($idProfessorSecundario);
                         $nova->setNota(null);
                         $nova->setDescricao($descricao);
 
@@ -631,7 +659,9 @@
                 }
 
                 $textoQuery  = "SELECT A.idAula, A.chaveCidade, A.etapa, A.data, 
-                                A.idProfessor, A.nota, A.descricao FROM Aula A, 
+                                A.idProfessor, A.nota, A.descricao , 
+                                A.idProfAdicionalPrimario, A.idProfAdicionalSecundario
+                                FROM Aula A, 
                                 Cidade C WHERE C.idCidade = A.chaveCidade";
                 
                 // Se algum filtro foi repassado, altera o query para filtrar
@@ -834,7 +864,8 @@
     
                         $tabela .= "    <td class=\"professor\" data-id-professor=\"";
                         $tabela .= htmlspecialchars($idProfessor);
-                        $tabela .= "\">";
+                        $tabela .= "\" data-id-primario =\"".$linha["idProfAdicionalPrimario"]."\" ";
+                        $tabela .= " data-id-secundario = \"".$linha["idProfAdicionalSecundario"]."\">";
                         $tabela .= htmlspecialchars($nomeProfessor)           ."</td>";
                         $tabela .= "    <td class=\"nota\">";
                         if(!isset($linha["nota"]) || $linha["nota"] === ""){
@@ -1181,6 +1212,35 @@
                                         }
                                     ?>
                                 </select>
+                                
+                            </div>
+                            <div class="form-group">
+                                <label for="#">Professores adicionais:</label>
+                                <select name="prof-adicional" id="prof-adicional-nova-aula" class="form-control">
+                                    <option value="-1">Indeterminado</option>
+                                    <?php
+                                        require_once("rotinas/professor/lista_professores.php");
+                                        $lista = listaProfessores();
+                                        for($i = 0; $i < count($lista); $i++){
+                                            echo "<option value=\"";
+                                            echo $lista[$i]->getIdAdmin()."\">";
+                                            echo $lista[$i]->getNome()."</option>";
+                                        }
+                                    ?>
+                                </select>
+                                <select name="prof-secundario" id="prof-secundario-nova-aula" 
+                                class="form-control">
+                                    <option value="-1">Indeterminado</option>
+                                    <?php
+                                        require_once("rotinas/professor/lista_professores.php");
+                                        $lista = listaProfessores();
+                                        for($i = 0; $i < count($lista); $i++){
+                                            echo "<option value=\"";
+                                            echo $lista[$i]->getIdAdmin()."\">";
+                                            echo $lista[$i]->getNome()."</option>";
+                                        }
+                                    ?>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="descricao-nova-aula">Descrição:</label>
@@ -1251,6 +1311,34 @@
                             <div class="form-group">
                                 <label for="prof">Professor da aula:</label>
                                 <select name="prof" id="prof" class="form-control">
+                                    <option value="-1">Indeterminado</option>
+                                    <?php
+                                        require_once("rotinas/professor/lista_professores.php");
+                                        $lista = listaProfessores();
+                                        for($i = 0; $i < count($lista); $i++){
+                                            echo "<option value=\"";
+                                            echo $lista[$i]->getIdAdmin()."\">";
+                                            echo $lista[$i]->getNome()."</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="#">Professores adicionais:</label>
+                                <select name="prof-adicional" id="prof-adicional-aula" class="form-control">
+                                    <option value="-1">Indeterminado</option>
+                                    <?php
+                                        require_once("rotinas/professor/lista_professores.php");
+                                        $lista = listaProfessores();
+                                        for($i = 0; $i < count($lista); $i++){
+                                            echo "<option value=\"";
+                                            echo $lista[$i]->getIdAdmin()."\">";
+                                            echo $lista[$i]->getNome()."</option>";
+                                        }
+                                    ?>
+                                </select>
+                                <select name="prof-secundario" id="prof-secundario-aula" 
+                                class="form-control">
                                     <option value="-1">Indeterminado</option>
                                     <?php
                                         require_once("rotinas/professor/lista_professores.php");
