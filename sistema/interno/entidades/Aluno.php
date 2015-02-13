@@ -91,6 +91,7 @@ class Aluno extends Usuario{
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone,
                         A.escolaridade, A.curso,A.cep, A.rua, A.numero, A.complemento,
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro, A.ativo
+
                         FROM Usuario U, Aluno A WHERE U.login=? AND A.idUsuario = U.id";
 
         $query = $conexao->prepare($textoQuery);
@@ -166,6 +167,7 @@ class Aluno extends Usuario{
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.escolaridade, 
                         A.curso ,A.cep, A.rua, A.numero, A.complemento,
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro, A.ativo
+
                         FROM Usuario U, Aluno A WHERE A.numeroInscricao=? AND A.idUsuario = U.id";
 
         $query = $conexao->prepare($textoQuery);
@@ -273,6 +275,7 @@ class Aluno extends Usuario{
                              cidade, estado, pais, tipo_curso, tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?,
                              ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+
         }else{
             $dadosAluno  = array($idUsuario, $this->status, $this->telefone,
                                  $this->idIndicador, $this->escolaridade, $this->curso,
@@ -284,6 +287,7 @@ class Aluno extends Usuario{
                             idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso, tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
                              ?, ?, ?, ?, ?, ?, ?, ?)";
+
         }
         $query = $conexao->prepare($queryAluno);
         $sucessoAluno = $query->execute($dadosAluno);
@@ -353,6 +357,7 @@ class Aluno extends Usuario{
                     cep = :cep, rua = :rua, numero = :numero, complemento = :complemento ,
                     cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais ,
                     tipo_curso = :tipo_curso, tipo_cadastro = :tipo_cadastro, ativo = :ativo
+
                     WHERE numeroInscricao = :numInsc";
         $query = $conexao->prepare($comando);
 

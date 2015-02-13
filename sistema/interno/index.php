@@ -152,6 +152,7 @@
                     <a href="http://homeopatias.com/index.php?m=curso_homeopatia&n=login">Entrar no sistema antigo</a>
 										<br>
                     <a href="http://homeopatias.com/index.php?m=curso_homeopatia&n=login&ufv=true">Entrar no sistema antigo(UFV)</a>
+
                     <br>
                     <?php
                         $sql = "SELECT nome FROM Instituicao WHERE inicioInsc <= CURDATE() AND
