@@ -16,34 +16,56 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $id          = $_POST["idCidade"];
         $nome        = $_POST["nome"];
         $UF          = $_POST["UF"];
-        $ano         = $_POST["ano"];
-        $local       = $_POST["local"];
+        //$ano         = $_POST["ano"];
+        //$local       = $_POST["local"];
         $idCoord     = $_POST["coord"];
-        $inscricao   = $_POST["inscricao"];
-        $parcela     = $_POST["parcela"];
         $limite      = $_POST["limite"];
-        $nomeEmpresa = $_POST["nomeEmpresa"];
-        $cnpjEmpresa = $_POST["cnpjEmpresa"];
-        $custoCurso  = $_POST["custoCurso"];
+        //$nomeEmpresa = $_POST["nomeEmpresa"];
+        //$cnpjEmpresa = $_POST["cnpjEmpresa"];
+        //$custoCurso  = $_POST["custoCurso"];
+        $cadastroAtivo = isset($_POST["cadastroAtivo"]) ? 1 : 0;
+        $tipoCurso   = $_POST["tipo-curso"];
+        $InscExt     = $_POST["inscricao-ext"];
+        $ParceExt    = $_POST["parcela-ext"];
+        $InscPos     = $_POST["inscricao-pos"];
+        $ParcePos    = $_POST["parcela-pos"];
+
+
+
+        $tipoCursoValido = isset($_POST["tipo-curso"]) &&
+                                        $tipoCurso == "extensão" ||
+                                        $tipoCurso == "pós" ||
+                                        $tipoCurso == "ambos";
+
+        if($tipoCurso == "extensão"){
+            $InscPos     = 0;
+            $ParcePos    = 0;
+        }else if($tipoCurso == "pós"){
+            $InscExt     = 0;
+            $ParceExt    = 0;
+        }
 
         $idValido      = isset($id) && preg_match("/^[0-9]*$/", $id);
         $nomeValido    = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                          mb_strlen($nome, 'UTF-8') <= 100;
         $UfValido      = isset($UF) && mb_strlen($UF, 'UTF-8') === 2;
-        $anoValido     = isset($ano) && intval($ano) < date("Y") + 3;
-        $localValido   = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
-                         mb_strlen($local, 'UTF-8') <= 200;
+        /*$anoValido     = isset($ano) && intval($ano) < date("Y") + 3;*/
+        /*$localValido   = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
+                         mb_strlen($local, 'UTF-8') <= 200;*/
         $idCoordValido = isset($idCoord) && preg_match("/^[0-9]*$/", $idCoord);
-        $inscricaoValida = isset($inscricao) && preg_match("/^[0-9]*\.?[0-9]+$/", $inscricao);
-        $parcelaValida   = isset($parcela) && preg_match("/^[0-9]*\.?[0-9]+$/", $parcela);
         $limiteValido    = isset($limite) && preg_match("/^\d{4}-\d{2}-\d{2}$/", $limite);
-        $empresaValida   = isset($nomeEmpresa) && mb_strlen($nomeEmpresa, 'UTF-8') <= 100 &&
-                           mb_strlen($nomeEmpresa, 'UTF-8') >= 3;
-        $cnpjValido      = isset($cnpjEmpresa) &&
+        /*$empresaValida   = isset($nomeEmpresa) && mb_strlen($nomeEmpresa, 'UTF-8') <= 100 &&
+                           mb_strlen($nomeEmpresa, 'UTF-8') >= 3;*/
+        /*$cnpjValido      = isset($cnpjEmpresa) &&
                            preg_match("/^(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|\d{14})$/",
-                           $cnpjEmpresa);
-        $custoCursoValido   = isset($custoCurso) && preg_match("/^[0-9]*\.?[0-9]+$/",
-                                                                 $custoCurso);
+                           $cnpjEmpresa);*/
+        /*$custoCursoValido   = isset($custoCurso) && preg_match("/^[0-9]*\.?[0-9]+$/",
+                                                                 $custoCurso);*/
+
+        $inscricaoExtValida = isset($InscExt) && preg_match("/^[0-9]*\.?[0-9]+$/", $InscExt);
+        $parcelaExtValida   = isset($ParceExt) && preg_match("/^[0-9]*\.?[0-9]+$/", $ParceExt);
+        $inscricaoPosValida = isset($InscPos) && preg_match("/^[0-9]*\.?[0-9]+$/", $InscPos);
+        $parcelaPosValida   = isset($ParcePos) && preg_match("/^[0-9]*\.?[0-9]+$/", $ParcePos);
 
         // lemos as credenciais do banco de dados
         $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -83,9 +105,9 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         }
 
         // se todos os dados estão válidos, a cidade é editada
-        if($idValido && $nomeValido && $UfValido && $anoValido && $localValido && $idCoordValido &&
-           $inscricaoValida && $parcelaValida && $limiteValido && $empresaValida && $cnpjValido &&
-           $custoCursoValido){
+        if($idValido && $nomeValido && $UfValido  && $idCoordValido  && $limiteValido
+           && $tipoCursoValido && $inscricaoExtValida && $parcelaExtValida &&
+           $inscricaoPosValida && $parcelaPosValida){
 
             require_once("../../entidades/Cidade.php");
 
@@ -93,15 +115,19 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setIdCidade($id);
             $atualizar->setNome($nome);
             $atualizar->setUF($UF);
-            $atualizar->setAno($ano);
-            $atualizar->setLocal($local);
-            $atualizar->setInscricao($inscricao);
-            $atualizar->setParcela($parcela);
+            //$atualizar->setAno($ano);
+            //$atualizar->setLocal($local);
             $atualizar->setLimiteInscricao($limite);
-            $atualizar->setNomeEmpresa($nomeEmpresa);
-            $atualizar->setCnpjEmpresa($cnpjEmpresa);
-            $atualizar->setCustoCurso($custoCurso);
+            //$atualizar->setNomeEmpresa($nomeEmpresa);
+            //$atualizar->setCnpjEmpresa($cnpjEmpresa);
+            //$atualizar->setCustoCurso($custoCurso);
             $coordExiste = $atualizar->setCoordenadorId($idCoord);
+            $atualizar->setCadastroAtivo($cadastroAtivo);
+            $atualizar->setTipoCurso($tipoCurso);
+            $atualizar->setInscricaoExtensao($InscExt);
+            $atualizar->setInscricaoPos($InscPos);
+            $atualizar->setParcelaExtensao($ParceExt);
+            $atualizar->setParcelaPos($ParcePos);
 
             if($coordExiste){
                 $sucesso = $atualizar->atualizar($host, "homeopatias", $usuario, $senhaBD);

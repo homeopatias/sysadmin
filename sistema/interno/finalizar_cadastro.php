@@ -220,6 +220,7 @@
                                  $escolaridade === "doutorado");
                     $cursoValido = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
                                    ((!isset($curso) || $curso === "") && !$superior) ||
+
                                    (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
 
                     // verificamos se a cidade na qual o aluno quer se matricular
@@ -268,6 +269,7 @@
                             }else{
                                 $aluno->setCurso(null);
                             }
+
                         }
 
                         $sucesso = $aluno->atualizar($host, $db, $usuario, $senhaBD);
@@ -301,7 +303,8 @@
                             // agora tentamos criar os pagamentos
 
                             // pega os valores de inscrição e parcelas da cidade
-                            $textoQuery = "SELECT C.precoInscricao, C.precoParcela, C.ano
+                            $textoQuery = "SELECT C.nome, C.idCidade,C.ano, C.v_inscricao_extensao, C.v_parcela_extensao,
+                                                  C.v_inscricao_pos, C.v_parcela_pos
                                            FROM Cidade C, Matricula M
                                            WHERE C.idCidade = M.chaveCidade AND
                                            M.idMatricula = ?";
@@ -318,6 +321,14 @@
                             $sucessoPgto = false;
 
                             if($linha = $query->fetch()){
+
+                                if($aluno->getTipoCurso() == "extensao"){
+                                    $precoInscricao = $linha["v_inscricao_extensao"];
+                                    $precoParcela = $linha["v_parcela_extensao"];
+                                }else{
+                                    $precoInscricao = $linha["v_inscricao_pos"];
+                                    $precoParcela = $linha["v_parcela_pos"];
+                                }
                                 for($i = 0; $i < 12; $i++){
 
                                     if($i == 0){ // parcela numero 0 será considerada valor da
@@ -326,14 +337,14 @@
                                                         (`chaveMatricula`, `numParcela`, `ValorTotal`, `ValorPago`, 
                                                             `desconto`, `fechado`,`ano`) 
                                                         VALUES (?, '0', ?, '0', '0', '0', ?) ";
-                                        $insertArray  = array($idUltimaMatricula, $linha["precoInscricao"], $linha["ano"]);
+                                        $insertArray  = array($idUltimaMatricula, $precoInscricao, $linha["ano"]);
 
                                     } 
                                     else{
                                         $queryInsert    .= " , (?, ?, ?, '0', '0', '0', ?) ";
                                         $insertArray[]  = $idUltimaMatricula;
                                         $insertArray[]  = $i;
-                                        $insertArray[]  = $linha["precoParcela"];
+                                        $insertArray[]  = $precoParcela;
                                         $insertArray[]  = $linha["ano"];
                                     }
                                 }
@@ -358,7 +369,6 @@
                                 $conexao->rollBack();
                                 $mensagem = "Erro na criação dos pagamentos do ano";
                             } else {
-
                                 // tudo certo, inscrevemos o aluno no Moodle e confirmamos as mudanças
 
                                 $usuarioMoodle = $dados["usuario_moodle"];
@@ -388,6 +398,7 @@
                                         $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "4" : "1");
                                         $queryMoodle .= ",?,NOW(),NOW())";
 
+
                                         $query = $conMoodle->prepare($queryMoodle);
                                         $query->bindParam(1, $idUsuarioMoodle);
                                         $sucessoMoodle = $query->execute();
@@ -398,6 +409,7 @@
                                                             VALUES (5,";
                                             $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "26" : "18");
                                             $queryMoodle .= ",?,NOW())";
+
 
                                             $query = $conMoodle->prepare($queryMoodle);
                                             $query->bindParam(1, $idUsuarioMoodle);
@@ -448,10 +460,13 @@
                     } 
                 }
 
+                $aluno = unserialize($_SESSION['usuario']);
                 // listamos as cidades em que o aluno pode se matricular
                 // o aluno só pode entrar em cidades do ano atual
                 $textoQuery  = "SELECT idCidade, UF, nome FROM Cidade WHERE
-                CURDATE() < limiteInscricao AND ano = YEAR(CURDATE()) ORDER BY nome ASC";
+                CURDATE() < limiteInscricao AND ano = YEAR(CURDATE()) AND 
+                        tipo_curso = '" .$aluno->getTipoCurso(). "' OR tipo_curso = 'ambos'
+                        ORDER BY nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -632,6 +647,7 @@
                             
                         </div>
                         <?php if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") { ?>
+
                         <div class="form-group">
                             <label for="escolaridade-novo">Nível de escolaridade:</label>
                             <select name="escolaridade" id="escolaridade-novo" class="form-control">
