@@ -61,9 +61,11 @@
                     $(this).find('#nome').val(
                         $(e.relatedTarget).parent().siblings('.nome').text()
                     );
+										/*
                     $(this).find('#cpf').val(
                         $(e.relatedTarget).parent().siblings('.cpf').text()
                     );
+										*/
                     $(this).find('#email').val(
                         $(e.relatedTarget).parent().siblings('.email').text()
                     );
@@ -280,7 +282,8 @@
                 if(isset($_POST["submit"])){
                     // validamos todos os dados recebidos
                     $nome        = $_POST["nome"];
-                    $cpf         = $_POST["cpf"];
+                    //$cpf         = $_POST["cpf"];
+                    $cpf         = "999.999.999-99";
                     $email       = $_POST["email"];
                     $login       = $_POST["login"];
                     $senha       = $_POST["senha"];
@@ -316,6 +319,7 @@
                                 $cpfValido = false;
                             }
                         }
+												/*
 
                         $todosZero = true;
                         $todosNove = true;
@@ -331,9 +335,11 @@
                         if($todosZero || $todosNove){
                             $cpfValido = false;
                         }
+												*/
 
                     }
 
+										/*
                     $cpfExistente = false;
                     if($cpfValido){
                         //Checa se ja existe este cpf no sistema cadastrado como coordenador
@@ -355,6 +361,7 @@
                         }
                     }
 
+										*/
 
                     $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
                                     preg_match("/^.+\@.+\..+$/", $email);
@@ -411,12 +418,14 @@
                             $mensagem = "Já existe um usuário com esse nome 
                                          de usuário no sistema";
                         }
+										/*
                     }else if(!$nomeValido){
                         $mensagem = "Nome inválido!";
                     }else if(!$cpfValido && !$cpfExistente){
                         $mensagem = "CPF inválido!";
                     }else if($cpfExistente){
                         $mensagem = "CPF ja cadastrado!";
+										*/
                     }else if(!$emailValido && !$emailExistente){
                         $mensagem = "E-mail inválido!";
                     }else if($emailExistente){
@@ -570,8 +579,10 @@
                         $tabela .= htmlspecialchars($linha["nome"])             ."</td>";
                         $tabela .= "    <td class=\"login\">";
                         $tabela .= htmlspecialchars($linha["login"])            ."</td>";
+												/*
                         $tabela .= "    <td class=\"cpf\">";
                         $tabela .= $cpf                                     ."</td>";
+												*/
                         $tabela .= "    <td class=\"email\">";
                         $tabela .= htmlspecialchars($linha["email"])            ."</td>";
                         $tabela .= "    <td class=\"datainsc\">";
@@ -631,6 +642,7 @@
                                     value= <?= isset($_GET["filtro-nome"]) ? 
                                         htmlspecialchars($_GET["filtro-nome"]) : "" ?> >
                                     
+														<!--
                             <a id="label-cpf" href="#" class="btn" 
                                 style=  <?= (isset($_GET["filtro-cpf"]) && 
                                         mb_strlen(($_GET["filtro-cpf"])) > 0) ? 
@@ -648,6 +660,7 @@
 
                             
                             <br><br>
+														-->
                             <a href="#" id="limpar" class="btn btn-info" >
                                 Limpar
                                 <i href="#" class="fa fa-eraser"></i>
@@ -694,7 +707,9 @@
                                         <th width="160px"<?= $indexHeader == 1 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Nome de usuário</th>
+																				<!--
                                         <th width="100px">CPF</th>
+																				-->
                                         <th width="220px"<?= $indexHeader == 3 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>E-mail</th>
@@ -798,12 +813,16 @@
                                        pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
                                        placeholder="Nome" class="form-control">
                             </div>
+														
+														<!--
                             <div class="form-group">
                                 <label for="cpf-novo">CPF do coordenador:</label>
                                 <input type="text" name="cpf" id="cpf-novo" required
                                        pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
                                        placeholder="xxx.xxx.xxx-xx" class="form-control">
                             </div>
+														-->	
+
                             <div class="form-group">
                                 <label for="email-novo">E-mail do coordenador:</label>
                                 <input type="email" name="email" id="email-novo" required
@@ -862,12 +881,14 @@
                                        pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
                                        placeholder="Nome" class="form-control">
                             </div>
+														<!--
                             <div class="form-group">
                                 <label for="cpf">CPF do coordenador:</label>
                                 <input type="text" name="cpf" id="cpf" required
                                        pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
                                        placeholder="xxx.xxx.xxx-xx" class="form-control">
                             </div>
+														-->
                             <div class="form-group">
                                 <label for="email">E-mail do coordenador:</label>
                                 <input type="email" name="email" id="email" required
@@ -950,11 +971,13 @@
                                        pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
                                        placeholder="Nome" class="form-control" autocomplete="off"
                                        value= <?= $_GET["filtro-nome"] ?> >
+																<!--
                                 <label for="filtro-cpf">CPF do coordenador:</label>
                                 <input type="text" name="filtro-cpf" id="filtro-cpf"
                                        pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
                                        placeholder="xxx.xxx.xxx-xx" class="form-control"
                                        value= <?= $_GET["filtro-cpf"] ?> >
+																-->
 
                             <?php
 
@@ -965,10 +988,12 @@
                             <input type="text" name="filtro-nome" 
                                        pattern="^.{3,100}$" title="O nome deve ter de 3 a 100 caracteres"
                                        placeholder="Nome" class="form-control" autocomplete="off">
+														<!--
                             <label for="filtro-cpf">CPF do coordenador:</label>
                             <input type="text" name="filtro-cpf" id="filtro-cpf"
                                        pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
                                        placeholder="xxx.xxx.xxx-xx" class="form-control">
+													  -->
                             <?php } ?>
                         </div>
                         <div class="modal-footer">
