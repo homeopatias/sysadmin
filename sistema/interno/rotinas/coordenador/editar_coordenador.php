@@ -16,7 +16,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $id          = $_POST["id"];
         $idAdmin     = $_POST["idAdmin"];
         $nome        = $_POST["nome"];
-        $cpf         = $_POST["cpf"];
+        //$cpf         = $_POST["cpf"];
+        $cpf         = "999.999.999-99";
         $email       = $_POST["email"];
         $login       = $_POST["login"];
         $senha       = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
@@ -144,6 +145,7 @@ function ValidaCpf($cpf , $id){
         }
     }
 
+		/*
     //Checa se o CPF é diferente de 00000000000 e 99999999999
     $todosZero = true;
     $todosNove = true;
@@ -155,11 +157,13 @@ function ValidaCpf($cpf , $id){
             $todosNove = false;
         }
     }
+		
 
     if($todosZero || $todosNove){
         $return[0] = 0;
         $return[1] = "CPF inválido";
     }
+		
 
     //Checa se ja existe este cpf no sistema cadastrado como Coordenador
     $textoQuery = "SELECT U.cpf , U.id
@@ -179,6 +183,7 @@ function ValidaCpf($cpf , $id){
         }
         
     }
+		*/
   
    if( !(isset($cpf) && (preg_match("/^\d{3}\.?\d{3}\.?\d{3}\-?\d{2}$/", $cpf) || 
        preg_match("/^\d{11}$/", $cpf)) ) ){
