@@ -507,8 +507,18 @@
                         echo "</p>";
                 ?>
             </p>
-            <p>
-                <a href="rotinas/acessar_moodle.php">Acessar a área do aluno</a>
+            <p style="display: none"> <!-- FIXME: Deixar botão visível -->
+                <a style="  box-sizing: border-box;
+															padding: 10px;
+															border: 2px dashed green;
+															background-color: yellowgreen;
+															color: white;
+															font-weight: bold;
+															letter-spacing: 1px;
+															border-radius: 5px;
+															display: inline-block;
+															margin: 20px 0;"
+								 href="rotinas/acessar_moodle.php">Acessar a área do aluno (Moodle)</a>
             </p>
                 <?php
                         // agora vamos mostrar os dados de matrícula do aluno, para isso
