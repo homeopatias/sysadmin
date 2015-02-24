@@ -571,19 +571,23 @@
                         echo "Erro no sistema";
                     }
                 ?>
+            <?php
+                $cpfNum = str_split($usuarioLogado->getCPF());
+
+                if($cpfNum[0] != "") {
+            ?>
             <p>
                 <b>CPF:</b>
-                <?php
-                    $cpfNum = str_split($usuarioLogado->getCPF());
-
-                    $cpf  = implode("", array_slice($cpfNum, 0, 3)) . ".";
-                    $cpf .= implode("", array_slice($cpfNum, 3, 3)) . ".";
-                    $cpf .= implode("", array_slice($cpfNum, 6, 3)) . "-";
-                    $cpf .= implode("", array_slice($cpfNum, 9, 2));
-                    $cpf  = htmlspecialchars($cpf);
-                    echo $cpf;
-                ?>
+            <?php
+                $cpf  = implode("", array_slice($cpfNum, 0, 3)) . ".";
+                $cpf .= implode("", array_slice($cpfNum, 3, 3)) . ".";
+                $cpf .= implode("", array_slice($cpfNum, 6, 3)) . "-";
+                $cpf .= implode("", array_slice($cpfNum, 9, 2));
+                $cpf  = htmlspecialchars($cpf);
+                echo $cpf;
+            ?>
             </p>
+            <?php } ?>
             <p>
                 <b>Data de inscrição:</b>
                 <?= date("d/m/Y h:i:s" ,$usuarioLogado->getDataInscricao()) ?>
