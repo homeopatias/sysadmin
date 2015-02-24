@@ -271,7 +271,8 @@
                     $email           = $_POST["email"];
                     $login           = $_POST["login"];
                     $senha           = $_POST["senha"];
-                    $corrigeTrabalho = $_POST["corrigeTrabalho"] === "on";
+                    // Correção de trabalhos pelo sistema desativada
+                    $corrigeTrabalho = false; // $_POST["corrigeTrabalho"] === "on";
 
                     $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                     mb_strlen($nome, 'UTF-8') <= 100;
@@ -393,6 +394,8 @@
                         $novo->setCpf($cpf);
                         $novo->setEmail($email);
                         $novo->setNivelAdmin("professor");
+
+                        // Correção de trabalhos pelo sistema desativada ($corrigeTrabalho será sempre false)
                         $novo->setCorrigeTrabalho($corrigeTrabalho);
 
                         $sucesso = $novo->cadastrar($host, "homeopatias", $usuario, $senhaBD, $senha);
@@ -593,17 +596,31 @@
                         $tabela .= htmlspecialchars($linha["email"])            ."</td>";
                         $tabela .= "    <td class=\"nota\">";
                         $tabela .= $nota . "</td>";
+
+                        /* Correção de trabalhos pelo sistema desativada
+
                         $tabela .= "    <td class=\"corrigeTrabalho\">";
                         $tabela .= $linha["corrigeTrabalho"] ?
                                         "<i class=\"fa fa-check sucesso\"></i>" :
                                         "<i class=\"fa fa-times warning\"></i>";
                         $tabela .= "    </td>";
+
+                        */
+
                         $tabela .= "    <td><a data-id=\"";
                         $tabela .= $linha["id"];
                         $tabela .= "\" data-id-admin=\"";
-                        $tabela .= $linha["idAdmin"]."\" data-corrige=\"";
+                        $tabela .= $linha["idAdmin"]."\"";
+
+                        /* Correção de trabalhos pelo sistema desativada
+                            
+                        $tabela .= " data-corrige=\"";
                         $tabela .= $linha["corrigeTrabalho"];
-                        $tabela .= "\" href=\"#\" data-toggle=\"modal\"";
+                        $tabela .= "\"";
+
+                        */
+
+                        $tabela .= " href=\"#\" data-toggle=\"modal\"";
                         $tabela .= " data-target=\"#modal-edita-professor\">";
                         $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
                         $tabela .= "    <td><a data-href=\"rotinas/professor/remover_professor.php?id=";
@@ -726,7 +743,9 @@
                                         <th width="170px"<?= $indexHeader == 4 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Nota média</th>
+                                        <!-- Correção de trabalhos pelo sistema desativada
                                         <th width="70px">Avaliador?</th>
+                                        -->
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
                                     </tr>
@@ -851,11 +870,13 @@
                                        title="A senha deve ter de 6 a 72 caracteres"
                                        class="form-control">
                             </div>
+                            <!-- Correção de trabalhos pelo sistema desativada
                             <div class="form-group">
                                 <br>
                                 <input type="checkbox" name="corrigeTrabalho" id="corrigeTrabalho-novo">
                                 <label for="corrigeTrabalho-novo">Faz correção de trabalhos</label>
                             </div>
+                            -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -922,12 +943,13 @@
                                        title="A senha deve ter de 6 a 72 caracteres"
                                        class="form-control">
                             </div>
-                            <br><br>
+                            <!-- Correção de trabalhos pelo sistema desativada
                             <div class="form-group">
                                 <br>
                                 <input type="checkbox" name="corrigeTrabalho" id="corrigeTrabalho">
                                 <label for="corrigeTrabalho">Faz correção de trabalhos</label>
                             </div>
+                            -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
