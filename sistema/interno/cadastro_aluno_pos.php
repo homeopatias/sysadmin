@@ -53,8 +53,10 @@
                 $email          = $_POST["email"];
                 $login          = $_POST["login"];
                 $senha          = $_POST["senha"];
+                /* Até o momento, não será necessaria a documentação para pós-graduação
                 $escolaridade   = $_POST["escolaridade"];
                 $curso          = $_POST["curso"];
+                */
 
                 $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                   mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -86,18 +88,20 @@
                 $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                 mb_strlen($senha, 'UTF-8') <= 72;
 
+                /*
                 $escolaridadeValida = isset($escolaridade) &&
                            ($escolaridade === "superior completo"      ||
                             $escolaridade === "mestrado"               ||
                             $escolaridade === "doutorado");
 
                 $cursoValido = isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200;
+                */
 
                 $sucesso = true;
 
                 // se todos os dados estão válidos, o aluno é cadastrado
-                if($nomeValido && $emailValido && $loginValido && $senhaValida && $escolaridadeValida &&
-                   $cursoValido){
+                if($nomeValido && $emailValido && $loginValido && $senhaValida //&& $escolaridadeValida && $cursoValido
+                   ){
 
                     // nesse caso, para efetivar o cadastro conforme necessitamos
                     // fazemos a query diretamente
@@ -143,10 +147,13 @@
                     // descobrimos o id do usuário que acabamos de inserir
                     $idUsuario = $conexao->lastInsertId();
 
-                    $dadosAluno  = array($idUsuario, $escolaridade,  $curso);
-                    $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro,
-                                                       escolaridade, curso, ativo) VALUES
-                                    (?, 'preinscrito', 'BRL', 'pos', 'faculdade inspirar', ?, ?, 0)";
+                    $dadosAluno  = array($idUsuario);// dados de curso , $escolaridade,  $curso);
+                    $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro,"
+                                    //.                   " escolaridade, curso,"
+                                    .                   " ativo) VALUES
+                                    (?, 'preinscrito', 'BRL', 'pos', 'faculdade inspirar',"
+                                    //." ?, ?,"
+                                    ." 1)";
 
 
                     $query = $conexao->prepare($queryAluno);
@@ -156,6 +163,7 @@
                         // deu tudo certo, inserimos o aluno
                         $conexao->commit();
 
+                        /* Até o momento, não será necessaria a documentação
 												$assunto = "Homeopatias.com - Enviar Documentos";
 												$msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b><br><br>";
 												$msg .= "<h3>Você está pré-inscrito no Curso de Pós-Graduação, para a inscrição se concretizar, você deve enviar-nos:</h3><br>";
@@ -173,6 +181,7 @@
 														"X-Mailer: PHP/" . phpversion();
 
 												mail($email, $assunto, $msg, $headers);
+                        */
                     } else {
                         // algo deu errado, desfazemos as mudanças
                         $conexao->rollBack();
@@ -234,11 +243,11 @@
                     $mensagem = "Nome de usuário inválido!";
                 }else if(!$senhaValida){
                     $mensagem = "Senha inválida!";
-                }else if(!$escolaridadeValida){
+                }/* else if(!$escolaridadeValida){
                     $mensagem = "Escolaridade inválida!";
                 }else if(!$cursoValido){
                     $mensagem = "Curso inválido!";
-                }
+                } */
 
             }
 
@@ -266,6 +275,7 @@
                                title="Insira um e-mail válido"
                                class="form-control">
                     </div>
+                    <!-- Até o momento, não será necessaria a documentação para pós-graduação
                     <div class="form-group">
                         <label for="escolaridade-novo">Nível de escolaridade:</label>
                         <select name="escolaridade" id="escolaridade-novo" class="form-control">
@@ -287,6 +297,7 @@
                                title="O curso deve estar preenchido e ter no máximo 200 caracteres"
                                class="form-control">
                     </div>
+                    -->
                     <div class="form-group">
                         <label for="login-novo">Nome de usuário <span style="font-weight: bold; color: red;" >(APENAS LETRAS E NÚMEROS SEM ESPAÇOS VAZIOS)</span>:</label>
                         <input type="text" name="login" id="login-novo" required
@@ -325,9 +336,11 @@
                         <input type="checkbox" id="li-termos">
                         <label for="li-termos">Confirmo</label>
                     </div>
+                    <!-- Até o momento não será necessária a documentação para fazer a Pós
                     <h3>Seu acesso ao sistema só será permitido após o envio da documentação para a Homeobrás
                         para avaliação e aprovação!
                     </h3>
+                    -->
                     <br><br>
                     <button type="submit" name="submit" value="submit" id="cadastro"
                             class="btn btn-primary pull-right" disabled>

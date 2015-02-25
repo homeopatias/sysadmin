@@ -39,6 +39,7 @@ function processaLogin($login, $senha){
         
         // caso o login tenha sido bem sucedido, checamos se esse aluno está ativo
         if($sucesso){
+            /* Até o momento, não será necessaria a documentação para pós-graduação
             if(!$aluno->getAtivo()) {
                 // caso não esteja ativo, avisamos ao aluno que deve enviar sua documentação
                 session_destroy();
@@ -65,13 +66,14 @@ function processaLogin($login, $senha){
 
                 die();
             }
+            */
 
-						// FIXME: Bloqueio criado até resolvermos a questão das cidades
-						session_destroy();
-						header('Location: index.php?mensagem='.
-									'Ainda estamos preparando a área administrativa para você. Em breve lhe avisaremos por e-mail. Desculpe-nos pelo inconveniente.', true, "302");
-						die();
-            return;
+			//			// FIXME: Bloqueio criado até resolvermos a questão das cidades
+			//			session_destroy();
+			//			header('Location: index.php?mensagem='.
+			//						'Ainda estamos preparando a área administrativa para você. Em breve lhe avisaremos por e-mail. Desculpe-nos pelo inconveniente.', true, "302");
+			//			die();
+            //return;
         }
 
         // login de associado
