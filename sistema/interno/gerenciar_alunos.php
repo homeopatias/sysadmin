@@ -868,7 +868,7 @@
                     $filtroCidade    = $_GET["filtro-cidade"] ;
                 }
                 if( isset($_GET["filtro-ano"]) ){
-                    $filtroAnoCidade = htmlspecialchars( $_GET["anoCidade"] );
+                    $filtroAnoCidade = htmlspecialchars( $_GET["filtro-ano"] );
                 }
 
                 $textoQuery  =  "SELECT U.id, U.cpf, U.dataInscricao, U.email,
@@ -877,17 +877,10 @@
                                 A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
                                 MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula, A.ativo
 
-                                FROM Usuario U, Aluno A";
-
-                $textoQuery .=  (mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
-                                 && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
-                                 && $filtroAnoCidade != "0")
-                                            ? ", Cidade C, Matricula M "
-                                            : "";
-
-                $textoQuery .=  " LEFT JOIN Matricula M ON M.chaveAluno = A.numeroInscricao
-                                  LEFT JOIN Cidade C ON M.chaveCidade = C.idCidade
-                                  WHERE A.idUsuario = U.id ";
+                                FROM Usuario U, Aluno A
+                                LEFT JOIN Matricula M ON M.chaveAluno = A.numeroInscricao
+                                LEFT JOIN Cidade C ON M.chaveCidade = C.idCidade
+                                WHERE A.idUsuario = U.id ";
 
                 $textoQuery .= ( mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
                                  && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
