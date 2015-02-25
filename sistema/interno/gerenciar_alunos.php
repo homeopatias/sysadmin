@@ -871,6 +871,7 @@
                     $filtroAnoCidade = htmlspecialchars( $_GET["filtro-ano"] );
                 }
 
+
                 $textoQuery  =  "SELECT U.id, U.cpf, U.dataInscricao, U.email,
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
@@ -1242,6 +1243,68 @@
 
                 }
 
+                // agora contamos quantos alunos essa pesquisa conseguiria, sem o LIMIT
+                $textoQueryCount = explode("LIMIT", $textoQuery);
+                $query = $conexao->prepare($textoQueryCount[0]);
+
+                // repetimos a passagem de parâmetros
+                if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])      ||
+                   isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
+                   isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
+                   isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
+                   isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])   ){
+                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                        $query->bindParam(":nome", $filtroNome);
+                    }
+                    if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
+                        // remove os '.' e '-' para comparar com o cpf do bd
+                        $filtroCpf = str_replace(".","",$filtroCpf);
+                        $filtroCpf = str_replace("-","",$filtroCpf);
+
+                        $query->bindParam(":cpf", $filtroCpf);
+                    }
+                    if(isset($filtroStatus) && mb_strlen($filtroStatus) > 0){
+                        $query->bindParam(":status", $filtroStatus);
+                    }
+                    if(isset($filtroNumero) && mb_strlen($filtroNumero) > 0) {
+                        if(!is_nan($filtroNumero)){
+                            $query->bindParam(":numInsc", $filtroNumero);
+                        }
+                    }
+                    if(isset($filtroDataMin) && mb_strlen($filtroDataMin) > 0){
+                        $query->bindParam(":dataMin" , $filtroDataMin);
+                    }
+                    if(isset($filtroDataMax) && mb_strlen($filtroDataMax) > 0){
+                        $query->bindParam(":dataMax" , $filtroDataMax);
+                    }
+                    if(isset($filtroAnoCidade) && mb_strlen($filtroAnoCidade) > 0 ){
+                        $query->bindParam(":anoCidade" , $filtroAnoCidade);
+
+                    }
+                    if(isset($filtroCidade) && mb_strlen($filtroCidade) > 0 ){
+                        $vetorCidade = explode("/", $filtroCidade);
+                        $nomeCidade = trim($vetorCidade[0]);
+                        $ufCidade   = trim($vetorCidade[1]);
+                        $query->bindParam(":filtrocidade", $nomeCidade);
+                        $query->bindParam(":filtrouf"    , $ufCidade);
+                    }
+                    if(isset($filtroEtapa) && mb_strlen($filtroEtapa) > 0  &&
+                        $filtroEtapa != "0"){
+                        $query->bindParam(":filtroetapa",$filtroEtapa);
+                    }
+                    if(isset($filtroAtivo) && mb_strlen($filtroAtivo) > 0  &&
+                         $filtroAtivo != "0"){
+                        $valorAtivo = "0";
+                        if($filtroAtivo == "2") {
+                            $valorAtivo = "1";
+                        }
+                        $query->bindParam(":filtroativo", $valorAtivo);
+                    }
+                }
+                
+                $query->execute();
+                $numAlunos = $query->rowCount();
+
         ?>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
@@ -1562,6 +1625,9 @@
                             </table>
                         </div>
                     </div>
+                    <br>
+                    <b><?= $numAlunos ?> aluno<?= $numAlunos != '1' ? 's' : ''?> 
+                       encontrado<?= $numAlunos != '1' ? 's' : ''?> para os critérios passados</b>
                     <script type="text/javascript">
                         //pequeno script somente para passar se existe proxima pagina e página
                         //anterior
