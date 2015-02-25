@@ -1407,6 +1407,15 @@
                                 <select name="tipo-curso" id="tipo-curso" class="form-control">
                                     <option value="extensão">Extensão</option>
                                     <option value="pós">Pós-Graduação</option>
+                                    <option value="instituto">Instituto Hahnemman</option>
+                                    <option value="todos">Todos</option>
+                                </select>
+                            </div>
+                            <div class="florm-group">
+                                <label for="modalidade-curso">Modalidade do Curso:</label>
+                                <select name="modalidade-curso" id="modalidade-curso" class="form-control">
+                                    <option value="regular">Regular</option>
+                                    <option value="intensivo">Intensivo</option>
                                     <option value="ambos">Ambos</option>
                                 </select>
                             </div>
@@ -1416,36 +1425,106 @@
                                        placeholder="dd/mm/aaaa" required class="form-control">
                             </div>
                             <span id="preco-extensao" name="preco-extensao">
-                                <div class="form-group">
-                                    <label for="inscricao-nova">Preço de inscrição da extensão:</label>
-                                    <input type="text" name="inscricao-ext" id="inscricao-nova-ext" required
-                                           pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
-                                           title="O valor de inscrição deve ser um número real"
-                                           class="form-control" value="0">
-                                </div>
-                                <div class="form-group">
-                                    <label for="parcela-nova">Valor da parcela da extensão:</label>
-                                    <input type="text" name="parcela-ext" id="parcela-nova-ext" required
-                                           pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
-                                           title="A parcela deve ser um número real"
-                                           class="form-control" value="0">
-                                </div>
+                                <span id="cursoRegular" name="cursoRegular">
+                                    <div class="form-group">
+                                        <label for="inscricao-nova">Preço de inscrição da extensão regular:</label>
+                                        <input type="text" name="inscricao-ext" id="inscricao-nova-ext" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                               title="O valor de inscrição deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parcela-nova">Valor da parcela da extensão regular:</label>
+                                        <input type="text" name="parcela-ext" id="parcela-nova-ext" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                               title="A parcela deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                </span>
+                                <span id="cursoIntensivo" name="cursoIntensivo">
+                                    <div class="form-group">
+                                        <label for="inscricao-nova">Preço de inscrição da extensão intensiva:</label>
+                                        <input type="text" name="inscricao-ext" id="inscricao-nova-ext" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                               title="O valor de inscrição deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parcela-nova">Valor da parcela da extensão intensiva:</label>
+                                        <input type="text" name="parcela-ext" id="parcela-nova-ext" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                               title="A parcela deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                </span>
                             </span>
                             <span id="preco-pos" name="preco-pos">
-                                <div class="form-group">
-                                    <label for="inscricao-nova">Preço de inscrição da pós-graduação:</label>
-                                    <input type="text" name="inscricao-pos" id="inscricao-nova-pos" required
-                                           pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
-                                           title="O valor de inscrição deve ser um número real"
-                                           class="form-control" value="0">
-                                </div>
-                                <div class="form-group">
-                                    <label for="parcela-nova">Valor da parcela da pós-graduação:</label>
-                                    <input type="text" name="parcela-pos" id="parcela-nova-pos" required
-                                           pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
-                                           title="A parcela deve ser um número real"
-                                           class="form-control" value="0">
-                                </div>
+                                <span id="cursoRegular" name="cursoRegular">
+                                    <div class="form-group">
+                                        <label for="inscricao-nova">Preço de inscrição da extensão regular:</label>
+                                        <input type="text" name="inscricao-pos" id="inscricao-nova-pos" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                               title="O valor de inscrição deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parcela-nova">Valor da parcela da extensão regular:</label>
+                                        <input type="text" name="parcela-pos" id="parcela-nova-pos" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                               title="A parcela deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                </span>
+                                <span id="cursoIntensivo" name="cursoIntensivo">
+                                    <div class="form-group">
+                                        <label for="inscricao-nova">Preço de inscrição da extensão intensiva:</label>
+                                        <input type="text" name="inscricao-pos" id="inscricao-nova-pos" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                               title="O valor de inscrição deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parcela-nova">Valor da parcela da extensão intensiva:</label>
+                                        <input type="text" name="parcela-pos" id="parcela-nova-pos" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                               title="A parcela deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                </span>
+                            </span>
+                            <span id="preco-instituto" name="preco-instituto">
+                                <span id="cursoRegular" name="cursoRegular">
+                                    <div class="form-group">
+                                        <label for="inscricao-nova">Preço de inscrição da extensão regular:</label>
+                                        <input type="text" name="inscricao-instituto" id="inscricao-nova-instituto" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                               title="O valor de inscrição deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parcela-nova">Valor da parcela da extensão regular:</label>
+                                        <input type="text" name="parcela-instituto" id="parcela-nova-instituto" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                               title="A parcela deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                </span>
+                                <span id="cursoIntensivo" name="cursoIntensivo">
+                                    <div class="form-group">
+                                        <label for="inscricao-nova">Preço de inscrição da extensão intensiva:</label>
+                                        <input type="text" name="inscricao-instituto" id="inscricao-nova-instituto" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
+                                               title="O valor de inscrição deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="parcela-nova">Valor da parcela da extensão intensiva:</label>
+                                        <input type="text" name="parcela-instituto" id="parcela-nova-instituto" required
+                                               pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
+                                               title="A parcela deve ser um número real"
+                                               class="form-control" value="0">
+                                    </div>
+                                </span>
                             </span>
                             <!-- Disabled pois não é necessário no momento
                             <div class="form-group">
