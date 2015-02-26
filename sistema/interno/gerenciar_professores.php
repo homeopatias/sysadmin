@@ -443,7 +443,7 @@
                                 U.nome, U.login, Ad.idAdmin, Ad.corrigeTrabalho, AVG(A.nota) as nota
                                 FROM Usuario U, Administrador Ad LEFT JOIN Aula A ON A.idProfessor = Ad.idAdmin
                                 WHERE Ad.idUsuario = U.id AND Ad.nivel = \"professor\" GROUP BY
-                                A.idProfessor";
+                                Ad.idAdmin";
 
                 // Se algum filtro foi repassado, altera o query para filtrar
                 $filtroCpf = $filtroNome = false;
