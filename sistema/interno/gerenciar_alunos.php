@@ -181,6 +181,7 @@
                 $("#filtro-ano").hide();
                 $("#filtro-etapa").hide();
                 $("#filtro-ativo").hide();
+                $("#filtro-curso").hide();
 
 
                 // alterna campos de texto com campos de input
@@ -255,6 +256,12 @@
                     $(this).hide();
                     $("#filtro-ativo").show(300);
                     $("#filtro-ativo").focus();
+                });
+
+                $("#label-curso").click(function(){
+                    $(this).hide();
+                    $("#filtro-curso").show(300);
+                    $("#filtro-curso").focus();
                 });
 
                 // se clicou na lupa, envia o formulário
@@ -342,6 +349,7 @@
                     $("#filtro-ano").val("");
                     $("#filtro-etapa").val("");
                     $("#filtro-ativo").val("0");
+                    $("#filtro-curso").val("0");
                     atualizaPagina();
                 });
 
@@ -909,7 +917,8 @@
                    isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
                    isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
-                   isset($_GET["filtro-etapa"])     || isset($_GET["filtro-ativo"])      ){
+                   isset($_GET["filtro-etapa"])     || isset($_GET["filtro-ativo"])   ||
+                   isset($_GET["filtro-curso"])   ){
                     $filtroNome    = htmlspecialchars($_GET["filtro-nome"]);
                     $filtroCpf     = htmlspecialchars($_GET["filtro-cpf"]);
                     $filtroStatus  = htmlspecialchars($_GET["filtro-status"]);
@@ -918,6 +927,7 @@
                     $filtroDataMax = htmlspecialchars($_GET["filtro-data-max"]);
                     $filtroEtapa   = htmlspecialchars($_GET["filtro-etapa"]);
                     $filtroAtivo   = htmlspecialchars($_GET["filtro-ativo"]);
+                    $filtroCurso   = htmlspecialchars($_GET["filtro-curso"]);
 
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         // prepara o nome para ser colocado na query
@@ -950,6 +960,10 @@
                     if(isset($filtroAtivo) && mb_strlen($filtroAtivo) > 0 && 
                         !is_nan($filtroAtivo) && $filtroAtivo != "0"){
                         $textoQuery .= " AND A.ativo = :filtroativo ";
+                    }
+                    if(isset($filtroCurso) && mb_strlen($filtroCurso) > 0 && 
+                        !is_nan($filtroCurso) && $filtroCurso != "0"){
+                        $textoQuery .= " AND A.tipo_curso = :filtrocurso ";
                     }
 
 
@@ -1039,7 +1053,8 @@
                    isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
                    isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
-                   isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])   ){
+                   isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])    ||
+                   isset($_GET["filtro-curso"])){
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         $query->bindParam(":nome", $filtroNome);
                     }
@@ -1086,6 +1101,18 @@
                             $valorAtivo = "1";
                         }
                         $query->bindParam(":filtroativo", $valorAtivo);
+                    }
+                    if(isset($filtroCurso) && mb_strlen($filtroCurso) > 0  &&
+                         $filtroCurso != "0"){
+                        $nomeCurso = "";
+                        if($filtroCurso == "1") {
+                            $nomeCurso = "extensao";
+                        } else if($filtroCurso == "2") {
+                            $nomeCurso = "pos";
+                        } else if($filtroCurso == "3") {
+                            $nomeCurso = "instituto";
+                        } 
+                        $query->bindParam(":filtrocurso", $nomeCurso);
                     }
                 }
 
@@ -1373,184 +1400,217 @@
 
                             <select name="filtro-status" id="filtro-status" class="form-control"
                                     style="display:inline;width:120px">
-                                    <option value="" 
-                                        <?=isset($_GET["filtro-status"]) &&
-                                            htmlspecialchars($_GET["filtro-status"]) == "" ?
-                                            'selected="selected"': '' ;?> >Nenhum
-                                    </option>
-                                    <option value="preinscrito"
-                                        <?=isset($_GET["filtro-status"]) &&
-                                            htmlspecialchars($_GET["filtro-status"]) == "preinscrito"?
-                                        'selected="selected"':'';?> >
-                                    Pré-inscrito</option>
-                                    <option value="inscrito"
-                                        <?=isset($_GET["filtro-status"]) &&
-                                            htmlspecialchars($_GET["filtro-status"]) == "inscrito"?
-                                        'selected="selected"':'';?> >
-                                    Inscrito</option>
-                                    <option value="desistente"
-                                       <?=isset($_GET["filtro-status"]) &&
-                                            htmlspecialchars($_GET["filtro-status"]) == "desistente"?
-                                       'selected="selected"':'';?> >
-                                    Desistente</option>
-                                    <option value="formado"
-                                        <?=isset($_GET["filtro-status"]) &&
-                                            htmlspecialchars($_GET["filtro-status"]) == "formado"?
-                                       'selected="selected"':'';?> >
-                                    Formado</option>
-                                    <option value="inativo"
-                                        <?=isset($_GET["filtro-status"]) &&
-                                            htmlspecialchars($_GET["filtro-status"]) == "inativo"?
-                                       'selected="selected"':'';?> >
-                                    Inativo</option>
-                                </select>
+                                <option value="" 
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "" ?
+                                        'selected="selected"': '' ;?> >Nenhum
+                                </option>
+                                <option value="preinscrito"
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "preinscrito"?
+                                    'selected="selected"':'';?> >
+                                Pré-inscrito</option>
+                                <option value="inscrito"
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "inscrito"?
+                                    'selected="selected"':'';?> >
+                                Inscrito</option>
+                                <option value="desistente"
+                                   <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "desistente"?
+                                   'selected="selected"':'';?> >
+                                Desistente</option>
+                                <option value="formado"
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "formado"?
+                                   'selected="selected"':'';?> >
+                                Formado</option>
+                                <option value="inativo"
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "inativo"?
+                                   'selected="selected"':'';?> >
+                                Inativo</option>
+                            </select>
 
-                                <a id="label-numero" href="#" class="btn" 
-                                    style=  <?= (isset($_GET["filtro-numero"]) && 
-                                            mb_strlen(($_GET["filtro-numero"])) > 0) ? 
-                                                "display:inline;color:#336600" : "display:inline";
-                                            ?> 
-                                    >Inscrição
-                                </a>
+                            <a id="label-numero" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-numero"]) && 
+                                        mb_strlen(($_GET["filtro-numero"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Inscrição
+                            </a>
 
-                                <input type="text" name="filtro-numero"
-                                           id="filtro-numero"
-                                           placeholder="Nº insc" class="form-control"
-                                           style="display:inline;width:75px"
-                                           value= <?= isset($_GET["filtro-numero"]) ? 
-                                            htmlspecialchars($_GET["filtro-numero"]) : "" ?> >
+                            <input type="text" name="filtro-numero"
+                                       id="filtro-numero"
+                                       placeholder="Nº insc" class="form-control"
+                                       style="display:inline;width:75px"
+                                       value= <?= isset($_GET["filtro-numero"]) ? 
+                                        htmlspecialchars($_GET["filtro-numero"]) : "" ?> >
 
-                                <a id="label-data-min" href="#" class="btn" 
-                                    style=  <?= (isset($_GET["filtro-data-min"]) && 
-                                            mb_strlen(($_GET["filtro-data-min"])) > 0) ? 
-                                                "display:inline;color:#336600" : "display:inline";
-                                            ?>
-                                    >Inscritos desde
-                                </a>
-                                <div id="div-data-min" style="display: inline">
-                                    <input type="date" name="filtro-data-min" id="filtro-data-min"
-                                           placeholder="dd/mm/aaaa" class="form-control"
-                                           style="display:inline;width:150px"
-                                           value =<?= isset($_GET["filtro-data-min"]) ?
-                                                    htmlspecialchars($_GET["filtro-data-min"]) : "" ?> >
-                                </div>
-                                <a id="label-data-max" href="#" class="btn" 
-                                    style=  <?= (isset($_GET["filtro-data-max"]) && 
-                                            mb_strlen(($_GET["filtro-data-max"])) > 0) ? 
-                                                "display:inline;color:#336600" : "display:inline";
-                                            ?>
-                                    >Inscritos até
-                                </a>
-                                <div id="div-data-max" style="display: inline">
-                                <input type="date" name="filtro-data-max" id="filtro-data-max"
-                                           placeholder="dd/mm/aaaa" class="form-control"
-                                           style="display:inline;width:150px"
-                                           value =<?= isset($_GET["filtro-data-max"]) ?
-                                                    htmlspecialchars($_GET["filtro-data-max"]) : "" ?> >
-                                </div>
-                                <a id="label-cidade" href="#" class="btn" 
-                                    style=  <?= (isset($_GET["filtro-cidade"]) && 
-                                            mb_strlen(($_GET["filtro-cidade"])) > 0 &&
-                                            htmlspecialchars($_GET["filtro-cidade"]) != "0") ? 
-                                                "display:inline;color:#336600" : "display:inline";
-                                            ?> 
-                                    >Cidade
-                                </a>
-                                <select name="filtro-cidade" id="filtro-cidade" 
-                                            class="form-control"
-                                            style="display:inline;width:120px">
-                                </select>
-                                <a id="label-ano" href="#" class="btn" 
-                                    style=  <?= (isset($_GET["filtro-ano"]) && 
-                                            mb_strlen(($_GET["filtro-ano"])) > 0 &&
-                                            htmlspecialchars($_GET["filtro-ano"]) != "0") ? 
-                                                "display:inline;color:#336600" : "display:inline";
-                                            ?> 
-                                    >Ano
-                                </a>
-                                <select name="filtro-ano" id="filtro-ano" 
-                                            class="form-control"
-                                            style="display:inline;width:95px">
-                                </select>
-                                <a id="label-etapa" href="#" class="btn" 
-                                    style=  <?= (isset($_GET["filtro-etapa"]) && 
-                                            mb_strlen(($_GET["filtro-etapa"])) > 0 &&
-                                            htmlspecialchars($_GET["filtro-etapa"]) != "0") ? 
-                                                "display:inline;color:#336600" : "display:inline";
-                                            ?> 
-                                    >Etapa
-                                </a>
-
-                                <select name="filtro-etapa" id="filtro-etapa" class="form-control"
+                            <a id="label-data-min" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-data-min"]) && 
+                                        mb_strlen(($_GET["filtro-data-min"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >Inscritos desde
+                            </a>
+                            <div id="div-data-min" style="display: inline">
+                                <input type="date" name="filtro-data-min" id="filtro-data-min"
+                                       placeholder="dd/mm/aaaa" class="form-control"
+                                       style="display:inline;width:150px"
+                                       value =<?= isset($_GET["filtro-data-min"]) ?
+                                                htmlspecialchars($_GET["filtro-data-min"]) : "" ?> >
+                            </div>
+                            <a id="label-data-max" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-data-max"]) && 
+                                        mb_strlen(($_GET["filtro-data-max"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >Inscritos até
+                            </a>
+                            <div id="div-data-max" style="display: inline">
+                            <input type="date" name="filtro-data-max" id="filtro-data-max"
+                                       placeholder="dd/mm/aaaa" class="form-control"
+                                       style="display:inline;width:150px"
+                                       value =<?= isset($_GET["filtro-data-max"]) ?
+                                                htmlspecialchars($_GET["filtro-data-max"]) : "" ?> >
+                            </div>
+                            <a id="label-cidade" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-cidade"]) && 
+                                        mb_strlen(($_GET["filtro-cidade"])) > 0 &&
+                                        htmlspecialchars($_GET["filtro-cidade"]) != "0") ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Cidade
+                            </a>
+                            <select name="filtro-cidade" id="filtro-cidade" 
+                                        class="form-control"
                                         style="display:inline;width:120px">
-                                    <option value="0" 
-                                        <?=isset($_GET["filtro-etapa"]) &&
-                                            htmlspecialchars($_GET["filtro-etapa"]) == "0" ?
-                                            'selected="selected"': '' ;?> >Todas
-                                    </option>
-                                    <option value="1" 
-                                        <?=isset($_GET["filtro-etapa"]) &&
-                                            htmlspecialchars($_GET["filtro-etapa"]) == "1" ?
-                                            'selected="selected"': '' ;?> >1
-                                    </option>
-                                    <option value="2"
-                                        <?=isset($_GET["filtro-etapa"]) &&
-                                            htmlspecialchars($_GET["filtro-etapa"]) == "2"?
-                                            'selected="selected"':'';?> >  2
-                                    </option>
-                                    <option value="3"
-                                        <?=isset($_GET["filtro-etapa"]) &&
-                                            htmlspecialchars($_GET["filtro-etapa"]) == "3"?
-                                        'selected="selected"':'';?> >      3
-                                    </option>
-                                    <option value="4"
-                                       <?=isset($_GET["filtro-etapa"]) &&
-                                            htmlspecialchars($_GET["filtro-etapa"]) == "4"?
-                                       'selected="selected"':'';?> >       4
-                                    </option>
-                                </select>
+                            </select>
+                            <a id="label-ano" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-ano"]) && 
+                                        mb_strlen(($_GET["filtro-ano"])) > 0 &&
+                                        htmlspecialchars($_GET["filtro-ano"]) != "0") ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Ano
+                            </a>
+                            <select name="filtro-ano" id="filtro-ano" 
+                                        class="form-control"
+                                        style="display:inline;width:95px">
+                            </select>
+                            <a id="label-etapa" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-etapa"]) && 
+                                        mb_strlen(($_GET["filtro-etapa"])) > 0 &&
+                                        htmlspecialchars($_GET["filtro-etapa"]) != "0") ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Etapa
+                            </a>
+
+                            <select name="filtro-etapa" id="filtro-etapa" class="form-control"
+                                    style="display:inline;width:120px">
+                                <option value="0" 
+                                    <?=isset($_GET["filtro-etapa"]) &&
+                                        htmlspecialchars($_GET["filtro-etapa"]) == "0" ?
+                                        'selected="selected"': '' ;?> >Todas
+                                </option>
+                                <option value="1" 
+                                    <?=isset($_GET["filtro-etapa"]) &&
+                                        htmlspecialchars($_GET["filtro-etapa"]) == "1" ?
+                                        'selected="selected"': '' ;?> >1
+                                </option>
+                                <option value="2"
+                                    <?=isset($_GET["filtro-etapa"]) &&
+                                        htmlspecialchars($_GET["filtro-etapa"]) == "2"?
+                                        'selected="selected"':'';?> >  2
+                                </option>
+                                <option value="3"
+                                    <?=isset($_GET["filtro-etapa"]) &&
+                                        htmlspecialchars($_GET["filtro-etapa"]) == "3"?
+                                    'selected="selected"':'';?> >      3
+                                </option>
+                                <option value="4"
+                                   <?=isset($_GET["filtro-etapa"]) &&
+                                        htmlspecialchars($_GET["filtro-etapa"]) == "4"?
+                                   'selected="selected"':'';?> >       4
+                                </option>
+                            </select>
 
 
-                                <a id="label-ativo" href="#" class="btn" 
-                                    style=  <?= (isset($_GET["filtro-ativo"]) && 
-                                            mb_strlen(($_GET["filtro-ativo"])) > 0 &&
-                                            htmlspecialchars($_GET["filtro-ativo"]) != "0") ? 
-                                                "display:inline;color:#336600" : "display:inline";
-                                            ?> 
-                                    >Atividade
-                                </a>
+                            <a id="label-ativo" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-ativo"]) && 
+                                        mb_strlen(($_GET["filtro-ativo"])) > 0 &&
+                                        htmlspecialchars($_GET["filtro-ativo"]) != "0") ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Atividade
+                            </a>
 
-                                <select name="filtro-ativo" id="filtro-ativo" class="form-control"
-                                        style="display:inline;width:120px">
-                                    <option value="0" 
-                                        <?=isset($_GET["filtro-ativo"]) &&
-                                            htmlspecialchars($_GET["filtro-ativo"]) == "0" ?
-                                            'selected="selected"': '' ;?> >Ambos
-                                    </option>
-                                    <option value="1" 
-                                        <?=isset($_GET["filtro-ativo"]) &&
-                                            htmlspecialchars($_GET["filtro-ativo"]) == "1" ?
-                                            'selected="selected"': '' ;?> >Inativo
-                                    </option>
-                                    <option value="2"
-                                        <?=isset($_GET["filtro-ativo"]) &&
-                                            htmlspecialchars($_GET["filtro-ativo"]) == "2"?
-                                            'selected="selected"':'';?> >Ativo
-                                    </option>
-                                </select>
+                            <select name="filtro-ativo" id="filtro-ativo" class="form-control"
+                                    style="display:inline;width:120px">
+                                <option value="0" 
+                                    <?=isset($_GET["filtro-ativo"]) &&
+                                        htmlspecialchars($_GET["filtro-ativo"]) == "0" ?
+                                        'selected="selected"': '' ;?> >Ambos
+                                </option>
+                                <option value="1" 
+                                    <?=isset($_GET["filtro-ativo"]) &&
+                                        htmlspecialchars($_GET["filtro-ativo"]) == "1" ?
+                                        'selected="selected"': '' ;?> >Inativo
+                                </option>
+                                <option value="2"
+                                    <?=isset($_GET["filtro-ativo"]) &&
+                                        htmlspecialchars($_GET["filtro-ativo"]) == "2"?
+                                        'selected="selected"':'';?> >Ativo
+                                </option>
+                            </select>
 
+
+                            <a id="label-curso" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-curso"]) && 
+                                        mb_strlen(($_GET["filtro-curso"])) > 0 &&
+                                        htmlspecialchars($_GET["filtro-curso"]) != "0") ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Curso
+                            </a>
+
+                            <select name="filtro-curso" id="filtro-curso" class="form-control"
+                                    style="display:inline;width:220px">
+                                <option value="0" 
+                                    <?=isset($_GET["filtro-curso"]) &&
+                                        htmlspecialchars($_GET["filtro-curso"]) == "0" ?
+                                        'selected="selected"': '' ;?> >Todos
+                                </option>
+                                <option value="1" 
+                                    <?=isset($_GET["filtro-curso"]) &&
+                                        htmlspecialchars($_GET["filtro-curso"]) == "1" ?
+                                        'selected="selected"': '' ;?> >Extensão
+                                </option>
+                                <option value="2"
+                                    <?=isset($_GET["filtro-curso"]) &&
+                                        htmlspecialchars($_GET["filtro-curso"]) == "2"?
+                                        'selected="selected"':'';?> >Pós-Graduação
+                                </option>
+                                <option value="3"
+                                    <?=isset($_GET["filtro-curso"]) &&
+                                        htmlspecialchars($_GET["filtro-curso"]) == "3"?
+                                        'selected="selected"':'';?> >Curso Instituto Hahnemann
+                                </option>
+                            </select>
 
                             <div>
-                            <a href="#" class="btn btn-primary pull-right" data-toggle="modal"
-                                data-target="#modal-email"
-                                id="sendTodos">
-                                <p>Enviar e-mail para todos</p>
-                            </a>
-                            <a href="#" class="btn btn-primary pull-right" data-toggle="modal" 
-                                data-target="#modal-email"
-                                id="send" style="margin-right:2em; display:none">
-                                <p>Enviar e-mail para os selecionados</p>
-                            </a>
+                                <a href="#" class="btn btn-primary pull-right" data-toggle="modal"
+                                    data-target="#modal-email"
+                                    id="sendTodos">
+                                    <p>Enviar e-mail para todos</p>
+                                </a>
+                                <a href="#" class="btn btn-primary pull-right" data-toggle="modal" 
+                                    data-target="#modal-email"
+                                    id="send" style="margin-right:2em; display:none">
+                                    <p>Enviar e-mail para os selecionados</p>
+                                </a>
                                 <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
                                     Buscar
                                     <i href="#" class="fa fa-search"></i>
