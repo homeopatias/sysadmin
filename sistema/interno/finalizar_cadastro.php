@@ -9,6 +9,87 @@
         <?php include("modulos/head.php"); ?>
         <title>Bem-vindo - Homeopatias.com</title>
         <script>
+            // aqui recebemos os dados das cidades existentes para cada ano
+            // assim podemos atualizar a lista de cidades dinamicamente durante a inserção de
+            // matrícula
+            
+            var cidades = new Array();
+            <?php
+                // lemos as credenciais do banco de dados
+                $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
+                $dados = json_decode($dados, true);
+                foreach($dados as $chave => $valor) {
+                    $dados[$chave] = str_rot13($valor);
+                }
+                $host    = $dados["host"];
+                $usuario = $dados["nome_usuario"];
+                $senhaBD = $dados["senha"];
+
+                // cria conexão com o banco para uso ao longo da página
+                $conexao = null;
+                $db      = "homeopatias";
+                try{
+                    $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
+                }catch (PDOException $e){
+                    echo $e->getMessage();
+                }
+
+                // procuramos o aluno desejado no banco de dados
+                require_once("entidades/Aluno.php");
+                $aluno = unserialize($_SESSION["usuario"]);
+                $sucesso = $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
+
+                $textoQuery  = "SELECT idCidade, UF, nome, ano, modalidadeCidade
+                                FROM Cidade WHERE
+                                CURDATE() < limiteInscricao AND 
+                                tipo_curso = '" .$aluno->getTipoCurso(). "' 
+                                OR tipo_curso = 'ambos' ORDER BY ano DESC, nome ASC";
+
+                $query = $conexao->prepare($textoQuery);
+                $query->setFetchMode(PDO::FETCH_ASSOC);
+                $query->execute();
+
+                // variável para garantir que inicializaremos o vetor para cada
+                // ano sempre que estivermos utilizando-o pela primeira vez
+                $anos = [];
+
+                // Armazenamos uma lista de cidades do ano atual para facilitar a retificação
+                // de matrícula
+                $cidadesAnoAtual = array();
+
+                while ($linha = $query->fetch()){
+                    // para cada cidade encontrada criamos um objeto no
+                    // código javascript para representá-la
+                    $id         = "\"".htmlspecialchars($linha["idCidade"])."\"";
+                    $uf         = "\"".htmlspecialchars($linha["UF"])."\"";
+                    $nome       = "\"".htmlspecialchars($linha["nome"])."\"";
+                    $ano        = "\"".htmlspecialchars($linha["ano"])."\"";
+                    $modalidade = "\"".htmlspecialchars($linha["modalidadeCidade"])."\"";
+
+                    if($linha["ano"] == date("Y")) {
+                        $nomeCidade = htmlspecialchars($linha["nome"]). "/" . htmlspecialchars($linha["UF"]);
+                        $cidadesAnoAtual[$nomeCidade] = htmlspecialchars($linha["idCidade"]);
+                    }
+
+                    if(!in_array($linha["ano"], $anos)){
+                        $anos[] = $linha["ano"];
+            ?>
+            
+            cidades[ <?= $ano ?> ] = new Array();
+            <?php } ?>
+
+            cidades[ <?= $ano ?> ].push({
+                id:     <?= $id ?>,
+                uf:     <?= $uf ?>,
+                nome:   <?= $nome ?>,
+                ano:    <?= $ano ?>,
+                modalidade: <?= $modalidade ?>
+            });
+
+            <?php
+                }
+            ?>
+
             $(document).ready(function() {
                 $("#escolaridade-novo").change(function(){
                     if($(this).val() === "superior incompleto" || $(this).val() === "superior completo"   ||
@@ -18,7 +99,50 @@
                         $("#curso-novo").parent().hide(500);
                     }
                 });
+
+                // quando altera a modalidade atualiza as cidades
+                $("#modalidade_curso").change(function(){
+                    atualizaCamposCidade();
+                });
+
+                // faz a primeira atualização de campos para limpar o campo
+                // select de cidades
+                atualizaCamposCidade();
             });
+
+            // Atualiza os campos de acordo com a modalidade desejada
+            function atualizaCamposCidade(){
+                var modalidades = $("#modalidade_curso");
+                var cidadeMat   = $("#cidadeMat");
+                var ano = (new Date).getFullYear();
+
+                cidadeMat.find('option').remove().end();
+                if(modalidades.val() === "regular"){
+                    if(cidades[ano]){
+
+                        cidades[ano].forEach(function(cidade){
+                            if(cidade.modalidade == "regular"){
+
+                                cidadeMat.append('<option value="' + cidade.id + '">' + 
+                                    cidade.nome + "/"
+                                    + cidade.uf + '</option>')
+                            }
+                            
+                        });
+                    }
+                }else if(modalidades.val() === "pos"){
+                    if(cidades[ano]){
+                        cidades[ano].forEach(function(cidade){
+                            if(cidade.modalidade == "pos"){
+                                $("#cidadeMat")
+                                .append('<option value="' + cidade.id + '">' + cidade.nome + "/"
+                                        + cidade.uf + '</option>')
+                            }
+                            
+                        });
+                    }
+                }
+            }
         </script>
     </head>
     <body>
@@ -69,6 +193,8 @@
                     $cidade         = $_POST["cidade"];
                     $estado         = $_POST["estado"];
                     $idCidadeMat    = $_POST["cidadeMat"];
+                    $modalidade     = $_POST["modalidade_curso"];
+
 
                     if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") {                  
                         $escolaridade   = $_POST["escolaridade"];
@@ -191,6 +317,9 @@
                     $bairroValido = (isset($bairro) && mb_strlen($bairro, 'UTF-8') >= 3 &&
                                           mb_strlen($bairro, 'UTF-8') <= 200);
 
+                    $modalidadeValida = ( isset($modalidade) ) &&
+                                        $modalidade == "regular" || $modalidade == "intensivo" ;
+
                     $cidadeValida = (isset($cidade) && mb_strlen($cidade, 'UTF-8') >= 3 &&
                                           mb_strlen($cidade, 'UTF-8') <= 200);
 
@@ -229,11 +358,12 @@
 
                     if($cidadeMatValida) {
                         $textoQuery  = "SELECT idCidade FROM Cidade
-                                        WHERE idCidade = ? AND ano = YEAR(CURDATE())";
+                                        WHERE idCidade = ? AND ano = YEAR(CURDATE())
+                                        AND modalidadeCidade = ?";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
-                        $query->execute(array($idCidadeMat));
+                        $query->execute(array($idCidadeMat, $modalidade));
                         if($linha = $query->fetch()){
                             // cidade existente no ano atual
                             // (trecho mantido apenas por clareza)
@@ -260,6 +390,7 @@
                         $aluno->setCidade($cidade);
                         $aluno->setEstado($estado);
                         $aluno->setIdIndicador($idIndicador);
+                        $aluno->setModalidadeCurso($modalidade);
 
                         if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") {
                             $aluno->setEscolaridade($escolaridade);
@@ -303,9 +434,52 @@
                             // agora tentamos criar os pagamentos
 
                             // pega os valores de inscrição e parcelas da cidade
-                            $textoQuery = "SELECT C.nome, C.idCidade,C.ano, C.v_inscricao_extensao, C.v_parcela_extensao,
-                                                  C.v_inscricao_pos, C.v_parcela_pos
-                                           FROM Cidade C, Matricula M
+                            $textoQuery = "SELECT C.nome, C.idCidade,C.ano,";
+
+                            //pega as parcelas de acordo com tipo e modalidade
+                            //do aluno
+                            if($aluno->getTipoCurso() == "extensao"){
+                                if($modalidade == "regular"){
+                                    $textoQuery .= "C.inscricao_extensao_regular
+                                                    as inscricao,
+                                                    C.parcela_extensao_regular
+                                                    as parcela";
+                                }
+                                if($modalidade == "intensivo"){
+                                    $textoQuery .= "C.inscricao_extensao_intensivo
+                                                    as inscricao,
+                                                    C.parcela_extensao_intensivo
+                                                    as parcela";
+                                }
+                            }else if($aluno->getTipoCurso() == "pos"){
+                                if($modalidade == "regular"){
+                                    $textoQuery .= "C.inscricao_pos_regular
+                                                    as inscricao,
+                                                    C.parcela_pos_regular
+                                                    as parcela";
+                                }
+                                if($modalidade == "intensivo"){
+                                    $textoQuery .= "C.inscricao_pos_intensivo
+                                                    as inscricao,
+                                                    C.parcela_pos_intensivo
+                                                    as parcela";
+                                }
+                            }else if($aluno->getTipoCurso() == "instituto"){
+                                if($modalidade == "regular"){
+                                    $textoQuery .= "C.inscricao_instituto_regular
+                                                    as inscricao,
+                                                    C.parcela_instituto_regular
+                                                    as parcela";
+                                }
+                                if($modalidade == "intensivo"){
+                                    $textoQuery .= "C.inscricao_instituto_intensivo
+                                                    as inscricao,
+                                                    C.parcela_instituto_intensivo
+                                                    as parcela";
+                                }
+                            }
+
+                            $textoQuery.= " FROM Cidade C, Matricula M
                                            WHERE C.idCidade = M.chaveCidade AND
                                            M.idMatricula = ?";
 
@@ -314,6 +488,7 @@
                             $query->setFetchMode(PDO::FETCH_ASSOC);
                             $query->execute();
 
+
                             
                             $queryInsert = "";
                             $insertArray = [];
@@ -321,14 +496,9 @@
                             $sucessoPgto = false;
 
                             if($linha = $query->fetch()){
-
-                                if($aluno->getTipoCurso() == "extensao"){
-                                    $precoInscricao = $linha["v_inscricao_extensao"];
-                                    $precoParcela = $linha["v_parcela_extensao"];
-                                }else{
-                                    $precoInscricao = $linha["v_inscricao_pos"];
-                                    $precoParcela = $linha["v_parcela_pos"];
-                                }
+                                $precoInscricao = $linha["inscricao"];
+                                $precoParcela = $linha["parcela"];
+                                
                                 for($i = 0; $i < 12; $i++){
 
                                     if($i == 0){ // parcela numero 0 será considerada valor da
@@ -463,9 +633,9 @@
                 $aluno = unserialize($_SESSION['usuario']);
                 // listamos as cidades em que o aluno pode se matricular
                 // o aluno só pode entrar em cidades do ano atual
-                $textoQuery  = "SELECT idCidade, UF, nome FROM Cidade WHERE
+                $textoQuery  = "SELECT idCidade, UF, nome, modalidadeCidade FROM Cidade WHERE
                 CURDATE() < limiteInscricao AND ano = YEAR(CURDATE()) AND cadastro_ativo = 1 AND 
-                        tipo_curso = '" .$aluno->getTipoCurso(). "' OR tipo_curso = 'ambos'
+                        tipo_curso = '" .$aluno->getTipoCurso(). "' OR tipo_curso = 'todos'
                         ORDER BY nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
@@ -486,16 +656,34 @@
         </script>
         <?php
                     die();
-                }
+                } ?>
+                <script type="text/javascript">
 
+                idRegulares  = new Array();
+                idIntensivas = new Array();
+
+                <?php 
                 while ($linha = $query->fetch()){
                     $id     = htmlspecialchars($linha["idCidade"]);
                     $uf     = htmlspecialchars($linha["UF"]);
                     $nome   = htmlspecialchars($linha["nome"]);
-                    $cidades[] = array("nome" => $nome . "/" . $uf, "id" => $id);
-                }
 
+                    $cidades[] = array("nome" => $nome . "/" . $uf, "id" => $id);
+                    if($linha["modalidadeCidade"] == "regular"){
+                        ?>
+                        idRegulares.push(<?= $id ?>);
+
+                    <?php
+                    } else{
+                        ?>
+                        idIntensivas.push(<?= $id ?>);
+
+
+                    <?php
+                    } // fim else
+                }// while
         ?>
+                </script>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
@@ -511,7 +699,20 @@
                     seu registro:</h4>
                     <br>
                     <form action method="POST">
-                        <div class="form-group">
+                        <div class="form-group"><div>
+
+                            <p class="warning">
+                                Selecione uma modalidade para visualizar as cidades disponíveis
+                            </p>
+                            <label for="modalidade-novo" >
+                                Modalidade desejada :</label>
+                            <select id="modalidade_curso" name="modalidade_curso">
+                                <option value="">Selectione uma modalidade</option>
+                                <option value="regular">Regular</option>
+                                <option value="intensivo">Intensivo</option>
+                            </select>
+                            </div>
+
                             <label for="cidadeMat">Escolha a cidade onde deseja fazer o curso:</label>
                             <select name="cidadeMat" id="cidadeMat"
                                     class="form-control" required>
@@ -584,10 +785,9 @@
                                         style="width:120px ;" required>
                                 </div>
 
-                                
                                 <div  class="col-sm-6 col-md-4"
                                 style="padding-top:10px;padding-bot:10px">
-                                    <label for="numero-novo" >
+                                    <label for="cidade-novo" >
                                         Cidade :</label>
                                     <input type="text" name="cidade" id="cidade-novo"
                                         placeholder="Cidade"
