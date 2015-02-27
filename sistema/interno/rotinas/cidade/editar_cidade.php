@@ -25,24 +25,69 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         //$custoCurso  = $_POST["custoCurso"];
         $cadastroAtivo = isset($_POST["cadastroAtivo"]) ? 1 : 0;
         $tipoCurso   = $_POST["tipo-curso"];
-        $InscExt     = $_POST["inscricao-ext"];
-        $ParceExt    = $_POST["parcela-ext"];
-        $InscPos     = $_POST["inscricao-pos"];
-        $ParcePos    = $_POST["parcela-pos"];
+        $modalidadeCurso   = $_POST["modalidade-curso"];
+        $InscExtReg        = $_POST["inscricao-ext-reg"];
+        $InscExtInt        = $_POST["inscricao-ext-int"];
+        $InscPosReg        = $_POST["inscricao-pos-reg"];
+        $InscPosInt        = $_POST["inscricao-pos-int"];
+        $InscInsReg        = $_POST["inscricao-instituto-reg"];
+        $InscInsInt        = $_POST["inscricao-instituto-int"];
+        
+        $ParcExtReg     = $_POST["parcela-ext-reg"];
+        $ParcExtInt     = $_POST["parcela-ext-int"];
+        $ParcPosReg     = $_POST["parcela-pos-reg"];
+        $ParcPosInt     = $_POST["parcela-pos-int"];
+        $ParcInsReg     = $_POST["parcela-instituto-reg"];
+        $ParcInsInt     = $_POST["parcela-instituto-int"];
 
-
-
-        $tipoCursoValido = isset($_POST["tipo-curso"]) &&
-                                        $tipoCurso == "extensão" ||
-                                        $tipoCurso == "pós" ||
-                                        $tipoCurso == "ambos";
-
-        if($tipoCurso == "extensão"){
-            $InscPos     = 0;
-            $ParcePos    = 0;
-        }else if($tipoCurso == "pós"){
-            $InscExt     = 0;
-            $ParceExt    = 0;
+        if($tipoCurso == "extensao"){
+            $InscPosReg   =  0;
+            $InscPosInt   =  0;
+            $InscInsReg   =  0;
+            $InscInsInt   =  0;
+            $ParcPosReg   =  0;
+            $ParcPosInt   =  0;
+            $ParcInsReg   =  0;
+            $ParcInsInt   =  0;
+            if($modalidadeCurso == "regular"){
+                $InscExtInt   = 0;
+                $ParcExtInt   = 0;
+            }else if($modalidadeCurso == "regular"){
+                $InscExtReg   = 0;
+                $ParcExtReg   = 0;
+            }
+        }else if($tipoCurso == "pos"){
+            $InscExtReg   =  0;
+            $InscExtInt   =  0;
+            $InscInsReg   =  0;
+            $InscInsInt   =  0;
+            $ParcExtReg   =  0;
+            $ParcExtInt   =  0;
+            $ParcInsReg   =  0;
+            $ParcInsInt   =  0;
+            if($modalidadeCurso == "regular"){
+                $InscPosInt   = 0;
+                $ParcPosInt   = 0;
+            }else if($modalidadeCurso == "regular"){
+                $InscPosReg   = 0;
+                $ParcPosReg   = 0;
+            }
+        }else if($tipoCurso == "instituto"){
+            $InscExtReg   =  0;
+            $InscExtInt   =  0;
+            $InscPosReg   =  0;
+            $InscPosInt   =  0;
+            $ParcExtReg   =  0;
+            $ParcExtInt   =  0;
+            $ParcPosReg   =  0;
+            $ParcPosInt   =  0;
+            if($modalidadeCurso == "regular"){
+                $InscInsInt   = 0;
+                $ParcInsInt   = 0;
+            }else if($modalidadeCurso == "regular"){
+                $InscInsReg   = 0;
+                $ParcInsReg   = 0;
+            }
         }
 
         $idValido      = isset($id) && preg_match("/^[0-9]*$/", $id);
@@ -62,10 +107,51 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         /*$custoCursoValido   = isset($custoCurso) && preg_match("/^[0-9]*\.?[0-9]+$/",
                                                                  $custoCurso);*/
 
-        $inscricaoExtValida = isset($InscExt) && preg_match("/^[0-9]*\.?[0-9]+$/", $InscExt);
-        $parcelaExtValida   = isset($ParceExt) && preg_match("/^[0-9]*\.?[0-9]+$/", $ParceExt);
-        $inscricaoPosValida = isset($InscPos) && preg_match("/^[0-9]*\.?[0-9]+$/", $InscPos);
-        $parcelaPosValida   = isset($ParcePos) && preg_match("/^[0-9]*\.?[0-9]+$/", $ParcePos);
+        $modalidadeCursoValida = isset($modalidadeCurso) && ($modalidadeCurso == "regular"
+                                        || $modalidadeCurso == "intensivo" || 
+                                        $modalidadeCurso == "ambos");
+        $tipoCursoValido = isset($tipoCurso) && 
+                                        (
+                                            $tipoCurso == "extensao" ||
+                                            $tipoCurso == "pos" ||
+                                            $tipoCurso == "instituto" ||
+                                            $tipoCurso == "todos"
+                                        );
+
+        // checa validade dos campos de preços
+
+        $inscricaoExtRegValida = isset($InscExtReg) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $InscExtReg);
+        $inscricaoExtIntValida = isset($InscExtInt) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $InscExtInt);
+        $inscricaoPosRegValida = isset($InscPosReg) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $InscPosReg);
+        $inscricaoPosIntValida = isset($InscPosInt) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $InscPosInt);
+        $inscricaoInsRegValida = isset($InscInsReg) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $InscInsReg);
+        $inscricaoInsIntValida = isset($InscInsInt) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $InscInsInt);
+
+        $parcelaExtRegValida = isset($ParcExtReg) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $ParcExtReg);
+        $parcelaExtIntValida = isset($ParcExtInt) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $ParcExtInt);
+        $parcelaPosRegValida = isset($ParcPosReg) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $ParcPosReg);
+        $parcelaPosIntValida = isset($ParcPosInt) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $ParcPosInt);
+        $parcelaInsRegValida = isset($ParcInsReg) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $ParcInsReg);
+        $parcelaInsIntValida = isset($ParcInsInt) && 
+                                 preg_match("/^[0-9]*\.?[0-9]+$/", $ParcInsInt);
+
+        $pagamentosValidos = $inscricaoExtRegValida && $inscricaoExtIntValida &&
+                             $inscricaoPosRegValida && $inscricaoPosIntValida &&
+                             $inscricaoInsRegValida && $inscricaoInsIntValida &&
+                             $parcelaExtRegValida   && $parcelaExtIntValida   &&
+                             $parcelaPosRegValida   && $parcelaPosIntValida   &&
+                             $parcelaInsRegValida   && $parcelaInsIntValida;
 
         // lemos as credenciais do banco de dados
         $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -106,8 +192,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
 
         // se todos os dados estão válidos, a cidade é editada
         if($idValido && $nomeValido && $UfValido  && $idCoordValido  && $limiteValido
-           && $tipoCursoValido && $inscricaoExtValida && $parcelaExtValida &&
-           $inscricaoPosValida && $parcelaPosValida){
+           && $tipoCursoValido && $modalidadeCursoValida && $pagamentosValidos){
 
             require_once("../../entidades/Cidade.php");
 
@@ -124,10 +209,20 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $coordExiste = $atualizar->setCoordenadorId($idCoord);
             $atualizar->setCadastroAtivo($cadastroAtivo);
             $atualizar->setTipoCurso($tipoCurso);
-            $atualizar->setInscricaoExtensao($InscExt);
-            $atualizar->setInscricaoPos($InscPos);
-            $atualizar->setParcelaExtensao($ParceExt);
-            $atualizar->setParcelaPos($ParcePos);
+            $atualizar->setModalidadeCidade($modalidadeCurso);
+
+            $atualizar->setParcelaExtensaoRegular($ParcExtReg);
+            $atualizar->setParcelaPosRegular($ParcPosReg);
+            $atualizar->setParcelaExtensaoIntensivo($ParcExtInt);
+            $atualizar->setParcelaPosIntensivo($ParcPosInt);
+            $atualizar->setParcelaInstitutoRegular($ParcInsReg);
+            $atualizar->setParcelaInstitutoIntensivo($ParcInsInt);
+            $atualizar->setInscricaoExtensaoRegular($InscExtReg);
+            $atualizar->setInscricaoPosRegular($InscPosReg);
+            $atualizar->setInscricaoExtensaoIntensivo($InscExtInt);
+            $atualizar->setInscricaoPosIntensivo($InscPosInt);
+            $atualizar->setInscricaoInstitutoRegular($InscInsReg);
+            $atualizar->setInscricaoInstitutoIntensivo($InscInsInt);
 
             if($coordExiste){
                 $sucesso = $atualizar->atualizar($host, "homeopatias", $usuario, $senhaBD);
@@ -151,10 +246,6 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "Local inválido!";
         }else if(!$idCoordValido){
             $mensagem = "Id de coordenador inválido!";
-        }else if(!$inscricaoValida){
-            $mensagem = "Valor de inscrição inválido!";
-        }else if(!$parcelaValida){
-            $mensagem = "Valor de parcela inválido!";
         }else if(!$limiteValido){
             $mensagem = "Data limite de matrícula inválida!";
         }else if(!$idValido){
@@ -165,6 +256,10 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "CNPJ inválido!";
         }else if(!$custoCurso) {
             $mensagem = "Custo do curso inválido!";
+        }else if(!$modalidadeCursoValida){
+            $mensagem = "Modalidade inválida";
+        }else if(!$pagamentosValidos){
+            $mensagem = "Valor inserido nas parcelas inválido";
         }
     }else{
         $mensagem = "Erro de envio de formulário";

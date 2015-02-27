@@ -25,9 +25,10 @@
             var podeMudarPagina = true;
             $(document).ready(function(){
 
-                // Atualiza os campos de pagamento de nova cidade assim que carregar
-                // a pagina
+                // Atualiza os campos de pagamento de nova e de editar
+                // cidade assim que carregar a pagina
                 atualizaPagamentosNova();
+                atualizaPagamentosEdita();
 
                 // permite redimensionar as colunas da tabela
                 $("#cidades").colResizable({
@@ -136,18 +137,52 @@
                             pos.show();
                         }
                     }
+                    $(this).find('#tipo-curso').val(
+                        $(e.relatedTarget).data('tipo-curso')
+                    );
+                    $(this).find('#modalidade-curso').val(
+                        $(e.relatedTarget).data('modalidade-cidade')
+                    );
 
-                    $(this).find('#inscricao-ext').val(
-                        $(e.relatedTarget).data('insc-ext')
+                    atualizaPagamentosEdita();
+
+                    //manipula valores de pagamentos
+                    $(this).find('#inscricao-edita-ext-reg').val(
+                        $(e.relatedTarget).data('insc-ext-reg')
                     );
-                    $(this).find('#inscricao-pos').val(
-                        $(e.relatedTarget).data('insc-pos')
+                    $(this).find('#inscricao-edita-ext-int').val(
+                        $(e.relatedTarget).data('insc-ext-int')
                     );
-                    $(this).find('#parcela-ext').val(
-                        $(e.relatedTarget).data('parc-ext')
+                    $(this).find('#inscricao-edita-pos-reg').val(
+                        $(e.relatedTarget).data('insc-pos-reg')
                     );
-                    $(this).find('#parcela-pos').val(
-                        $(e.relatedTarget).data('parc-pos')
+                    $(this).find('#inscricao-edita-pos-int').val(
+                        $(e.relatedTarget).data('insc-pos-int')
+                    );
+                    $(this).find('#inscricao-edita-ins-reg').val(
+                        $(e.relatedTarget).data('insc-ins-reg')
+                    );
+                    $(this).find('#inscricao-edita-ins-int').val(
+                        $(e.relatedTarget).data('insc-ins-int')
+                    );
+
+                    $(this).find('#parcela-edita-ext-reg').val(
+                        $(e.relatedTarget).data('parc-ext-reg')
+                    );
+                    $(this).find('#parcela-edita-ext-int').val(
+                        $(e.relatedTarget).data('parc-ext-int')
+                    );
+                    $(this).find('#parcela-edita-pos-reg').val(
+                        $(e.relatedTarget).data('parc-pos-reg')
+                    );
+                    $(this).find('#parcela-edita-pos-int').val(
+                        $(e.relatedTarget).data('parc-pos-int')
+                    );
+                    $(this).find('#parcela-edita-ins-reg').val(
+                        $(e.relatedTarget).data('parc-ins-reg')
+                    );
+                    $(this).find('#parcela-edita-ins-int').val(
+                        $(e.relatedTarget).data('parc-ins-int')
                     );
 
                     if( $(this).find('#cadastroAtivo').prop("checked")){
@@ -181,47 +216,12 @@
                 });
 
                 $("#modal-edita-cidade #tipo-curso").change(function(){
-                    var extensao  = $("#modal-edita-cidade #preco-extensao");
-                    var pos       = $("#modal-edita-cidade #preco-pos");
-                    var instituto = $("#modal-edita-cidade #preco-instituto");
+                    atualizaPagamentosEdita();
+                });
 
-                    //var inscricao_ext = $("#modal-edita-cidade #inscricao-ext");
-                    //var inscricao_pos = $("#modal-edita-cidade #inscricao-pos");
-
-                    //var parcela_ext = $("#modal-edita-cidade #parcela-ext");
-                    //var parcela_pos = $("#modal-edita-cidade #parcela-pos");
-
-                    if( $(this).val() == "extensão" ){
-                        extensao.show();
-                        pos.hide();
-                        instituto.hide(); 
-
-                        /*inscricao_ext.prop("required",true); 
-                        inscricao_pos.prop("required",true); 
-                        parcela_ext.prop("required",true);
-                        parcela_pos.prop("required",true);*/
-
-                    }else{
-                        if($(this).val() == "pós"){
-                            extensao.hide();
-                            pos.show();
-                            /*inscricao_ext.prop("required",false); 
-                            inscricao_pos.prop("required",true); 
-                            parcela_ext.prop("required",false);
-                            parcela_pos.prop("required",true);*/
-                        }
-                        else if($(this).val() == "instituto"){
-                            extensao.show();
-                            pos.show();
-                            /*inscricao_ext.prop("required",true); 
-                            inscricao_pos.prop("required",true); 
-                            parcela_ext.prop("required",true);
-                            parcela_pos.prop("required",true);*/
-                        }
-                        else{
-
-                        }
-                    }
+                // Muda os campos de pagamentos de nova cidade de acordo com a modalidade
+                $("#modal-edita-cidade #modalidade-curso").change(function(){
+                    atualizaPagamentosEdita();
                 });
 
                 // seta por padrão os preços de pós ocultos
@@ -623,7 +623,7 @@
             var parcela_pos_int = $("#modal-nova-cidade #parcela-nova-pos-int");
             var parcela_ins_int = $("#modal-nova-cidade #parcela-nova-instituto-int");
 
-            if( tipo_curso.val() == "extensão" ){
+            if( tipo_curso.val() == "extensao" ){
                 extensao.show();
                 pos.hide();
                 instituto.hide(); 
@@ -665,7 +665,7 @@
                 parcela_ins_reg.prop("required",false);
 
             }else{
-                if(tipo_curso.val() == "pós"){
+                if(tipo_curso.val() == "pos"){
                     extensao.hide();
                     pos.show();
                     instituto.hide();
@@ -849,7 +849,7 @@
             var parcela_pos_int = $("#modal-edita-cidade #parcela-edita-pos-int");
             var parcela_ins_int = $("#modal-edita-cidade #parcela-edita-instituto-int");
 
-            if( tipo_curso.val() == "extensão" ){
+            if( tipo_curso.val() == "extensao" ){
                 extensao.show();
                 pos.hide();
                 instituto.hide(); 
@@ -891,7 +891,7 @@
                 parcela_ins_reg.prop("required",false);
 
             }else{
-                if(tipo_curso.val() == "pós"){
+                if(tipo_curso.val() == "pos"){
                     extensao.hide();
                     pos.show();
                     instituto.hide();
@@ -1258,7 +1258,6 @@
                                          $parcelaInsRegValida   && $parcelaInsIntValida;
 
                     // se todos os dados estão válidos, a cidade é cadastrada
-                                         var_dump($tipoCursoValido);
                     if($nomeValido && $UfValido && $anoValido && $localValido && $idCoordValido &&
                        $limiteValido && $empresaValida && $pagamentosValidos &&$cnpjValido && 
                        $custoCursoValido && $tipoCursoValido && $modalidadeCursoValida){
@@ -1321,6 +1320,10 @@
                         $mensagem = "CNPJ inválido!";
                     }else if(!$tipoCursoValido){
                         $mensagem = "Tipo de curso inválido";
+                    }else if(!$modalidadeCursoValida){
+                        $mensagem = "Modalidade inválida";
+                    }else if(!$pagamentosValidos){
+                        $mensagem = "Valor inserido nas parcelas inválido";
                     }
 
                 }
@@ -1338,9 +1341,13 @@
                 $textoQuery  = "SELECT C.idCidade, C.UF, C.ano, A.idAdmin, C.nome, 
                                 C.precoInscricao, C.precoParcela, C.idCoordenador, 
                                 C.local, C.limiteInscricao, C.nomeEmpresa, C.cnpjEmpresa,
-                                C.custoCurso, C.cadastro_ativo, C.tipo_curso, 
-                                C.v_inscricao_extensao, C.v_inscricao_pos,
-                                C.v_parcela_extensao, C.v_parcela_pos
+                                C.custoCurso, C.cadastro_ativo, C.tipo_curso, C.modalidadeCidade,
+                                C.parcela_extensao_regular, C.parcela_extensao_intensivo, 
+                                C.parcela_pos_regular, C.parcela_pos_intensivo,
+                                C.inscricao_extensao_regular, C.inscricao_extensao_intensivo,
+                                C.inscricao_pos_regular, C.inscricao_pos_intensivo, 
+                                C.inscricao_instituto_regular, C.inscricao_instituto_intensivo,
+                                C.parcela_instituto_regular, C.parcela_instituto_intensivo
                                 FROM Cidade C, Administrador A WHERE C.idCoordenador 
                                 = A.idAdmin AND A.nivel = \"coordenador\" ";
 
@@ -1558,11 +1565,23 @@
                         $tabela .= " data-custo=\"".$linha["custoCurso"]."\"";
                         $tabela .= " data-target=\"#modal-edita-cidade\"";
                         $tabela .= " data-tipo-curso=\"".$linha["tipo_curso"]."\"";
+                        $tabela .= " data-modalidade-cidade=\"".$linha["modalidadeCidade"]."\"";
                         $tabela .= " data-cadastro-ativo=\"".$linha["cadastro_ativo"]."\"";
-                        $tabela .= " data-insc-ext=\"".$linha["v_inscricao_extensao"]."\"";
-                        $tabela .= " data-insc-pos=\"".$linha["v_inscricao_pos"]."\"";
-                        $tabela .= " data-parc-ext=\"".$linha["v_parcela_extensao"]."\"";
-                        $tabela .= " data-parc-pos=\"".$linha["v_parcela_pos"]."\">";
+
+                        $tabela .= " data-insc-ext-reg=\"".$linha["inscricao_extensao_regular"]."\"";
+                        $tabela .= " data-insc-ext-int=\"".$linha["inscricao_extensao_intensivo"]."\"";
+                        $tabela .= " data-insc-pos-reg=\"".$linha["inscricao_pos_regular"]."\"";
+                        $tabela .= " data-insc-pos-int=\"".$linha["inscricao_pos_intensivo"]."\"";
+                        $tabela .= " data-insc-ins-reg=\"".$linha["inscricao_instituto_regular"]."\"";
+                        $tabela .= " data-insc-ins-int=\"".$linha["inscricao_instituto_intensivo"]."\"";
+
+                        $tabela .= " data-parc-ext-reg=\"".$linha["parcela_extensao_regular"]."\"";
+                        $tabela .= " data-parc-ext-int=\"".$linha["parcela_extensao_intensivo"]."\"";
+                        $tabela .= " data-parc-pos-reg=\"".$linha["parcela_pos_regular"]."\"";
+                        $tabela .= " data-parc-pos-int=\"".$linha["parcela_pos_intensivo"]."\"";
+                        $tabela .= " data-parc-ins-reg=\"".$linha["parcela_instituto_regular"]."\"";
+                        $tabela .= " data-parc-ins-int=\"".$linha["parcela_instituto_intensivo"]."\"";
+
                         $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
                         $tabela .= "    <td><a data-href=\"rotinas/cidade/";
                         $tabela .= "remover_cidade.php?id=";
@@ -2187,14 +2206,14 @@
                                 <span id="preco-extensao" name="preco-extensao">
                                 <span id="cursoRegular" name="cursoRegular">
                                     <div class="form-group">
-                                        <label for="inscricao-edita">Preço de inscrição da extensão regular:</label>
+                                        <label for="inscricao-edita-ext-reg">Preço de inscrição da extensão regular:</label>
                                         <input type="text" name="inscricao-ext-reg" id="inscricao-edita-ext-reg" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
                                                title="O valor de inscrição deve ser um número real"
                                                class="form-control" value="0">
                                     </div>
                                     <div class="form-group">
-                                        <label for="parcela-edita">Valor da parcela da extensão regular:</label>
+                                        <label for="parcela-edita-ext-reg">Valor da parcela da extensão regular:</label>
                                         <input type="text" name="parcela-ext-reg" id="parcela-edita-ext-reg" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                                title="A parcela deve ser um número real"
@@ -2203,14 +2222,14 @@
                                 </span>
                                 <span id="cursoIntensivo" name="cursoIntensivo">
                                     <div class="form-group">
-                                        <label for="inscricao-edita">Preço de inscrição da extensão intensiva:</label>
+                                        <label for="inscricao-edita-ext-int">Preço de inscrição da extensão intensiva:</label>
                                         <input type="text" name="inscricao-ext-int" id="inscricao-edita-ext-int" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
                                                title="O valor de inscrição deve ser um número real"
                                                class="form-control" value="0">
                                     </div>
                                     <div class="form-group">
-                                        <label for="parcela-edita">Valor da parcela da extensão intensiva:</label>
+                                        <label for="parcela-edita-ext-int">Valor da parcela da extensão intensiva:</label>
                                         <input type="text" name="parcela-ext-int" id="parcela-edita-ext-int" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                                title="A parcela deve ser um número real"
@@ -2221,14 +2240,14 @@
                             <span id="preco-pos" name="preco-pos">
                                 <span id="cursoRegular" name="cursoRegular">
                                     <div class="form-group">
-                                        <label for="inscricao-edita">Preço de inscrição da pós regular:</label>
+                                        <label for="inscricao-edita-pos-reg">Preço de inscrição da pós regular:</label>
                                         <input type="text" name="inscricao-pos-reg" id="inscricao-edita-pos-reg" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
                                                title="O valor de inscrição deve ser um número real"
                                                class="form-control" value="0">
                                     </div>
                                     <div class="form-group">
-                                        <label for="parcela-edita">Valor da parcela da pos regular:</label>
+                                        <label for="parcela-edita-pos-reg">Valor da parcela da pos regular:</label>
                                         <input type="text" name="parcela-pos-reg" id="parcela-edita-pos-reg" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                                title="A parcela deve ser um número real"
@@ -2237,14 +2256,14 @@
                                 </span>
                                 <span id="cursoIntensivo" name="cursoIntensivo">
                                     <div class="form-group">
-                                        <label for="inscricao-edita">Preço de inscrição da pós intensiva:</label>
-                                        <input type="text" name="inscricao-pos-int" id="inscricao-neditaova-pos-int" required
+                                        <label for="inscricao-edita-pos-int">Preço de inscrição da pós intensiva:</label>
+                                        <input type="text" name="inscricao-pos-int" id="inscricao-edita-pos-int" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
                                                title="O valor de inscrição deve ser um número real"
                                                class="form-control" value="0">
                                     </div>
                                     <div class="form-group">
-                                        <label for="parcela-edita">Valor da parcela da pós intensiva:</label>
+                                        <label for="parcela-edita-pos-int">Valor da parcela da pós intensiva:</label>
                                         <input type="text" name="parcela-pos-int" id="parcela-edita-pos-int" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                                title="A parcela deve ser um número real"
@@ -2255,14 +2274,14 @@
                             <span id="preco-instituto" name="preco-instituto">
                                 <span id="cursoRegular" name="cursoRegular">
                                     <div class="form-group">
-                                        <label for="inscricao-edita">Preço de inscrição do instituto regular:</label>
+                                        <label for="inscricao-edita-instituto-reg">Preço de inscrição do instituto regular:</label>
                                         <input type="text" name="inscricao-instituto-reg" id="inscricao-edita-instituto-reg" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
                                                title="O valor de inscrição deve ser um número real"
                                                class="form-control" value="0">
                                     </div>
                                     <div class="form-group">
-                                        <label for="parcela-edita">Valor da parcela da instituto regular:</label>
+                                        <label for="parcela-edita-instituto-reg">Valor da parcela da instituto regular:</label>
                                         <input type="text" name="parcela-instituto-reg" id="parcela-edita-instituto-reg" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                                title="A parcela deve ser um número real"
@@ -2271,14 +2290,14 @@
                                 </span>
                                 <span id="cursoIntensivo" name="cursoIntensivo">
                                     <div class="form-group">
-                                        <label for="inscricao-edita">Preço de inscrição da instituto intensivo:</label>
+                                        <label for="inscricao-edita-instituto-int">Preço de inscrição da instituto intensivo:</label>
                                         <input type="text" name="inscricao-instituto-int" id="inscricao-edita-instituto-int" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Inscrição"
                                                title="O valor de inscrição deve ser um número real"
                                                class="form-control" value="0">
                                     </div>
                                     <div class="form-group">
-                                        <label for="parcela-edita">Valor da parcela da instituto intensivo:</label>
+                                        <label for="parcela-edita-instituto-int">Valor da parcela da instituto intensivo:</label>
                                         <input type="text" name="parcela-instituto-int" id="parcela-edita-instituto-int" required
                                                pattern="^[0-9]*\.?[0-9]+$" placeholder="Parcela do curso"
                                                title="A parcela deve ser um número real"
