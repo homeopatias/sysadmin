@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Tempo de geração: 27/02/2015 às 21:17
+-- Tempo de geração: 27/02/2015 às 21:20
 -- Versão do servidor: 5.5.41-0ubuntu0.14.10.1
 -- Versão do PHP: 5.5.12-2ubuntu4.2
 
