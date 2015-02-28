@@ -43,7 +43,8 @@
                 $textoQuery  = "SELECT idCidade, UF, nome, ano FROM Cidade WHERE
                                 CURDATE() < limiteInscricao AND 
                                 tipo_curso = '" .$aluno->getTipoCurso(). "' 
-                                OR tipo_curso = 'ambos' ORDER BY ano DESC, nome ASC";
+                                OR tipo_curso = 'todos' AND modalidadeCidade = '".
+                                $aluno->getModalidadeCurso."' ORDER BY ano DESC, nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);

@@ -43,7 +43,7 @@
                                 FROM Cidade WHERE
                                 CURDATE() < limiteInscricao AND 
                                 tipo_curso = '" .$aluno->getTipoCurso(). "' 
-                                OR tipo_curso = 'ambos' ORDER BY ano DESC, nome ASC";
+                                OR tipo_curso = 'todos' ORDER BY ano DESC, nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -117,11 +117,14 @@
                 var ano = (new Date).getFullYear();
 
                 cidadeMat.find('option').remove().end();
+
                 if(modalidades.val() === "regular"){
+
                     if(cidades[ano]){
 
                         cidades[ano].forEach(function(cidade){
-                            if(cidade.modalidade == "regular"){
+                            if(cidade.modalidade == "regular" || 
+                                cidade.modalidade == "ambos"){
 
                                 cidadeMat.append('<option value="' + cidade.id + '">' + 
                                     cidade.nome + "/"
@@ -130,10 +133,11 @@
                             
                         });
                     }
-                }else if(modalidades.val() === "pos"){
+                }else if(modalidades.val() === "intensivo"){
                     if(cidades[ano]){
                         cidades[ano].forEach(function(cidade){
-                            if(cidade.modalidade == "pos"){
+                            if(cidade.modalidade == "intensivo"|| 
+                                cidade.modalidade == "ambos"){
                                 $("#cidadeMat")
                                 .append('<option value="' + cidade.id + '">' + cidade.nome + "/"
                                         + cidade.uf + '</option>')
@@ -196,7 +200,7 @@
                     $modalidade     = $_POST["modalidade_curso"];
 
 
-                    if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") {                  
+                    if(unserialize($_SESSION['usuario'])->getTipoCurso() !== "pos" ) {                  
                         $escolaridade   = $_POST["escolaridade"];
                         $curso          = $_POST["curso"];
                     }
@@ -359,7 +363,7 @@
                     if($cidadeMatValida) {
                         $textoQuery  = "SELECT idCidade FROM Cidade
                                         WHERE idCidade = ? AND ano = YEAR(CURDATE())
-                                        AND modalidadeCidade = ?";
+                                        AND modalidadeCidade = ? OR modalidadeCidade = 'ambos'";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -438,7 +442,7 @@
 
                             //pega as parcelas de acordo com tipo e modalidade
                             //do aluno
-                            if($aluno->getTipoCurso() == "extensao"){
+                            if($aluno->getTipoCurso() === "extensao"){
                                 if($modalidade == "regular"){
                                     $textoQuery .= "C.inscricao_extensao_regular
                                                     as inscricao,
@@ -451,7 +455,7 @@
                                                     C.parcela_extensao_intensivo
                                                     as parcela";
                                 }
-                            }else if($aluno->getTipoCurso() == "pos"){
+                            }else if($aluno->getTipoCurso() === "pos"){
                                 if($modalidade == "regular"){
                                     $textoQuery .= "C.inscricao_pos_regular
                                                     as inscricao,
@@ -464,7 +468,7 @@
                                                     C.parcela_pos_intensivo
                                                     as parcela";
                                 }
-                            }else if($aluno->getTipoCurso() == "instituto"){
+                            }else if($aluno->getTipoCurso() === "instituto"){
                                 if($modalidade == "regular"){
                                     $textoQuery .= "C.inscricao_instituto_regular
                                                     as inscricao,
@@ -565,7 +569,9 @@
                                         $queryMoodle = "INSERT INTO mdl_user_enrolments
                                                         (status,enrolid,userid,timecreated,
                                                          timemodified) VALUES (0,";
-                                        $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "4" : "1");
+                                        $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "4" 
+                                                                : $aluno->getTipoCurso() === "extensao" ? "1"
+                                                                                                        : "22");
                                         $queryMoodle .= ",?,NOW(),NOW())";
 
 
@@ -577,7 +583,9 @@
                                             $queryMoodle = "INSERT INTO mdl_role_assignments
                                                             (roleid,contextid,userid,timemodified)
                                                             VALUES (5,";
-                                            $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "26" : "18");
+                                            $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "26" 
+                                                                : $aluno->getTipoCurso() === "extensao" ? "18"
+                                                                                                        : "87");
                                             $queryMoodle .= ",?,NOW())";
 
 
@@ -846,7 +854,7 @@
                             </div>
                             
                         </div>
-                        <?php if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") { ?>
+                        <?php if(unserialize($_SESSION['usuario'])->getTipoCurso() !== "pos") { ?>
 
                         <div class="form-group">
                             <label for="escolaridade-novo">Nível de escolaridade:</label>
