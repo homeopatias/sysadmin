@@ -227,9 +227,52 @@
                         // agora tentamos criar os pagamentos
 
                         // pega os valores de inscrição e parcelas da cidade
-                        $textoQuery = "SELECT C.nome, C.idCidade,C.ano, C.v_inscricao_extensao, C.v_parcela_extensao,
-                                              C.v_inscricao_pos, C.v_parcela_pos
-                                       FROM Cidade C, Matricula M
+                        $textoQuery = "SELECT C.nome, C.idCidade,C.ano, ";
+
+                        //pega as parcelas de acordo com tipo e modalidade
+                        //do aluno
+                        if($aluno->getTipoCurso() === "extensao"){
+                            if($aluno->getModalidadeCurso() == "regular"){
+                                $textoQuery .= "C.inscricao_extensao_regular
+                                                as inscricao,
+                                                C.parcela_extensao_regular
+                                                as parcela";
+                            }
+                            if($aluno->getModalidadeCurso() == "intensivo"){
+                                $textoQuery .= "C.inscricao_extensao_intensivo
+                                                as inscricao,
+                                                C.parcela_extensao_intensivo
+                                                as parcela";
+                            }
+                        }else if($aluno->getTipoCurso() === "pos"){
+                            if($aluno->getModalidadeCurso() == "regular"){
+                                $textoQuery .= "C.inscricao_pos_regular
+                                                as inscricao,
+                                                C.parcela_pos_regular
+                                                as parcela";
+                            }
+                            if($aluno->getModalidadeCurso() == "intensivo"){
+                                $textoQuery .= "C.inscricao_pos_intensivo
+                                                as inscricao,
+                                                C.parcela_pos_intensivo
+                                                as parcela";
+                            }
+                        }else if($aluno->getTipoCurso() === "instituto"){
+                            if($aluno->getModalidadeCurso() == "regular"){
+                                $textoQuery .= "C.inscricao_instituto_regular
+                                                as inscricao,
+                                                C.parcela_instituto_regular
+                                                as parcela";
+                            }
+                            if($aluno->getModalidadeCurso() == "intensivo"){
+                                $textoQuery .= "C.inscricao_instituto_intensivo
+                                                as inscricao,
+                                                C.parcela_instituto_intensivo
+                                                as parcela";
+                            }
+                        }
+
+                        $textoQuery .= " FROM Cidade C, Matricula M
                                        WHERE C.idCidade = M.chaveCidade AND
                                        M.idMatricula = ?";
 
@@ -245,13 +288,8 @@
                         $sucessoPgto = false;
 
                         if($linha = $query->fetch()){
-                            if($aluno->getTipoCurso() == "extensao"){
-                                $precoInscricao = $linha["v_inscricao_extensao"];
-                                $precoParcela = $linha["v_parcela_extensao"];
-                            }else{
-                                $precoInscricao = $linha["v_inscricao_pos"];
-                                $precoParcela = $linha["v_parcela_pos"];
-                            }
+                            $precoInscricao = $linha["inscricao"];
+                            $precoParcela = $linha["parcela"];
                             for($i = 0; $i < 12; $i++){
 
                                 if($i == 0){ // parcela numero 0 será considerada valor da
