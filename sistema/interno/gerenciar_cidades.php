@@ -159,10 +159,10 @@
                     $(this).find('#inscricao-edita-pos-int').val(
                         $(e.relatedTarget).data('insc-pos-int')
                     );
-                    $(this).find('#inscricao-edita-ins-reg').val(
+                    $(this).find('#inscricao-edita-instituto-reg').val(
                         $(e.relatedTarget).data('insc-ins-reg')
                     );
-                    $(this).find('#inscricao-edita-ins-int').val(
+                    $(this).find('#inscricao-edita-instituto-int').val(
                         $(e.relatedTarget).data('insc-ins-int')
                     );
 
@@ -178,10 +178,10 @@
                     $(this).find('#parcela-edita-pos-int').val(
                         $(e.relatedTarget).data('parc-pos-int')
                     );
-                    $(this).find('#parcela-edita-ins-reg').val(
+                    $(this).find('#parcela-edita-instituto-reg').val(
                         $(e.relatedTarget).data('parc-ins-reg')
                     );
-                    $(this).find('#parcela-edita-ins-int').val(
+                    $(this).find('#parcela-edita-instituto-int').val(
                         $(e.relatedTarget).data('parc-ins-int')
                     );
 
