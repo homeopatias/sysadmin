@@ -76,7 +76,55 @@ if($adminValido){
         $query->bindParam(3, $idMatricula);
         $sucessoMatricula = $query->execute();
 
-        $sql = "SELECT precoInscricao, precoParcela FROM Cidade WHERE idCidade = ?";
+        $sql  = "SELECT ";
+
+        //pega as parcelas de acordo com tipo e modalidade
+        //do aluno
+        $aluno = new Aluno("");
+        $aluno->setNumeroInscricao($_POST["idaluno"]);
+        $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
+
+        if($aluno->getTipoCurso() === "extensao"){
+            if($modalidade == "regular"){
+                $sql .= "C.inscricao_extensao_regular
+                                as inscricao,
+                                C.parcela_extensao_regular
+                                as parcela";
+            }
+            if($modalidade == "intensivo"){
+                $sql .= "C.inscricao_extensao_intensivo
+                                as inscricao,
+                                C.parcela_extensao_intensivo
+                                as parcela";
+            }
+        }else if($aluno->getTipoCurso() === "pos"){
+            if($modalidade == "regular"){
+                $sql .= "C.inscricao_pos_regular
+                                as inscricao,
+                                C.parcela_pos_regular
+                                as parcela";
+            }
+            if($modalidade == "intensivo"){
+                $sql .= "C.inscricao_pos_intensivo
+                                as inscricao,
+                                C.parcela_pos_intensivo
+                                as parcela";
+            }
+        }else if($aluno->getTipoCurso() === "instituto"){
+            if($modalidade == "regular"){
+                $sql .= "C.inscricao_instituto_regular
+                                as inscricao,
+                                C.parcela_instituto_regular
+                                as parcela";
+            }
+            if($modalidade == "intensivo"){
+                $sql .= "C.inscricao_instituto_intensivo
+                                as inscricao,
+                                C.parcela_instituto_intensivo
+                                as parcela";
+            }
+        }
+        $sql .= " FROM Cidade WHERE idCidade = ?";
         $query  = $conexao->prepare($sql);
         $query->bindParam(1, $idCidade);
         $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -85,8 +133,8 @@ if($adminValido){
         $precoParcela = -1;
         
         if ($linha = $query->fetch()) {
-            $precoInscricao = $linha['precoInscricao'];
-            $precoParcela = $linha['precoParcela'];
+            $precoInscricao = $linha['inscricao'];
+            $precoParcela = $linha['parcela'];
         } else {
             $sucessoCriaPgto = false;
         }

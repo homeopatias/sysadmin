@@ -44,7 +44,7 @@
                                 CURDATE() < limiteInscricao AND 
                                 tipo_curso = '" .$aluno->getTipoCurso(). "' 
                                 OR tipo_curso = 'todos' AND modalidadeCidade = '".
-                                $aluno->getModalidadeCurso."' ORDER BY ano DESC, nome ASC";
+                                $aluno->getModalidadeCurso()."' ORDER BY ano DESC, nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -567,8 +567,52 @@
                         // agora tentamos criar os pagamentos
 
                         // pega os valores de inscrição e parcelas da cidade
-                        $textoQuery = "SELECT C.precoInscricao, C.precoParcela, C.ano
-                                       FROM Cidade C, Matricula M
+                        $textoQuery = "SELECT C.ano, ";
+
+                        //pega as parcelas de acordo com tipo e modalidade
+                            //do aluno
+                            if($aluno->getTipoCurso() === "extensao"){
+                                if($aluno->getModalidadeCurso() == "regular"){
+                                    $textoQuery .= "C.inscricao_extensao_regular
+                                                    as inscricao,
+                                                    C.parcela_extensao_regular
+                                                    as parcela";
+                                }
+                                if($aluno->getModalidadeCurso() == "intensivo"){
+                                    $textoQuery .= "C.inscricao_extensao_intensivo
+                                                    as inscricao,
+                                                    C.parcela_extensao_intensivo
+                                                    as parcela";
+                                }
+                            }else if($aluno->getTipoCurso() === "pos"){
+                                if($aluno->getModalidadeCurso() == "regular"){
+                                    $textoQuery .= "C.inscricao_pos_regular
+                                                    as inscricao,
+                                                    C.parcela_pos_regular
+                                                    as parcela";
+                                }
+                                if($aluno->getModalidadeCurso() == "intensivo"){
+                                    $textoQuery .= "C.inscricao_pos_intensivo
+                                                    as inscricao,
+                                                    C.parcela_pos_intensivo
+                                                    as parcela";
+                                }
+                            }else if($aluno->getTipoCurso() === "instituto"){
+                                if($aluno->getModalidadeCurso() == "regular"){
+                                    $textoQuery .= "C.inscricao_instituto_regular
+                                                    as inscricao,
+                                                    C.parcela_instituto_regular
+                                                    as parcela";
+                                }
+                                if($aluno->getModalidadeCurso() == "intensivo"){
+                                    $textoQuery .= "C.inscricao_instituto_intensivo
+                                                    as inscricao,
+                                                    C.parcela_instituto_intensivo
+                                                    as parcela";
+                                }
+                            }
+
+                        $textoQuery .= " FROM Cidade C, Matricula M
                                        WHERE C.idCidade = M.chaveCidade AND
                                        M.idMatricula = ?";
 
@@ -592,19 +636,20 @@
                                                     (`chaveMatricula`, `numParcela`, `ValorTotal`, `ValorPago`, 
                                                         `desconto`, `fechado`,`ano`) 
                                                     VALUES (?, '0', ?, '0', '0', '0', ?) ";
-                                    $insertArray  = array($idUltimaMatricula, $linha["precoInscricao"], $linha["ano"]);
+                                    $insertArray  = array($idUltimaMatricula, $linha["inscricao"], $linha["ano"]);
 
                                 } 
                                 else{
                                     $queryInsert    .= " , (?, ?, ?, '0', '0', '0', ?) ";
                                     $insertArray[]  = $idUltimaMatricula;
                                     $insertArray[]  = $i;
-                                    $insertArray[]  = $linha["precoParcela"];
+                                    $insertArray[]  = $linha["parcela"];
                                     $insertArray[]  = $linha["ano"];
                                 }
                             }
                             $query = $conexao->prepare($queryInsert);
                             $sucessoPgto = $query->execute($insertArray);
+
                         } else {
                             // a cidade não foi encontrada, cancela
                             $conexao->rollBack();
