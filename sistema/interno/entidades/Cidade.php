@@ -29,10 +29,19 @@ class Cidade{
     private $custoCurso;
     private $cadastroAtivo;
     private $tipoCurso;
-    private $parcelaExtensao;
-    private $parcelaPos;
-    private $inscricaoExtensao;
-    private $inscricaoPos;
+    private $modalidadeCidade;
+    private $parcelaExtensaoRegular;
+    private $parcelaPosRegular;
+    private $parcelaExtensaoIntensivo;
+    private $parcelaPosIntensivo;
+    private $parcelaInstitutoRegular;
+    private $parcelaInstitutoIntensivo;
+    private $inscricaoExtensaoRegular;
+    private $inscricaoPosRegular;
+    private $inscricaoExtensaoIntensivo;
+    private $inscricaoPosIntensivo;
+    private $inscricaoInstitutoRegular;
+    private $inscricaoInstitutoIntensivo; 
 
     // Construtor
     public function __construct(){
@@ -48,10 +57,19 @@ class Cidade{
         $this->custoCurso      = 0;
         $this->cadastroAtivo   = 1;
         $this->tipoCurso       = "";
-        $this->parcelaExtensao = 0;
-        $this->parcelaPos      = 0;
-        $this->inscricaoExtensao = 0;
-        $this->inscricaoPos      = 0;
+        $this->modalidadeCidade = "";
+        $this->parcelaExtensaoRegular       = 0;
+        $this->parcelaPosRegular            = 0;
+        $this->parcelaExtensaoIntensivo     = 0;
+        $this->parcelaPosIntensivo          = 0;
+        $this->parcelaInstitutoRegular      = 0;
+        $this->parcelaInstitutoIntensivo    = 0;
+        $this->inscricaoExtensaoRegular     = 0;
+        $this->inscricaoPosRegular          = 0;
+        $this->inscricaoExtensaoIntensivo   = 0;
+        $this->inscricaoPosIntensivo        = 0;
+        $this->inscricaoInstitutoRegular    = 0;
+        $this->inscricaoInstitutoIntensivo  = 0;
     }
 
 
@@ -74,8 +92,12 @@ class Cidade{
 
         $textoQuery  = "SELECT idCidade, UF, ano, nome, idCoordenador, local, 
                         limiteInscricao, nomeEmpresa, cnpjEmpresa, custoCurso,
-                        cadastro_ativo, tipo_curso, v_parcela_extensao, v_parcela_pos, 
-                        v_inscricao_extensao, v_inscricao_pos
+                        cadastro_ativo, tipo_curso, modalidadeCidade, parcela_extensao_regular, 
+                        parcela_extensao_intensivo, parcela_pos_regular, parcela_pos_intensivo,
+                        inscricao_extensao_regular, inscricao_extensao_intensivo,
+                        inscricao_pos_regular, inscricao_pos_intensivo, 
+                        inscricao_instituto_regular, inscricao_instituto_intensivo,
+                        parcela_instituto_regular, parcela_instituto_intensivo
                         FROM Cidade WHERE idCidade = ?";
 
         $query = $conexao->prepare($textoQuery);
@@ -96,10 +118,20 @@ class Cidade{
             $this->custoCurso        = $linha["custoCurso"];
             $this->cadastroAtivo     = $linha["cadastro_ativo"];
             $this->tipoCurso         = $linha["tipo_curso"];
-            $this->parcelaExtensao   = $linha["v_parcela_extensao"];
-            $this->parcelaPos        = $linha["v_parcela_pos"];
-            $this->inscricaoExtensao = $linha["v_inscricao_extensao"];
-            $this->inscricaoPos      = $linha["v_inscricao_pos"];
+            $this->modalidadeCidade   = $linha["modalidadeCidade"];
+
+            $this->parcelaExtensaoRegular       = $linha["parcela_extensao_regular"];
+            $this->parcelaPosRegular            = $linha["parcela_pos_regular"];
+            $this->parcelaExtensaoIntensivo     = $linha["parcela_extensao_intensivo"];
+            $this->parcelaPosIntensivo          = $linha["parcela_pos_intensivo"];
+            $this->parcelaInstitutoRegular      = $linha["parcela_instituto_regular"];
+            $this->parcelaInstitutoIntensivo    = $linha["parcela_instituto_intensivo"];
+            $this->inscricaoExtensaoRegular     = $linha["inscricao_extensao_regular"];
+            $this->inscricaoPosRegular          = $linha["inscricao_pos_regular"];
+            $this->inscricaoExtensaoIntensivo   = $linha["inscricao_extensao_intensivo"];
+            $this->inscricaoPosIntensivo        = $linha["inscricao_pos_intensivo"];
+            $this->inscricaoInstitutoRegular    = $linha["inscricao_intituto_regular"];
+            $this->inscricaoInstitutoIntensivo  = $linha["inscricao_instituto_intensivo"];
 
 
             $this->setCoordenadorId($linha["idCoordenador"]);
@@ -150,13 +182,23 @@ class Cidade{
                          $this->local,
                          date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
                          $this->nomeEmpresa, $this->cnpjEmpresa, $this->custoCurso,
-                         $this->cadastroAtivo, $this->tipoCurso, $this->inscricaoExtensao,
-                         $this->inscricaoPos, $this->parcelaExtensao, $this->parcelaPos);
+                         $this->cadastroAtivo, $this->tipoCurso, $this->modalidadeCidade,
+                         $this->parcelaExtensaoRegular, $this->parcelaPosRegular,
+                         $this->parcelaExtensaoIntensivo, $this->parcelaPosIntensivo,
+                         $this->parcelaInstitutoRegular, $this->parcelaInstitutoIntensivo,  
+                         $this->inscricaoExtensaoRegular, $this->inscricaoPosRegular,
+                         $this->inscricaoExtensaoIntensivo, $this->inscricaoPosIntensivo,
+                         $this->inscricaoInstitutoRegular, $this->inscricaoInstitutoIntensivo);
         $textoQuery  = "INSERT INTO Cidade (UF, ano, nome, idCoordenador, local, 
                         limiteInscricao, nomeEmpresa,
-                        cnpjEmpresa,custoCurso, cadastro_ativo,tipo_curso,
-                        v_inscricao_extensao, v_inscricao_pos, v_parcela_extensao,
-                        v_parcela_pos) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                        cnpjEmpresa,custoCurso, cadastro_ativo,tipo_curso,modalidadeCidade,
+                        parcela_extensao_regular, parcela_pos_regular, parcela_extensao_intensivo,
+                        parcela_pos_intensivo, parcela_instituto_regular, 
+                        parcela_instituto_intensivo, inscricao_extensao_regular,
+                        inscricao_pos_regular, inscricao_extensao_intensivo, 
+                        inscricao_pos_intensivo, inscricao_instituto_regular,
+                        inscricao_instituto_intensivo
+                        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $query  = $conexao->prepare($textoQuery);
         $sucesso = $query->execute($dados);
 
@@ -186,14 +228,25 @@ class Cidade{
 
         $comando  = "UPDATE Cidade SET UF=?, nome=?, idCoordenador=?,
                      limiteInscricao=?, cadastro_ativo =?,
-                     tipo_curso=?, v_inscricao_extensao =?, v_inscricao_pos=?,
-                     v_parcela_extensao=?, v_parcela_pos=? WHERE idCidade = ?";
+                     tipo_curso=?, modalidadeCidade=?,
+                      parcela_extensao_regular=?, parcela_pos_regular=?, 
+                      parcela_extensao_intensivo=?,
+                      parcela_pos_intensivo=?, parcela_instituto_regular=?, 
+                      parcela_instituto_intensivo=?, inscricao_extensao_regular=?,
+                      inscricao_pos_regular=?, inscricao_extensao_intensivo=?, 
+                      inscricao_pos_intensivo=?, inscricao_instituto_regular=?,
+                      inscricao_instituto_intensivo=? WHERE idCidade = ?";
         $query = $conexao->prepare($comando);
         $dados  = array($this->UF, $this->nome, $this->coordenador->getIdAdmin(),
                         date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
-                        $this->cadastroAtivo, $this->tipoCurso, 
-                        $this->inscricaoExtensao, $this->inscricaoPos, $this->parcelaExtensao, 
-                        $this->parcelaPos, $this->idCidade);
+                        $this->cadastroAtivo, $this->tipoCurso,$this->modalidadeCidade,
+                         $this->parcelaExtensaoRegular, $this->parcelaPosRegular,
+                         $this->parcelaExtensaoIntensivo, $this->parcelaPosIntensivo,
+                         $this->parcelaInstitutoRegular, $this->parcelaInstitutoIntensivo,  
+                         $this->inscricaoExtensaoRegular, $this->inscricaoPosRegular,
+                         $this->inscricaoExtensaoIntensivo, $this->inscricaoPosIntensivo,
+                         $this->inscricaoInstitutoRegular, $this->inscricaoInstitutoIntensivo,
+                         $this->idCidade);
         $sucesso = $query->execute($dados);
 
         // Encerramos a conexão com o BD
@@ -202,6 +255,7 @@ class Cidade{
         return $sucesso;
     }
 
+    // Getters e Setters
     public function getIdCidade()
     {
         return $this->idCidade;
@@ -395,6 +449,7 @@ class Cidade{
 
         return $this;
     }
+
     public function getInscricaoPos()
     {
         return $this->inscricaoPos;
@@ -429,5 +484,163 @@ class Cidade{
         return $this;
     }
 
+    public function getModalidadeCidade()
+    {
+        return $this->modalidadeCidade;
+    }
+
+    public function setModalidadeCidade($modalidadeCidade)
+    {
+        $this->modalidadeCidade = $modalidadeCidade;
+
+        return $this;
+    }
+
+    public function getParcelaExtensaoRegular()
+    {
+        return $this->parcelaExtensaoRegular;
+    }
+
+    public function setParcelaExtensaoRegular($parcelaExtensaoRegular)
+    {
+        $this->parcelaExtensaoRegular = $parcelaExtensaoRegular;
+
+        return $this;
+    }
+
+    public function getParcelaPosRegular()
+    {
+        return $this->parcelaPosRegular;
+    }
+
+    public function setParcelaPosRegular($parcelaPosRegular)
+    {
+        $this->parcelaPosRegular = $parcelaPosRegular;
+
+        return $this;
+    }
+
+    public function getParcelaExtensaoIntensivo()
+    {
+        return $this->parcelaExtensaoIntensivo;
+    }
+
+    public function setParcelaExtensaoIntensivo($parcelaExtensaoIntensivo)
+    {
+        $this->parcelaExtensaoIntensivo = $parcelaExtensaoIntensivo;
+
+        return $this;
+    }
+
+    public function getParcelaPosIntensivo()
+    {
+        return $this->parcelaPosIntensivo;
+    }
+
+    public function setParcelaPosIntensivo($parcelaPosIntensivo)
+    {
+        $this->parcelaPosIntensivo = $parcelaPosIntensivo;
+
+        return $this;
+    }
+
+    public function getInscricaoExtensaoRegular()
+    {
+        return $this->inscricaoExtensaoRegular;
+    }
+
+    public function setInscricaoExtensaoRegular($inscricaoExtensaoRegular)
+    {
+        $this->inscricaoExtensaoRegular = $inscricaoExtensaoRegular;
+
+        return $this;
+    }
+
+    public function getInscricaoPosRegular()
+    {
+        return $this->inscricaoPosRegular;
+    }
+
+    public function setInscricaoPosRegular($inscricaoPosRegular)
+    {
+        $this->inscricaoPosRegular = $inscricaoPosRegular;
+
+        return $this;
+    }
+
+    public function getInscricaoExtensaoIntensivo()
+    {
+        return $this->inscricaoExtensaoIntensivo;
+    }
+
+    public function setInscricaoExtensaoIntensivo($inscricaoExtensaoIntensivo)
+    {
+        $this->inscricaoExtensaoIntensivo = $inscricaoExtensaoIntensivo;
+
+        return $this;
+    }
+
+    public function getInscricaoPosIntensivo()
+    {
+        return $this->inscricaoPosIntensivo;
+    }
+
+    public function setInscricaoPosIntensivo($inscricaoPosIntensivo)
+    {
+        $this->inscricaoPosIntensivo = $inscricaoPosIntensivo;
+
+        return $this;
+    }
+
+    public function getInscricaoInstitutoRegular()
+    {
+        return $this->inscricaoInstitutoRegular;
+    }
+
+    public function setInscricaoInstitutoRegular($inscricaoInstitutoRegular)
+    {
+        $this->inscricaoInstitutoRegular = $inscricaoInstitutoRegular;
+
+        return $this;
+    }
+
+    public function getInscricaoInstitutoIntensivo()
+    {
+        return $this->inscricaoInstitutoIntensivo;
+    }
+
+    public function setInscricaoInstitutoIntensivo($inscricaoInstitutoIntensivo)
+    {
+        $this->inscricaoInstitutoIntensivo = $inscricaoInstitutoIntensivo;
+
+        return $this;
+    }
+
+
+    public function getParcelaInstitutoRegular()
+    {
+        return $this->parcelaInstitutoRegular;
+    }
+
+
+    public function setParcelaInstitutoRegular($parcelaInstitutoRegular)
+    {
+        $this->parcelaInstitutoRegular = $parcelaInstitutoRegular;
+
+        return $this;
+    }
+
+
+    public function getParcelaInstitutoIntensivo()
+    {
+        return $this->parcelaInstitutoIntensivo;
+    }
+
+    public function setParcelaInstitutoIntensivo($parcelaInstitutoIntensivo)
+    {
+        $this->parcelaInstitutoIntensivo = $parcelaInstitutoIntensivo;
+
+        return $this;
+    }
 }
 ?>

@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Tempo de geração: 12/02/2015 às 20:53
+-- Tempo de geração: 26/02/2015 às 21:01
 -- Versão do servidor: 5.5.41-0ubuntu0.14.10.1
--- Versão do PHP: 5.5.12-2ubuntu4.1
+-- Versão do PHP: 5.5.12-2ubuntu4.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
   `tipo_curso` enum('extensao','pos','','') NOT NULL COMMENT 'tipo de curso do aluno',
   `tipo_cadastro` enum('instituto','faculdade inspirar') NOT NULL COMMENT 'tipo de cadastro do aluno',
   `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da extensão que já enviaram os documentos)'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=25 ;
 
 --
 -- Fazendo dump de dados para tabela `Aluno`
@@ -224,31 +224,40 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
   `nomeEmpresa` varchar(100) NOT NULL COMMENT 'Nome da empresa responsável por essa cidade',
   `cnpjEmpresa` char(14) NOT NULL COMMENT 'CNPJ da empresa responsável por essa cidade',
   `custoCurso` float NOT NULL COMMENT 'valor de custo para abertura do curso',
-  `tipo_curso` enum('extensao','pos','ambos') NOT NULL COMMENT 'Tipos de curso oferecidos na cidade',
+  `tipo_curso` enum('extensao','pos','instituto','todos') NOT NULL COMMENT 'Tipos de curso oferecidos na cidade',
+  `modalidadeCidade` enum('regular','intensivo','ambos','') NOT NULL COMMENT 'Modalidades disponíveis na cidade',
   `cadastro_ativo` tinyint(4) NOT NULL COMMENT 'Bool que indica se o cadastro da cidade está ativo ou não',
-  `v_parcela_extensao` float NOT NULL DEFAULT '0' COMMENT 'Preço da inscrição de extensão na cidade',
-  `v_inscricao_extensao` float NOT NULL COMMENT 'Preço da parcela de extensão na cidade',
-  `v_parcela_pos` float NOT NULL COMMENT 'Preço da inscrição de pos na cidade',
-  `v_inscricao_pos` float NOT NULL COMMENT 'Preço da parcela de pos na cidade'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=13 ;
+  `parcela_extensao_regular` float NOT NULL DEFAULT '0' COMMENT 'Preço da inscrição de extensão na cidade',
+  `inscricao_extensao_regular` float NOT NULL DEFAULT '0' COMMENT 'Preço da parcela de extensão na cidade',
+  `parcela_extensao_intensivo` float NOT NULL DEFAULT '0',
+  `inscricao_extensao_intensivo` float NOT NULL DEFAULT '0',
+  `parcela_pos_regular` float NOT NULL DEFAULT '0' COMMENT 'Preço da inscrição de pos na cidade',
+  `inscricao_pos_regular` float NOT NULL DEFAULT '0' COMMENT 'Preço da parcela de pos na cidade',
+  `parcela_pos_intensivo` float NOT NULL DEFAULT '0',
+  `inscricao_pos_intensivo` float NOT NULL DEFAULT '0',
+  `inscricao_instituto_regular` float NOT NULL DEFAULT '0',
+  `parcela_instituto_regular` float NOT NULL DEFAULT '0',
+  `inscricao_instituto_intensivo` float NOT NULL DEFAULT '0',
+  `parcela_instituto_intensivo` float NOT NULL DEFAULT '0'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=17 ;
 
 --
 -- Fazendo dump de dados para tabela `Cidade`
 --
 
-INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`, `precoInscricao`, `precoParcela`, `limiteInscricao`, `nomeEmpresa`, `cnpjEmpresa`, `custoCurso`, `tipo_curso`, `cadastro_ativo`, `v_parcela_extensao`, `v_inscricao_extensao`, `v_parcela_pos`, `v_inscricao_pos`) VALUES
-(1, 'MG', 2014, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 100, 30, '2014-05-02', 'Homeobrás', '56667868000102', 7500.5, 'ambos', 1, 150, 155, 150, 200),
-(2, 'RJ', 2014, 'Rio de Janeiro', 2, 'Faculdade de odontologia da UFRJ', 90, 85, '2014-05-02', 'Homeobrás', '56667868000102', 6750, 'extensao', 0, 0, 0, 0, 0),
-(3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750, 'extensao', 0, 0, 0, 0, 0),
-(4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000, 'extensao', 0, 0, 0, 0, 0),
-(5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0, 'extensao', 0, 0, 0, 0, 0),
-(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0, 'extensao', 1, 200, 150, 120, 120),
-(7, 'MG', 2014, 'Contagem', 3, 'Curso Homeopático Contagem', 300, 220, '2014-07-07', 'Curso Homeopático Contagem', '44732943000184', 0, 'extensao', 0, 0, 0, 0, 0),
-(8, 'TO', 2014, 'Palmas', 3, 'UFT', 300, 170, '2014-02-11', 'UFT', '65563135000100', 0, 'extensao', 0, 0, 0, 0, 0),
-(9, 'RN', 2014, 'Natal', 3, 'UFRN', 300, 220, '2014-03-12', 'UFRN', '27266655000162', 0, 'extensao', 0, 0, 0, 0, 0),
-(10, 'PA', 2014, 'Belém', 3, 'Homeopatias Paraense', 250, 220, '2014-05-11', 'Homeopatias Paraense', '37156271000140', 0, 'extensao', 0, 0, 0, 0, 0),
-(11, 'MG', 2015, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 250, 220, '2015-03-05', 'Faculdade de odontologia da UFMG', '56667868000102', 0, 'extensao', 1, 150, 300, 0, 0),
-(12, 'MG', 2015, 'teste', 2, 'Homeos', 0, 0, '2015-03-15', 'Homep', '77974602000174', 15000, 'ambos', 1, 150, 200, 200, 250);
+INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`, `precoInscricao`, `precoParcela`, `limiteInscricao`, `nomeEmpresa`, `cnpjEmpresa`, `custoCurso`, `tipo_curso`, `modalidadeCidade`, `cadastro_ativo`, `parcela_extensao_regular`, `inscricao_extensao_regular`, `parcela_extensao_intensivo`, `inscricao_extensao_intensivo`, `parcela_pos_regular`, `inscricao_pos_regular`, `parcela_pos_intensivo`, `inscricao_pos_intensivo`, `inscricao_instituto_regular`, `parcela_instituto_regular`, `inscricao_instituto_intensivo`, `parcela_instituto_intensivo`) VALUES
+(1, 'MG', 2014, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 100, 30, '2014-05-02', 'Homeobrás', '56667868000102', 7500.5, '', 'regular', 1, 150, 155, 0, 0, 150, 200, 0, 0, 0, 0, 0, 0),
+(2, 'RJ', 2014, 'Rio de Janeiro', 2, 'Faculdade de odontologia da UFRJ', 90, 85, '2014-05-02', 'Homeobrás', '56667868000102', 6750, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0, 'extensao', 'regular', 1, 200, 150, 0, 0, 120, 120, 0, 0, 0, 0, 0, 0),
+(7, 'MG', 2014, 'Contagem', 3, 'Curso Homeopático Contagem', 300, 220, '2014-07-07', 'Curso Homeopático Contagem', '44732943000184', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(8, 'TO', 2014, 'Palmas', 3, 'UFT', 300, 170, '2014-02-11', 'UFT', '65563135000100', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(9, 'RN', 2014, 'Natal', 3, 'UFRN', 300, 220, '2014-03-12', 'UFRN', '27266655000162', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(10, 'PA', 2014, 'Belém', 3, 'Homeopatias Paraense', 250, 220, '2014-05-11', 'Homeopatias Paraense', '37156271000140', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(11, 'MG', 2015, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 250, 220, '2015-03-05', 'Faculdade de odontologia da UFMG', '56667868000102', 0, 'extensao', 'regular', 1, 150, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(12, 'MG', 2015, 'teste', 2, 'Homeos', 0, 0, '2015-03-15', 'Homep', '77974602000174', 15000, '', 'regular', 1, 150, 200, 0, 0, 200, 250, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1151,7 +1160,7 @@ MODIFY `idAdmin` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico do
 -- AUTO_INCREMENT de tabela `Aluno`
 --
 ALTER TABLE `Aluno`
-MODIFY `numeroInscricao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Numero de inscricao do aluno',AUTO_INCREMENT=26;
+MODIFY `numeroInscricao` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Numero de inscricao do aluno',AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT de tabela `Artigo`
 --
@@ -1171,7 +1180,7 @@ MODIFY `idAula` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de 
 -- AUTO_INCREMENT de tabela `Cidade`
 --
 ALTER TABLE `Cidade`
-MODIFY `idCidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de cidade',AUTO_INCREMENT=13;
+MODIFY `idCidade` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador unico de cidade',AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT de tabela `Compra`
 --
