@@ -24,28 +24,30 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $senhaBD = $dados["senha"];
 
         // validamos todos os dados recebidos
-        $insc           = $_POST["insc"];
-        $id             = $_POST["id"];
-        $nome           = $_POST["nome"];
-        $cpf            = $_POST["cpf"];
-        $email          = $_POST["email"];
-        $login          = $_POST["login"];
-        $status         = $_POST["status"];
-        $loginIndicador = $_POST["indicador"];
-        $telefone       = $_POST["telefone"];
-        $escolaridade   = $_POST["escolaridade"];
-        $curso          = $_POST["curso"];
-        $cep            = $_POST["cep"];
-        $rua            = $_POST["rua"];
-        $numero         = $_POST["numero"];
-        $complemento    = $_POST["complemento"];
-        $bairro         = $_POST["bairro"];
-        $cidade         = $_POST["cidade"];
-        $estado         = $_POST["estado"];
-        $pais           = "BRL";
-        $tipoCurso      = $_POST["tipo_curso"];
-        $tipoCadastro   = $_POST["tipo_cadastro"];
-        $senha          = (!isset($_POST["senha"]) || $_POST["senha"] == "") ? false : $_POST["senha"];
+        $insc               = $_POST["insc"];
+        $id                 = $_POST["id"];
+        $nome               = $_POST["nome"];
+        $cpf                = $_POST["cpf"];
+        $email              = $_POST["email"];
+        $login              = $_POST["login"];
+        $status             = $_POST["status"];
+        $loginIndicador     = $_POST["indicador"];
+        $telefone           = $_POST["telefone"];
+        $escolaridade       = $_POST["escolaridade"];
+        $curso              = $_POST["curso"];
+        $cep                = $_POST["cep"];
+        $rua                = $_POST["rua"];
+        $numero             = $_POST["numero"];
+        $complemento        = $_POST["complemento"];
+        $bairro             = $_POST["bairro"];
+        $cidade             = $_POST["cidade"];
+        $estado             = $_POST["estado"];
+        $pais               = "BRL";
+        $tipoCurso          = $_POST["tipo_curso"];
+        $modalidadeCurso    = $_POST["modalidade-curso"];
+        $tipoCadastro       = $_POST["tipo_cadastro"];
+        $senha              = (!isset($_POST["senha"]) || $_POST["senha"] == "") 
+                                        ? false : $_POST["senha"];
 
 
         $nomeValido   = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
@@ -150,18 +152,22 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
                             $bairroValido && $cidadeValida
                            && $estadoValido);
 
-        $tipoCursoValido = $tipoCurso == "extensao" || $tipoCurso == "pos" ;
+        $tipoCursoValido = $tipoCurso === "extensao" || $tipoCurso === "pos" ||
+                           $tipoCurso === "instituto" ;
 
         $tipoCadastroValido = $tipoCadastro == "instituto" || 
                               $tipoCadastro == "faculdade inspirar";
         $senhaValida = !$senha || (mb_strlen($senha, 'UTF-8') >= 6 && mb_strlen($senha, 'UTF-8') <= 72);
+
+        $modalidadeCursoValido = $modalidadeCurso === "regular" || 
+                                        $modalidadeCurso === "intensivo";
 
         $sucesso = false;
         // se todos os dados estão válidos, o aluno é editado
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
            $statusValido && $loginIndicadorValido && $escolaridadeValida &&
            $cursoValido && $inscValido && $idValido && $enderecoValido && $tipoCadastroValido && 
-           $tipoCursoValido && $senhaValida ){
+           $tipoCursoValido && $senhaValida && $modalidadeCursoValido ){
 
             require_once("../../entidades/Aluno.php");
 
@@ -183,6 +189,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setEstado($estado);
             $atualizar->setPais("BRL");
             $atualizar->setTipoCurso($tipoCurso);
+            $atualizar->setModalidadeCurso($modalidadeCurso);
             $atualizar->setTipoCadastro($tipoCadastro);
             
             if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
@@ -239,6 +246,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             }
         }else if(!$senhaValida){
             $mensagem = "Nova senha inválida!";
+        }else if(!$modalidadeCursoValido){
+            $mensagem = "Modalidade de curso inválido!";
         }
     }else{
         $mensagem = "Erro de envio de formulário";

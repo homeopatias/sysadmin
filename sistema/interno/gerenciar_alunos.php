@@ -111,6 +111,9 @@
                     $(this).find('#tipo_curso').val(
                         $(e.relatedTarget).data('tipo_curso')
                     );
+                    $(this).find('#modalidade-curso').val(
+                        $(e.relatedTarget).data('modalidade_curso')
+                    );
                     $(this).find('#tipo_cadastro').val(
                         $(e.relatedTarget).data('tipo_cadastro')
                     );
@@ -592,25 +595,26 @@
                 if(isset($_POST["submit"])){
 
                     // validamos todos os dados recebidos
-                    $nome           = $_POST["nome"];
-                    $cpf            = $_POST["cpf"];
-                    $email          = $_POST["email"];
-                    $login          = $_POST["login"];
-                    $senha          = $_POST["senha"];
-                    $loginIndicador = $_POST["indicador"];
-                    $telefone       = $_POST["telefone"];
-                    $endereco       = $_POST["endereco"];
-                    $escolaridade   = $_POST["escolaridade"];
-                    $curso          = $_POST["curso-novo"];
-                    $cep            = $_POST["cep"];
-                    $rua            = $_POST["rua"];
-                    $numero         = $_POST["numero"];
-                    $complemento    = $_POST["complemento"];
-                    $bairro         = $_POST["bairro"];
-                    $cidade         = $_POST["cidade"];
-                    $estado         = $_POST["estado"];
-                    $tipoCurso      = $_POST["tipo_curso"];
-                    $tipoCadastro   = $_POST["tipo_cadastro"];
+                    $nome             = $_POST["nome"];
+                    $cpf              = $_POST["cpf"];
+                    $email            = $_POST["email"];
+                    $login            = $_POST["login"];
+                    $senha            = $_POST["senha"];
+                    $loginIndicador   = $_POST["indicador"];
+                    $telefone         = $_POST["telefone"];
+                    $endereco         = $_POST["endereco"];
+                    $escolaridade     = $_POST["escolaridade"];
+                    $curso            = $_POST["curso-novo"];
+                    $cep              = $_POST["cep"];
+                    $rua              = $_POST["rua"];
+                    $numero           = $_POST["numero"];
+                    $complemento      = $_POST["complemento"];
+                    $bairro           = $_POST["bairro"];
+                    $cidade           = $_POST["cidade"];
+                    $estado           = $_POST["estado"];
+                    $tipoCurso        = $_POST["tipo_curso"];
+                    $modalidadeCurso  = $_POST["modalidade-curso"];
+                    $tipoCadastro     = $_POST["tipo_cadastro"];
 
                     $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                       mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -790,15 +794,21 @@
                     $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
                                    (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
 
-                    $tipoCursoValido = $tipoCurso == "extensao" || $tipoCurso == "pos" ;
+                    $tipoCursoValido = $tipoCurso === "extensao" || $tipoCurso === "pos" ||
+                                        $tipoCurso === "instituto" ;
+
+                    $modalidadeCursoValido = $modalidadeCurso === "regular" || 
+                                        $modalidadeCurso === "intensivo";
 
                     $tipoCadastroValido = $tipoCadastro == "instituto" || 
                                           $tipoCadastro == "faculdade inspirar";
 
                     // se todos os dados estão válidos, o aluno é cadastrado
+                                          
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida &&
                        $loginIndicadorValido && $telefoneValido && $enderecoValido &&
-                       $escolaridadeValida && $cursoValido && $tipoCursoValido && $tipoCadastroValido){
+                       $escolaridadeValida && $cursoValido && $tipoCursoValido && 
+                       $tipoCadastroValido && $modalidadeCursoValido){
 
                         require_once("entidades/Aluno.php");
 
@@ -817,6 +827,7 @@
                         $novo->setEstado($estado);
                         $novo->setPais("BRL");
                         $novo->setTipoCurso($tipoCurso);
+                        $novo->setModalidadeCurso($modalidadeCurso);
                         $novo->setTipoCadastro($tipoCadastro);
                         if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
                            $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
@@ -867,6 +878,8 @@
                     }
                     else if(!$tipoCadastroValido){
                         $mensagem = "Tipo de cadastro inválido";
+                    }else if(!$modalidadeCursoValido){
+                       $mensagem = "Modalidade de cadastro inválido"; 
                     }
                 }
                 $filtroCidade     = null;
@@ -884,6 +897,7 @@
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
                                 A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
+                                A.modalidade_curso,
                                 MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula, A.ativo
 
                                 FROM Usuario U, Aluno A
@@ -1170,6 +1184,8 @@
                         $tabela .= "Extensão";
                     } else if($tipocurso == 'pos') {
                         $tabela .= "Pós-graduação";
+                    } else if($tipocurso == 'instituto') {
+                        $tabela .= "Curso Instituto Hahnemann";
                     }
 
                     $tabela .=  "</td>";
@@ -1250,6 +1266,8 @@
                     $tabela .= $linha["complemento"];
                     $tabela .= "\" data-tipo_curso=\"";
                     $tabela .= $linha["tipo_curso"];
+                    $tabela .= "\" data-modalidade_curso=\"";
+                    $tabela .= $linha["modalidade_curso"];
                     $tabela .= "\" data-tipo_cadastro=\"";
                     $tabela .= $linha["tipo_cadastro"];
                     $tabela .= "\"href=\"#\" data-toggle=\"modal\"";
@@ -1954,6 +1972,15 @@
                                 <select id="tipo_curso" name = "tipo_curso" class="form-control">
                                     <option value="extensao">Extensão</option>
                                     <option value="pos">Pós Graduação</option>
+                                    <option value="instituto">Instituto Hahnemann</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="modalidade-curso">Modalidade de curso</label>
+                                <select id="modalidade-curso" name = "modalidade-curso" 
+                                    class="form-control">
+                                    <option value="regular">Regular</option>
+                                    <option value="intensivo">Intensivo</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -2207,6 +2234,15 @@
 
                                     <option value="extensao">Extensão</option>
                                     <option value="pos">Pós Graduação</option>
+                                    <option value="instituto">Instituto Hahnemann</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="modalidade-curso">Modalidade de curso</label>
+                                <select id="modalidade-curso" name = "modalidade-curso" 
+                                    class="form-control">
+                                    <option value="regular">Regular</option>
+                                    <option value="intensivo">Intensivo</option>
                                 </select>
                             </div>
                             <div class="form-group">
