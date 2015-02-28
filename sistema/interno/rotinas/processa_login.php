@@ -66,14 +66,12 @@ function processaLogin($login, $senha){
 
                 die();
             }
-            */
-
-			//			// FIXME: Bloqueio criado até resolvermos a questão das cidades
-			//			session_destroy();
-			//			header('Location: index.php?mensagem='.
-			//						'Ainda estamos preparando a área administrativa para você. Em breve lhe avisaremos por e-mail. Desculpe-nos pelo inconveniente.', true, "302");
-			//			die();
-            //return;
+						/* FIXME: Bloqueio criado até resolvermos a questão das cidades
+						session_destroy();
+						header('Location: index.php?mensagem='.
+									'Ainda estamos preparando a área administrativa para você. Em breve lhe avisaremos por e-mail. Desculpe-nos pelo inconveniente.', true, "302");
+						die();*/
+            return;
         }
 
         // login de associado

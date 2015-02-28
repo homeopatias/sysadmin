@@ -25,6 +25,7 @@ class Aluno extends Usuario{
     private $curso;
     private $tipoCurso;
     private $tipoCadastro;
+    private $modalidadeCurso;
     private $ativo;
 
     //Variáveis relacionadas ao endereço
@@ -64,6 +65,7 @@ class Aluno extends Usuario{
         $this->estado          = "";
         $this->pais            = "";
         $this->tipoCurso       = "";
+        $this->modalidadeCurso = "";
         $this->tipoCadastro    = "";
         $this->ativo           = false;
     }
@@ -90,7 +92,8 @@ class Aluno extends Usuario{
         $textoQuery  = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email, U.senha, 
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone,
                         A.escolaridade, A.curso,A.cep, A.rua, A.numero, A.complemento,
-                        A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro, A.ativo
+                        A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, 
+                        A.modalidade_curso, A.tipo_cadastro, A.ativo
 
                         FROM Usuario U, Aluno A WHERE U.login=? AND A.idUsuario = U.id";
 
@@ -125,6 +128,7 @@ class Aluno extends Usuario{
                 $this->estado          = $linha["estado"];
                 $this->pais            = $linha["pais"];
                 $this->tipoCurso       = $linha["tipo_curso"];
+                $this->modalidadeCurso = $linha["modalidade_curso"];
                 $this->tipoCadastro    = $linha["tipo_cadastro"];
                 $this->senha           = $senhaUsuario;
                 $this->ativo           = $linha["ativo"];
@@ -166,7 +170,8 @@ class Aluno extends Usuario{
         $textoQuery  = "SELECT U.id, U.cpf, U.login, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email, U.senha, 
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.escolaridade, 
                         A.curso ,A.cep, A.rua, A.numero, A.complemento,
-                        A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.tipo_cadastro, A.ativo
+                        A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.modalidade_curso,
+                        A.tipo_cadastro, A.ativo
 
                         FROM Usuario U, Aluno A WHERE A.numeroInscricao=? AND A.idUsuario = U.id";
 
@@ -198,6 +203,7 @@ class Aluno extends Usuario{
             $this->estado          = $linha["estado"];
             $this->pais            = $linha["pais"];
             $this->tipoCurso       = $linha["tipo_curso"];
+            $this->modalidadeCurso = $linha["modalidade_curso"];
             $this->tipoCadastro    = $linha["tipo_cadastro"];
             $this->ativo           = $linha["ativo"];
 
@@ -268,11 +274,12 @@ class Aluno extends Usuario{
             $dadosAluno  = array($idUsuario, $this->status, $this->telefone, $this->escolaridade,
                                  $this->curso, $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
-                                 $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
-                                 $this->tipoCadastro, $this->ativo);
+                                 $this->cidade, $this->estado, $this->pais, $this->tipoCurso,
+                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, 
                              escolaridade, curso, cep, rua, numero , complemento, bairro,
-                             cidade, estado, pais, tipo_curso, tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?,
+                             cidade, estado, pais, tipo_curso,modalidade_curso,
+                              tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?,
                              ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
@@ -282,10 +289,11 @@ class Aluno extends Usuario{
                                  $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
-                                 $this->tipoCadastro, $this->ativo);
+                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone,  
                             idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
-                             cidade, estado, pais, tipo_curso, tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,
+                             cidade, estado, pais, tipo_curso, modalidade_curso,
+                             tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                              ?, ?, ?, ?, ?, ?, ?, ?)";
 
         }
@@ -356,7 +364,8 @@ class Aluno extends Usuario{
                     curso = :curso ,numeroInscricao = :numInsc,
                     cep = :cep, rua = :rua, numero = :numero, complemento = :complemento ,
                     cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais ,
-                    tipo_curso = :tipo_curso, tipo_cadastro = :tipo_cadastro, ativo = :ativo
+                    tipo_curso = :tipo_curso, modalidade_curso= :modalidade_curso, 
+                    tipo_cadastro = :tipo_cadastro, ativo = :ativo
 
                     WHERE numeroInscricao = :numInsc";
         $query = $conexao->prepare($comando);
@@ -381,6 +390,7 @@ class Aluno extends Usuario{
         $query->bindParam(":bairro", $this->bairro, PDO::PARAM_STR);
         $query->bindParam(":pais", $this->pais, PDO::PARAM_STR);
         $query->bindParam(":tipo_curso", $this->tipoCurso, PDO::PARAM_STR);
+        $query->bindParam(":modalidade_curso", $this->modalidadeCurso, PDO::PARAM_STR);
         $query->bindParam(":tipo_cadastro", $this->tipoCadastro, PDO::PARAM_STR);
         $query->bindParam(":ativo", $this->ativo, PDO::PARAM_STR);
 
@@ -995,6 +1005,18 @@ class Aluno extends Usuario{
 
         
         return $endereco;
+    }
+
+    public function getModalidadeCurso()
+    {
+        return $this->modalidadeCurso;
+    }
+
+    public function setModalidadeCurso($modalidadeCurso)
+    {
+        $this->modalidadeCurso = $modalidadeCurso;
+
+        return $this;
     }
 }
 ?>
