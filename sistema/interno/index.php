@@ -594,7 +594,8 @@
             <?php
                 $cpfNum = str_split($usuarioLogado->getCPF());
 
-                if($cpfNum[0] != "") {
+								if ( (!($usuarioLogado instanceof Administrador) ||
+										 $usuarioLogado->getNivelAdmin() !== 'administrador') and $cpfNum[0] != "") {
             ?>
             <p>
                 <b>CPF:</b>
@@ -708,13 +709,13 @@
                                     $cpf .= implode("", array_slice($cpfOriginal, 9, 2));
                                     $cpf  = htmlspecialchars($cpf);
                             ?>
-                            <div class="form-group">
+                            <!--div class="form-group">
                                 <label for="cpf">CPF:</label>
                                 <input type="text" name="cpf" id="cpf" required
                                        pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
                                        placeholder="xxx.xxx.xxx-xx" class="form-control"
                                        value=<?= "\"" . $cpf . "\"" ?>>
-                            </div>
+                            </div-->
                             <?php } else { ?>
                             <input type="hidden" name="cpf" value='999.999.999-99'>
                             <?php } ?>
