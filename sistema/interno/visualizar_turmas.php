@@ -176,7 +176,7 @@
                     ?>
                     <a href=<?= "\"impressao_chamada.php?etapa=" . $etapa ."\"" ?>
                        target="_blank" class="pull-right" style="text-decoration:none" id="btn-imprimir">
-                        <b>Lista de chamada para impressão &nbsp;</b>
+                        <b>Diario da próxima aula para impressão &nbsp;</b>
                         <i class="fa fa-lg fa-print"></i>
                     </a>
                     <br><br>
