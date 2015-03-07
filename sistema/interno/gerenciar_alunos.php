@@ -1140,6 +1140,7 @@
                 $tabela = "";
 
                 while ($linha = $query->fetch()){
+
                     if($contador != $itemsPorPagina){
                     // formatando o texto do cpf
                     $cpfOriginal = str_split($linha["cpf"]);

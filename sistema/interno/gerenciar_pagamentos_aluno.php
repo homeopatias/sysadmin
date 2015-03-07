@@ -278,6 +278,9 @@
                         }
 
                         // se recebeu um pagamento via POST, efetua o pagamento
+
+                        // Coordenador não pode fazer isso
+                        /*
                         if( isset($_POST["submit"]) ){
                             $valor = (float) $_POST["valor-pagamento"];
                             $valorValido = ($valor <= $pagamentos[$anoPagamento]['divida'] && $valor > 0);
@@ -529,6 +532,7 @@
                             }
                             
                         }
+                        */
 
                         echo "<form id='busca-ano' name='busca-ano' 
                                     action='gerenciar_pagamentos_aluno.php' method='GET'>
@@ -625,10 +629,12 @@
                             </tr>
                         </tbody>
                     </table>
+                    <!-- Coordenador não pode fazer isso
                     <a href="#" class="btn btn-info pull-right" data-toggle="modal"
                        data-target="#modal-lanca-pagamento">
                         Lançar Pagamento
                     </a>
+                    -->
                     <br>
                     <?php
                         }
@@ -639,6 +645,11 @@
                 </section>
             </div>
         </div>
+
+
+        <?php 
+        // Coordenador não pode fazer isso
+        /*
 
         <!-- popup "modal" do bootstrap para lançamento de pagamento -->
         <div class="modal fade" id="modal-lanca-pagamento" tabindex="-1" role="dialog"
@@ -702,7 +713,7 @@
             </form>
         </div>
 
-        <?php
+        */
             }else{
         ?>
         <!-- redireciona o usuário para o index.php -->

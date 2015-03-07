@@ -643,3 +643,43 @@
 )) 
 =======
 >>>>>>> edição de cidade alterado
+{2015/03/06 11:57:46} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M205',
+  'SenderEmail' => 'marciapilla@tj.rs.gov.br',
+)) - begin 
+{2015/03/06 11:57:47} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M205',
+  'SenderEmail' => 'marciapilla@tj.rs.gov.br',
+)) - end {1}0CCF8D855E5E6C0114CA7F814A5C4033 
+{2015/03/06 14:50:55} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M208',
+  'SenderEmail' => 'julianosonegors@gmail.com',
+)) - begin 
+{2015/03/06 14:50:57} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M208',
+  'SenderEmail' => 'julianosonegors@gmail.com',
+)) - end {1}95FC549D8F8FF83664ED7F9E5D443FA0 
+{2015/03/07 12:57:33} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M218',
+  'SenderEmail' => 'drikkka_martins@ig.com.br',
+)) - begin 
+{2015/03/07 12:57:35} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M218',
+  'SenderEmail' => 'drikkka_martins@ig.com.br',
+)) - end {1}236987E56A6A3ED8846AEF964BC04C8B 
+{2015/03/07 13:01:37} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M218',
+  'SenderEmail' => 'drikkka_martins@ig.com.br',
+)) - begin 
+{2015/03/07 13:01:39} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M218',
+  'SenderEmail' => 'drikkka_martins@ig.com.br',
+)) - end {1}DDD680047D7D3D1664632F97A56767AC 
+{2015/03/07 13:01:40} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M218',
+  'SenderEmail' => 'drikkka_martins@ig.com.br',
+)) - begin 
+{2015/03/07 13:01:41} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M218',
+  'SenderEmail' => 'drikkka_martins@ig.com.br',
+)) - end {1}E4BA04DA1E1E9C55541A5F9B3D011DB6 

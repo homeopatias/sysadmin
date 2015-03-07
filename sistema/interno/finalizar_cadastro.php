@@ -198,11 +198,10 @@
                     $estado         = $_POST["estado"];
                     $idCidadeMat    = $_POST["cidadeMat"];
                     $modalidade     = $_POST["modalidade_curso"];
-                    // Até o momento, não será necessaria a documentação para pós-graduação
-                    // if(unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ) {                  
+                    if(unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ) {                  
                         $escolaridade   = $_POST["escolaridade"];
                         $curso          = $_POST["curso"];
-                    // }
+                    }
 
                     $cpfValido      = isset($cpf) &&
                                       (preg_match("/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", $cpf) || 
@@ -333,7 +332,7 @@
                                            && $estadoValido);
 
                     // Até o momento, não será necessaria a documentação para pós-graduação
-                    $escolaridadeValida = //unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
+                    $escolaridadeValida = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
                                 (isset($escolaridade) &&
                                    ($escolaridade === "fundamental incompleto" ||
                                     $escolaridade === "fundamental completo"   ||
@@ -346,12 +345,12 @@
                                 );
 
                     // para permitir a validação do curso, conferimos se possui curso superior
-                    $superior = //unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
+                    $superior = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
                                 ($escolaridade === "superior incompleto"    ||
                                  $escolaridade === "superior completo"      ||
                                  $escolaridade === "mestrado"               ||
                                  $escolaridade === "doutorado");
-                    $cursoValido = //unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
+                    $cursoValido = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
                                    ((!isset($curso) || $curso === "") && !$superior) ||
 
                                    (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
@@ -396,7 +395,7 @@
                         $aluno->setIdIndicador($idIndicador);
                         $aluno->setModalidadeCurso($modalidade);
 
-                        // if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") {
+                        if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") {
                             $aluno->setEscolaridade($escolaridade);
                             if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
                                $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
@@ -405,7 +404,7 @@
                                 $aluno->setCurso(null);
                             }
 
-                        // }
+                        }
 
                         $sucesso = $aluno->atualizar($host, $db, $usuario, $senhaBD);
 
@@ -854,7 +853,7 @@
                             </div>
 
                         </div>
-                        <?php // if(unserialize($_SESSION['usuario'])->getTipoCurso() === "pos") { ?>
+                        <?php  if(unserialize($_SESSION['usuario'])->getTipoCurso() === "pos") { ?>
 
                         <div class="form-group">
                             <label for="escolaridade-novo">Nível de escolaridade:</label>
@@ -892,7 +891,7 @@
                                    title="O curso deve ter no máximo 200 caracteres"
                                    class="form-control">
                         </div>
-                        <?php // } ?>
+                        <?php  } ?>
 
                         <div class="form-group">
                             <label for="indicador-novo">

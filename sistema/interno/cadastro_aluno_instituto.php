@@ -295,53 +295,23 @@
                     </div>
                     <div class="modal-body"
                          style="font-size: 0.9em; white-space: pre-line; overflow: none">
-                        INFORMAÇÕES GERAIS SOBRE O CURSO:
-                        O curso possui 4 etapas divididas em 2 módulos, totalizando 800h:
+                        CURSO REGULAR FORMAÇÃO EM CIÊNCIA DA HOMEOPATIA – duração 2 anos
+                        1)  Aulas no sábado por mês das 8:00 às 18:00   
+                        <b>2)  Investimento em 2015: 1 inscrição R$ 60,00 e 11 parcelas de R$ 150,00</b>
+                        3)  Investimento em 2016: 1 inscrição e 11 parcelas anuais, com correção, aulas no Domingo.
+                        4)  Duração do Curso: 2 anos - março / 2015 a dezembro /2016.
+                        5)  Carga Horária  ano 2015/16 = Certificado de Formação - 400H.
+                        6)  Curso de Aprofundamento 2017/2018,  com correção.
+                        7) Certificado de Formação em Ciência da Homeopatia pelo INSTITUTO TEC.  HAHNEMANN - 400h.
 
-                        O 1º MÓDULO é composto de:
-                          - 1ª etapa = 10 meses – 1 (uma) Inscrição e 11 parcelas;
-                        (100 horas presenciais e 100 horas de estudos orientados e trabalhos).
-                          - 2ª etapa = 10 meses - 1 (uma) Inscrição e 11 parcelas;
-                        (50 horas presenciais e 150 horas de estudos orientados e trabalhos).
-
-                        O INSTITUTO TECNOLÓGICO HAHNEMANN expedirá um certificado de 400h ao final do 1º módulo.
-
-                        O 2º MÓDULO é composto de:
-
-                        - 3ª etapa = 10 meses – 1 (uma) inscrição e 11 parcelas;
-                        (50 horas presenciais e 150 horas de estudos orientados, trabalhos e estágio).
-                        - 4ª etapa = 10 meses – 1 (uma) inscrição e 11 parcelas;
-                        (50 horas presenciais e 150 horas de estudos orientados, trabalhos e estágio).
-
-                        O INSTITUTO TECNOLÓGICO HAHNEMANN expedirá um certificado de 400h ao final do 2º módulo.
-
-                        PRAZO DE ENTREGA:
-                        Os Certificados somente serão expedidos pelo INSTITUTO TECNOLÓGICO HAHNEMANN após a conclusão de cada módulo, com um prazo máximo de entrega até o término do 2º semestre do ano seguinte. 
-                          
-                        O INSTITUTO TECNOLÓGICO HAHNEMANN oferece o curso de Formação em Ciência da Homeopatia em um final de semana por mês, sábado ou domingo.
-
-                        Não incluído o material didático.
-
-                        CERTIFICADO:
-
-                        Cada aluno terá direito a receber o certificado de FORMAÇÃO EM CIÊNCIA DA HOMEOPATIA, DESDE QUE ATENDA AS SEGUINTES CONDIÇÕES:
-                        - Ter no mínimo 80% de presença das aulas programadas;
-                        - Realizado os trabalhos de aula e obtido a nota mínima de aprovação;
-                        - Estar em dia com os pagamentos.
-
-                        TRANCAMENTO DE INSCRIÇÃO:
-                        Em caso de desistência ou trancamento, o aluno assume o seguinte compromisso:
-
-                        – Solicitação de desistência ou trancamento do Curso de Homeopatia, faz-se através do envio de e-mail para cursohomeopatias@terra.com.br ou telefonar (31) 3439-2500 com as seguintes informações: nome do aluno, cidade do curso e motivo.
-                        Pedimos a descrição do motivo, para assim captarmos os problemas e dificuldades do aluno, como a situação financeira, qualidade do curso, organização administrativa, qualidade das aulas, etc, visando dar formação completa aos nossos alunos, buscando sempre a excelência do ensino-aprendizagem).
-                        – Decidindo o aluno pela desistência ou trancamento, este assume o compromisso de quitar a parcela do mês até a data da comunicação de desistência
-
-                        – Caso o aluno tenha a oportunidade de retornar ao curso, basta contatar a administração para reativar seu cadastro e recomeçar as aulas do mês em que havia suspendido anteriormente.
-
-                        DATAS DAS AULAS:
-                        As aulas, conforme a etapa, podem ocorrer aos sábados ou domingos de cada mês como também podem ocorrer em meses alternados, dependendo das especificidades do local do curso.
-                        As datas previstas para o curso serão mantidas, independentemente de serem feriados ou feriadões.
-                        Cabe salientar que uma data de aula pode ser alterada por motivo de força maior.
+                        CURSO INTENSIVO  FORMAÇÃO EM CIÊNCIA DA HOMEOPATIA – duração 1 ano
+                        1) Aulas no sábado e no domingo por mês: das 8:00 às 18:00.
+                        <b>2) Investimento em 2015: 1 inscrição R$ 60,00 e 11 parcelas de 300,00</b>
+                        3) Duração do Curso: 1 ano - março / 2015 a dezembro /2015.​
+                        4) Carga Horária ano de 2015 = Certificado de Formação - 400H. 
+                        5)  Curso de Aprofundamento em 2016, com correção.
+                        6) Certificado de Formação em Ciência da Homeopatia pelo INSTITUTO TEC.  HAHNEMANN - 400h.
+                        <b>OBS.: o desconto de 10% para o indicado e indicado, é válido para os Cursos Extensão e pelo Instituto.</b>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">

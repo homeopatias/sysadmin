@@ -53,10 +53,8 @@
                 $email          = $_POST["email"];
                 $login          = $_POST["login"];
                 $senha          = $_POST["senha"];
-                /* Até o momento, não será necessaria a documentação para pós-graduação
                 $escolaridade   = $_POST["escolaridade"];
                 $curso          = $_POST["curso"];
-                */
 
                 $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                   mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -88,19 +86,18 @@
                 $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                 mb_strlen($senha, 'UTF-8') <= 72;
 
-                /*
                 $escolaridadeValida = isset($escolaridade) &&
                            ($escolaridade === "superior completo"      ||
                             $escolaridade === "mestrado"               ||
                             $escolaridade === "doutorado");
 
                 $cursoValido = isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200;
-                */
+
 
                 $sucesso = true;
 
                 // se todos os dados estão válidos, o aluno é cadastrado
-                if($nomeValido && $emailValido && $loginValido && $senhaValida //&& $escolaridadeValida && $cursoValido
+                if($nomeValido && $emailValido && $loginValido && $senhaValida && $escolaridadeValida && $cursoValido
                    ){
 
                     // nesse caso, para efetivar o cadastro conforme necessitamos
@@ -149,10 +146,10 @@
 
                     $dadosAluno  = array($idUsuario);// dados de curso , $escolaridade,  $curso);
                     $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro,"
-                                    //.                   " escolaridade, curso,"
+                                    .                   " escolaridade, curso,"
                                     .                   " ativo) VALUES
                                     (?, 'preinscrito', 'BRL', 'pos', 'faculdade inspirar',"
-                                    //." ?, ?,"
+                                    ." ?, ?,"
                                     ." 1)";
 
 
@@ -163,25 +160,24 @@
                         // deu tudo certo, inserimos o aluno
                         $conexao->commit();
 
-                        /* Até o momento, não será necessaria a documentação
-												$assunto = "Homeopatias.com - Enviar Documentos";
-												$msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b><br><br>";
-												$msg .= "<h3>Você está pré-inscrito no Curso de Pós-Graduação, para a inscrição se concretizar, você deve enviar-nos:</h3><br>";
-												$msg .= "<ul><li>Cópia autenticada do diploma de Graduação</li><li>Cópia autenticada do CPF e RG</li><li>Copia de comprovante de residencia</li><li> Uma foto 3x4</ul><br>";
-												$msg .= "<br><h4>Endereço:</h4><br><br>R. Prof. Rubens Romanelli, 77 - Bandeirantes (Pampulha)
-												Belo Horizonte - MG
-												31365-350";
-												$msg .= "<br><b>ou entregar ao coordenador local da sua cidade na primeira aula em março.</b><br>";
-												$msg .= "<br>Após a aprovação da sua documentação  e o pagamento da taxa de inscrição, sua inscrição estará concluida<br>";
-												$msg .= "<br><br><b>Quando sua documentação for aprovada, você será notificado por e-mail.</b><br>Qualquer dúvida envie mensagem para cursohomeopatias@terra.com.br / financeiro homeopatia@terra.com.br. Ligar para (31) 3439-2500 - central nacional custo de ligação local 3003-6777.<br><br>";
-												$msg .= "<br><br>Obrigado,<br>Equipe Homeobrás e Instituto Hahnemann.";
-												$headers = "Content-type: text/html; charset=utf-8 " .
-														"From: Sistema Administrativo Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
-														"Reply-To: noreply@homeopatias.com" . "\r\n" .
-														"X-Mailer: PHP/" . phpversion();
+						$assunto = "Homeopatias.com - Enviar Documentos";
+						$msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b><br><br>";
+						$msg .= "<h3>Você está pré-inscrito no Curso de Pós-Graduação, para a inscrição se concretizar, você deve enviar-nos:</h3><br>";
+						$msg .= "<ul><li>Cópia autenticada do diploma de Graduação</li><li>Cópia autenticada do CPF e RG</li><li>Copia de comprovante de residencia</li><li> Uma foto 3x4</ul><br>";
+						$msg .= "<br><h4>Endereço:</h4><br><br>R. Prof. Rubens Romanelli, 77 - Bandeirantes (Pampulha)
+						Belo Horizonte - MG
+						31365-350";
+						$msg .= "<br><b>ou entregar ao coordenador local da sua cidade na primeira aula em março.</b><br>";
+						$msg .= "<br>Após a aprovação da sua documentação  e o pagamento da taxa de inscrição, sua inscrição estará concluida<br>";
+						$msg .= "<br><br><b>Quando sua documentação for aprovada, você será notificado por e-mail.</b><br>Qualquer dúvida envie mensagem para cursohomeopatias@terra.com.br / financeiro homeopatia@terra.com.br. Ligar para (31) 3439-2500 - central nacional custo de ligação local 3003-6777.<br><br>";
+						$msg .= "<br><br>Obrigado,<br>Equipe Homeobrás e Instituto Hahnemann.";
+						$headers = "Content-type: text/html; charset=utf-8 " .
+								"From: Sistema Administrativo Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
+								"Reply-To: noreply@homeopatias.com" . "\r\n" .
+								"X-Mailer: PHP/" . phpversion();
 
-												mail($email, $assunto, $msg, $headers);
-                        */
+						mail($email, $assunto, $msg, $headers);
+
                     } else {
                         // algo deu errado, desfazemos as mudanças
                         $conexao->rollBack();
@@ -243,11 +239,11 @@
                     $mensagem = "Nome de usuário inválido!";
                 }else if(!$senhaValida){
                     $mensagem = "Senha inválida!";
-                }/* else if(!$escolaridadeValida){
+                } else if(!$escolaridadeValida){
                     $mensagem = "Escolaridade inválida!";
                 }else if(!$cursoValido){
                     $mensagem = "Curso inválido!";
-                } */
+                }
 
             }
 
@@ -275,7 +271,6 @@
                                title="Insira um e-mail válido"
                                class="form-control">
                     </div>
-                    <!-- Até o momento, não será necessaria a documentação para pós-graduação
                     <div class="form-group">
                         <label for="escolaridade-novo">Nível de escolaridade:</label>
                         <select name="escolaridade" id="escolaridade-novo" class="form-control">
@@ -297,7 +292,6 @@
                                title="O curso deve estar preenchido e ter no máximo 200 caracteres"
                                class="form-control">
                     </div>
-                    -->
                     <div class="form-group">
                         <label for="login-novo">Nome de usuário <span style="font-weight: bold; color: red;" >(APENAS LETRAS E NÚMEROS SEM ESPAÇOS VAZIOS)</span>:</label>
                         <input type="text" name="login" id="login-novo" required
@@ -364,53 +358,11 @@
                     </div>
                     <div class="modal-body"
                          style="font-size: 0.9em; white-space: pre-line; overflow: none">
-                        INFORMAÇÕES GERAIS SOBRE O CURSO:
-                        O curso possui 4 etapas divididas em 2 módulos, totalizando 800h:
-
-                        O 1º MÓDULO é composto de:
-                          - 1ª etapa = 10 meses – 1 (uma) Inscrição e 11 parcelas;
-                        (100 horas presenciais e 100 horas de estudos orientados e trabalhos).
-                          - 2ª etapa = 10 meses - 1 (uma) Inscrição e 11 parcelas;
-                        (50 horas presenciais e 150 horas de estudos orientados e trabalhos).
-
-                        O INSTITUTO TECNOLÓGICO HAHNEMANN expedirá um certificado de 400h ao final do 1º módulo.
-
-                        O 2º MÓDULO é composto de:
-
-                        - 3ª etapa = 10 meses – 1 (uma) inscrição e 11 parcelas;
-                        (50 horas presenciais e 150 horas de estudos orientados, trabalhos e estágio).
-                        - 4ª etapa = 10 meses – 1 (uma) inscrição e 11 parcelas;
-                        (50 horas presenciais e 150 horas de estudos orientados, trabalhos e estágio).
-
-                        O INSTITUTO TECNOLÓGICO HAHNEMANN expedirá um certificado de 400h ao final do 2º módulo.
-
-                        PRAZO DE ENTREGA:
-                        Os Certificados somente serão expedidos pelo INSTITUTO TECNOLÓGICO HAHNEMANN após a conclusão de cada módulo, com um prazo máximo de entrega até o término do 2º semestre do ano seguinte. 
-                          
-                        O INSTITUTO TECNOLÓGICO HAHNEMANN oferece o curso de Formação em Ciência da Homeopatia em um final de semana por mês, sábado ou domingo.
-
-                        Não incluído o material didático.
-
-                        CERTIFICADO:
-
-                        Cada aluno terá direito a receber o certificado de FORMAÇÃO EM CIÊNCIA DA HOMEOPATIA, DESDE QUE ATENDA AS SEGUINTES CONDIÇÕES:
-                        - Ter no mínimo 80% de presença das aulas programadas;
-                        - Realizado os trabalhos de aula e obtido a nota mínima de aprovação;
-                        - Estar em dia com os pagamentos.
-
-                        TRANCAMENTO DE INSCRIÇÃO:
-                        Em caso de desistência ou trancamento, o aluno assume o seguinte compromisso:
-
-                        – Solicitação de desistência ou trancamento do Curso de Homeopatia, faz-se através do envio de e-mail para cursohomeopatias@terra.com.br ou telefonar (31) 3439-2500 com as seguintes informações: nome do aluno, cidade do curso e motivo.
-                        Pedimos a descrição do motivo, para assim captarmos os problemas e dificuldades do aluno, como a situação financeira, qualidade do curso, organização administrativa, qualidade das aulas, etc, visando dar formação completa aos nossos alunos, buscando sempre a excelência do ensino-aprendizagem).
-                        – Decidindo o aluno pela desistência ou trancamento, este assume o compromisso de quitar a parcela do mês até a data da comunicação de desistência
-
-                        – Caso o aluno tenha a oportunidade de retornar ao curso, basta contatar a administração para reativar seu cadastro e recomeçar as aulas do mês em que havia suspendido anteriormente.
-
-                        DATAS DAS AULAS:
-                        As aulas, conforme a etapa, podem ocorrer aos sábados ou domingos de cada mês como também podem ocorrer em meses alternados, dependendo das especificidades do local do curso.
-                        As datas previstas para o curso serão mantidas, independentemente de serem feriados ou feriadões.
-                        Cabe salientar que uma data de aula pode ser alterada por motivo de força maior.
+                        Curso de Pós Graduação Lato Sensu - Especialização em Ciência da Homeopatia.
+                        1) Aulas no sábado e no domingo por mês: das 8:00 às 18:00.
+                        <b>2) Investimento 2015: 1 inscrição e 11 parcelas.</b>
+                        3) Duração do Curso: 2 anos - março/2015 a dezembro /2016.​
+                        4) Carga Horária  = Certificado de Especialização - 500H. 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">

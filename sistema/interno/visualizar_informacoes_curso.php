@@ -470,7 +470,7 @@
                         </p>
                         <?php if($aluno->getCurso() != null) { ?>
                         <p style="display:inline" class="col-sm-4">
-                            <b>Curso superior efetuado:</b>
+                            <b>Curso superior:</b>
                             <?= htmlspecialchars($aluno->getCurso()); ?>
                         </p>
                         <?php } ?>
