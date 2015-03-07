@@ -926,7 +926,7 @@
                         $valorAberto = number_format($linha['valorFaltante'], 2, ',', ' ');
                     ?>
                     <h4>Você está com <?= $parcelasAberto ?> parcelas em aberto,
-                       e seu saldo devedor é de R$ <?= $valorAberto ?>.</h4>
+                       e seu saldo em aberto é de R$ <?= $valorAberto ?>.</h4>
                     <p id="msg-erro" class="warning"></p>
                     <?php if($valorAberto != 0) { ?>
                     <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST">
@@ -936,10 +936,12 @@
                                class="btn btn-primary" style="display: block; width: 300px">
                         <br>
                         <?php } ?>
+                        <!-- essa opção não é permitida
                         <a id="label-valor" href="#" class="btn btn-primary" 
                             style="display:block; width:300px">
                             Pagar valor
                         </a>
+                        -->
                         <input type="number" name="pgto-valor" id="pgto-valor"
                                placeholder="Quantidade em R$" class="form-control"
                                autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
