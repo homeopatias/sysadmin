@@ -93,13 +93,14 @@
                             <p style="display:inline">Visualizar turmas</p>
                         </a>
                     </li>
-                    <li>
+                    <?php
+                    /*<li>
                         <a href="selecao_turma_frequencias.php">
                             <i class="fa fa-fw fa-list-ul"></i>
                             <p style="display:inline">Frequência de alunos</p>
                         </a>
                     </li>
-                    <?php
+                    <?php*/
                         } // Fim das opções para coordenadores
 
                         else if(isset($_SESSION["usuario"]) &&

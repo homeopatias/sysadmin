@@ -127,8 +127,10 @@
             }
 
             // permite a seleção de aula apenas se o usuário for um coordenador
+            // COORDENADORES NÃO PODEM TER ACESSO, PORTANTO, POR ENQUANTO, PERMITIMOS APENAS PARA
+            // ADMINISTRADORES
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
-               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "coordenador"){
+               && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
         ?>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
