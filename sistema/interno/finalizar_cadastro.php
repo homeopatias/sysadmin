@@ -198,7 +198,7 @@
                     $estado         = $_POST["estado"];
                     $idCidadeMat    = $_POST["cidadeMat"];
                     $modalidade     = $_POST["modalidade_curso"];
-                    if(unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ) {                  
+                    if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao" ) {                  
                         $escolaridade   = $_POST["escolaridade"];
                         $curso          = $_POST["curso"];
                     }
@@ -853,7 +853,7 @@
                             </div>
 
                         </div>
-                        <?php  if(unserialize($_SESSION['usuario'])->getTipoCurso() === "pos") { ?>
+                        <?php  if(unserialize($_SESSION['usuario'])->getTipoCurso() === "extensao") { ?>
 
                         <div class="form-group">
                             <label for="escolaridade-novo">Nível de escolaridade:</label>
