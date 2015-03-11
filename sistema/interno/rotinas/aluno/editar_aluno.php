@@ -118,7 +118,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
                      $escolaridade === "superior completo"      ||
                      $escolaridade === "mestrado"               ||
                      $escolaridade === "doutorado");
-        $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
+        $cursoValido = ((!isset($curso) || $curso === "")) ||
                        (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
 
         $inscValido = isset($insc) && preg_match("/^[0-9]*$/", $insc);
