@@ -1063,7 +1063,6 @@
                                 " OFFSET ".(($pagina)*$itemsPorPagina);
 
                 //---------------------------------------------------------------------
-
                 $query = $conexao->prepare($textoQuery);
 
                 // passamos os parâmetros corretamente de acordo com os filtros passados
@@ -1129,7 +1128,7 @@
                             $nomeCurso = "pos";
                         } else if($filtroCurso == "3") {
                             $nomeCurso = "instituto";
-                        } 
+                        }
                         $query->bindParam(":filtrocurso", $nomeCurso);
                     }
                 }
@@ -1315,7 +1314,8 @@
                    isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
                    isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
-                   isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])   ){
+                   isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])    ||
+                   isset($_GET["filtro-curso"])   ){
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         $query->bindParam(":nome", $filtroNome);
                     }
@@ -1362,6 +1362,18 @@
                             $valorAtivo = "1";
                         }
                         $query->bindParam(":filtroativo", $valorAtivo);
+                    }
+                    if(isset($filtroCurso) && mb_strlen($filtroCurso) > 0  &&
+                         $filtroCurso != "0"){
+                        $nomeCurso = "";
+                        if($filtroCurso == "1") {
+                            $nomeCurso = "extensao";
+                        } else if($filtroCurso == "2") {
+                            $nomeCurso = "pos";
+                        } else if($filtroCurso == "3") {
+                            $nomeCurso = "instituto";
+                        }
+                        $query->bindParam(":filtrocurso", $nomeCurso);
                     }
                 }
                 
