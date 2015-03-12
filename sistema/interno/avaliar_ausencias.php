@@ -194,7 +194,7 @@
                 $pagina = (int)$pagina;
 
                 $itemsPorPagina = isset($_GET["pagina-ipp"]) ? 
-                                  htmlspecialchars($_GET["pagina-ipp"]) : 10;
+                                  htmlspecialchars($_GET["pagina-ipp"]) : 100;
                 $itemsPorPagina = (int)$itemsPorPagina;
 
                 $textoQuery  = "SELECT U.nome, UNIX_TIMESTAMP(Au.data) as data, F.justificativaAusencia,
@@ -295,26 +295,21 @@
                                 <select name="ipp" id="ipp" class="form-control"
                                         style="display:inline;width:120px">
 
-                                        <option value="10"
-                                            <?=isset($_GET["pagina-ipp"]) &&
-                                                htmlspecialchars($_GET["pagina-ipp"]) == "10"?
-                                            "selected='selected'":'';?> >
-                                        10</option>
-                                        <option value="25"
-                                            <?=isset($_GET["pagina-ipp"]) &&
-                                                htmlspecialchars($_GET["pagina-ipp"]) == "25"?
-                                            "selected='selected'":'';?> >
-                                        25</option>
-                                        <option value="50"
-                                           <?=isset($_GET["pagina-ipp"]) &&
-                                                htmlspecialchars($_GET["pagina-ipp"]) == "50"?
-                                           "selected='selected'":'';?> >
-                                        50</option>
                                         <option value="100"
                                             <?=isset($_GET["pagina-ipp"]) &&
                                                 htmlspecialchars($_GET["pagina-ipp"]) == "100"?
-                                           "selected='selected'":'';?> >
+                                            "selected='selected'":'';?> >
                                         100</option>
+                                        <option value="150"
+                                            <?=isset($_GET["pagina-ipp"]) &&
+                                                htmlspecialchars($_GET["pagina-ipp"]) == "150"?
+                                            "selected='selected'":'';?> >
+                                        150</option>
+                                        <option value="200"
+                                           <?=isset($_GET["pagina-ipp"]) &&
+                                                htmlspecialchars($_GET["pagina-ipp"]) == "200"?
+                                           "selected='selected'":'';?> >
+                                        200</option>
                                     </select>
                         <a href="#" id="proxima" class="btn btn-info" 
                             <?php if(!$possuiProximaPagina){
