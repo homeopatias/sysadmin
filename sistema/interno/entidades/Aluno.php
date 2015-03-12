@@ -27,6 +27,7 @@ class Aluno extends Usuario{
     private $tipoCadastro;
     private $modalidadeCurso;
     private $ativo;
+    private $recebeEmail;
 
     //Variáveis relacionadas ao endereço
     private $cep;
@@ -68,6 +69,7 @@ class Aluno extends Usuario{
         $this->modalidadeCurso = "";
         $this->tipoCadastro    = "";
         $this->ativo           = false;
+        $this->recebeEmail     = false;
     }
 
     // Função que confere os dados do aluno no sistema e
@@ -93,7 +95,7 @@ class Aluno extends Usuario{
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone,
                         A.escolaridade, A.curso,A.cep, A.rua, A.numero, A.complemento,
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, 
-                        A.modalidade_curso, A.tipo_cadastro, A.ativo
+                        A.modalidade_curso, A.tipo_cadastro, A.ativo, A.recebeEmail
 
                         FROM Usuario U, Aluno A WHERE U.login=? AND A.idUsuario = U.id";
 
@@ -132,6 +134,7 @@ class Aluno extends Usuario{
                 $this->tipoCadastro    = $linha["tipo_cadastro"];
                 $this->senha           = $senhaUsuario;
                 $this->ativo           = $linha["ativo"];
+                $this->recebeEmail     = $linha["recebeEmail"];
 
                 $_SESSION["usuario"] = serialize($this);
 
@@ -171,7 +174,7 @@ class Aluno extends Usuario{
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.escolaridade, 
                         A.curso ,A.cep, A.rua, A.numero, A.complemento,
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.modalidade_curso,
-                        A.tipo_cadastro, A.ativo
+                        A.tipo_cadastro, A.ativo, A.recebeEmail
 
                         FROM Usuario U, Aluno A WHERE A.numeroInscricao=? AND A.idUsuario = U.id";
 
@@ -206,6 +209,7 @@ class Aluno extends Usuario{
             $this->modalidadeCurso = $linha["modalidade_curso"];
             $this->tipoCadastro    = $linha["tipo_cadastro"];
             $this->ativo           = $linha["ativo"];
+            $this->recebeEmail     = $linha["recebeEmail"];
 
             // encerramos a conexão com o BD
             $conexao = null;
@@ -275,12 +279,12 @@ class Aluno extends Usuario{
                                  $this->curso, $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso,
-                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo);
+                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, 
                              escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso,modalidade_curso,
-                              tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                              tipo_cadastro, ativo, recebeEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?,
+                             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
         }else{
@@ -289,12 +293,12 @@ class Aluno extends Usuario{
                                  $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
-                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo);
+                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone,  
                             idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso, modalidade_curso,
-                             tipo_cadastro, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?, ?, ?)";
+                             tipo_cadastro, ativo, recebeEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                             ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         }
         $query = $conexao->prepare($queryAluno);
@@ -365,7 +369,7 @@ class Aluno extends Usuario{
                     cep = :cep, rua = :rua, numero = :numero, complemento = :complemento ,
                     cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais ,
                     tipo_curso = :tipo_curso, modalidade_curso= :modalidade_curso, 
-                    tipo_cadastro = :tipo_cadastro, ativo = :ativo
+                    tipo_cadastro = :tipo_cadastro, ativo = :ativo, recebeEmail = :recebeemail
 
                     WHERE numeroInscricao = :numInsc";
         $query = $conexao->prepare($comando);
@@ -393,6 +397,7 @@ class Aluno extends Usuario{
         $query->bindParam(":modalidade_curso", $this->modalidadeCurso, PDO::PARAM_STR);
         $query->bindParam(":tipo_cadastro", $this->tipoCadastro, PDO::PARAM_STR);
         $query->bindParam(":ativo", $this->ativo, PDO::PARAM_STR);
+        $query->bindParam(":recebeemail", $this->recebeEmail);
 
         $sucessoAluno = $query->execute();
 
@@ -1015,6 +1020,18 @@ class Aluno extends Usuario{
     public function setModalidadeCurso($modalidadeCurso)
     {
         $this->modalidadeCurso = $modalidadeCurso;
+
+        return $this;
+    }
+
+    public function getRecebeEmail()
+    {
+        return $this->recebeEmail;
+    }
+
+    public function setRecebeEmail($recebeEmail)
+    {
+        $this->recebeEmail = $recebeEmail;
 
         return $this;
     }

@@ -151,6 +151,8 @@
                     $(this).find('#indicador').val(
                         $(e.relatedTarget).data('indicador')
                     );
+                    var desejaEmail = $(e.relatedTarget).parent().siblings('.recebe-email').data('recebeemail');
+                    $(this).find('#deseja-email').prop('checked', desejaEmail);
                 });
 
                 $("#modal-novo-aluno #escolaridade-novo").change(function(){
@@ -615,6 +617,7 @@
                     $tipoCurso        = $_POST["tipo_curso"];
                     $modalidadeCurso  = $_POST["modalidade-curso"];
                     $tipoCadastro     = $_POST["tipo_cadastro"];
+                    $recebeEmail      = isset($_POST["deseja-email"]);
 
                     $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                       mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -829,6 +832,7 @@
                         $novo->setTipoCurso($tipoCurso);
                         $novo->setModalidadeCurso($modalidadeCurso);
                         $novo->setTipoCadastro($tipoCadastro);
+                        $novo->setRecebeEmail($recebeEmail);
                         if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
                            $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
                             $novo->setCurso(isset($curso) ? $curso : null);
@@ -897,7 +901,7 @@
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
                                 A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
-                                A.modalidade_curso,
+                                A.modalidade_curso, A.recebeEmail,
                                 MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula, A.ativo
 
                                 FROM Usuario U, Aluno A
@@ -1213,6 +1217,19 @@
                         $tabela .= "Formado";
                     } else if($linha["status"] === "inativo"){
                         $tabela .= "Inativo";
+                    }
+                    $tabela .= "</td>";
+
+                    $tabela .= "    <td class=\"recebe-email\" data-recebeemail=\"";
+                    $recebeEmail = false;
+                    if($linha["recebeEmail"]){
+                        $recebeEmail = true;
+                    }
+                    $tabela .= htmlspecialchars($recebeEmail). "\">";
+                    if($recebeEmail){
+                        $tabela .= "<i class=\"fa fa-check sucesso\" ></i>";
+                    } else {
+                        $tabela .= "<i class=\"fa fa-times warning\" ></i>";
                     }
                     $tabela .= "</td>";
 
@@ -1692,6 +1709,7 @@
                                             <?= $indexHeader == 3 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >Status</th>
+                                        <th width="70px">Deseja emails?</th>
                                         <th width="60px">Visualizar</th>
                                         <th width="60px">Ativar</th>
                                         <th width="60px">Editar</th>
@@ -2010,8 +2028,15 @@
                                        title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
                                        class="form-control" autocomplete="off">
                             </div>
-
                             <br>
+                            <div class="form-group">
+                                <label>
+                                    Deseja receber e-mail com atualizações e promoções dos cursos?
+                                </label>
+                                <br>
+                                <input type="checkbox" id="deseja-email" name="deseja-email">
+                                <label for="deseja-email">Caso deseje, marque o botão ao lado</label>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -2264,6 +2289,14 @@
                                        placeholder="Nome de usuário do indicador, se existir"
                                        title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
                                        class="form-control" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    Deseja receber e-mail com atualizações e promoções dos cursos?
+                                </label>
+                                <br>
+                                <input type="checkbox" id="deseja-email" name="deseja-email">
+                                <label for="deseja-email">Caso deseje, marque o botão ao lado</label>
                             </div>
                             <div class="btn btn-primary" id="btn-muda-senha">Mudar senha</div>
                             <div class="form-group" style="display:none">

@@ -55,6 +55,7 @@
                 $senha          = $_POST["senha"];
                 $escolaridade   = $_POST["escolaridade"];
                 $curso          = $_POST["curso"];
+                $recebeEmail    = isset($_POST["deseja-email"]);
 
                 $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                   mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -144,13 +145,13 @@
                     // descobrimos o id do usuário que acabamos de inserir
                     $idUsuario = $conexao->lastInsertId();
 
-                    $dadosAluno  = array($idUsuario);// dados de curso , $escolaridade,  $curso);
+                    $dadosAluno  = array($idUsuario, $escolaridade, $curso, $recebeEmail);
                     $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro,"
                                     .                   " escolaridade, curso,"
-                                    .                   " ativo) VALUES
+                                    .                   " ativo, recebeEmail) VALUES
                                     (?, 'preinscrito', 'BRL', 'pos', 'faculdade inspirar',"
                                     ." ?, ?,"
-                                    ." 1)";
+                                    ." 1, ?)";
 
 
                     $query = $conexao->prepare($queryAluno);
@@ -306,6 +307,7 @@
                                title="A senha deve ter de 6 a 72 caracteres"
                                class="form-control">
                     </div>
+                    <!--
                     <br>
                     <a class="pull-left btn-danger" style="padding: 2px 10%; width: 100%;"
                        href="#" data-toggle="modal" data-target="#modal-info" >
@@ -330,14 +332,24 @@
                         <input type="checkbox" id="li-termos">
                         <label for="li-termos">Confirmo</label>
                     </div>
+                    -->
                     <!-- Até o momento não será necessária a documentação para fazer a Pós
                     <h3>Seu acesso ao sistema só será permitido após o envio da documentação para a Homeobrás
                         para avaliação e aprovação!
                     </h3>
                     -->
-                    <br><br>
+                    <br>
+                    <div class="form-group">
+                        <label>
+                            Deseja receber e-mail com atualizações e promoções dos cursos?
+                        </label>
+                        <br>
+                        <input type="checkbox" id="deseja-email" name="deseja-email">
+                        <label for="deseja-email">Caso deseje, marque o botão ao lado</label>
+                    </div>
+                    <br>
                     <button type="submit" name="submit" value="submit" id="cadastro"
-                            class="btn btn-primary pull-right" disabled>
+                            class="btn btn-primary pull-right">
                         Cadastrar
                     </button>
                     <br>

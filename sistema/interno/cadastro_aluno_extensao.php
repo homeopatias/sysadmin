@@ -53,6 +53,7 @@
                 $email          = $_POST["email"];
                 $login          = $_POST["login"];
                 $senha          = $_POST["senha"];
+                $recebeEmail    = isset($_POST["deseja-email"]);
 
                 $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                   mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -132,9 +133,9 @@
                     // descobrimos o id do usuário que acabamos de inserir
                     $idUsuario = $conexao->lastInsertId();
 
-                    $dadosAluno  = array($idUsuario);
-                    $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro, ativo) VALUES
-                                    (?, 'preinscrito', 'BRL', 'extensao', 'faculdade inspirar', 1)";
+                    $dadosAluno  = array($idUsuario, $recebeEmail);
+                    $queryAluno  = "INSERT INTO Aluno (idUsuario, status, pais, tipo_curso, tipo_cadastro, ativo, recebeEmail) VALUES
+                                    (?, 'preinscrito', 'BRL', 'extensao', 'faculdade inspirar', 1, ?)";
 
 
 
@@ -248,6 +249,7 @@
                                title="A senha deve ter de 6 a 72 caracteres"
                                class="form-control">
                     </div>
+                    <!--
                     <br>
                     <a class="pull-left btn-danger" style="padding: 2px 10%; width: 100%;"
                        href="#" data-toggle="modal" data-target="#modal-info" >
@@ -272,9 +274,18 @@
                         <input type="checkbox" id="li-termos">
                         <label for="li-termos">Confirmo</label>
                     </div>
+                    -->
                     <br>
+                    <div class="form-group">
+                        <label>
+                            Deseja receber e-mail com atualizações e promoções dos cursos?
+                        </label>
+                        <br>
+                        <input type="checkbox" id="deseja-email" name="deseja-email">
+                        <label for="deseja-email">Caso deseje, marque o botão ao lado</label>
+                    </div>
                     <button type="submit" name="submit" value="submit" id="cadastro"
-                            class="btn btn-primary pull-right" disabled>
+                            class="btn btn-primary pull-right">
                         Cadastrar
                     </button>
                     <br>
