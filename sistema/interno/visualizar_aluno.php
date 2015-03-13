@@ -118,9 +118,6 @@
                 $("#efetua_pagamento").click(function(){
                     $("#form-lanca-pagamento").submit();
                 });
-                $("#alterarDesconto").click(function(){
-                    $("#formDesconto").submit();
-                });
 
                 $("form #ano").change();                
             });
@@ -1487,12 +1484,14 @@
                         <div class="modal-body">
                             <label for="desconto_individual">Desconto individual do aluno:</label>
                             <input id="desconto-individual" name="desconto-individual" type="text"
-                                value=  <?= "\"".$desconto_individual."\"" ?> >
+                                pattern="^(\d)+(\.)?(\d)*$" required
+                                placeholder="x.x" title="Insira apenas números e o ponto. Ex: 3.14"
+                                value=  <?= "\"".$desconto_individual."\"" ?> width="100%">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn" id="alterarDesconto" 
-                                name="alterarDesconto">Alterar</button>
+                            <input type="submit" class="btn" id="alterarDesconto" 
+                                name="alterarDesconto" value="Alterar"></input>
                         </div>
                     </div>
                 </form>
