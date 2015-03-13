@@ -968,20 +968,24 @@
                                class="btn btn-primary" style="display: block; width: 300px">
                         <br>
                         <?php } ?>
-                        <!-- essa opção não é permitida
                         <a id="label-valor" href="#" class="btn btn-primary" 
                             style="display:block; width:300px">
                             Pagar valor
                         </a>
-                        -->
                         <input type="number" name="pgto-valor" id="pgto-valor"
                                placeholder="Quantidade em R$" class="form-control"
                                autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
                                style="display:none;width:205px;"
-                               step="0.01" min="1"
+                               step="0.01" min=<?= '"' .
+                                       number_format($pagamentos[date("Y")][1]['valor'] -
+                                                        ($pagamentos[date("Y")][1]['valor'] * 
+                                                        $pagamentos[date("Y")][1]['desconto']),
+                                                    2, '.', '') .
+                                       '"'?>
                                max=<?= '"' .
                                        number_format($linha['valorFaltante'], 2, '.', '') .
-                                       '"'?>>
+                                       '"'?>
+                                title="O valor pago deve ser maior que uma parcela e menor que o saldo em aberto">
                         <input type="submit" value="Gerar" class="btn btn-primary" style="display:none">
                     </form>
                     <?php
