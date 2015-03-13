@@ -366,7 +366,7 @@
                 $direcao = 1;
                 //------------------
 
-                if( isset($_GET["numeroTableHeader"]) && isset($_GET["cimaOuBaixo"]) ){
+                if( isset($_GET["numeroTableHeader"]) ){
                     $indexHeader = htmlspecialchars( $_GET["numeroTableHeader"] );
                     if( !is_nan($indexHeader) ){
                         
@@ -392,15 +392,15 @@
 
                         switch ($direcao) {
                             case '1':
-                                $orderBy .= " ASC " ;
+                                $orderBy .= " DESC " ;
                                 break;
                             case '2':
-                                $orderBy .= " DESC " ;
+                                $orderBy .= " ASC " ;
                                 break;
                             
                             
                             default:
-                                $orderBy .= " DESC " ;
+                                $orderBy .= " ASC " ;
                                 break;
                         }
                     }

@@ -57,6 +57,7 @@
                     5 : { sorter: false },
                     6 : { sorter: false },
                     7 : { sorter: false },
+                    8 : { sorter: false },
                     9 : { sorter: false },
                     10 : { sorter: false },
                     11 : { sorter: false },
@@ -362,6 +363,7 @@
                 //----  a tabela
                 $("table th.header").click(function(){
                     var position = $("table th").index( $(this) );
+                    position--;
                     if( $(this).hasClass("headerSortDown") ){
                         direcao = 1; // muda para virada para cima
                     }
@@ -998,8 +1000,7 @@
                                 : -1 ;
                 $direcao = 2;
                 //------------------
-
-                if( isset($_GET["numeroTableHeader"]) && isset($_GET["cimaOuBaixo"]) ){
+                if( isset($_GET["numeroTableHeader"]) ){
                     $indexHeader = htmlspecialchars( $_GET["numeroTableHeader"] );
                     if( !is_nan($indexHeader) ){
                         
@@ -1013,7 +1014,7 @@
                             case '2':
                                 $orderBy = " ORDER BY U.email " ;
                                 break;
-                            case '3':
+                            case '7':
                                 $orderBy = " ORDER BY U.status " ;
                                 break;
                             
@@ -1028,15 +1029,15 @@
 
                         switch ($direcao) {
                             case '1':
-                                $orderBy .= " ASC " ;
+                                $orderBy .= " DESC " ;
                                 break;
                             case '2':
-                                $orderBy .= " DESC " ;
+                                $orderBy .= " ASC " ;
                                 break;
                             
                             
                             default:
-                                $orderBy .= " DESC " ;
+                                $orderBy .= " ASC " ;
                                 break;
                         }
                     }
@@ -1063,7 +1064,6 @@
                                 " OFFSET ".(($pagina)*$itemsPorPagina);
 
                 //---------------------------------------------------------------------
-
                 $query = $conexao->prepare($textoQuery);
 
                 // passamos os parâmetros corretamente de acordo com os filtros passados
@@ -1705,10 +1705,7 @@
                                         <th width="70px">Ano</th>
                                         <th width="100px">Tipo</th>
                                         <th width="100px">Certificado</th>
-                                        <th width="100px"
-                                            <?= $indexHeader == 3 ? 
-                                            ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?> >Status</th>
+                                        <th width="100px">Status</th>
                                         <th width="70px">Deseja emails?</th>
                                         <th width="60px">Visualizar</th>
                                         <th width="60px">Ativar</th>
