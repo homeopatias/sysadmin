@@ -635,7 +635,23 @@
                         $possuiProximaPagina = true;
                     }
                     $contador++;
-                }          
+                }
+
+                // agora contamos quantos alunos essa pesquisa conseguiria, sem o LIMIT
+                $textoQueryCount = explode("LIMIT", $textoQuery);
+                $query = $conexao->prepare($textoQueryCount[0]);
+
+                if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-cpf"])){
+                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                        $query->bindParam(":filtronome",$filtroNome);
+                    }
+                    if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
+                        $query->bindParam(":filtrocpf",$filtroCpf);
+                    }
+                }
+                
+                $query->execute();
+                $numProf = $query->rowCount();
         ?>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
@@ -756,6 +772,9 @@
                             </table>
                         </div>
                     </div>
+                    <br>
+                    <b><?= $numProf ?> professor<?= $numProf != '1' ? 'es' : ''?> 
+                       encontrado<?= $numProf != '1' ? 's' : ''?> para os critérios passados</b>
                     <script type="text/javascript">
                         //pequeno script somente para passar se existe proxima pagina e página
                         //anterior

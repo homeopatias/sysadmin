@@ -1648,7 +1648,7 @@
                                         'selected="selected"':'';?> >Curso Instituto Hahnemann
                                 </option>
                             </select>
-
+                            <br><br>
                             <div>
                                 <a href="#" class="btn btn-primary pull-right" data-toggle="modal"
                                     data-target="#modal-email"
@@ -1660,13 +1660,13 @@
                                     id="send" style="margin-right:2em; display:none">
                                     <p>Enviar e-mail para os selecionados</p>
                                 </a>
-                                <a href="#" id="busca" class="btn btn-info" style="margin-left: 50px">
-                                    Buscar
-                                    <i href="#" class="fa fa-search"></i>
-                               </a>
-                                <a href="#" id="limpar" class="btn btn-info" style="margin-left: 10px">
+                                <a href="#" id="limpar" class="btn btn-info">
                                     Limpar
                                     <i href="#" class="fa fa-eraser"></i>
+                                </a>
+                                <a href="#" id="busca" class="btn btn-info">
+                                    Buscar
+                                    <i href="#" class="fa fa-search"></i>
                                 </a>
                             </div>
 

@@ -1027,7 +1027,33 @@
                         $possuiProximaPagina = true;
                     }
                     $contador++;
-                }  
+                }
+
+                // agora contamos quantos associados essa pesquisa conseguiria, sem o LIMIT
+                $textoQueryCount = explode("LIMIT", $textoQuery);
+                $query = $conexao->prepare($textoQueryCount[0]);
+
+                if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-cpf"])){
+                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                        $query->bindParam(":filtronomeassociado",$filtroNome);
+                    }
+                    if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
+                        $query->bindParam(":filtrocpf",$filtroCpf);
+                    }
+                    if(isset($filtroCidade) && $filtroCidade != "0" ){
+                        $query->bindParam(":filtrocidade",$filtroCidade);
+                    }  
+                    if(isset($filtroEstado) && $filtroEstado != "0" ){
+                        $query->bindParam(":filtroestado",$filtroEstado);
+                    }  
+                    if(isset($filtroInstituicao) && mb_strlen($filtroInstituicao) > 0 && 
+                        $filtroInstituicao != "0") {
+                        $query->bindParam(":filtroinstituicao",$filtroInstituicao);
+                    }
+                }
+
+                $query->execute();
+                $numAssoc = $query->rowCount();
 
                 //fecha o script que armazena os pagamentos 
         ?>
@@ -1211,6 +1237,8 @@
                             </table>
                         </div>
                     </div>
+                    <b><?= $numAssoc ?> associado<?= $numAssoc != '1' ? 's' : ''?> 
+                       encontrado<?= $numAssoc != '1' ? 's' : ''?> para os critérios passados</b>
                     <script type="text/javascript">
                         //pequeno script somente para passar se existe proxima pagina e página
                         //anterior

@@ -568,7 +568,21 @@
                         $possuiProximaPagina = true;
                     }
                     $contador++;
-                }          
+                }
+
+                // agora contamos quantos administradores essa pesquisa conseguiria, sem o LIMIT
+                $textoQueryCount = explode("LIMIT", $textoQuery);
+                // lembrando de desconsiderar o administrador principal
+                $query = $conexao->prepare($textoQueryCount[0] . " AND idAdmin <> 1");
+
+                if(isset($_GET["filtro-nome"])){
+                    if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
+                        $query->bindParam(":filtronomeadmin",$filtroNome);
+                    }
+                }
+
+                $query->execute();
+                $numAdmins = $query->rowCount();
         ?>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
@@ -669,6 +683,9 @@
                             </table>
                         </div>
                     </div>
+                    <br>
+                    <b><?= $numAdmins ?> administrador<?= $numAdmins != '1' ? 'es' : ''?> 
+                       encontrado<?= $numAdmins != '1' ? 's' : ''?> para os critérios passados</b>
                     <script type="text/javascript">
                         //pequeno script somente para passar se existe proxima pagina e página
                         //anterior
