@@ -508,6 +508,36 @@
                         echo "</p>";
                 ?>
             </p>
+            <?php
+                $tipoCurso = $usuarioLogado->getTipoCurso();
+                if($tipoCurso === "pos")
+                    $tipoCurso = "Pós-graduação";
+                else if($tipoCurso === "extensao")
+                    $tipoCurso = "Extensão";
+                else if($tipoCurso === "instituto")
+                    $tipoCurso = "Instituto Hahnemann";
+
+                $modalidade = ucfirst($usuarioLogado->getModalidadeCurso());
+
+                $certificado = $usuarioLogado->getTipoCadastro();
+                if($certificado === "instituto")
+                    $certificado = "Instituto Hahnemann";
+                else if($certificado === "faculdade inspirar")
+                    $certificado = "Faculdade Inspirar";
+
+            ?>
+            <p>
+                <b>Tipo do curso:</b>
+                <?= htmlspecialchars($tipoCurso); ?>
+            </p>
+            <p>
+                <b>Modalidade:</b>
+                <?= htmlspecialchars($modalidade); ?>
+            </p>
+            <p>
+                <b>Tipo de certificado:</b>
+                <?= htmlspecialchars($certificado); ?>
+            </p>
             <p style="display: none"> <!-- FIXME: Deixar botão visível -->
                 <a style="  box-sizing: border-box;
 															padding: 10px;

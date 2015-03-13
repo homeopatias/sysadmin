@@ -475,6 +475,38 @@
                         </p>
                         <?php } ?>
                     </div>
+                    <?php
+                        $tipoCurso = $aluno->getTipoCurso();
+                        if($tipoCurso === "pos")
+                            $tipoCurso = "Pós-graduação";
+                        else if($tipoCurso === "extensao")
+                            $tipoCurso = "Extensão";
+                        else if($tipoCurso === "instituto")
+                            $tipoCurso = "Instituto Hahnemann";
+
+                        $modalidade = ucfirst($aluno->getModalidadeCurso());
+
+                        $certificado = $aluno->getTipoCadastro();
+                        if($certificado === "instituto")
+                            $certificado = "Instituto Hahnemann";
+                        else if($certificado === "faculdade inspirar")
+                            $certificado = "Faculdade Inspirar";
+
+                    ?>
+                    <div class="row">
+                        <p style="display:inline" class="col-sm-3">
+                            <b>Tipo do curso:</b>
+                            <?= htmlspecialchars($tipoCurso); ?>
+                        </p>
+                        <p style="display:inline" class="col-sm-4">
+                            <b>Modalidade:</b>
+                            <?= htmlspecialchars($modalidade); ?>
+                        </p>
+                        <p style="display:inline" class="col-sm-4">
+                            <b>Tipo de certificado:</b>
+                            <?= htmlspecialchars($certificado); ?>
+                        </p>
+                    </div>
 
                     <!-- //////////////////////////////////////////////////////////////////////
                          //////////////////////////////////////////////////////////////////////
