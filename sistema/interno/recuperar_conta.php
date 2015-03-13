@@ -48,12 +48,6 @@
                 $mensagem = "";
                 $sucesso  = "";
 
-<<<<<<< HEAD
-								$email  = isset( $_POST["email"] ) ? $_POST["email"] : false;
-
-								$emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
-=======
-                //valida e-mail e CPF
                 $cpf    = isset( $_POST["cpf"] ) ? $_POST["cpf"] : false;
                 $email  = isset( $_POST["email"] ) ? $_POST["email"] : false;
 
@@ -109,20 +103,11 @@
                     }
 
                     $emailValido  = isset($email) && mb_strlen($email, 'UTF-8') <= 100 &&
->>>>>>> edição de cidade alterado
                                     preg_match("/^.+\@.+\..+$/", $email);
 
             // -------------------------------------------------------------------
 
-<<<<<<< HEAD
-                //se e-mail forem válido, checamos as contas que possuem esta combinação
-                if($emailValido){
 
-                    $textoQuery = "SELECT login FROM Usuario 
-                                    WHERE email=:email";
-
-                    $query = $conexao->prepare($textoQuery);
-=======
                 //se e-mail e cpf forem válido, checamos as contas que possuem esta combinação
                 if($cpfValido && $emailValido){
 
@@ -131,7 +116,6 @@
 
                     $query = $conexao->prepare($textoQuery);
                     $query->bindParam(":cpf"   , $cpfBruto );
->>>>>>> edição de cidade alterado
                     $query->bindParam(":email" , $email);
 
                     $query->setFetchMode(PDO::FETCH_ASSOC);
@@ -173,15 +157,7 @@
                         //Altera as senhas das contas de usuário
                         $textoQuery = "UPDATE Usuario 
                                 SET senha=:senha
-<<<<<<< HEAD
-                                WHERE email=:email";
 
-                        $query = $conexao->prepare($textoQuery);
-                        $query->bindParam(":senha" , $hashSenha);
-                        $query->bindParam(":email" , $email);
-
-
-=======
                                 WHERE email=:email AND cpf=:cpf";
 
                         $query = $conexao->prepare($textoQuery);
@@ -189,7 +165,6 @@
                         $query->bindParam(":cpf"   , $cpfBruto);
                         $query->bindParam(":email" , $email);
 
->>>>>>> edição de cidade alterado
                         $sucesso = $query->execute();
 
                         if($sucesso){
@@ -211,11 +186,7 @@
                             }
 
                             $conteudo .= "\nSua senha para acessar esta(s) conta(s) foi alterada para a senha";
-<<<<<<< HEAD
-                            $conteudo .= ": ".$senhaAleatoria." .";
-=======
                             $conteudo .= ":".$senhaAleatoria." .";
->>>>>>> edição de cidade alterado
                             
                             $conteudo .= "\n\nEsta senha foi gerada aleatóriamente pelo nosso sistema, pedimos que altere";
                             $conteudo .= " esta senha na próxima vez em que você acessar nosso sistema.";
@@ -267,11 +238,8 @@
 
                     <h3>Recuperaçao de usuario e senha:</h3>
 
-<<<<<<< HEAD
-                    <p>Por favor, entre com seu e-mail no campo abaixo e lhe enviaremos um e-mail contendo
-=======
+
                     <p>Por favor, entre com seu e-mail e CPF nos campos abaixo e lhe enviaremos um e-mail contendo
->>>>>>> edição de cidade alterado
                         seu(s) nome(s) de usuário e uma senha gerada pelo sistema para ser usada no seu próximo 
                         login</p>
                     
@@ -288,16 +256,12 @@
                                class="form-control">
 
                         <br>
-
-<<<<<<< HEAD
-=======
                         <label for="cpf">CPF:</label>
                         <input type="text" name="cpf" id="cpf" required
                             pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
                             placeholder="xxx.xxx.xxx-xx" class="form-control">
 
                         <br><br>
->>>>>>> edição de cidade alterado
                         <div align="center">
                             <button type="submit" name="submit" value="submit" id="recuperar"
                             class="btn btn-primary pull-right">
@@ -315,8 +279,4 @@
 
         ?>
     </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> edição de cidade alterado
