@@ -604,7 +604,7 @@
                     $email            = $_POST["email"];
                     $login            = $_POST["login"];
                     $senha            = $_POST["senha"];
-                    $loginIndicador   = $_POST["indicador"];
+                    $idIndicador      = $_POST["indicador"];
                     $telefone         = $_POST["telefone"];
                     $endereco         = $_POST["endereco"];
                     $escolaridade     = $_POST["escolaridade"];
@@ -721,29 +721,25 @@
                                     mb_strlen($login, 'UTF-8') <= 100;
                     $senhaValida  = isset($senha) && mb_strlen($senha, 'UTF-8') >= 6 &&
                                     mb_strlen($senha, 'UTF-8') <= 72;
-                    $loginIndicadorValido = (isset($loginIndicador) &&
-                                            mb_strlen($loginIndicador, 'UTF-8') >= 3 &&
-                                            mb_strlen($loginIndicador, 'UTF-8') <= 100)
-                                            || !isset($loginIndicador) || $loginIndicador === "";
+                    $idIndicadorValido = (isset($idIndicador) && !is_nan($idIndicador))
+                                            || !isset($idIndicador) || $idIndicador === "";
 
                     $idIndicador = "";
-                    if($loginIndicadorValido && isset($loginIndicador) && $loginIndicador !== ""){
-                        // conferimos se o $loginIndicador representa um aluno no sistema
+                    if($idIndicadorValido && isset($idIndicador) && $idIndicador !== ""){
+                        // conferimos se o $idIndicador representa um aluno no sistema
                         
                         $textoQuery  = "SELECT A.numeroInscricao FROM Aluno A, Usuario U WHERE                 
-                                        U.login = ? AND A.idUsuario = U.id";
+                                        A.numeroInscricao = ?";
 
                         $query = $conexao->prepare($textoQuery);
-                        $query->bindParam(1, $loginIndicador, PDO::PARAM_INT);
+                        $query->bindParam(1, $idIndicador, PDO::PARAM_INT);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
                         if(!($linha = $query->fetch())){
-                            $loginIndicadorValido = false;
+                            $idIndicadorValido = false;
                             $mensagem = "Não foi encontrado nos registros um aluno indicador com esse
-                                         nome de usuário";
-                        }else{
-                            $idIndicador = $linha["numeroInscricao"];
+                                         número de matrícula";
                         }
                     }
 
@@ -811,7 +807,7 @@
                     // se todos os dados estão válidos, o aluno é cadastrado
                                           
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida &&
-                       $loginIndicadorValido && $telefoneValido && $enderecoValido &&
+                       $idIndicadorValido && $telefoneValido && $enderecoValido &&
                        $escolaridadeValida && $cursoValido && $tipoCursoValido && 
                        $tipoCadastroValido && $modalidadeCursoValido){
 
@@ -1233,15 +1229,6 @@
                     }
                     $tabela .= "</td>";
 
-                    $sql  = "SELECT U.login FROM Usuario U, Aluno A WHERE A.idUsuario = U.id ";
-                    $sql .= "AND A.numeroInscricao = ?";
-
-                    $res = $conexao->prepare($sql);
-                    $res->bindParam(1, $linha["idIndicador"], PDO::PARAM_INT);
-                    $res->setFetchMode(PDO::FETCH_ASSOC);
-                    $res->execute();
-                    $linhaIndicador = $res->fetch();
-
                     $tabela .= "    <td><a href=\"visualizar_aluno.php?id=";
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-eye\"></i></a></td>";
@@ -1255,7 +1242,7 @@
                         $tabela .= "<i class=\"fa fa-bolt\" style=\"color: orange\"></i></a></td>";
                     }
                     $tabela .= "    <td><a data-indicador=\"";
-                    $tabela .= $linhaIndicador["login"];
+                    $tabela .= $linha["idIndicador"];
                     $tabela .= "\" data-id=\"";
                     $tabela .= $linha["id"];
                     $tabela .= "\" data-login=\"";
@@ -2024,13 +2011,13 @@
                             <div class="form-group">
                                 <label for="indicador-novo">
                                     Foi indicado por alguém?
-                                    Em caso afirmativo, insira o nome de usuário do
+                                    Em caso afirmativo, insira o número de matrícula do
                                     indicador:
                                 </label>
                                 <input type="text" name="indicador" id="indicador-novo"
-                                       pattern="^.{3,100}$"
-                                       placeholder="Nome de usuário do indicador, se existir"
-                                       title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
+                                       pattern="^\d*$"
+                                       placeholder="Número de matrícula do indicador, se existir"
+                                       title="Esse campo deve ter um número inteiro ou ficar vazio"
                                        class="form-control" autocomplete="off">
                             </div>
                             <br>
@@ -2286,13 +2273,13 @@
                             <div class="form-group">
                                 <label for="indicador">
                                     Foi indicado por alguém?
-                                    Em caso afirmativo, insira o nome de usuário do
+                                    Em caso afirmativo, insira o número de matrícula do
                                     indicador:
                                 </label>
                                 <input type="text" name="indicador" id="indicador"
-                                       pattern="^.{3,100}$"
-                                       placeholder="Nome de usuário do indicador, se existir"
-                                       title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
+                                       pattern="^\d*$"
+                                       placeholder="Número de matrícula do indicador, se existir"
+                                       title="Esse campo deve ter um número inteiro ou ficar vazio"
                                        class="form-control" autocomplete="off">
                             </div>
                             <div class="form-group">

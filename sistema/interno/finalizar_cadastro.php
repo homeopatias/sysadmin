@@ -187,7 +187,7 @@
                 if (isset($_POST["submit"])){
 
                     $cpf            = $_POST["cpf"];
-                    $loginIndicador = $_POST["indicador"];
+                    $idIndicador    = $_POST["indicador"];
                     $telefone       = $_POST["telefone"];
                     $cep            = $_POST["cep"];
                     $rua            = $_POST["rua"];
@@ -271,29 +271,24 @@
                     }
 
 
-                    $loginIndicadorValido = (isset($loginIndicador) &&
-                                            mb_strlen($loginIndicador, 'UTF-8') >= 3 &&
-                                            mb_strlen($loginIndicador, 'UTF-8') <= 100)
-                                            || !isset($loginIndicador) || $loginIndicador === "";
+                    $idIndicadorValido = (isset($idIndicador) && !is_nan($idIndicador))
+                                            || !isset($idIndicador) || $idIndicador === "";
 
-                    $idIndicador = "";
-                    if($loginIndicadorValido && isset($loginIndicador) && $loginIndicador !== ""){
-                        // conferimos se o $loginIndicador representa um aluno no sistema
+                    if($idIndicadorValido && isset($idIndicador) && $idIndicador !== ""){
+                        // conferimos se o $idIndicador representa um aluno no sistema
                         
-                        $textoQuery  = "SELECT A.numeroInscricao FROM Aluno A, Usuario U WHERE                 
-                                        U.login = ? AND A.idUsuario = U.id";
+                        $textoQuery  = "SELECT A.numeroInscricao FROM Aluno A WHERE                 
+                                        A.numeroInscricao = ?";
 
                         $query = $conexao->prepare($textoQuery);
-                        $query->bindParam(1, $loginIndicador, PDO::PARAM_INT);
+                        $query->bindParam(1, $idIndicador, PDO::PARAM_INT);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
                         if(!($linha = $query->fetch())){
-                            $loginIndicadorValido = false;
+                            $idIndicadorValido = false;
                             $mensagem = "Não foi encontrado nos registros um aluno indicador com esse
-                                         nome de usuário";
-                        }else{
-                            $idIndicador = $linha["numeroInscricao"];
+                                         número de matrícula";
                         }
                     }
 
@@ -378,7 +373,7 @@
                         }
                     }
 
-                    if($cpfValido && $loginIndicadorValido && $telefoneValido && $enderecoValido &&
+                    if($cpfValido && $idIndicadorValido && $telefoneValido && $enderecoValido &&
                        $escolaridadeValida && $cursoValido && $cidadeMatValida){
 
                         $aluno = unserialize($_SESSION['usuario']);
@@ -896,13 +891,13 @@
                         <div class="form-group">
                             <label for="indicador-novo">
                                 Foi indicado por alguém?
-                                Em caso afirmativo, insira o nome de usuário do
+                                Em caso afirmativo, insira o número de matrícula do
                                 indicador:
                             </label>
                             <input type="text" name="indicador" id="indicador-novo"
-                                   pattern="^.{3,100}$"
-                                   placeholder="Nome de usuário do indicador, se existir"
-                                   title="Esse campo deve ter um login de 3 a 100 caracteres ou ficar vazio"
+                                   pattern="^\d*$"
+                                   placeholder="Número de matrícula do indicador, se existir"
+                                   title="Esse campo deve ter número inteiro ou ficar vazio"
                                    class="form-control" autocomplete="off">
                         </div>
                         <br>

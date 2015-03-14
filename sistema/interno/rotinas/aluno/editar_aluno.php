@@ -31,7 +31,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $email              = $_POST["email"];
         $login              = $_POST["login"];
         $status             = $_POST["status"];
-        $loginIndicador     = $_POST["indicador"];
+        $idIndicador        = $_POST["indicador"];
         $telefone           = $_POST["telefone"];
         $escolaridade       = $_POST["escolaridade"];
         $curso              = $_POST["curso"];
@@ -67,12 +67,11 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
                                            $status === "desistente"  ||
                                            $status === "formado"     ||
                                            $status === "inativo"     );
-        $loginIndicadorValido = (isset($loginIndicador) && mb_strlen($loginIndicador, 'UTF-8') >= 3 
-                                 && mb_strlen($loginIndicador, 'UTF-8') <= 100)
-                                || !isset($loginIndicador) || $loginIndicador === "";
+        $idIndicadorValido = (isset($idIndicador) && !is_nan($idIndicador))
+                                || !isset($idIndicador) || $idIndicador === "";
 
-        if($loginIndicadorValido && isset($loginIndicador) && $loginIndicador !== ""){
-            // conferimos se o $loginIndicador representa um aluno no sistema
+        if($idIndicadorValido && isset($idIndicador) && $idIndicador !== ""){
+            // conferimos se o $idIndicador representa um aluno no sistema
             $conexao = null;
             try{
                 $conexao = new PDO("mysql:host=$host;dbname=homeopatias;charset=utf8", $usuario, $senhaBD);
@@ -81,23 +80,21 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             }
 
             $textoQuery  = "SELECT A.numeroInscricao FROM Aluno A, Usuario U WHERE 
-                            U.login = ? AND A.idUsuario = U.id";
+                            A.numeroInscricao = ?";
 
             $query = $conexao->prepare($textoQuery);
-            $query->bindParam(1, $loginIndicador, PDO::PARAM_INT);
+            $query->bindParam(1, $idIndicador, PDO::PARAM_INT);
             $query->setFetchMode(PDO::FETCH_ASSOC);
             $query->execute();
 
             $linha = "";
             if(!($linha = $query->fetch())){
-                $loginIndicadorValido = false;
+                $idIndicadorValido = false;
                 $mensagem = "Não foi encontrado nos registros um aluno indicador com esse
-                             nome de usuário";
+                             número de matrícula";
             }else if($insc == $linha["numeroInscricao"]){
-                $loginIndicadorValido = false;
+                $idIndicadorValido = false;
                 $mensagem = "Um aluno não pode indicar a si mesmo";
-            }else{
-                $idIndicador = $linha["numeroInscricao"];
             }
         }
 
@@ -166,7 +163,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $sucesso = false;
         // se todos os dados estão válidos, o aluno é editado
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
-           $statusValido && $loginIndicadorValido && $escolaridadeValida &&
+           $statusValido && $idIndicadorValido && $escolaridadeValida &&
            $cursoValido && $inscValido && $idValido && $enderecoValido && $tipoCadastroValido && 
            $tipoCursoValido && $senhaValida && $modalidadeCursoValido ){
 
