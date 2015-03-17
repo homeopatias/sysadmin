@@ -1270,6 +1270,77 @@
 
                     <?php
                         }
+
+                        // exibimos as frequências dos alunos matriculados no ano atual
+                        if($matriculado) {
+                            $textoQuery = "SELECT A.data, F.presenca, F.aprovacaoPendente FROM Aula A
+                                            INNER JOIN Cidade C ON
+                                            A.chaveCidade = C.idCidade INNER JOIN Matricula M ON
+                                            M.chaveCidade = C.idCidade INNER JOIN Frequencia F ON
+                                            F.chaveAluno  = M.chaveAluno AND F.chaveAula = A.idAula
+                                            WHERE M.chaveAluno = :chaveAluno
+                                            AND C.ano = :ano AND A.etapa = M.etapa";
+
+                            $query = $conexao->prepare($textoQuery);
+
+                            $query->bindParam(":chaveAluno",
+                                              $aluno->getNumeroInscricao());
+                            $query->bindParam(":ano" , date("Y"));
+
+                            $query->setFetchMode(PDO::FETCH_ASSOC);
+                            $query->execute();
+
+                            $presencas = 0;
+                            $aulas = 0;
+
+                            $tabela = "";
+
+                            $linhas = $query->fetchAll();
+                    ?>
+
+                    <h3>Frequências desse ano</h3>
+                    <table class="table table-bordered table-striped" id="alunos">
+                        <thead style="background-color: #AAA">
+                            <tr>
+                            <?php
+                                echo "<tr>";
+                                foreach ($linhas as $linha){
+                                    // listamos os dados de cada aula
+                                    echo "<th class=\"data\">";
+                                    echo date("d/m/Y H:i", strtotime($linha["data"]));
+                                    echo "</th> ";                
+                                }
+                                echo "</tr>";
+                            ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                echo "<tr>";
+                                foreach ($linhas as $linha) {
+                                    echo "<td>";
+                                    if ($linha['aprovacaoPendente']) {
+                                        echo "    <td><i class=\"fa fa-ellipsis-h\"></i>
+                                                        </td>";
+                                    } else if($linha['presenca']) {
+                                        echo "    <td><i class=\"fa fa-check-square-o sucesso\"></i>
+                                                        </td>";
+                                        $presencas++;
+                                    } else {
+                                        echo "<td>
+                                                        <i class=\"fa fa-minus-square-o warning\"></i>
+                                                   </td>";
+                                    }
+                                    echo "</td>";
+                                }
+
+                                echo "</tr>";
+                            ?>
+                        </tbody>
+                    </table>
+
+                    <?php
+                        }
                     ?>
 
                 </section>
