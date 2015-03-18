@@ -115,6 +115,12 @@
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                 });
 
+                // passa o id da aula para o modal de mudança de presença quando
+                // necessário
+                $("#modal-muda-frequencia").on('show.bs.modal', function(e) {
+                    $(this).find('#idAula').val($(e.relatedTarget).data('idaula'));
+                });
+
                 $("#efetua_pagamento").click(function(){
                     $("#form-lanca-pagamento").submit();
                 });
@@ -1270,6 +1276,91 @@
 
                     <?php
                         }
+
+                        // exibimos as frequências dos alunos matriculados no ano atual
+                        if($matriculado) {
+                            $textoQuery = "SELECT A.data, A.idAula, F.presenca, F.aprovacaoPendente FROM Aula A
+                                            INNER JOIN Cidade C ON
+                                            A.chaveCidade = C.idCidade INNER JOIN Matricula M ON
+                                            M.chaveCidade = C.idCidade LEFT JOIN Frequencia F ON
+                                            F.chaveAluno  = M.chaveAluno AND F.chaveAula = A.idAula
+                                            WHERE M.chaveAluno = :chaveAluno
+                                            AND C.ano = :ano AND A.etapa = M.etapa";
+
+                            $query = $conexao->prepare($textoQuery);
+
+                            $query->bindParam(":chaveAluno",
+                                              $aluno->getNumeroInscricao());
+                            $query->bindParam(":ano" , date("Y"));
+
+                            $query->setFetchMode(PDO::FETCH_ASSOC);
+                            $query->execute();
+
+                            $tabela = "";
+
+                            $linhas = $query->fetchAll();
+                    ?>
+
+                    <h3>Frequências desse ano</h3>
+                    <table class="table table-bordered table-striped" id="alunos">
+                        <tbody>
+                            <tr>
+                            <?php
+                                echo "<th style=\"width: 10%;background-color: #AAA;\">Data da aula</th>";
+                                foreach ($linhas as $linha){
+                                    // listamos os dados de cada aula
+                                    echo "<th class=\"data\" style=\"background-color: #AAA;\">";
+                                    echo date("d/m/Y", strtotime($linha["data"]));
+                                    echo "</th> ";                
+                                }
+                            ?>
+                            </tr>
+                            <tr>
+                            <?php
+                                echo "<th style=\"background-color: #AAA; width:10%\">Horário da aula</th>";
+                                foreach ($linhas as $linha){
+                                    // listamos os dados de cada aula
+                                    echo "<th class=\"hora\">";
+                                    echo date("H:i", strtotime($linha["data"]));
+                                    echo "</th> ";                
+                                }
+                            ?>
+                            </tr>
+                            <tr>
+                            <?php
+                                echo "<th style=\"background-color: #AAA; width:10%\">Aluno presente?</th>";
+                                foreach ($linhas as $linha) {
+                                    echo "<td>";
+                                    if ($linha['aprovacaoPendente'] || is_null($linha['presenca'])) {
+                                        echo "<i class=\"fa fa-ellipsis-h\"></i>";
+                                    } else if($linha['presenca']) {
+                                        echo "<i class=\"fa fa-check-square-o sucesso\"></i>";
+                                    } else {
+                                        echo "<i class=\"fa fa-minus-square-o warning\"></i>";
+                                    }
+                                    echo "</td>";
+                                }
+                            ?>
+                            </tr>
+                            <tr>
+                            <?php
+                                echo "<th style=\"background-color: #AAA; width:10%\">Mudar presença</th>";
+                                foreach ($linhas as $linha) {
+                                    echo "<td>";
+                                    echo "<a href=\"#\" data-toggle=\"modal\"
+                                             data-target=\"#modal-muda-frequencia\"
+                                             data-idaula=\"" . $linha["idAula"] . "\">
+                                            <i class=\"fa fa-pencil\"></i>
+                                          </a>";
+                                    echo "</td>";
+                                }
+                            ?>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <?php
+                        }
                     ?>
 
                 </section>
@@ -1495,6 +1586,36 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- popup "modal" do bootstrap para mudança de presença de aluno em aula -->
+        <div class="modal fade" id="modal-muda-frequencia" tabindex="-1" role="dialog"
+             aria-labelledby="modal-muda-frequencia" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="rotinas/alterar_frequencia.php" method="POST">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Mudar presença de aluno</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idAluno" value=<?= '"' . $aluno->getNumeroInscricao() . '"' ?>>
+                            <input type="hidden" name="idAula" id="idAula">
+                            <h3>Status da presença do aluno:</h3>
+                            <br>
+                            <input type="radio" name="presenca" value="1" required
+                                   title="Insira algum valor"> Presente<br>
+                            <input type="radio" name="presenca" value="0"> Ausente
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Não</button>
+                            <input type="submit" class="btn btn-danger danger" value="Sim">
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
         <?php

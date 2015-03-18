@@ -580,7 +580,7 @@
                     $etapaValida       = isset($etapa) && preg_match("/^[1-4]$/", $etapa);
                     $idProfessorValido = isset($idProfessor) && 
                                          (preg_match("/^[0-9]+$/", $idProfessor) || $idProfessor == -1);
-                    $descricaoValida = isset($descricao) && mb_strlen($descricao, 'UTF-8') <= 10000;
+                    $descricaoValida = !isset($descricao) || mb_strlen($descricao, 'UTF-8') <= 10000;
 
 
                     $idProfessorPrimarioValido   = isset($idProfessorAdicional) && 
@@ -1240,9 +1240,8 @@
                             <div class="form-group">
                                 <label for="descricao-nova-aula">Descrição:</label>
                                 <textarea name="descricao" id="descricao-nova-aula" rows="8" cols="50"
-                                    maxlength="10000" required
-                                    title="A descrição da aula deve ser preenchida e ter até
-                                           10000 caracteres"
+                                    maxlength="10000"
+                                    title="A descrição da aula deve ter até 10000 caracteres"
                                     class="form-control"></textarea>
                             </div>
                         </div>
@@ -1349,9 +1348,8 @@
                             <div class="form-group">
                                 <label for="descricao">Descrição da aula:</label>
                                 <textarea name="descricao" id="descricao" rows="8" cols="50"
-                                    maxlength="10000" required
-                                    title="A descrição da aula deve ser preenchida e ter até
-                                           10000 caracteres"
+                                    maxlength="10000"
+                                    title="A descrição da aula deve ter até 10000 caracteres"
                                     class="form-control"></textarea>
                             </div>
                         </div>
