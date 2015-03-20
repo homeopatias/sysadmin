@@ -753,7 +753,8 @@
                     $cep = str_replace("-","",$cep);
                     
 
-                    $cepValido = (isset($cep) && mb_strlen($cep, 'UTF-8') == 8 );
+                    $cepValido = (isset($cep) && mb_strlen($cep, 'UTF-8') == 8 ) ||
+                                 (!isset($cep) || mb_strlen($cep, 'UTF-8') == 0);
                     
                     
 
@@ -1256,7 +1257,7 @@
                     $tabela .= "\" data-curso=\"";
                     $tabela .= $linha["curso"];
                     $tabela .= "\" data-cep=\"";
-                    $tabela .= $cep;
+                    $tabela .= ($cep === '-' ? "" : $cep);
                     $tabela .= "\" data-rua=\"";
                     $tabela .= $linha["rua"];
                     $tabela .= "\" data-numero=\"";
@@ -1828,11 +1829,11 @@
                                             style="padding-top:10px;padding-bot:10px">
                                             <label for="cep-novo" style="display:inline">CEP :</label>
                                             <input type="text" name="cep" id="cep-novo"
-                                                pattern="^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$" 
+                                                pattern="(^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$|^$)" 
                                                 placeholder="xxxxx-xxx"
                                                 title="Insira um CEP válido"
                                                 class="form-control"
-                                                style="width:90px" required>
+                                                style="width:90px">
                                         </div>
                                         <div  class="col-sm-6 col-md-4"
                                         style="padding-top:10px;padding-bot:10px">
@@ -2094,11 +2095,11 @@
                                         style="padding-top:10px;padding-bot:10px">
                                         <label for="cep" style="display:inline">CEP :</label>
                                         <input type="text" name="cep" id="cep"
-                                            pattern="^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$" 
+                                            pattern="(^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$|^$)" 
                                             placeholder="xxxxx-xxx"
                                             title="Insira um CEP válido"
                                             class="form-control"
-                                            style="width:90px" required>
+                                            style="width:90px">
                                     </div>
                                     <div  class="col-sm-6 col-md-4"
                                     style="padding-top:10px;padding-bot:10px">

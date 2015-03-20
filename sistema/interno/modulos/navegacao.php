@@ -21,8 +21,8 @@
                 if(isset($_SESSION["usuario"])){
                     if( unserialize($_SESSION["usuario"]) instanceof Aluno &&
                             (
-                                is_null(unserialize($_SESSION["usuario"])->getCep()) || 
-                                mb_strlen(unserialize($_SESSION["usuario"])->getCep()) == 0
+                                is_null(unserialize($_SESSION["usuario"])->getRua()) || 
+                                mb_strlen(unserialize($_SESSION["usuario"])->getRua()) == 0
                             )
                         ) {
             ?>

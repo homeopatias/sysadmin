@@ -129,7 +129,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $cep = str_replace("-","",$cep);
         
 
-        $cepValido = (isset($cep) && mb_strlen($cep, 'UTF-8') == 8 );
+        $cepValido = (isset($cep) && mb_strlen($cep, 'UTF-8') == 8 ) ||
+                     (!isset($cep) || mb_strlen($cep, 'UTF-8') == 0);
                     
 
         $ruaValida = (isset($rua) && mb_strlen($rua, 'UTF-8') >= 3 &&
