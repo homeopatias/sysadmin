@@ -2165,6 +2165,25 @@
                                        placeholder="dd/mm/aaaa" required class="form-control">
                             </div>
                             <div class="form-group">
+                                <label for="ano">Ano:</label>
+                                <select name="ano" id="ano" required
+                                        class="form-control">
+                                    <?php
+                                        for($i = 0; $i < 3; $i++){
+                                            echo '<option value="' . (date("Y") + $i) . 
+                                                  '">' . (date("Y") + $i) . '</option>';
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="local">Local:</label>
+                                <input type="text" name="local" id="local" required
+                                       pattern="^.{3,200}$" placeholder="Nome do local"
+                                       title="O local deve ter de 3 a 200 caracteres"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
                                 <div class="col-sm-6" style="text-align: left">
                                     <label for="cadastroAtivo">Cadastro ativo : </label>
                                 </div>

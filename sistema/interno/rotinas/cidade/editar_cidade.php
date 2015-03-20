@@ -16,8 +16,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $id          = $_POST["idCidade"];
         $nome        = $_POST["nome"];
         $UF          = $_POST["UF"];
-        //$ano         = $_POST["ano"];
-        //$local       = $_POST["local"];
+        $ano         = $_POST["ano"];
+        $local       = $_POST["local"];
         $idCoord     = $_POST["coord"];
         $limite      = $_POST["limite"];
         //$nomeEmpresa = $_POST["nomeEmpresa"];
@@ -94,17 +94,17 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $nomeValido    = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                          mb_strlen($nome, 'UTF-8') <= 100;
         $UfValido      = isset($UF) && mb_strlen($UF, 'UTF-8') === 2;
-        /*$anoValido     = isset($ano) && intval($ano) < date("Y") + 3;*/
-        /*$localValido   = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
-                         mb_strlen($local, 'UTF-8') <= 200;*/
+        $anoValido     = isset($ano) && intval($ano) < date("Y") + 3;
+        $localValido   = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
+                         mb_strlen($local, 'UTF-8') <= 200;
         $idCoordValido = isset($idCoord) && preg_match("/^[0-9]*$/", $idCoord);
         $limiteValido    = isset($limite) && preg_match("/^\d{4}-\d{2}-\d{2}$/", $limite);
-        /*$empresaValida   = isset($nomeEmpresa) && mb_strlen($nomeEmpresa, 'UTF-8') <= 100 &&
+        $empresaValida   = true; /*isset($nomeEmpresa) && mb_strlen($nomeEmpresa, 'UTF-8') <= 100 &&
                            mb_strlen($nomeEmpresa, 'UTF-8') >= 3;*/
-        /*$cnpjValido      = isset($cnpjEmpresa) &&
+        $cnpjValido      = true; /*isset($cnpjEmpresa) &&
                            preg_match("/^(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|\d{14})$/",
                            $cnpjEmpresa);*/
-        /*$custoCursoValido   = isset($custoCurso) && preg_match("/^[0-9]*\.?[0-9]+$/",
+        $custoCursoValido   = true; /*isset($custoCurso) && preg_match("/^[0-9]*\.?[0-9]+$/",
                                                                  $custoCurso);*/
 
         $modalidadeCursoValida = isset($modalidadeCurso) && ($modalidadeCurso == "regular"
@@ -200,8 +200,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setIdCidade($id);
             $atualizar->setNome($nome);
             $atualizar->setUF($UF);
-            //$atualizar->setAno($ano);
-            //$atualizar->setLocal($local);
+            $atualizar->setAno($ano);
+            $atualizar->setLocal($local);
             $atualizar->setLimiteInscricao($limite);
             //$atualizar->setNomeEmpresa($nomeEmpresa);
             //$atualizar->setCnpjEmpresa($cnpjEmpresa);
@@ -245,7 +245,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         }else if(!$localValido){
             $mensagem = "Local inválido!";
         }else if(!$idCoordValido){
-            $mensagem = "Id de coordenador inválido!";
+            $mensagem = "Coordenador inválido!";
         }else if(!$limiteValido){
             $mensagem = "Data limite de matrícula inválida!";
         }else if(!$idValido){
@@ -254,12 +254,14 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "Nome da empresa inválida!";
         }else if(!$cnpjValido) {
             $mensagem = "CNPJ inválido!";
-        }else if(!$custoCurso) {
+        }else if(!$custoCursoValido) {
             $mensagem = "Custo do curso inválido!";
         }else if(!$modalidadeCursoValida){
             $mensagem = "Modalidade inválida";
         }else if(!$pagamentosValidos){
             $mensagem = "Valor inserido nas parcelas inválido";
+        }else if(!$tipoCursoValido){
+            $mensagem = "Tipo de curso inválido";
         }
     }else{
         $mensagem = "Erro de envio de formulário";

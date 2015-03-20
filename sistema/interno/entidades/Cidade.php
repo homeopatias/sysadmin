@@ -226,7 +226,7 @@ class Cidade{
         }
 
 
-        $comando  = "UPDATE Cidade SET UF=?, nome=?, idCoordenador=?,
+        $comando  = "UPDATE Cidade SET UF=?, ano=?, nome=?, idCoordenador=?, local=?,
                      limiteInscricao=?, cadastro_ativo =?,
                      tipo_curso=?, modalidadeCidade=?,
                       parcela_extensao_regular=?, parcela_pos_regular=?, 
@@ -237,8 +237,8 @@ class Cidade{
                       inscricao_pos_intensivo=?, inscricao_instituto_regular=?,
                       inscricao_instituto_intensivo=? WHERE idCidade = ?";
         $query = $conexao->prepare($comando);
-        $dados  = array($this->UF, $this->nome, $this->coordenador->getIdAdmin(),
-                        date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
+        $dados  = array($this->UF, $this->ano, $this->nome, $this->coordenador->getIdAdmin(),
+                        $this->local, date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
                         $this->cadastroAtivo, $this->tipoCurso,$this->modalidadeCidade,
                          $this->parcelaExtensaoRegular, $this->parcelaPosRegular,
                          $this->parcelaExtensaoIntensivo, $this->parcelaPosIntensivo,
