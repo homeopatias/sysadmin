@@ -333,8 +333,8 @@
                                             $bairroValido && $cidadeValida
                                            && $estadoValido);
 
-                    // Até o momento, não será necessaria a documentação para pós-graduação
                     $escolaridadeValida = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
+                                          unserialize($_SESSION['usuario'])->getTipoCurso() === "instituto" ||
                                 (isset($escolaridade) &&
                                    ($escolaridade === "fundamental incompleto" ||
                                     $escolaridade === "fundamental completo"   ||
@@ -348,11 +348,13 @@
 
                     // para permitir a validação do curso, conferimos se possui curso superior
                     $superior = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
+                                unserialize($_SESSION['usuario'])->getTipoCurso() === "instituto" ||
                                 ($escolaridade === "superior incompleto"    ||
                                  $escolaridade === "superior completo"      ||
                                  $escolaridade === "mestrado"               ||
                                  $escolaridade === "doutorado");
                     $cursoValido = unserialize($_SESSION['usuario'])->getTipoCurso() === "pos" ||
+                                   unserialize($_SESSION['usuario'])->getTipoCurso() === "instituto" ||
                                    ((!isset($curso) || $curso === "") && !$superior) ||
 
                                    (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
