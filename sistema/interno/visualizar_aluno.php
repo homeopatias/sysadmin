@@ -920,10 +920,11 @@
                             } 
                             if(!$inscricaoPaga) {
                         ?>
+                            <!-- Funcionalidade desativada
                             <a style="cursor: pointer" data-target="#modal-retificacao"
                                data-toggle="modal">
                                 Retificar dados de matrícula
-                            </a>
+                            </a>-->
                         <?php
                             }
 
@@ -983,7 +984,8 @@
                         // damos a opção de criação de nova matrícula caso o aluno
                         // não esteja matriculado no ano atual ou no seguinte
 
-                        $anoAtual = date("Y"); // ano atual para uso na nova matrícula 
+                        $anoAtual = date("Y"); // ano atual para uso na nova matrícula
+                        var_dump($matriculado);
                         if((!$matriculado || !$matriculadoProxAno) &&
                             $aluno->getStatus() !== "desistente" &&
                             $aluno->getStatus() !== "formado"){
