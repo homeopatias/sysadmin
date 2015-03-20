@@ -977,7 +977,6 @@
                         $parcelasAberto = htmlspecialchars($linha['numParcelas']);
                         $valorAberto = number_format($linha['valorFaltante'], 2, ',', ' ');
 
-												echo "teste ".number_format($pagamentos[date("Y")][1]['desconto']);
                     ?>
                     <h4>Você está com <?= $parcelasAberto ?> parcelas em aberto,
                        e seu saldo em aberto é de R$ <?= $valorAberto ?>.</h4>
