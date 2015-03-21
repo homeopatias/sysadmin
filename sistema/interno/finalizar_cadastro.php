@@ -722,12 +722,12 @@
                             </p>
                             <label for="modalidade-novo" >
                                 Modalidade desejada :</label>
-                            <select id="modalidade_curso" name="modalidade_curso">
+                            <select id="modalidade_curso" name="modalidade_curso" class="form-control">
                                 <option value="">Selectione uma modalidade</option>
                                 <option value="regular">Regular</option>
                                 <option value="intensivo">Intensivo</option>
                             </select>
-                            </div>
+                            </div><br>
 
                             <label for="cidadeMat">Escolha a cidade onde deseja fazer o curso:</label>
                             <select name="cidadeMat" id="cidadeMat"
@@ -740,7 +740,6 @@
                                 ?>
                             </select>
                         </div>
-                        <br><br>
                         <div class="form-group">
                             <label for="cpf-novo">CPF:</label>
                             <input type="text" name="cpf" id="cpf-novo" required
@@ -914,7 +913,10 @@
                                    title="O curso deve ter no máximo 200 caracteres"
                                    class="form-control">
                         </div>
-                        <?php  } ?>
+                        <?php  } 
+
+                        if($aluno->getTipoCurso() !== "pos") {
+                        ?>
 
                         <div class="form-group">
                             <label for="indicador-novo">
@@ -928,6 +930,7 @@
                                    title="Esse campo deve ter número inteiro ou ficar vazio"
                                    class="form-control" autocomplete="off">
                         </div>
+                        <?php } ?>
                         <br>
                         <button type="submit" name="submit" value="submit"
                                 class="btn btn-success">Terminar cadastro</button>

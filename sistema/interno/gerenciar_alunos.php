@@ -120,6 +120,13 @@
                     $(this).find('#tipo_curso').val(
                         $(e.relatedTarget).data('tipo_curso')
                     );
+
+                    if($(e.relatedTarget).data('tipo_curso') === "pos") {                
+                        $(this).find('#indicador').parent().hide();
+                    } else {
+                        $(this).find('#indicador').parent().show();
+                    }
+
                     $(this).find('#modalidade-curso').val(
                         $(e.relatedTarget).data('modalidade_curso')
                     );
@@ -170,6 +177,15 @@
                         $("#modal-novo-aluno #curso-novo").parent().show(500);
                     }else{
                         $("#modal-novo-aluno #curso-novo").parent().hide(500);
+                    }
+                });
+
+                $("#modal-novo-aluno #tipo_curso").change(function(){
+                    console.log($(this));
+                    if($(this).val() === "pos"){
+                        $(this).parent().parent().find('#indicador-novo').parent().hide();
+                    }else{
+                        $(this).parent().parent().find('#indicador-novo').parent().show();
                     }
                 });
 
