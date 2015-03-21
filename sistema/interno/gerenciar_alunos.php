@@ -83,8 +83,8 @@
                     );
                     var telefone = $(e.relatedTarget).data('telefone')+"";
                     $(this).find('#telefone').val(
-                        ["(", telefone.slice(0, 2), ")", telefone.slice(2, 6), "-",
-                         telefone.slice(6)].join('')
+                        telefone//["(", telefone.slice(0, 2), ")", telefone.slice(2, 6), "-",
+                         //telefone.slice(6)].join('')
                     );
 
                     //Preenche endereço----------------------
@@ -744,7 +744,7 @@
                     }
 
                     $telefoneValido = isset($telefone) &&
-                                      preg_match("/^\(?\d{2}\)?\d{4}-?\d{4,7}$/", $telefone);
+                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone);
                     
                     $enderecoValido = false;
 
@@ -1931,7 +1931,7 @@
                             <div class="form-group">
                                 <label for="telefone-novo">Telefone do aluno:</label>
                                 <input type="tel" name="telefone" id="telefone-novo" required
-                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
                                        title="Insira um telefone válido"
                                        class="form-control">
                             </div>
@@ -2083,7 +2083,7 @@
                             <div class="form-group">
                                 <label for="telefone">Telefone do aluno:</label>
                                 <input type="tel" name="telefone" id="telefone" required
-                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
                                        title="Insira um telefone válido"
                                        class="form-control">
                             </div>

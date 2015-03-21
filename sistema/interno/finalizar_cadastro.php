@@ -293,7 +293,7 @@
                     }
 
                     $telefoneValido = isset($telefone) &&
-                                      preg_match("/^\(?\d{2}\)?\d{4}-?\d{4,7}$/", $telefone);
+                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone);
 
                     $enderecoValido = false;
 
@@ -739,7 +739,7 @@
                         <div class="form-group">
                             <label for="telefone-novo">Telefone:</label>
                             <input type="tel" name="telefone" id="telefone-novo" required
-                                   placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                   placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
                                    title="Insira um telefone válido"
                                    class="form-control">
                         </div>

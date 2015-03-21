@@ -99,7 +99,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         }
 
         $telefoneValido = isset($telefone) &&
-                          preg_match("/^\(\d{2}\)\d{4}-?\d{4,7}$/", $telefone);
+                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone);
 
         $escolaridadeValida = isset($escolaridade) &&
                    ($escolaridade === "fundamental incompleto" ||
