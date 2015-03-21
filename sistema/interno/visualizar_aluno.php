@@ -295,7 +295,8 @@
 
                         $valorTotalPago = (float) $_POST["valor-pagamento"];
 
-                        $query->bindParam(1, $aluno->getId());
+                        $idAlunoPagante = $aluno->getId();
+                        $query->bindParam(1, $idAlunoPagante);
                         $query->bindParam(2, $valorTotalPago);
                         $query->bindParam(3, $metodo);
                         $query->bindParam(4, $anoPagamento);
@@ -408,8 +409,8 @@
 
                                 //Se a inscrição foi paga, atualiza desconto
                                 if($pagamentos[date("Y")][0]['fechado']){
-                                    require_once($_SERVER["DOCUMENT_ROOT"].
-                                        "/interno/entidades/Aluno.php");
+                                    require_once(dirname(__FILE__).
+                                        "/entidades/Aluno.php");
 
     
                                     $aluno = new Aluno("");
