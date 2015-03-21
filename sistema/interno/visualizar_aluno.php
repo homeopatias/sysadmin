@@ -985,10 +985,12 @@
                         // não esteja matriculado no ano atual ou no seguinte
 
                         $anoAtual = date("Y"); // ano atual para uso na nova matrícula
-                        var_dump($matriculado);
-                        if((!$matriculado || !$matriculadoProxAno) &&
-                            $aluno->getStatus() !== "desistente" &&
-                            $aluno->getStatus() !== "formado"){
+
+                        // O aluno só pode se matricular no ano atual, e apenas caso
+                        // ainda não esteja matriculado
+                        if(!$matriculado //|| !$matriculadoProxAno)
+                            && $aluno->getStatus() !== "desistente"
+                            && $aluno->getStatus() !== "formado"){
                     ?>
                     <div class="row">
                         <a style="cursor: pointer" class="col-sm-2" id="efetuar-mat">
@@ -1009,13 +1011,13 @@
                                         <?= $anoAtual ?>
                                     </option>
                                     <?php }
-                                        if(!$matriculadoProxAno){ // permitimos matrícula no ano seguinte
-                                    ?>
+                                    /*    if(!$matriculadoProxAno){ // permitimos matrícula no ano seguinte
+
 
                                     <option value=<?= $anoAtual + 1 ?> >
                                         <?= $anoAtual + 1 ?>
                                     </option>
-                                    <?php } ?>
+                                    } */?>
 
                                 </select>
                             </div>
