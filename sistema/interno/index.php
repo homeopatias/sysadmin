@@ -762,14 +762,6 @@
                                 // alterar o telefone e endereço
                                 if($usuarioLogado instanceof Aluno ||
                                    $usuarioLogado instanceof Associado) {
-                                    $telefoneOriginal = $usuarioLogado->getTelefone();
-                                    $telefoneOriginal = str_split($telefoneOriginal);
-                                    $telefone  = '(';
-                                    $telefone .= implode('', array_slice($telefoneOriginal, 0, 2));
-                                    $telefone .= ')';
-                                    $telefone .= implode('', array_slice($telefoneOriginal, 2, 4));
-                                    $telefone .= '-';
-                                    $telefone .= implode('', array_slice($telefoneOriginal, 6));
                             ?>
                             <div class="form-group">
                                 <label for="telefone">Telefone do aluno:</label>
@@ -777,7 +769,26 @@
                                        placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
                                        title="Insira um telefone válido"
                                        class="form-control"
-                                       value=<?= "\"" . $telefone . "\"" ?>>
+                                       value=<?= "\"" . $usuarioLogado->getTelefone() . "\"" ?>
+                                       >
+                            </div>
+                            <div class="form-group">
+                                <label for="telefone2-novo">Telefone 2 (opcional):</label>
+                                <input type="tel" name="telefone2" id="telefone2-novo"
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
+                                       title="Insira um telefone válido, ou deixe o campo vazio"
+                                       class="form-control"
+                                       value=<?= "\"" . $usuarioLogado->getTelefone2() . "\"" ?>
+                                       >
+                            </div>
+                            <div class="form-group">
+                                <label for="telefone3-novo">Telefone 3 (opcional):</label>
+                                <input type="tel" name="telefone3" id="telefone3-novo"
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       title="Insira um telefone válido, ou deixe o campo vazio"
+                                       class="form-control"
+                                       value=<?= "\"" . $usuarioLogado->getTelefone3() . "\"" ?>
+                                       >
                             </div>
                             <div class="form-group col-sm-12" >
                                 <label for="">Endereço do aluno:</label>

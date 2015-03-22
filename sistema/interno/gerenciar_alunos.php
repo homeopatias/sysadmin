@@ -83,8 +83,20 @@
                     );
                     var telefone = $(e.relatedTarget).data('telefone')+"";
                     $(this).find('#telefone').val(
+<<<<<<< HEAD
                         telefone//["(", telefone.slice(0, 2), ")", telefone.slice(2, 6), "-",
                          //telefone.slice(6)].join('')
+=======
+                        telefone
+                    );
+                    var telefone2 = $(e.relatedTarget).data('telefone2')+"";
+                    $(this).find('#telefone2').val(
+                        telefone2
+                    );
+                    var telefone3 = $(e.relatedTarget).data('telefone3')+"";
+                    $(this).find('#telefone3').val(
+                        telefone3
+>>>>>>> Aluno possui dois telefones extras opcionais
                     );
 
                     //Preenche endereço----------------------
@@ -606,6 +618,8 @@
                     $senha            = $_POST["senha"];
                     $idIndicador      = $_POST["indicador"];
                     $telefone         = $_POST["telefone"];
+                    $telefone2        = $_POST["telefone2"];
+                    $telefone3        = $_POST["telefone3"];
                     $endereco         = $_POST["endereco"];
                     $escolaridade     = $_POST["escolaridade"];
                     $curso            = $_POST["curso-novo"];
@@ -744,7 +758,11 @@
                     }
 
                     $telefoneValido = isset($telefone) &&
-                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone);
+                                      preg_match("/^\(?\d{2}\)?\d{4}-?\d{4,7}$/", $telefone);
+                    $telefonesOpcValidos = (!isset($telefone2) ||
+                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone2)) &&
+                                           (!isset($telefone3) ||
+                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone3));
                     
                     $enderecoValido = false;
 
@@ -810,7 +828,7 @@
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida &&
                        $idIndicadorValido && $telefoneValido && $enderecoValido &&
                        $escolaridadeValida && $cursoValido && $tipoCursoValido && 
-                       $tipoCadastroValido && $modalidadeCursoValido){
+                       $tipoCadastroValido && $modalidadeCursoValido && $telefonesOpcValidos){
 
                         require_once("entidades/Aluno.php");
 
@@ -819,6 +837,10 @@
                         $novo->setCpf($cpf);
                         $novo->setEmail($email);
                         $novo->setTelefone($telefone);
+                        if(isset($telefone2))
+                            $novo->setTelefone2($telefone2);
+                        if(isset($telefone3))
+                            $novo->setTelefone3($telefone3);
                         $novo->setEscolaridade($escolaridade);
                         $novo->setCep($cep);
                         $novo->setRua($rua);
@@ -883,6 +905,8 @@
                         $mensagem = "Tipo de cadastro inválido";
                     }else if(!$modalidadeCursoValido){
                        $mensagem = "Modalidade de cadastro inválido"; 
+                    } else if(!$telefonesOpcValidos) {
+                        $mensagem = "Telefones opcionais inválidos!";
                     }
                 }
                 $filtroCidade     = null;
@@ -898,7 +922,7 @@
 
                 $textoQuery  =  "SELECT U.id, U.cpf, U.dataInscricao, U.email,
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
-                                A.telefone, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
+                                A.telefone, A.telefone2, A.telefone3, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
                                 A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
                                 A.modalidade_curso, A.recebeEmail,
                                 MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula, A.ativo
@@ -1252,6 +1276,10 @@
                     $tabela .= $cpf;
                     $tabela .= "\" data-telefone=\"";
                     $tabela .= $linha["telefone"];
+                    $tabela .= "\" data-telefone2=\"";
+                    $tabela .= $linha["telefone2"];
+                    $tabela .= "\" data-telefone3=\"";
+                    $tabela .= $linha["telefone3"];
                     $tabela .= "\" data-escolaridade=\"";
                     $tabela .= $linha["escolaridade"];
                     $tabela .= "\" data-curso=\"";
@@ -1935,6 +1963,20 @@
                                        title="Insira um telefone válido"
                                        class="form-control">
                             </div>
+                            <div class="form-group">
+                                <label for="telefone2-novo">Telefone 2 (opcional):</label>
+                                <input type="tel" name="telefone2" id="telefone2-novo"
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
+                                       title="Insira um telefone válido, ou deixe o campo vazio"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefone3-novo">Telefone 3 (opcional):</label>
+                                <input type="tel" name="telefone3" id="telefone3-novo"
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       title="Insira um telefone válido, ou deixe o campo vazio"
+                                       class="form-control">
+                            </div>
 
                             <div class="form-group">
                                 <label for="escolaridade-novo">Nível de escolaridade:</label>
@@ -2085,6 +2127,20 @@
                                 <input type="tel" name="telefone" id="telefone" required
                                        placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
                                        title="Insira um telefone válido"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefone2">Telefone 2 (opcional):</label>
+                                <input type="tel" name="telefone2" id="telefone2"
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
+                                       title="Insira um telefone válido, ou deixe o campo vazio"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefone3">Telefone 3 (opcional):</label>
+                                <input type="tel" name="telefone3" id="telefone3"
+                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       title="Insira um telefone válido, ou deixe o campo vazio"
                                        class="form-control">
                             </div>
                             <div class="form-group col-sm-12" >

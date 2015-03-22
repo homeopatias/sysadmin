@@ -110,6 +110,9 @@ if($senhaValida){
     }
 }
 
+// por enquanto não aceitamos alteração de cpf
+$cpfValido = true;
+
 if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
 
     $usuarioLogado = unserialize($_SESSION["usuario"]);
@@ -122,7 +125,8 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
         $usuarioLogado->setNome($nome);
         $usuarioLogado->setLogin($login);
         $usuarioLogado->setEmail($email);
-        $usuarioLogado->setCpf($cpf);
+        // por enquanto não aceitamos alteração de cpf
+        //$usuarioLogado->setCpf($cpf);
         $sucesso = $usuarioLogado->atualizar($host, "homeopatias", $usuario, $senhaBD);
     } else if($usuarioLogado instanceof Associado) {
         // caso seja um associado, validamos os estados restantes
@@ -196,6 +200,8 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
     } else if($usuarioLogado instanceof Aluno) {
         // caso seja um aluno, validamos os estados restantes
         $telefone        = $_POST["telefone"];
+        $telefone2       = $_POST["telefone2"];
+        $telefone3       = $_POST["telefone3"];
         $cep             = $_POST["cep"];
         $rua             = $_POST["rua"];
         $numero          = $_POST["numero"];
@@ -209,6 +215,10 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
 
         $telefoneValido  = isset($telefone) &&
                           preg_match("/^\(?\d{2}\)?\d{4}-?\d{4,7}$/", $telefone);
+        $telefonesOpcValidos = (!isset($telefone2) ||
+                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone2)) &&
+                               (!isset($telefone3) ||
+                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone3));
 
         $enderecoValido = false;
 
@@ -255,12 +265,16 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
         $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
                        (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
 
-        if($enderecoValido && $telefoneValido && $escolaridadeValida && $cursoValido) {
+        if($enderecoValido && $telefoneValido && $escolaridadeValida && $cursoValido && $telefonesOpcValidos) {
             $usuarioLogado->setNome($nome);
             $usuarioLogado->setCpf($cpf);
             $usuarioLogado->setEmail($email);
             $usuarioLogado->setLogin($login);
             $usuarioLogado->setTelefone($telefone);
+            if(isset($telefone2))
+                $usuarioLogado->setTelefone2($telefone2);
+            if(isset($telefone3))
+                $usuarioLogado->setTelefone3($telefone3);
             $usuarioLogado->setCep($cep);
             $usuarioLogado->setRua($rua);
             $usuarioLogado->setNumero($numero);
@@ -291,6 +305,8 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
                 $mensagem = "Escolaridade inválida!";
             } else if(!$cursoValido) {
                 $mensagem = "Curso válido!";
+            } else if(!$telefonesOpcValidos) {
+                $mensagem = "Telefones opcionais inválidos!";
             }
         }
     }

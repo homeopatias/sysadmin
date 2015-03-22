@@ -767,11 +767,27 @@
                             <?= htmlspecialchars( $aluno->retornaEndereco() ); ?>
                         </p>
                         <p style="display:inline" class="col-sm-3">
-                            <b>Telefone:</b>
+                            <b>Telefone 1:</b>
                             <?= "(" . substr(htmlspecialchars($aluno->getTelefone()), 0, 2) . ")" . 
                                       substr(htmlspecialchars($aluno->getTelefone()), 2, 4) . "-" .
                                       substr(htmlspecialchars($aluno->getTelefone()), 6) ?>
                         </p>
+                        <?php if($aluno->getTelefone2()) { ?>
+                            <p style="display:inline" class="col-sm-3">
+                                <b>Telefone 2:</b>
+                                <?= "(" . substr(htmlspecialchars($aluno->getTelefone2()), 0, 2) . ")" . 
+                                          substr(htmlspecialchars($aluno->getTelefone2()), 2, 4) . "-" .
+                                          substr(htmlspecialchars($aluno->getTelefone2()), 6) ?>
+                            </p>
+                        <?php } ?>
+                        <?php if($aluno->getTelefone3()) { ?>
+                            <p style="display:inline" class="col-sm-3">
+                                <b>Telefone 3:</b>
+                                <?= "(" . substr(htmlspecialchars($aluno->getTelefone3()), 0, 2) . ")" . 
+                                          substr(htmlspecialchars($aluno->getTelefone3()), 2, 4) . "-" .
+                                          substr(htmlspecialchars($aluno->getTelefone3()), 6) ?>
+                            </p>
+                        <?php } ?>
                         <?php
                             $escolaridade = $aluno->getEscolaridade();
                             $escolaridade = mb_strpos($escolaridade, "completo", 0, "UTF-8") ?
