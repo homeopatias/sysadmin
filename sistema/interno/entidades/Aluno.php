@@ -21,6 +21,8 @@ class Aluno extends Usuario{
     private $status;
     private $idIndicador;
     private $telefone;
+    private $telefone2;
+    private $telefone3;
     private $escolaridade;
     private $curso;
     private $tipoCurso;
@@ -55,6 +57,8 @@ class Aluno extends Usuario{
         $this->status          = "";
         $this->idIndicador     = -1;
         $this->telefone        = -1;
+        $this->telefone2       = -1;
+        $this->telefone3       = -1;
         $this->escolaridade    = "";
         $this->curso           = null;
         $this->cep             = "";
@@ -92,8 +96,8 @@ class Aluno extends Usuario{
         }
 
         $textoQuery  = "SELECT U.id, U.cpf, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email, U.senha, 
-                        U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone,
-                        A.escolaridade, A.curso,A.cep, A.rua, A.numero, A.complemento,
+                        U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.telefone2,
+                        A.telefone3, A.escolaridade, A.curso,A.cep, A.rua, A.numero, A.complemento,
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, 
                         A.modalidade_curso, A.tipo_cadastro, A.ativo, A.recebeEmail
 
@@ -119,6 +123,8 @@ class Aluno extends Usuario{
                 $this->status          = $linha["status"];
                 $this->idIndicador     = $linha["idIndicador"];
                 $this->telefone        = $linha["telefone"];
+                $this->telefone2       = $linha["telefone2"];
+                $this->telefone3       = $linha["telefone3"];
                 $this->escolaridade    = $linha["escolaridade"];
                 $this->curso           = $linha["curso"];
                 $this->cep             = $linha["cep"];
@@ -171,8 +177,8 @@ class Aluno extends Usuario{
         }
 
         $textoQuery  = "SELECT U.id, U.cpf, U.login, UNIX_TIMESTAMP(U.dataInscricao) as data, U.email, U.senha, 
-                        U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.escolaridade, 
-                        A.curso ,A.cep, A.rua, A.numero, A.complemento,
+                        U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.telefone2, A.telefone3,
+                        A.escolaridade, A.curso ,A.cep, A.rua, A.numero, A.complemento,
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.modalidade_curso,
                         A.tipo_cadastro, A.ativo, A.recebeEmail
 
@@ -195,6 +201,8 @@ class Aluno extends Usuario{
             $this->status          = $linha["status"];
             $this->idIndicador     = $linha["idIndicador"];
             $this->telefone        = $linha["telefone"];
+            $this->telefone2       = $linha["telefone2"];
+            $this->telefone3       = $linha["telefone3"];
             $this->escolaridade    = $linha["escolaridade"];
             $this->curso           = $linha["curso"];
             $this->cep             = $linha["cep"];
@@ -275,30 +283,31 @@ class Aluno extends Usuario{
         // conferimos se há um indicador para esse aluno e formatamos as queries de acordo,
         // para evitar problemas no banco de dados
         if($this->idIndicador === ""){
-            $dadosAluno  = array($idUsuario, $this->status, $this->telefone, $this->escolaridade,
+            $dadosAluno  = array($idUsuario, $this->status, $this->telefone, $this->telefone2, $this->telefone3,
+                                 $this->escolaridade,
                                  $this->curso, $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso,
                                  $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail);
-            $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, 
+            $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, telefone2, telefone3, 
                              escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso,modalidade_curso,
-                              tipo_cadastro, ativo, recebeEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                              tipo_cadastro, ativo, recebeEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                             ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
         }else{
-            $dadosAluno  = array($idUsuario, $this->status, $this->telefone,
+            $dadosAluno  = array($idUsuario, $this->status, $this->telefone, $this->telefone2, $this->telefone3,
                                  $this->idIndicador, $this->escolaridade, $this->curso,
                                  $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
                                  $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail);
-            $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone,  
+            $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, telefone2, telefone3
                             idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso, modalidade_curso,
                              tipo_cadastro, ativo, recebeEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         }
         $query = $conexao->prepare($queryAluno);
@@ -364,7 +373,8 @@ class Aluno extends Usuario{
         $sucessoUsuario = $query->execute();
 
         $comando = "UPDATE Aluno SET status = :status, idIndicador = :indicador, 
-                    telefone = :telefone, escolaridade = :escolaridade, 
+                    telefone = :telefone, telefone2 = :telefone2, telefone3 = :telefone3,
+                    escolaridade = :escolaridade, 
                     curso = :curso ,numeroInscricao = :numInsc,
                     cep = :cep, rua = :rua, numero = :numero, complemento = :complemento ,
                     cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais ,
@@ -382,6 +392,8 @@ class Aluno extends Usuario{
         }
 
         $query->bindParam(":telefone", $this->telefone, PDO::PARAM_STR);
+        $query->bindParam(":telefone2", $this->telefone2, PDO::PARAM_STR);
+        $query->bindParam(":telefone3", $this->telefone3, PDO::PARAM_STR);
         $query->bindParam(":numInsc", $this->numeroInscricao, PDO::PARAM_INT);
         $query->bindParam(":escolaridade", $this->escolaridade, PDO::PARAM_STR);
         $query->bindParam(":curso", $this->curso, PDO::PARAM_STR);
@@ -813,6 +825,34 @@ class Aluno extends Usuario{
         $telefone = str_replace(")","",$telefone);
         $telefone = str_replace("-","",$telefone);
         $this->telefone = $telefone;
+
+        return $this;
+    }
+
+    public function getTelefone2()
+    {
+        return $this->telefone2;
+    }
+    public function setTelefone2($telefone2)
+    {
+        $telefone2 = str_replace("(","",$telefone2);
+        $telefone2 = str_replace(")","",$telefone2);
+        $telefone2 = str_replace("-","",$telefone2);
+        $this->telefone2 = $telefone2;
+
+        return $this;
+    }
+
+    public function getTelefone3()
+    {
+        return $this->telefone3;
+    }
+    public function setTelefone3($telefone3)
+    {
+        $telefone3 = str_replace("(","",$telefone3);
+        $telefone3 = str_replace(")","",$telefone3);
+        $telefone3 = str_replace("-","",$telefone3);
+        $this->telefone3 = $telefone3;
 
         return $this;
     }

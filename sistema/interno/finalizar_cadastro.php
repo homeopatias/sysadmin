@@ -189,6 +189,8 @@
                     $cpf            = $_POST["cpf"];
                     $idIndicador    = $_POST["indicador"];
                     $telefone       = $_POST["telefone"];
+                    $telefone2      = $_POST["telefone2"];
+                    $telefone3      = $_POST["telefone3"];
                     $cep            = $_POST["cep"];
                     $rua            = $_POST["rua"];
                     $numero         = $_POST["numero"];
@@ -293,7 +295,11 @@
                     }
 
                     $telefoneValido = isset($telefone) &&
-                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone);
+                                      preg_match("/^\(?\d{2}\)?\d{4}-?\d{4,7}$/", $telefone);
+                    $telefonesOpcValidos = (!isset($telefone2) ||
+                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone2)) &&
+                                           (!isset($telefone3) ||
+                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone3));
 
                     $enderecoValido = false;
 
@@ -375,12 +381,16 @@
                     }
 
                     if($cpfValido && $idIndicadorValido && $telefoneValido && $enderecoValido &&
-                       $escolaridadeValida && $cursoValido && $cidadeMatValida){
+                       $escolaridadeValida && $cursoValido && $cidadeMatValida && $telefonesOpcValidos){
 
                         $aluno = unserialize($_SESSION['usuario']);
 
                         $aluno->setCpf($cpf);
                         $aluno->setTelefone($telefone);
+                        if(isset($telefone2))
+                            $aluno->setTelefone2($telefone2);
+                        if(isset($telefone3))
+                            $aluno->setTelefone3($telefone3);
                         $aluno->setCep($cep);
                         $aluno->setRua($rua);
                         $aluno->setNumero($numero);
@@ -631,7 +641,9 @@
                         }
                     } else if (!$cidadeMatValida) {
                         $mensagem = "Cidade de curso inválida!";
-                    } 
+                    } else if(!$telefonesOpcValidos) {
+                        $mensagem = "Telefones opcionais inválidos!";
+                    }
                 }
 
                 $aluno = unserialize($_SESSION['usuario']);
@@ -737,10 +749,24 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="telefone-novo">Telefone:</label>
+                            <label for="telefone-novo">Telefone 1:</label>
                             <input type="tel" name="telefone" id="telefone-novo" required
                                    placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
                                    title="Insira um telefone válido"
+                                   class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone2-novo">Telefone 2 (opcional):</label>
+                            <input type="tel" name="telefone2" id="telefone2-novo"
+                                   placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
+                                   title="Insira um telefone válido, ou deixe o campo vazio"
+                                   class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone3-novo">Telefone 3 (opcional):</label>
+                            <input type="tel" name="telefone3" id="telefone3-novo"
+                                   placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                   title="Insira um telefone válido, ou deixe o campo vazio"
                                    class="form-control">
                         </div>
                         <div class="form-group col-sm-12" >

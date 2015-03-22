@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 16, 2015 at 11:26 PM
+-- Generation Time: Mar 21, 2015 at 10:10 PM
 -- Server version: 5.5.41-0ubuntu0.14.10.1
--- PHP Version: 5.5.12-2ubuntu4.2
+-- PHP Version: 5.5.12-2ubuntu4.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -63,6 +63,8 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
   `status` enum('preinscrito','inscrito','desistente','formado','inativo') NOT NULL COMMENT 'Status desse aluno (pré-inscrito, inscrito, etc)',
   `idIndicador` int(11) DEFAULT NULL COMMENT 'Numero de inscricao do aluno que indicou esse aluno, caso aplicavel',
   `telefone` text COMMENT 'Telefone do aluno',
+  `telefone2` text COMMENT 'Telefone adicional',
+  `telefone3` text COMMENT 'Telefone adicional',
   `escolaridade` enum('fundamental incompleto','fundamental completo','médio incompleto','médio completo','superior incompleto','superior completo','mestrado','doutorado') DEFAULT NULL COMMENT 'Nível de escolaridade do aluno',
   `curso` varchar(200) DEFAULT NULL COMMENT 'Curso que o aluno frequentou, caso esteja no nível superior ou acima',
   `cep` varchar(8) DEFAULT NULL COMMENT 'Código Postal do Aluno',
@@ -84,33 +86,33 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
 -- Dumping data for table `Aluno`
 --
 
-INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `modalidade_curso`, `tipo_cadastro`, `ativo`, `recebeEmail`) VALUES
-(1, 2, 'preinscrito', NULL, '1693018232', 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'regular', 'instituto', 1, 0),
-(2, 3, 'inscrito', 1, '1961438378', 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(3, 4, 'preinscrito', NULL, '8260134527', 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(4, 5, 'preinscrito', NULL, '6135342360', 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(5, 6, 'preinscrito', 4, '8698463979', 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(6, 7, 'preinscrito', NULL, '2169357517', 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(7, 8, 'inscrito', NULL, '1184439221', 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(8, 9, 'inscrito', NULL, '8498876543', 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(9, 10, 'inscrito', NULL, '5787659485', 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(10, 11, 'inscrito', 11, '2098764959', 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(11, 12, 'inscrito', 9, '3498123232', 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(12, 27, 'preinscrito', NULL, '3122334455', 'superior completo', 'Abacate', '33884555', 'TWOOOOO', 89, 'So needless to say', 'Say after me', 'AC', 'Don''t let away', '', '', 'regular', '', 1, 0),
-(13, 28, 'preinscrito', NULL, '3399448855', 'superior incompleto', 'abastece', '30495454', 'The birds and the bees', 39, 'Sowing the seeds', '', 'AC', 'Derpity derp', '', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(14, 29, 'preinscrito', NULL, '3129394939', 'fundamental incompleto', NULL, '93945444', 'tesste', 34, 'marracuda', '', 'AC', 'macarruda', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(15, 30, 'preinscrito', NULL, NULL, 'superior completo', 'Farmácia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BRL', 'pos', 'regular', 'faculdade inspirar', 1, 0),
-(16, 31, 'preinscrito', NULL, '9992929292', 'fundamental incompleto', NULL, '12345543', 'Armin', 12, 'Bairro', '', 'AC', 'Cidade', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(17, 32, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(18, 33, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 12, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(19, 34, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(20, 35, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(21, 36, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(22, 37, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(23, 38, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(24, 39, 'preinscrito', NULL, '3112344321', 'superior completo', 'Homepatias', '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'pos', 'regular', 'faculdade inspirar', 1, 0),
-(25, 41, 'preinscrito', NULL, '3112344321', 'fundamental incompleto', NULL, '14890470', 'adsf', 21, 'adsfasdf', '', 'AC', 'adsf', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(26, 42, 'preinscrito', NULL, '3112344321', NULL, NULL, '14890470', 'asdf', 21, 'adf', '', 'AC', 'adsf', 'BRL', 'instituto', 'regular', 'instituto', 1, 0);
+INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `telefone2`, `telefone3`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `modalidade_curso`, `tipo_cadastro`, `ativo`, `recebeEmail`) VALUES
+(1, 2, 'preinscrito', NULL, '1693018232', NULL, NULL, 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'regular', 'instituto', 1, 0),
+(2, 3, 'inscrito', 1, '1961438378', NULL, NULL, 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(3, 4, 'preinscrito', NULL, '8260134527', NULL, NULL, 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(4, 5, 'preinscrito', NULL, '6135342360', NULL, NULL, 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(5, 6, 'preinscrito', 4, '8698463979', NULL, NULL, 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(6, 7, 'preinscrito', NULL, '2169357517', NULL, NULL, 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(7, 8, 'inscrito', NULL, '1184439221', NULL, NULL, 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(8, 9, 'inscrito', NULL, '8498876543', NULL, NULL, 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(9, 10, 'inscrito', NULL, '5787659485', NULL, NULL, 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(10, 11, 'inscrito', 11, '2098764959', NULL, NULL, 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(11, 12, 'inscrito', 9, '3498123232', NULL, NULL, 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
+(12, 27, 'preinscrito', NULL, '3122334455', NULL, NULL, 'superior completo', 'Abacate', '33884555', 'TWOOOOO', 89, 'So needless to say', 'Say after me', 'AC', 'Don''t let away', '', '', 'regular', '', 1, 0),
+(13, 28, 'preinscrito', NULL, '3399448855', NULL, NULL, 'superior incompleto', 'abastece', '30495454', 'The birds and the bees', 39, 'Sowing the seeds', '', 'AC', 'Derpity derp', '', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(14, 29, 'preinscrito', NULL, '3129394939', NULL, NULL, 'fundamental incompleto', NULL, '93945444', 'tesste', 34, 'marracuda', '', 'AC', 'macarruda', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(15, 30, 'preinscrito', NULL, NULL, NULL, NULL, 'superior completo', 'Farmácia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BRL', 'pos', 'regular', 'faculdade inspirar', 1, 0),
+(16, 31, 'preinscrito', NULL, '9992929292', NULL, NULL, 'fundamental incompleto', NULL, '12345543', 'Armin', 12, 'Bairro', '', 'AC', 'Cidade', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(17, 32, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(18, 33, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 12, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(19, 34, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(20, 35, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(21, 36, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(22, 37, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(23, 38, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(24, 39, 'preinscrito', NULL, '3112344321', NULL, NULL, 'superior completo', 'Homepatias', '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'pos', 'regular', 'faculdade inspirar', 1, 0),
+(25, 41, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'adsf', 21, 'adsfasdf', '', 'AC', 'adsf', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
+(26, 42, 'preinscrito', NULL, '3112344321', NULL, NULL, NULL, NULL, '14890470', 'asdf', 21, 'adf', '', 'AC', 'adsf', 'BRL', 'instituto', 'regular', 'instituto', 1, 0);
 
 -- --------------------------------------------------------
 

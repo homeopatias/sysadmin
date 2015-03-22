@@ -437,11 +437,15 @@
                             $indicados .= "</a>";
 
 
+                            if($aluno->getTipoCurso() !== "pos") {
                         ?>
                         <p style="display:inline" class="col-sm-4">
                             <b>Alunos indicados e matriculados atualmente:</b>
                             <?= $indicados ?>
                         </p>
+                        <?php
+                            }
+                        ?>
                         
                     </div>
                     <div class="row">
@@ -455,6 +459,22 @@
                                       substr(htmlspecialchars($aluno->getTelefone()), 2, 4) . "-" .
                                       substr(htmlspecialchars($aluno->getTelefone()), 6) ?>
                         </p>
+                        <?php if($aluno->getTelefone2()) { ?>
+                            <p style="display:inline" class="col-sm-3">
+                                <b>Telefone 2:</b>
+                                <?= "(" . substr(htmlspecialchars($aluno->getTelefone2()), 0, 2) . ")" . 
+                                          substr(htmlspecialchars($aluno->getTelefone2()), 2, 4) . "-" .
+                                          substr(htmlspecialchars($aluno->getTelefone2()), 6) ?>
+                            </p>
+                        <?php } ?>
+                        <?php if($aluno->getTelefone3()) { ?>
+                            <p style="display:inline" class="col-sm-3">
+                                <b>Telefone 3:</b>
+                                <?= "(" . substr(htmlspecialchars($aluno->getTelefone3()), 0, 2) . ")" . 
+                                          substr(htmlspecialchars($aluno->getTelefone3()), 2, 4) . "-" .
+                                          substr(htmlspecialchars($aluno->getTelefone3()), 6) ?>
+                            </p>
+                        <?php } ?>
                         <?php
                             $escolaridade = $aluno->getEscolaridade();
                             $escolaridade = mb_strpos($escolaridade, "completo", 0, "UTF-8") ?

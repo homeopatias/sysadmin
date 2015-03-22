@@ -33,6 +33,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $status             = $_POST["status"];
         $idIndicador        = $_POST["indicador"];
         $telefone           = $_POST["telefone"];
+        $telefone2          = $_POST["telefone2"];
+        $telefone3          = $_POST["telefone3"];
         $escolaridade       = $_POST["escolaridade"];
         $curso              = $_POST["curso"];
         $cep                = $_POST["cep"];
@@ -99,7 +101,11 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         }
 
         $telefoneValido = isset($telefone) &&
-                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone);
+                          preg_match("/^\(\d{2}\)\d{4}-?\d{4,7}$/", $telefone);
+        $telefonesOpcValidos = (!isset($telefone2) ||
+                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone2)) &&
+                               (!isset($telefone3) ||
+                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone3));
 
         $escolaridadeValida = isset($escolaridade) &&
                    ($escolaridade === "fundamental incompleto" ||
@@ -166,7 +172,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
            $statusValido && $idIndicadorValido && $escolaridadeValida &&
            $cursoValido && $inscValido && $idValido && $enderecoValido && $tipoCadastroValido && 
-           $tipoCursoValido && $senhaValida && $modalidadeCursoValido ){
+           $tipoCursoValido && $senhaValida && $modalidadeCursoValido && $telefonesOpcValidos){
 
             require_once("../../entidades/Aluno.php");
 
@@ -202,6 +208,10 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setStatus($status);
 
             $atualizar->setTelefone($telefone);
+            if(isset($telefone2))
+                $atualizar->setTelefone2($telefone2);
+            if(isset($telefone3))
+                $atualizar->setTelefone3($telefone3);
 
             $atualizar->setidIndicador(isset($idIndicador) ? $idIndicador : null);
 
@@ -248,6 +258,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "Nova senha inválida!";
         }else if(!$modalidadeCursoValido){
             $mensagem = "Modalidade de curso inválido!";
+        }else if(!$telefonesOpcValidos) {
+            $mensagem = "Telefones opcionais inválidos!";
         }
     }else{
         $mensagem = "Erro de envio de formulário";
