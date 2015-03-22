@@ -151,7 +151,7 @@
                                     .                   " ativo, recebeEmail) VALUES
                                     (?, 'preinscrito', 'BRL', 'pos', 'faculdade inspirar',"
                                     ." ?, ?,"
-                                    ." 1, ?)";
+                                    ." 0, ?)";
 
 
                     $query = $conexao->prepare($queryAluno);
