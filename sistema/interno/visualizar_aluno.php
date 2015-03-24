@@ -294,13 +294,11 @@
                         $query = $conexao->prepare($textoQuery);
 
                         $valorTotalPago = (float) $_POST["valor-pagamento"];
-
-                        $query->bindParam(1, $aluno->getId());
+                        $idAlunoPagante = $aluno->getId();
+                        $query->bindParam(1, $idAlunoPagante);
                         $query->bindParam(2, $valorTotalPago);
                         $query->bindParam(3, $metodo);
                         $query->bindParam(4, $anoPagamento);
-
-                        
 
                         $sucesso = $query->execute();
 
@@ -314,7 +312,7 @@
                                 $metodosList= array();
                                 if(strrpos($pagamentos[$anoPagamento][$i]['metodo'], "|") ){
 
-                                    $metodosList = explode("|", 
+                                    $metodosList = explode("|",
                                     strtolower($pagamentos[$anoPagamento][$i]['metodo']));
                                 }else{
                                     $metodosList = array( 
@@ -356,6 +354,7 @@
 
                             } // fim if( $pagamentos[$anoPagamento][$i]['editado'] ){
                         } // fim for ($i = 0 ; $i < 12 && $sucesso ; $i++) {
+
 
                         // se conseguiu lançar o pagamento da inscrição do ano 
                         // atual e
@@ -402,16 +401,16 @@
                                                 (titulo, texto, chaveAluno, lida) VALUES (?, ?, ?, 0)");
                             $dados = array("Pagamento recebido", $texto, $idAluno);
                             $queryNotificacao->execute($dados);
+                        
 
                             if($sucesso){
                                 $conexao->commit(); 
 
                                 //Se a inscrição foi paga, atualiza desconto
                                 if($pagamentos[date("Y")][0]['fechado']){
-                                    require_once($_SERVER["DOCUMENT_ROOT"].
-                                        "/interno/entidades/Aluno.php");
+                                    require_once(dirname(__FILE__).
+                                        "/entidades/Aluno.php");
 
-    
                                     $aluno = new Aluno("");
                                     $aluno->setNumeroInscricao($idAluno);
                                     $aluno->recebeAlunoId($host, $db, $usuario, $senhaBD);
@@ -473,7 +472,7 @@
                     } // fim if($valorValido && $metodoValido){
 
                 } // fim  if( isset( $_POST['valor-pagamento'] ) && isset( $_POST["metodo-pagamento"] ) ){
-
+  
                 // se receber um desconto por POST, altera o desconto do aluno atual
                 if( isset($_POST["desconto-individual"]) ){
                     $desconto = (float)$_POST["desconto-individual"];
@@ -571,7 +570,6 @@
 
                         // pega os valores de inscrição e parcelas da cidade
                         $textoQuery = "SELECT C.ano, ";
-
                         //pega as parcelas de acordo com tipo e modalidade
                             //do aluno
                             if($aluno->getTipoCurso() === "extensao"){

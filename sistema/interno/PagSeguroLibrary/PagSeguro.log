@@ -683,3 +683,27 @@
   'Reference' => 'M218',
   'SenderEmail' => 'drikkka_martins@ig.com.br',
 )) - end {1}E4BA04DA1E1E9C55541A5F9B3D011DB6 
+{2015/03/22 23:36:16} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M430',
+  'SenderEmail' => 'daltonfig.ramos@gmail.com',
+)) - begin 
+{2015/03/22 23:36:18} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M430',
+  'SenderEmail' => 'daltonfig.ramos@gmail.com',
+)) - end {1}0ED7ACECC0C07CBFF4B77FB14254EDC0 
+{2015/03/22 23:36:19} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M430',
+  'SenderEmail' => 'daltonfig.ramos@gmail.com',
+)) - begin 
+{2015/03/22 23:36:20} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M430',
+  'SenderEmail' => 'daltonfig.ramos@gmail.com',
+)) - end {1}176B127AD1D1CCB77472FF8AFBDF22F2 
+{2015/03/24 08:04:28} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M193',
+  'SenderEmail' => 'karinefb@ig.com.br',
+)) - begin 
+{2015/03/24 08:04:30} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M193',
+  'SenderEmail' => 'karinefb@ig.com.br',
+)) - end {1}ABA32AB51212291114A9CF8C3C115E57 
