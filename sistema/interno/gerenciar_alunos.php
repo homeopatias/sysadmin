@@ -61,7 +61,8 @@
                     9 : { sorter: false },
                     10 : { sorter: false },
                     11 : { sorter: false },
-                    12 : { sorter: false }
+                    12 : { sorter: false },
+                    13 : { sorter: false }
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -1253,13 +1254,16 @@
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-eye\"></i></a></td>";
 
-                    if($linha["ativo"]) {
+                    if($linha["tipo_curso"] !== "pos") {
+                        $tabela .= "    <td>";
+                        $tabela .= "<i class=\"fa fa-ellipsis-h\"></i></td>";
+                    } else if($linha["ativo"]) {
                         $tabela .= "    <td>";
                         $tabela .= "<i class=\"fa fa-check\" style=\"color: #0A0\"></i></td>";
                     } else {
                         $tabela .= "    <td><a href=\"rotinas/ativar_aluno.php?id=";
                         $tabela .= $linha["numeroInscricao"] . "&pagina=" . $_GET["pagina"] . "\">";
-                        $tabela .= "<i class=\"fa fa-bolt\" style=\"color: orange\"></i></a></td>";
+                        $tabela .= "<i class=\"fa fa-times\" style=\"color: red\"></i></a></td>";
                     }
                     $tabela .= "    <td><a data-indicador=\"";
                     $tabela .= $linha["idIndicador"];
@@ -1732,7 +1736,7 @@
                                         <th width="100px">Status</th>
                                         <th width="70px">Deseja emails?</th>
                                         <th width="60px">Visualizar</th>
-                                        <th width="60px">Ativar</th>
+                                        <th width="100px">Documentos</th>
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
                                     </tr>

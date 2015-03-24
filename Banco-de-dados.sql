@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
   `tipo_curso` enum('extensao','pos','instituto') NOT NULL COMMENT 'tipo de curso do aluno',
   `modalidade_curso` enum('regular','intensivo','','') NOT NULL DEFAULT 'regular',
   `tipo_cadastro` enum('instituto','faculdade inspirar') NOT NULL COMMENT 'tipo de cadastro do aluno',
-  `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da extensão que já enviaram os documentos)',
+  `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da pós que já enviaram os documentos)',
   `recebeEmail` tinyint(1) NOT NULL COMMENT 'Determina se o aluno deseja receber e-mails do curso ou não'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=27 ;
 
