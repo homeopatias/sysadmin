@@ -199,7 +199,7 @@
                                            style="display:none;width:150px; margin-right: 5px"
                                            step="0.01" min="1"
                                            max="' .
-                                                   number_format($divida, 2, '.', '') .
+                                                   (($divida <= 1000) ? number_format($divida, 2, '.', '') : 1000) .
                                                    '">';
                             if(!($dividaAnosAnteriores > 0) ){
                                 if(!$inscricaoPaga){

@@ -1005,9 +1005,9 @@
                                                     2, '.', '') .
                                        '"'?>
                                max=<?= '"' .
-                                       number_format($linha['valorFaltante'], 2, '.', '') .
+                                       ((intval($linha['valorFaltante']) <= 1000) ? number_format($linha['valorFaltante'], 2, '.', '') : 1000) .
                                        '"'?>
-                                title="O valor pago deve ser maior que uma parcela e menor que o saldo em aberto">
+                                title="O valor pago deve ser maior que uma parcela e menor que o saldo em aberto e menor que 1000">
                         <input type="submit" value="Gerar" class="btn btn-primary" style="display:none">
                     </form>
                     <?php
