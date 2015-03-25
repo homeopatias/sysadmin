@@ -121,6 +121,15 @@
                     $(this).find('#idAula').val($(e.relatedTarget).data('idaula'));
                 });
 
+                // passa os dados para o modal de edição de pagamento quando
+                // necessário
+                $("#modal-edita-pag").on('show.bs.modal', function(e) {
+                    $(this).find('#idPag').val($(e.relatedTarget).data('idpag'));
+                    $(this).find('#pago').val($(e.relatedTarget).data('pago'));
+                    $(this).find('#parcela').val($(e.relatedTarget).data('parcela'));
+                    $(this).find('#desconto').val($(e.relatedTarget).data('desc'));
+                });
+
                 $("#efetua_pagamento").click(function(){
                     $("#form-lanca-pagamento").submit();
                 });
@@ -1188,8 +1197,8 @@
                             $anoPagamento = $_GET["ano"];
                         }
 
-                        $textoQuery  = "SELECT P.valorPago, P.valorTotal, P.data, P.desconto,
-                                        P.ano, P.numParcela, M.desconto_individual
+                        $textoQuery  = "SELECT P.idPagMensalidade, P.valorPago, P.valorTotal, P.fechado,
+                                        P.data, P.desconto, P.ano, P.numParcela, M.desconto_individual
                                         FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
                                         AND P.chaveMatricula = M.idMatricula 
@@ -1209,10 +1218,12 @@
                             $anoPag = $linha['ano'];
                             $desconto_individual = $linha["desconto_individual"];
                             $numParcela = $linha['numParcela'];
-                            $pagamentos[$anoPag][$numParcela]['valor'] = $linha['valorTotal'];
-                            $pagamentos[$anoPag][$numParcela]['pago']  = $linha['valorPago'];
-                            $pagamentos[$anoPag][$numParcela]['data']  = $linha['data'];
+                            $pagamentos[$anoPag][$numParcela]['valor']     = $linha['valorTotal'];
+                            $pagamentos[$anoPag][$numParcela]['pago']      = $linha['valorPago'];
+                            $pagamentos[$anoPag][$numParcela]['data']      = $linha['data'];
                             $pagamentos[$anoPag][$numParcela]['desconto']  = $linha['desconto'];
+                            $pagamentos[$anoPag][$numParcela]['fechado']  = $linha['fechado'];
+                            $pagamentos[$anoPag][$numParcela]['id']        = $linha['idPagMensalidade'];
 
                             $divida += $linha['valorTotal'] - 
                                     ($linha['valorTotal'] * $linha['desconto']/100) - $linha['valorPago'];
@@ -1256,8 +1267,15 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td style='background-color: #AAA'><b>Valor a pagar</b></td>
+                                <td style='background-color: #AAA'><b>Valor total</b></td>
                     <?php
+                        for($i = 0; $i < 12; $i ++) {
+                            echo "<td>R$ " . 
+                                 number_format($pagamentos[$anoPagamento][$i]['valor'], 2)
+                                 . "</td>";
+                        }
+                        echo "</tr><tr>";
+                        echo "<td style='background-color: #AAA'><b>Valor a pagar</b></td>";
                         for($i = 0; $i < 12; $i ++) {
                             $desconto = $pagamentos[$anoPagamento][$i]['valor'] *
                                 $pagamentos[$anoPagamento][$i]['desconto']/100;
@@ -1281,11 +1299,35 @@
                             echo "<td>" . $data . "</td>";
                         }
                         echo "</tr><tr>";
+                        echo "<td style='background-color: #AAA'><b>Finalizada?</b></td>";
+                        for($i = 0; $i < 12; $i ++) {
+                            if($pagamentos[$anoPagamento][$i]['fechado'] === "1"){
+                                echo "<td><i class=\"fa fa-check-square-o sucesso\"></i></td>";
+                            }
+                            else{
+                                echo "<td><i class=\"fa fa-minus-square-o warning\"></i></td>";
+                            }
+                            
+                        }
+                        echo "</tr><tr>";
                         echo "<td style='background-color: #AAA'><b>Desconto</b></td>";
                         for($i = 0; $i < 12; $i ++) {
                             echo "<td>" .
                                  number_format($pagamentos[$anoPagamento][$i]['desconto'], 2)
                                  . "%</td>";
+                        }
+                        echo "</tr><tr>";
+                        echo "<td style='background-color: #AAA'><b>Editar</b></td>";
+                        for($i = 0; $i < 12; $i ++) {
+                            echo "<td><a href=\"#\" data-toggle=\"modal\" data-target=";
+                            echo "\"#modal-edita-pag\" data-parcela=\"";
+                            echo number_format($pagamentos[$anoPagamento][$i]['valor'], 2);
+                            echo "\" data-pago=\"";
+                            echo number_format($pagamentos[$anoPagamento][$i]['pago'], 2);
+                            echo "\" data-idpag=\"" . $pagamentos[$anoPagamento][$i]['id'];
+                            echo "\" data-desc=\"";
+                            echo number_format($pagamentos[$anoPagamento][$i]['desconto'], 2);
+                            echo "\"><i class=\"fa fa-pencil\"></i></a></td>";
                         }
                     ?>
                             </tr>
@@ -1631,6 +1673,47 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" data-dismiss="modal">Não</button>
                             <input type="submit" class="btn btn-danger danger" value="Sim">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- popup "modal" do bootstrap para mudança de dados do pagamento do aluno -->
+        <div class="modal fade" id="modal-edita-pag" tabindex="-1" role="dialog"
+             aria-labelledby="modal-edita-pag" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="rotinas/alterar_pagamento.php" method="POST">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Mudar dados do pagamento <span id="valor-pag"></span></h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idPag" id="idPag">
+                            <input type="hidden" name="idAluno" id="idAluno" value=
+                                <?= '"' . $aluno->getNumeroInscricao() . '"' ?>>
+                            <h3>Valor da parcela:</h3>
+                            <input type="text" name="parcela" id="parcela" required
+                                   pattern="^[0-9]*\.?[0-9]+$" placeholder="Valor dessa parcela"
+                                   title="A parcela deve ser um número real"
+                                   class="form-control">
+                            <h3>Valor pago:</h3>
+                            <input type="text" name="pago" id="pago" required
+                                   pattern="^[0-9]*\.?[0-9]+$" placeholder="Valor pago pelo aluno"
+                                   title="O valor pago deve ser um número real"
+                                   class="form-control">
+                            <h3>Porcentagem de desconto</h3>
+                            <input id="desconto" name="desconto" type="text"
+                                pattern="^(\d)+(\.)?(\d)*$" required
+                                placeholder="x.x" title="Insira apenas números e o ponto. Ex: 3.14"
+                                width="100%" class="form-control">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="btn btn-danger danger" value="Editar">
                         </div>
                     </form>
                 </div>
