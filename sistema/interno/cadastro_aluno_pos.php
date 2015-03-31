@@ -9,12 +9,144 @@
         <?php include("modulos/head.php"); ?>
         <title>Cadastro no curso de Pós-Graduação - Homeopatias.com</title>
         <script>
+            // aqui recebemos os dados das cidades existentes para cada ano
+            // assim podemos atualizar a lista de cidades dinamicamente durante a inserção de
+            // matrícula
+            
+            var cidades = new Array();
+            <?php
+                // lemos as credenciais do banco de dados
+                $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
+                $dados = json_decode($dados, true);
+                foreach($dados as $chave => $valor) {
+                    $dados[$chave] = str_rot13($valor);
+                }
+                $host    = $dados["host"];
+                $usuario = $dados["nome_usuario"];
+                $senhaBD = $dados["senha"];
+
+                // cria conexão com o banco para uso ao longo da página
+                $conexao = null;
+                $db      = "homeopatias";
+                try{
+                    $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
+                }catch (PDOException $e){
+                    echo $e->getMessage();
+                }
+
+                $textoQuery  = "SELECT idCidade, UF, nome, ano, modalidadeCidade
+                                FROM Cidade WHERE
+                                CURDATE() < limiteInscricao AND 
+                                tipo_curso = 'pos' 
+                                OR tipo_curso = 'todos' ORDER BY ano DESC, nome ASC";
+
+                $query = $conexao->prepare($textoQuery);
+                $query->setFetchMode(PDO::FETCH_ASSOC);
+                $query->execute();
+
+                // variável para garantir que inicializaremos o vetor para cada
+                // ano sempre que estivermos utilizando-o pela primeira vez
+                $anos = [];
+
+                // Armazenamos uma lista de cidades do ano atual para facilitar a retificação
+                // de matrícula
+                $cidadesAnoAtual = array();
+
+                while ($linha = $query->fetch()){
+                    // para cada cidade encontrada criamos um objeto no
+                    // código javascript para representá-la
+                    $id         = "\"".htmlspecialchars($linha["idCidade"])."\"";
+                    $uf         = "\"".htmlspecialchars($linha["UF"])."\"";
+                    $nome       = "\"".htmlspecialchars($linha["nome"])."\"";
+                    $ano        = "\"".htmlspecialchars($linha["ano"])."\"";
+                    $modalidade = "\"".htmlspecialchars($linha["modalidadeCidade"])."\"";
+
+                    if($linha["ano"] == date("Y")) {
+                        $nomeCidade = htmlspecialchars($linha["nome"]). "/" . htmlspecialchars($linha["UF"]);
+                        $cidadesAnoAtual[$nomeCidade] = htmlspecialchars($linha["idCidade"]);
+                    }
+
+                    if(!in_array($linha["ano"], $anos)){
+                        $anos[] = $linha["ano"];
+            ?>
+            
+            cidades[ <?= $ano ?> ] = new Array();
+            <?php } ?>
+
+            cidades[ <?= $ano ?> ].push({
+                id:     <?= $id ?>,
+                uf:     <?= $uf ?>,
+                nome:   <?= $nome ?>,
+                ano:    <?= $ano ?>,
+                modalidade: <?= $modalidade ?>
+            });
+
+            <?php
+                }
+            ?>
+
             $(document).ready(function(){
                 $("#li-termos").change(function(){
                     $("#cadastro").prop('disabled', 
                                         $('#li-termos').is(':checked') ? false : true);
                 });
+                
+                $("#escolaridade-novo").change(function(){
+                    if($(this).val() === "superior incompleto" || $(this).val() === "superior completo"   ||
+                       $(this).val() === "mestrado"            || $(this).val() === "doutorado" ){
+                        $("#curso-novo").parent().show(500);
+                    }else{
+                        $("#curso-novo").parent().hide(500);
+                    }
+                });
+
+                // quando altera a modalidade atualiza as cidades
+                $("#modalidade_curso").change(function(){
+                    atualizaCamposCidade();
+                });
+
+                // faz a primeira atualização de campos para limpar o campo
+                // select de cidades
+                atualizaCamposCidade();
             });
+
+            // Atualiza os campos de acordo com a modalidade desejada
+            function atualizaCamposCidade(){
+                var modalidades = $("#modalidade_curso");
+                var cidadeMat   = $("#cidadeMat");
+                var ano = (new Date).getFullYear();
+
+                cidadeMat.find('option').remove().end();
+
+                if(modalidades.val() === "regular"){
+
+                    if(cidades[ano]){
+
+                        cidades[ano].forEach(function(cidade){
+                            if(cidade.modalidade == "regular" || 
+                                cidade.modalidade == "ambos"){
+
+                                cidadeMat.append('<option value="' + cidade.id + '">' + 
+                                    cidade.nome + "/"
+                                    + cidade.uf + '</option>')
+                            }
+                            
+                        });
+                    }
+                }else if(modalidades.val() === "intensivo"){
+                    if(cidades[ano]){
+                        cidades[ano].forEach(function(cidade){
+                            if(cidade.modalidade == "intensivo"|| 
+                                cidade.modalidade == "ambos"){
+                                $("#cidadeMat")
+                                .append('<option value="' + cidade.id + '">' + cidade.nome + "/"
+                                        + cidade.uf + '</option>')
+                            }
+                            
+                        });
+                    }
+                }
+            }
         </script>
     </head>
     <body>
@@ -23,27 +155,6 @@
             $mensagem = "";
 
             include('modulos/navegacao.php');
-
-            // lemos as credenciais do banco de dados
-            $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
-            $dados = json_decode($dados, true);
-
-            foreach($dados as $chave => $valor) {
-                $dados[$chave] = str_rot13($valor);
-            }
-
-            $host    = $dados["host"];
-            $usuario = $dados["nome_usuario"];
-            $senhaBD = $dados["senha"];
-
-            // cria conexão com o banco para uso ao longo da página
-            $conexao = null;
-            $db      = "homeopatias";
-            try{
-                $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
-            }catch (PDOException $e){
-                echo $e->getMessage();
-            }
 
             // se o aluno chegou até aqui através de um formulário, registra-o no sistema
             if(isset($_POST["submit"])){
