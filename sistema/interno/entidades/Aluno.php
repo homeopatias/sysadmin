@@ -312,6 +312,7 @@ class Aluno extends Usuario{
         }
         $query = $conexao->prepare($queryAluno);
         $sucessoAluno = $query->execute($dadosAluno);
+        $this->numeroInscricao = $conexao->lastInsertId();
 
         if($sucessoUsuario && $sucessoAluno) {
             // deu tudo certo, inserimos o aluno
