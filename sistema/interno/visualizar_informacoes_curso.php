@@ -403,12 +403,14 @@
                         <?php
                             $indicador = 
                                 $aluno->getIndicador($host, "homeopatias", $usuario, $senhaBD);
+                            if($aluno->getTipoCurso() !== "pos") {
                         ?>
                         <p style="display:inline" class="col-sm-3">
                             <b>Indicador:</b>
                             <?= $indicador != null ? htmlspecialchars($indicador->getNome()) : "Nenhum" ?>
                         </p>
-                        <?php  
+                        <?php
+                            }
 
                             //Agora checamos a quantidade de alunos indicados por ele matriculados
                             // neste ano
@@ -1194,7 +1196,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location.href = "index.php";
         </script>
         <?php
                 die();

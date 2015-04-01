@@ -51,7 +51,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="index.php?sucessoAval=true">
         <script type="text/javascript">
-            window.location = "index.php?mensagem=Sua cidade ainda não teve aulas esse ano!";
+            window.location.href = "index.php?mensagem=Sua cidade ainda não teve aulas esse ano!";
         </script>
             <?php
                 }
@@ -171,7 +171,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location.href = "index.php";
         </script>
 
         <?php

@@ -56,11 +56,10 @@
                     // caso não hajam cidades abertas para inscrição, avisa o aluno
                     session_destroy();
         ?>
-            window.location = "index.php?mensagem=No momento não há nenhuma cidade aberta para matrícula." +
+            window.location.href = "index.php?mensagem=No momento não há nenhuma cidade aberta para matrícula." +
                               " Desculpe-nos o transtorno, em breve as inscrições serão abertas novamente." +
                               " Agradecemos o interesse!";
         <?php
-                    die();
                 }
 
                 while ($linha = $query->fetch()){
@@ -367,7 +366,7 @@
                              $escolaridade === "superior completo"     ||
                              $escolaridade === "mestrado"              ||
                              $escolaridade === "doutorado";
-                $cursoValido = (!isset($curso) || $curso === "") && !$superior) ||
+                $cursoValido = ((!isset($curso) || $curso === "") && !$superior) ||
 
                                (isset($curso) && mb_strlen($curso) > 0 && mb_strlen($curso) <= 200);
 
@@ -412,7 +411,7 @@
                         // já existe alguém com esse nome de usuário no sistema
                         $conexao = null;
                         $sucesso = false;
-                        echo "<script> alert(\"Usuário existente, faça o cadastro novamente! \"); window.location = \"cadastro_aluno_extensao.php\";</script>";
+                        echo "<script> alert(\"Usuário existente, faça o cadastro novamente! \"); window.location.href = \"cadastro_aluno_extensao.php\";</script>";
                     }
 
                     $aluno = new Aluno($login);
@@ -492,7 +491,12 @@
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam(1,$idUltimaMatricula);
                         $query->setFetchMode(PDO::FETCH_ASSOC);
-                        $query->execute();
+                        $sucesso = $query->execute();
+
+                        if($sucesso) {
+                            $aluno->setStatus("inscrito");
+                            $aluno->atualizar($host, $db, $usuario, $senhaBD);
+                        }
                         
                         $queryInsert = "";
                         $insertArray = [];
@@ -583,11 +587,7 @@
 
                                 $queryMoodle = "INSERT INTO mdl_user_enrolments
                                                 (status,enrolid,userid,timecreated,
-                                                 timemodified) VALUES (0,";
-                                $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "4" 
-                                                        : $aluno->getTipoCurso() === "extensao" ? "1"
-                                                                                                : "22");
-                                $queryMoodle .= ",?,NOW(),NOW())";
+                                                 timemodified) VALUES (0,1,?,NOW(),NOW())";
 
 
                                 $query = $conMoodle->prepare($queryMoodle);
@@ -597,11 +597,7 @@
                                 if($sucessoMoodle) {
                                     $queryMoodle = "INSERT INTO mdl_role_assignments
                                                     (roleid,contextid,userid,timemodified)
-                                                    VALUES (5,";
-                                    $queryMoodle .= ($aluno->getTipoCurso() === "pos" ? "26" 
-                                                        : $aluno->getTipoCurso() === "extensao" ? "18"
-                                                                                                : "87");
-                                    $queryMoodle .= ",?,NOW())";
+                                                    VALUES (5,18,?,NOW())";
 
 
                                     $query = $conMoodle->prepare($queryMoodle);
@@ -616,7 +612,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content=<?= '"index.php?sucessoAval=true&mensagem='.$mensagem.'"'?>>
         <script type="text/javascript">
-            window.location = <?= '"index.php?sucessoAval=true&mensagem='.$mensagem.'"'?>;
+            window.location.href = <?= '"index.php?sucessoAval=true&mensagem='.$mensagem.'"'?>;
         </script>
         <?php
                     }
@@ -655,7 +651,7 @@
 
         ?>
 
-        <div class="col-xs-12 vertical-center" style="height:50%">
+        <div class="col-xs-12 vertical-center">
             <div class="center-block col-sm-8 no-float">
                 <form method="POST" class="conteudo" id="form-cadastro" action>
                     <?php
@@ -692,6 +688,210 @@
                                pattern="^.{6,72}$" placeholder="Senha"
                                title="A senha deve ter de 6 a 72 caracteres"
                                class="form-control">
+                    </div>
+                    <p class="warning">
+                        Selecione uma modalidade para visualizar as cidades disponíveis
+                    </p>
+                    <label for="modalidade-novo" >
+                        Modalidade desejada :</label>
+                    <select id="modalidade_curso" name="modalidade_curso" class="form-control">
+                        <option value="">Selectione uma modalidade</option>
+                        <option value="regular">Regular</option>
+                        <option value="intensivo">Intensivo</option>
+                    </select>
+                    <br>
+
+                    <label for="cidadeMat">Escolha a cidade onde deseja fazer o curso:</label>
+                    <select name="cidadeMat" id="cidadeMat"
+                            class="form-control" required>
+                        <?php
+                            foreach($cidades as $cidade){
+                                echo '<option value="' . $cidade["id"] . '">';
+                                echo $cidade["nome"] . '</option>';
+                            }
+                        ?>
+                    </select>
+                    <br>
+                    <div class="form-group">
+                        <label for="cpf-novo">CPF:</label>
+                        <input type="text" name="cpf" id="cpf-novo" required
+                               pattern="^(\d{3}\.\d{3}\.\d{3}\-\d{2})|(\d{11})$"
+                               placeholder="xxx.xxx.xxx-xx" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefone-novo">Telefone 1:</label>
+                        <input type="tel" name="telefone" id="telefone-novo" required
+                               placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
+                               title="Insira um telefone válido"
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone2-novo">Telefone 2 (opcional):</label>
+                        <input type="tel" name="telefone2" id="telefone2-novo"
+                               placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
+                               title="Insira um telefone válido, ou deixe o campo vazio"
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone3-novo">Telefone 3 (opcional):</label>
+                        <input type="tel" name="telefone3" id="telefone3-novo"
+                               placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                               title="Insira um telefone válido, ou deixe o campo vazio"
+                               class="form-control">
+                    </div>
+                    <div class="form-group col-sm-12" >
+
+                        <label for="">Endereço do aluno:</label>
+                        <div style="display:block">
+
+                            <div  class="col-sm-6 col-md-4 " 
+                                style="padding-top:10px;padding-bot:10px">
+                                <label for="cep-novo" style="display:inline">CEP :</label>
+                                <input type="text" name="cep" id="cep-novo"
+                                    pattern="(^[0-9]{2}.?[0-9]{3}-?[0-9]{3}$|^$)" 
+                                    placeholder="xxxxx-xxx"
+                                    title="Insira um CEP válido"
+                                    class="form-control"
+                                    style="width:90px">
+                            </div>
+                            <div  class="col-sm-6 col-md-4"
+                            style="padding-top:10px;padding-bot:10px">
+                                <label for="rua-novo">Rua :</label>
+                                <input type="text" name="rua" id="rua-novo"
+                                    pattern="^.{0,200}$" placeholder="Rua"
+                                    title="A rua deve ter no máximo 200 caracteres"
+                                    class="form-control"
+                                    style="width:150px " required>
+                            </div>
+                            <div  class="col-sm-6 col-md-4"
+                            style="padding-top:10px;padding-bot:10px">
+                                <label for="numero-novo">
+                                    Numero :</label>
+                                <input type="text" name="numero" id="numero-novo"
+                                    placeholder="xx"
+                                    title="Insira o numero da residência do aluno"
+                                    class="form-control"
+                                    style="width:80px ;" required>
+                            </div>
+
+                            <div  class="col-sm-6 col-md-4"
+                            style="padding-top:10px;padding-bot:10px">
+                                <label for="bairro-novo" >
+                                    Bairro :</label>
+                                <input type="text" name="bairro" id="bairro-novo"
+                                    placeholder="Bairro"
+                                    title="Insira o bairro da residência do aluno"
+                                    class="form-control"
+                                    style="width:120px ;" required>
+                            </div>
+
+                            <div  class="col-sm-6 col-md-4"
+                            style="padding-top:10px;padding-bot:10px">
+                                <label for="cidade-novo" >
+                                    Cidade :</label>
+                                <input type="text" name="cidade" id="cidade-novo"
+                                    placeholder="Cidade"
+                                    title="Insira o numero da residência do aluno"
+                                    class="form-control"
+                                    style="width:150px ;" required>
+                            </div>
+                            <div  class="col-sm-6 col-md-4"
+                            style="padding-top:10px;padding-bot:10px">
+                                <label for="estado-novo">
+                                    Estado :</label>
+                                <select name="estado" id="estado-novo" class="form-control"
+                                style="width:120px">
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
+                            </div>
+
+
+                            <div  class="col-sm-6 col-md-12"
+                            style="padding-top:10px;padding-bot:10px">
+                                <label for="complemento-novo">
+                                    Complemento :</label>
+                                <input type="text" name="complemento" id="complemento-novo"
+                                    placeholder="Complemento"
+                                    title="Insira o complemento da residência do aluno"
+                                    class="form-control"
+                                    style="width:200px" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="escolaridade-novo">Nível de escolaridade:</label>
+                        <select name="escolaridade" id="escolaridade-novo" class="form-control">
+                            <option value="fundamental incompleto" selected>
+                                Ensino Fundamental Incompleto
+                            </option>
+                            <option value="fundamental completo">
+                                Ensino Fundamental Completo
+                            </option>
+                            <option value="médio incompleto">
+                                Ensino Médio Incompleto
+                            </option>
+                            <option value="médio completo">
+                                Ensino Médio Completo
+                            </option>
+                            <option value="superior incompleto">
+                                Ensino Superior Incompleto
+                            </option>
+                            <option value="superior completo">
+                                Ensino Superior Completo
+                            </option>
+                            <option value="mestrado">
+                                Mestrado
+                            </option>
+                            <option value="doutorado">
+                                Doutorado
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: none">
+                        <label for="curso-novo">Curso superior cursado:</label>
+                        <input type="text" name="curso" id="curso-novo"
+                               pattern="^.{0,200}$" placeholder="Curso superior cursado"
+                               title="O curso deve ter no máximo 200 caracteres"
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="indicador-novo">
+                            Foi indicado por alguém?
+                            Em caso afirmativo, insira o número de matrícula do
+                            indicador:
+                        </label>
+                        <input type="text" name="indicador" id="indicador-novo"
+                               pattern="^\d*$"
+                               placeholder="Número de matrícula do indicador, se existir"
+                               title="Esse campo deve ter número inteiro ou ficar vazio"
+                               class="form-control" autocomplete="off">
                     </div>
                     <!--
                     <br>

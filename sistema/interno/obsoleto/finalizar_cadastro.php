@@ -620,7 +620,7 @@
                 <!-- redireciona o usuário para o index -->
                 <meta http-equiv="refresh" content=<?= '"0; url=index.php?mensagem='.$mensagem.'"' ?>>
                 <script type="text/javascript">
-                    window.location = <?= '"index.php?mensagem='.$mensagem.'"'?>;
+                    window.location.href = <?= '"index.php?mensagem='.$mensagem.'"'?>;
                 </script>
                 <?php
                             }
@@ -668,7 +668,7 @@
         ?>
         <meta http-equiv="refresh" content=<?= '"0; url=finalizar_cadastro.php"' ?>>
         <script type="text/javascript">
-            window.location = "index.php?mensagem=No momento não há nenhuma cidade aberta para matrícula." +
+            window.location.href = "index.php?mensagem=No momento não há nenhuma cidade aberta para matrícula." +
                               " Desculpe-nos o transtorno, em breve as inscrições serão abertas novamente." +
                               " Agradecemos o interesse!";
         </script>
@@ -949,7 +949,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location.href = "index.php";
         </script>
 
         <?php
