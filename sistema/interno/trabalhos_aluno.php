@@ -290,7 +290,7 @@
                                               (mb_strlen($mensagem) > 0 ? "&erro=$mensagem" : "") .
                                               "\"" ?>>
                                 <script type="text/javascript">
-                                window.location = <?= "\"trabalhos_aluno.php?reenvio=true" . 
+                                window.location.href = <?= "\"trabalhos_aluno.php?reenvio=true" . 
                                               (mb_strlen($mensagem) > 0 ? "&erro=$mensagem" : "") .
                                               "\"" ?>;
 
@@ -367,7 +367,7 @@
                                               (mb_strlen($mensagem) > 0 ? "&erro=$mensagem" : "") .
                                               "\"" ?>>
                             <script type="text/javascript">
-                                window.location = <?= "\"trabalhos_aluno.php?sucesso=true" . 
+                                window.location.href = <?= "\"trabalhos_aluno.php?sucesso=true" . 
                                               (mb_strlen($mensagem) > 0 ? "&erro=$mensagem" : "") .
                                               "\"" ?>;
                             </script>
@@ -431,7 +431,7 @@
                 <!-- redireciona o usuário para o index.php -->
                 <meta http-equiv="refresh" content=<?= "\"0; url=index.php?mensagem=$erro\"" ?>>
                 <script type="text/javascript">
-                    window.location = <?= "\"index.php?mensagem=$erro\"" ?>;
+                    window.location.href = <?= "\"index.php?mensagem=$erro\"" ?>;
                 </script>
 
                 <?php
@@ -787,7 +787,7 @@
         <!-- redireciona o usuário para o index.php com uma mensagem específica -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php?mensagem=Apenas alunos inscritos podem ver os trabalhos";
+            window.location.href = "index.php?mensagem=Apenas alunos inscritos podem ver os trabalhos";
         </script>
         <?php
                 die();
@@ -799,7 +799,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location.href = "index.php";
         </script>
         <?php
                 die();

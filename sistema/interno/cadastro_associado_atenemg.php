@@ -57,7 +57,7 @@
             <!-- redireciona o usuário para o index.php -->
             <meta http-equiv="refresh" content="0; url=index.php">
             <script type="text/javascript">
-                window.location = "index.php?mensagem=O cadastro na ATENEMG ainda não está aberto!";
+                window.location.href = "index.php?mensagem=O cadastro na ATENEMG ainda não está aberto!";
             </script>
 
             <?php
@@ -260,7 +260,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="index.php?sucessoAval=true">
         <script type="text/javascript">
-            window.location = "index.php?cadastroSucesso=true";
+            window.location.href = "index.php?cadastroSucesso=true";
         </script>
         <?php
                     }

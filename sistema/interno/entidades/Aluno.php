@@ -55,7 +55,7 @@ class Aluno extends Usuario{
         $this->numeroInscricao = -1;
         $this->senha           = "";
         $this->status          = "";
-        $this->idIndicador     = -1;
+        $this->idIndicador     = "";
         $this->telefone        = -1;
         $this->telefone2       = -1;
         $this->telefone3       = -1;
@@ -303,7 +303,7 @@ class Aluno extends Usuario{
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
                                  $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail);
-            $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, telefone2, telefone3
+            $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, telefone2, telefone3,
                             idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso, modalidade_curso,
                              tipo_cadastro, ativo, recebeEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,

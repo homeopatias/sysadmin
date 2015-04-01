@@ -96,7 +96,7 @@
         <!-- redireciona o usuário para a página de avaliação de aula -->
         <meta http-equiv="refresh" content=<?= '"0; url=' . $url . '"' ?>>
         <script type="text/javascript">
-            window.location = <?= '"' . $url . '"' ?>;
+            window.location.href = <?= '"' . $url . '"' ?>;
         </script>
 
         <?php

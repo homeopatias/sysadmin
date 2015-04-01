@@ -319,7 +319,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php?mensagem=Apenas alunos inscritos podem ver as frequências";
+            window.location.href = "index.php?mensagem=Apenas alunos inscritos podem ver as frequências";
         </script>
         <?php
                 die();

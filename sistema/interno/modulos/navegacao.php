@@ -29,7 +29,7 @@
             <!-- redireciona o usuário para a página de preenchimento de dados restantes -->
             <meta http-equiv="refresh" content=<?= '"0; url=finalizar_cadastro.php"' ?>>
             <script type="text/javascript">
-                window.location = "finalizar_cadastro.php";
+                window.location.href = "finalizar_cadastro.php";
             </script>
             <?php
                     }
