@@ -153,7 +153,7 @@
         <!-- redireciona o usuário -->
         <meta http-equiv="refresh" content="0; url=gerenciar_alunos.php?erro=Dados inválidos!">
         <script type="text/javascript">
-            window.location = "gerenciar_alunos.php?erro=Dados inválidos!";
+            window.location.href = "gerenciar_alunos.php?erro=Dados inválidos!";
         </script>
 
         <?php
@@ -173,7 +173,7 @@
         <!-- redireciona o usuário -->
         <meta http-equiv="refresh" content="0; url=gerenciar_alunos.php?erro=Dados inválidos!">
         <script type="text/javascript">
-            window.location = "gerenciar_alunos.php?erro=Dados inválidos!";
+            window.location.href = "gerenciar_alunos.php?erro=Dados inválidos!";
         </script>
 
         <?php
@@ -1725,7 +1725,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location.href = "index.php";
         </script>
         <?php
                 die();

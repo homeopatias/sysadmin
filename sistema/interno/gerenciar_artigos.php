@@ -791,7 +791,7 @@
                 <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location.href = "index.php";
         </script>
         <?php
                 die();

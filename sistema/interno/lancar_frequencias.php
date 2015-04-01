@@ -91,7 +91,7 @@
                 <meta http-equiv="refresh"
                       content="0; url=selecao_turma_frequencias.php?erro=Aula inválida!">
                 <script type="text/javascript">
-                    window.location = "selecao_turma_frequencias.php?erro=Aula inválida!";
+                    window.location.href = "selecao_turma_frequencias.php?erro=Aula inválida!";
                 </script>
         <?php
                     die();
@@ -210,7 +210,7 @@
         <!-- redireciona o usuário para a lista de alunos -->
         <meta http-equiv="refresh" content=<?= "\"0; url=". $url . "\"" ?>>
         <script type="text/javascript">
-            window.location = <?= $url ?>;
+            window.location.href = <?= $url ?>;
         </script>
 
         <?php
@@ -313,7 +313,7 @@
         <!-- redireciona o usuário para o index.php -->
         <meta http-equiv="refresh" content="0; url=index.php">
         <script type="text/javascript">
-            window.location = "index.php";
+            window.location.href = "index.php";
         </script>
         <?php
                 die();
