@@ -147,8 +147,10 @@
                     <a href="cadastro_aluno_pos.php">Cadastro no curso de pós graduação</a>
                     <br>
 								-->
-                    <a href="recuperar_conta.php">Recuperar senha ou usuário</a>
-										<br>
+                    <a href="recuperar_usuario.php">Recuperar apenas usuário</a>
+                                        <br>
+                    <a href="recuperar_conta.php">Recuperar usuário e senha</a>
+                                        <br>
                     <a href="http://homeopatias.com/index.php?m=curso_homeopatia&n=login">Entrar no sistema antigo</a>
 										<br>
                     <a href="http://homeopatias.com/index.php?m=curso_homeopatia&n=login&ufv=true">Entrar no sistema antigo(UFV)</a>
