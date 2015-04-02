@@ -141,7 +141,7 @@ if($senhaValida && $nomeValido && $loginValido && $emailValido && $cpfValido){
         $pais            = $_POST["id"];
 
         $telefoneValido  = isset($telefone) &&
-                          preg_match("/^\(?\d{2}\)?\d{4}-?\d{4,7}$/", $telefone);
+                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone);
 
         $enderecoValido = false;
 
