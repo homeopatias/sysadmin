@@ -7,16 +7,10 @@
 <html>
     <head>
         <?php include("modulos/head.php"); ?>
-        <title>Homeopatias.com - recuperar dados da conta</title>
-        <script>
-            $(document).ready(function(){
-                
-            });
-        </script>
+        <title>Homeopatias.com - Recuperar dados da conta</title>
     </head>
     <body>
         <?php
-
 
             //inclui a navegaçao no topo do site
             include("modulos/navegacao.php");
@@ -108,7 +102,7 @@
             // -------------------------------------------------------------------
 
 
-                //se e-mail e cpf forem válido, checamos as contas que possuem esta combinação
+                //se e-mail e cpf forem válidos, checamos as contas que possuem esta combinação
                 if($cpfValido && $emailValido){
 
                     $textoQuery = "SELECT login FROM Usuario 
@@ -188,10 +182,10 @@
                             $conteudo .= "\nSua senha para acessar esta(s) conta(s) foi alterada para a senha";
                             $conteudo .= ":".$senhaAleatoria." .";
                             
-                            $conteudo .= "\n\nEsta senha foi gerada aleatóriamente pelo nosso sistema, pedimos que altere";
+                            $conteudo .= "\n\nEsta senha foi gerada aleatoriamente pelo nosso sistema, pedimos que altere";
                             $conteudo .= " esta senha na próxima vez em que você acessar nosso sistema.";
 
-                            $conteudo .= "\n\nCaso não consigo acessar nosso sistema, pedimos que tente recuperar novamente ";
+                            $conteudo .= "\n\nCaso não consiga acessar nosso sistema, pedimos que tente recuperar novamente ";
                             $conteudo .= "a senha ou entre em contato conosco pelos telefones em nosso site.";
 
                             // ---------------------------------------------------
@@ -236,7 +230,7 @@
                         }
                     ?>
 
-                    <h3>Recuperaçao de usuario e senha:</h3>
+                    <h3>Recuperaçao de usuário e senha:</h3>
 
 
                     <p>Por favor, entre com seu e-mail e CPF nos campos abaixo e lhe enviaremos um e-mail contendo
