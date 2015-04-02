@@ -10,18 +10,23 @@ require("../entidades/Associado.php");
 
 // Recebe a senha antiga do usuário
 // e a senha nova a ser colocada no lugar
-// Caso a senha antiga esteja correta, altera
-// a senha do usuário armazenado na sessão
+// Para alunos:
+//  Caso a senha antiga esteja correta, altera
+//  a senha do usuário armazenado na sessão
+// Para administradores:
+//  Altera a senha do aluno cujo id foi passado
 
 $senhaAntiga = $_POST["antiga"];
+$idAluno     = $_POST["idaluno"];
 $senhaNova   = $_POST["nova"];
 
 // checa se os dados sao validos
 
-$antigaValida = isset($senhaAntiga) && mb_strlen($senhaAntiga, 'UTF-8') >= 6 &&
-                mb_strlen($senhaAntiga, 'UTF-8') <= 72;
-$novaValida   = isset($senhaNova) && mb_strlen($senhaNova, 'UTF-8') >= 6 &&
-                mb_strlen($senhaNova, 'UTF-8') <= 72;
+$antigaValida  = isset($senhaAntiga) && mb_strlen($senhaAntiga, 'UTF-8') >= 6 &&
+                 mb_strlen($senhaAntiga, 'UTF-8') <= 72;
+$novaValida    = isset($senhaNova) && mb_strlen($senhaNova, 'UTF-8') >= 6 &&
+                 mb_strlen($senhaNova, 'UTF-8') <= 72;
+$idAlunoValido = isset($idAluno) && preg_match("/^[0-9]*$/", $idAluno);
 
 // mensagem a ser exibida em caso de erro
 $mensagem = "";
@@ -66,31 +71,65 @@ if($antigaValida){
     }
 }
 
-if($antigaValida && $novaValida){
+// variável que armazena se o usuário logado é aluno ou administrador
+$admin = unserialize($_SESSION["usuario"]) instanceof Administrador;
+
+if(($antigaValida && $novaValida) || ($admin && $novaValida && $idAlunoValido)){
 
     $hasher = new PasswordHash(8, false);
 
-    // se os dados sao validos, muda a senha
-    $sql = "UPDATE Usuario SET senha=? WHERE id=?";
-    $query = $conexao->prepare($sql);
-    $query->bindParam(1, $hasher->HashPassword($senhaNova), PDO::PARAM_INT);
-    $query->bindParam(2, unserialize($_SESSION["usuario"])->getId(), PDO::PARAM_INT);
-    $sucesso = $query->execute();
-    if($sucesso){
-        $sucesso = true;
-    }else{
+    $aluno = null;
+    if($admin) {
+        $aluno = new Aluno("");
+        $aluno->setNumeroInscricao($idAluno);
+        $sucesso = $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
+        if(!$sucesso) {
+            $aluno = false;
+        } else {
+            $mensagem = "Senha de aluno alterada com sucesso!";
+        }
+    } else {
+        $aluno = unserialize($_SESSION["usuario"]);
+    }
+
+    if($aluno) {
+        // se os dados sao validos, muda a senha
+        $sql = "UPDATE Usuario SET senha=? WHERE id=?";
+        $query = $conexao->prepare($sql);
+        $query->bindParam(1, $hasher->HashPassword($senhaNova), PDO::PARAM_INT);
+        $query->bindParam(2, $aluno->getId(), PDO::PARAM_INT);
+        $sucesso = $query->execute();
+        if($sucesso){
+            $sucesso = true;
+        }else{
+            $mensagem = "Erro!";
+        }
+    } else {
         $mensagem = "Erro!";
     }
 }else{
     // algum valor invalido foi enviado
-    if(!$antigaValida)
-        $mensagem = "Senha incorreta";
-    else if(!$novaValida)
-        $mensagem = "Senha nova inválida";
+    if(!$admin) {
+        if(!$antigaValida)
+            $mensagem = "Senha incorreta";
+        else if(!$novaValida)
+            $mensagem = "Senha nova inválida";
+    } else {
+        if(!$novaValida)
+            $mensagem = "Senha nova inválida";
+        else if(!$idAlunoValido) {
+            $mensagem = "Aluno inválido";
+        }
+    }
 }
 
 // fecha a conexão com o bd
 $conexao = null;
 
-header('Location: ../index.php?mensagem='.$mensagem.'&sucessoSenha='.$sucesso, true, "302");
+if($admin) {
+    header('Location: ../gerenciar_alunos.php?mensagem='.$mensagem.'&sucesso='.$sucesso, true, "302");
+} else {
+    header('Location: ../index.php?mensagem='.$mensagem.'&sucessoSenha='.$sucesso, true, "302");
+}
+
 die();

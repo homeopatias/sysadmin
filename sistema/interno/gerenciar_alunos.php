@@ -62,7 +62,8 @@
                     10 : { sorter: false },
                     11 : { sorter: false },
                     12 : { sorter: false },
-                    13 : { sorter: false }
+                    13 : { sorter: false },
+                    14 : { sorter: false }
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -71,6 +72,13 @@
                     $(this).find('.danger').attr('href', $(e.relatedTarget).data('href'));
                     $(this).find('#nome-aluno').text(
                         $(e.relatedTarget).parent().siblings('.nome').text()
+                    );
+                });
+
+                // passa os dados para o modal de mudança de senha
+                $("#modal-muda-senha").on('show.bs.modal', function(e) {
+                    $(this).find('#idaluno').val(
+                        $(e.relatedTarget).data("idaluno")
                     );
                 });
 
@@ -1266,6 +1274,11 @@
                     }
                     $tabela .= "</td>";
 
+                    $tabela .= "    <td><a href=\"#\" data-toggle=\"modal\"";
+                    $tabela .= " data-target=\"#modal-muda-senha\" data-idaluno=\"";
+                    $tabela .= $linha["numeroInscricao"] . "\">";
+                    $tabela .= "<i class=\"fa fa-lock\"></i></a></td>";
+
                     $tabela .= "    <td><a href=\"visualizar_aluno.php?id=";
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-eye\"></i></a></td>";
@@ -1281,6 +1294,7 @@
                         $tabela .= $linha["numeroInscricao"] . "&pagina=" . $_GET["pagina"] . "\">";
                         $tabela .= "<i class=\"fa fa-times\" style=\"color: red\"></i></a></td>";
                     }
+
                     $tabela .= "    <td><a data-indicador=\"";
                     $tabela .= $linha["idIndicador"];
                     $tabela .= "\" data-id=\"";
@@ -1751,6 +1765,7 @@
                                         <th width="100px">Certificado</th>
                                         <th width="100px">Status</th>
                                         <th width="70px">Deseja emails?</th>
+                                        <th width="70px">Alterar senha</th>
                                         <th width="60px">Visualizar</th>
                                         <th width="100px">Documentos</th>
                                         <th width="60px">Editar</th>
@@ -2444,6 +2459,43 @@
             </form>
         </div>
 
+        <!-- modal de mudanca de senha -->
+        <div class="modal fade" id="modal-muda-senha" tabindex="-1" role="dialog" 
+             aria-labelledby="modal-muda-senha" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- colocamos a tag form aqui para que possamos enviar o formulário
+                        no rodapé do modal -->
+                    <form method="POST" action="rotinas/mudar_senha.php">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                X
+                            </button>
+                            <h4 class="modal-title">Mudança de senha</h4>
+                        </div>
+                        <div class="modal-body">
+                            <!-- o formulário em si fica dentro dessa div -->
+                            <input type="hidden" name="idaluno" id="idaluno">
+                            <div class="form-group">
+                                <label for="nova">Senha nova:</label>
+                                <input type="password" name="nova" id="nova" required
+                                       pattern="^.{6,72}$" placeholder="Senha nova"
+                                       title="A senha deve ter de 6 a 72 caracteres"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Cancelar
+                            </button>
+                            <button type="submit" name="submit" value="submit" class="btn btn-primary">
+                                Alterar senha
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         
         <?php
             }else{
