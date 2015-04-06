@@ -273,6 +273,8 @@
                             }
                         }
 
+												$textoQuery    .= " ORDER BY U.nome ASC";
+
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam("idcidade", $idCidade, PDO::PARAM_INT);
                         $query->bindParam("etapa", $etapa, PDO::PARAM_INT);
@@ -291,10 +293,7 @@
                         $query->execute();
 
                         $resultado = '<div class="flip-table"> <table class="table">
-                            <th style="font-weight: bold">Selecionar</th>
                             <th style="font-weight: bold">Registro do aluno</th>
-                            <th style="font-weight: bold">Número de matrícula</th>
-                            <th style="font-weight: bold">Nº de inscrição</th>
                             <th style="font-weight: bold">Nome do aluno</th>
                             <th style="font-weight: bold">CPF do aluno</th>
                             <th style="font-weight: bold">Visualizar pagamentos</th>';
@@ -319,9 +318,6 @@
 
                             $resultado .= '
                         <tr>
-                            <td> <input type="checkbox" name="inscricoes[]"
-                                value="'.$linha['numeroInscricao'].'">
-                            </td>
                             <td>' . $linha['numeroInscricao'] . '</td>
                             <td>' . $linha['nome'] .'</td>
                             <td>' . $cpf .'</td>
