@@ -348,7 +348,7 @@
                 // remove inputs em branco do form antes de enviar
                 $("#form-filtro").submit(function(){
 
-                    $(':input', this).each(function() {
+                    $(':input:not(#numeroTableHeader)', this).each(function() {
                          this.disabled = !($(this).val()) || $(this).val() == 0;
                     });
 
@@ -1040,6 +1040,7 @@
                                 ? htmlspecialchars( $_GET["numeroTableHeader"] ) 
                                 : -1 ;
                 $direcao = 2;
+
                 //------------------
                 if( isset($_GET["numeroTableHeader"]) ){
                     $indexHeader = htmlspecialchars( $_GET["numeroTableHeader"] );
