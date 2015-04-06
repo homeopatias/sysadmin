@@ -121,6 +121,9 @@
                         if(isset($_GET["cadastroSucesso"])) {
                             echo "<p class=\"sucesso\">Cadastro efetuado com sucesso!</p>";
                         }
+                        if(isset($_GET["recuperaUsuarioSucesso"])) {
+                            echo "<p class=\"sucesso\">Os dados foram recuperados com sucesso e enviados para seu e-mail</p>";
+                        }
                     ?>
                     <div class="form-group">
                         <label for="login">Nome de usuário: </label>

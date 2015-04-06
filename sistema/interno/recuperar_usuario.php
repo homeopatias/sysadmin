@@ -96,10 +96,14 @@
                         
 
                         if($sucesso && $enviou){
-                            $conexao->commit();
-                            $mensagem = "Os dados foram recuperados com sucesso e enviados para seu e-mail";
+                        ?>
+                        <!-- redireciona o usuário para o index.php -->
+                        <meta http-equiv="refresh" content="0; url=index.php">
+                        <script type="text/javascript">
+                            window.location.href = "index.php?recuperaUsuarioSucesso=true";
+                        </script>
+                        <?php
                         }else{
-                            $conexao->rollBack();
                             $mensagem = "Não foi possível buscar os dados necessários, tente novamente";
                             $sucesso = false;
                         }
