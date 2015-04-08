@@ -44,7 +44,15 @@
                                 CURDATE() < limiteInscricao AND 
                                 tipo_curso = '" .$aluno->getTipoCurso(). "' 
                                 OR tipo_curso = 'todos' AND modalidadeCidade = '".
-                                $aluno->getModalidadeCurso()."' ORDER BY ano DESC, nome ASC";
+                                $aluno->getModalidadeCurso()."'";
+
+                // caso uma cidade tenha valor 0 no preço de determinado tipo de curso,
+                // isso indica que essa cidade não permite matrícula nesse tipo de curso/modalidade
+                $nomeCampoPreco = "_" . $aluno->getTipoCurso() . "_" . $aluno->getModalidadeCurso();
+                $textoQuery .= " AND parcela" . $nomeCampoPreco . " <> 0";
+
+
+                $textoQuery .= " ORDER BY ano DESC, nome ASC";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
