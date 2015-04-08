@@ -100,12 +100,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             }
         }
 
-        $telefoneValido = isset($telefone) &&
-                          preg_match("/^\(\d*\)\d*-?\d*$/", $telefone);
-        $telefonesOpcValidos = (!isset($telefone2) ||
-                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone2)) &&
-                               (!isset($telefone3) ||
-                          preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone3));
+        $telefoneValido = isset($telefone);
+        $telefonesOpcValidos = (isset($telefone2) || isset($telefone3) );
 
         $escolaridadeValida = isset($escolaridade) &&
                    ($escolaridade === "fundamental incompleto" ||
@@ -172,7 +168,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         if($nomeValido && $cpfValido[0] && $emailValido[0] && $loginValido && $telefoneValido &&
            $statusValido && $idIndicadorValido && $escolaridadeValida &&
            $cursoValido && $inscValido && $idValido && $enderecoValido && $tipoCadastroValido && 
-           $tipoCursoValido && $senhaValida && $modalidadeCursoValido && $telefonesOpcValidos){
+           $tipoCursoValido && $senhaValida && $modalidadeCursoValido){
 
             require_once("../../entidades/Aluno.php");
 
@@ -244,8 +240,6 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "Telefone inválido!";
         }else if(!$enderecoValido){
             $mensagem = "Endereço inválido!";
-        }else if(!$telefoneValido){
-            $mensagem = "Telefone inválido!";
         }else if(!$enderecoValido){
             $mensagem = "Endereço inválido!";
         }else if(!$cursoValido){

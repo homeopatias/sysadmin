@@ -777,12 +777,8 @@
                         }
                     }
 
-                    $telefoneValido = isset($telefone) &&
-                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone);
-                    $telefonesOpcValidos = (!isset($telefone2) ||
-                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone2)) &&
-                                           (!isset($telefone3) ||
-                                      preg_match("/^\(?\d*\)?\d*-?\d*$/", $telefone3));
+                    $telefoneValido = isset($telefone);
+                    $telefonesOpcValidos = (!isset($telefone2) || !isset($telefone3) );
                     
                     $enderecoValido = false;
 
@@ -846,7 +842,7 @@
                     // se todos os dados estão válidos, o aluno é cadastrado
                                           
                     if($nomeValido && $cpfValido && $emailValido && $loginValido && $senhaValida &&
-                       $idIndicadorValido && $telefoneValido && $enderecoValido &&
+                       $idIndicadorValido && $enderecoValido &&
                        $escolaridadeValida && $cursoValido && $tipoCursoValido && 
                        $tipoCadastroValido && $modalidadeCursoValido && $telefonesOpcValidos){
 
@@ -905,8 +901,8 @@
                         $mensagem = "Nome de usuário inválido!";
                     }else if(!$senhaValida){
                         $mensagem = "Senha inválida!";
-                    }else if(!$telefoneValido){
-                        $mensagem = "Telefone inválido!";
+                   /* }else if(!$telefoneValido){
+                        $mensagem = "Telefone inválido!";*/
                     }else if(!$enderecoValido){
                         $mensagem = "Endereço inválido!";
                     }else if(!$escolaridadeValida){
@@ -2156,21 +2152,21 @@
                             <div class="form-group">
                                 <label for="telefone">Telefone do aluno:</label>
                                 <input type="tel" name="telefone" id="telefone" required
-                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
+                                       placeholder="(xx)xxxx-xxxx"
                                        title="Insira um telefone válido"
                                        class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="telefone2">Telefone 2 (opcional):</label>
                                 <input type="tel" name="telefone2" id="telefone2"
-                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d*\)?\d*-?\d*$"
+                                       placeholder="(xx)xxxx-xxxx"
                                        title="Insira um telefone válido, ou deixe o campo vazio"
                                        class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="telefone3">Telefone 3 (opcional):</label>
                                 <input type="tel" name="telefone3" id="telefone3"
-                                       placeholder="(xx)xxxx-xxxx" pattern="^\(?\d{2}\)?\d{4}-?\d{4,7}$"
+                                       placeholder="(xx)xxxx-xxxx"
                                        title="Insira um telefone válido, ou deixe o campo vazio"
                                        class="form-control">
                             </div>
