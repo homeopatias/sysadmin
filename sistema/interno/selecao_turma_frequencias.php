@@ -9,6 +9,18 @@
         <?php include("modulos/head.php"); ?>
         <title>Selecionar aula - Homeopatias.com</title>
             <?php
+                $idCidade = $_GET["idCidade"];
+                if(!isset($idCidade) || !preg_match("/^\d*$/", $idCidade)) {
+            ?>
+        <!-- redireciona o usuário para o a tela de gerência de cidades -->
+        <meta http-equiv="refresh" content="gerenciar_cidades.php?erro=Id de cidade inválida!">
+        <script type="text/javascript">
+            window.location.href = "gerenciar_cidades.php?erro=Id de cidade inválida!";
+        </script>
+            <?php
+                    die();
+                }
+
                 // lemos as credenciais do banco de dados
                 $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
                 $dados = json_decode($dados, true);
@@ -28,30 +40,23 @@
                     echo $e->getMessage();
                 }
 
-                require_once("entidades/Administrador.php");
-
-                $coordenador = unserialize($_SESSION["usuario"]);
-                $idCoordenador = $coordenador->getIdAdmin();
-
                 $textoQuery  = "SELECT C.UF, C.nome, A.idAula, A.etapa,
                                 UNIX_TIMESTAMP(A.data) as dataAula FROM Cidade C
                                 INNER JOIN Aula A ON A.chaveCidade = C.idCidade
-                                WHERE A.data < NOW() AND C.idCoordenador = ?
-                                AND C.ano = YEAR(NOW())";
+                                WHERE A.data < NOW() AND C.idCidade = ?";
 
                 $query = $conexao->prepare($textoQuery);
-                $query->bindParam(1, $idCoordenador);
+                $query->bindParam(1, $idCidade);
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute();
 
                 if ($query->rowCount() == 0) {
-                    // esse coordenador não coordena nenhuma cidade, redirecionamos
-                    // ele para o index
+                    // essa cidade não possui aulas
             ?>
-        <!-- redireciona o usuário para o index.php -->
-        <meta http-equiv="refresh" content="index.php?sucessoAval=true">
+        <!-- redireciona o usuário para a gerência de cidades -->
+        <meta http-equiv="refresh" content="gerenciar_cidades.php?erro=Essa cidade ainda não teve aulas!">
         <script type="text/javascript">
-            window.location.href = "index.php?mensagem=Sua cidade ainda não teve aulas esse ano!";
+            window.location.href = "gerenciar_cidades.php?erro=Essa cidade ainda não teve aulas!";
         </script>
             <?php
                 }
@@ -126,9 +131,9 @@
                 $mensagem = $_GET["erro"];
             }
 
-            // permite a seleção de aula apenas se o usuário for um coordenador
-            // COORDENADORES NÃO PODEM TER ACESSO, PORTANTO, POR ENQUANTO, PERMITIMOS APENAS PARA
-            // ADMINISTRADORES
+            require_once("entidades/Administrador.php");
+
+            // permite a seleção de aula apenas se o usuário for um administrador
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
                && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador"){
         ?>
@@ -145,6 +150,7 @@
                     <form class="form-inline" id="form-turma"
                           action="lancar_frequencias.php" method="GET">
                         <br>
+                        <input type="hidden" name="idCidade" value=<?= "\"" . $idCidade . "\"" ?>>
                         <div class="form-group" style="margin-left: 20px">
                             <label for="etapa">Etapa:</label>
                             <select name="etapa" id="etapa" class="form-control" required>

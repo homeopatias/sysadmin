@@ -7,7 +7,7 @@
 <html>
     <head>
         <?php include("modulos/head.php"); ?>
-        <title>Trabalhos - Homeopatias.com</title>
+        <title>Frequências - Homeopatias.com</title>
         <script src="./jquery/jquery.tablesorter.min.js"></script>
         <script src="./jquery/colResizable.min.js"></script>
         <!-- polyfill para funcionalidades do HTML5 -->
@@ -189,7 +189,8 @@
     
                 }       
 
-                $porcentagemFrequencia = (100 * $presencas)/$aulas;
+                $porcentagemFrequencia = 0;
+                if($aulas != 0) $porcentagemFrequencia = (100 * $presencas)/$aulas;
 
                 // Lê os anos das mariculas que o usuário possui para
                 // permitir selecionar o ano a ser exibido

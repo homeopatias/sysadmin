@@ -56,9 +56,9 @@
                 $mensagem = $_GET['erro'];
             }
 
-            // exibe alunos apenas para coordenadores logados
+            // exibe alunos apenas para administradores logados
             if(isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof Administrador
-               && unserialize($_SESSION['usuario'])->getNivelAdmin() === 'coordenador'){
+               && unserialize($_SESSION['usuario'])->getNivelAdmin() === 'administrador'){
 
                 // lemos as credenciais do banco de dados
                 $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -262,7 +262,8 @@
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
                 <section class="conteudo">
-                    <a style="float:right" href="selecao_turma_frequencias.php">
+                    <a style="float:right" href=<?= "\"selecao_turma_frequencias.php?idCidade=" .
+                        htmlspecialchars($_GET["idCidade"]) . "\"" ?>>
                         Voltar para seleção de aula
                     </a>
                     <h1>Lançar frequências</h1><br>    

@@ -53,9 +53,9 @@
                 // torna a tabela ordenavel pelas colunas
                 $("#cidades").tablesorter({ headers: {
                     4 : { sorter: "datetime" },
-                    8 : { sorter: false },
-                    9 : { sorter: false },
-                    10 : { sorter: false }
+                    6 : { sorter: false },
+                    7 : { sorter: false },
+                    8 : { sorter: false }
                 }});
                 // passa os dados do href para o modal de confirmação de deleção quando
                 // necessário
@@ -1557,6 +1557,8 @@
                         $tabela .= "    <td class=\"custo\">R$ ";
                         $tabela .= number_format(htmlspecialchars($linha["custoCurso"]), 2, ".", " ")."</td>";
     */
+                        $tabela .= "    <td><a href=\"selecao_turma_frequencias.php?idCidade=";
+                        $tabela .= $linha["idCidade"] . "\"><i class=\"fa fa-list\"></i></a>";
                         $tabela .= "    <td><a data-id=\"";
                         $tabela .= $linha['idCidade'];
                         $tabela .= "\" data-empresa=\"" . $linha['nomeEmpresa'];
@@ -1790,6 +1792,7 @@
                                         <th width="110px" <?= $indexHeader == 5 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Coordenador</th>
+                                        <th width="60px">Ver aulas</th>
                                         <th width="60px">Editar</th>
                                         <th width="60px">Excluir</th>
                                     </tr>
