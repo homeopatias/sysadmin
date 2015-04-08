@@ -40,7 +40,7 @@
             if( isset( $_POST["submit"] ) ){
 
                 $mensagem = "";
-                $sucesso  = "";
+                $sucesso  = true;
 
                 $email  = isset( $_POST["email"] ) ? $_POST["email"] : false;
 
@@ -95,7 +95,7 @@
                         $enviou = mail($email , $titulo , $conteudo, $headers);
                         
 
-                        if($sucesso && $enviou){
+                        if($enviou){
                         ?>
                         <!-- redireciona o usuário para o index.php -->
                         <meta http-equiv="refresh" content="0; url=index.php">
