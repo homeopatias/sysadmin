@@ -249,7 +249,7 @@
                     <br><br>
                     <?php
 
-                        $textoQuery  = "SELECT U.nome, U.cpf, A.numeroInscricao,
+                        $textoQuery  = "SELECT U.nome, U.cpf, U.email, A.numeroInscricao,
                                         M.aprovado FROM Matricula M INNER JOIN Cidade C 
                                         ON C.idCidade = M.chaveCidade INNER JOIN Aluno A ON 
                                         M.chaveAluno = A.numeroInscricao INNER JOIN Usuario U ON 
@@ -295,6 +295,7 @@
                         $resultado = '<div class="flip-table"> <table class="table">
                             <th style="font-weight: bold">Registro do aluno</th>
                             <th style="font-weight: bold">Nome do aluno</th>
+                            <th style="font-weight: bold">Email</th>
                             <th style="font-weight: bold">CPF do aluno</th>
                             <th style="font-weight: bold">Visualizar pagamentos</th>';
 
@@ -318,8 +319,9 @@
 
                             $resultado .= '
                         <tr>
-                            <td>' . $linha['numeroInscricao'] . '</td>
-                            <td>' . $linha['nome'] .'</td>
+                            <td>' . htmlspecialchars($linha['numeroInscricao']). '</td>
+                            <td>' . htmlspecialchars($linha['nome']) .'</td>
+                            <td>' . htmlspecialchars($linha['email']) .'</td>
                             <td>' . $cpf .'</td>
                             <td>
                                 <a href="gerenciar_pagamentos_aluno.php?id='.$linha["numeroInscricao"].'" >
