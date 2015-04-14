@@ -210,6 +210,7 @@
 
                 $("#filtro-nome").hide();
                 $("#filtro-cpf").hide();
+                $("#filtro-email").hide();
                 $("#ipp").hide();
                 $("#filtro-status").hide();
                 $("#filtro-numero").hide();
@@ -235,6 +236,11 @@
                     $("#filtro-cpf").focus();
                 });
 
+                $("#label-email").click(function(){
+                    $(this).hide();
+                    $("#filtro-email").show(300);
+                    $("#filtro-email").focus();
+                });
                 
 
                 $("#label-status").click(function(){
@@ -379,6 +385,7 @@
                 $("#limpar").click(function(e){
                     $("#filtro-nome").val("");
                     $("#filtro-cpf").val("");
+                    $("#filtro-email").val("");
                     $("#filtro-status").val("");
                     $("#filtro-numero").val("");
                     $("#filtro-data-min").val("");
@@ -965,7 +972,7 @@
                                                        : "" ;
 
                 // se algum filtro foi enviado, filtra os resultados da consulta
-                $filtroNome = $filtroCpf = $filtroStatus = $filtroNumero = 
+                $filtroNome = $filtroCpf = $filtroEmail = $filtroStatus = $filtroNumero = 
                 $filtroDataMin = $filtroDataMax = $filtroAtivo = false;
 
                 // como não há botão para submit, temos que checar se todas as variáveis
@@ -974,8 +981,8 @@
                    isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
                    isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
-                   isset($_GET["filtro-etapa"])     || isset($_GET["filtro-ativo"])   ||
-                   isset($_GET["filtro-curso"])   ){
+                   isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])   ||
+                   isset($_GET["filtro-curso"])    || isset($_GET["filtro-email"]) ){
                     $filtroNome    = htmlspecialchars($_GET["filtro-nome"]);
                     $filtroCpf     = htmlspecialchars($_GET["filtro-cpf"]);
                     $filtroStatus  = htmlspecialchars($_GET["filtro-status"]);
@@ -985,6 +992,7 @@
                     $filtroEtapa   = htmlspecialchars($_GET["filtro-etapa"]);
                     $filtroAtivo   = htmlspecialchars($_GET["filtro-ativo"]);
                     $filtroCurso   = htmlspecialchars($_GET["filtro-curso"]);
+                    $filtroEmail   = htmlspecialchars($_GET["filtro-email"]);
 
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         // prepara o nome para ser colocado na query
@@ -993,6 +1001,11 @@
                     }
                     if(isset($filtroCpf) && mb_strlen($filtroCpf) > 0){
                         $textoQuery .= "  AND U.cpf LIKE :cpf";
+                    }
+                    if(isset($filtroEmail) && mb_strlen($filtroEmail) > 0){
+                        // prepara o email para ser colocado na query
+                        $filtroEmail    =  "%".mb_strtoupper($filtroEmail)."%";
+                        $textoQuery .= "  AND UPPER(U.email) LIKE :email";
                     }
                     if(isset($filtroStatus) && mb_strlen($filtroStatus) > 0){
                         $textoQuery .= " AND A.status LIKE :status";
@@ -1110,7 +1123,7 @@
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
                    isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
                    isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])    ||
-                   isset($_GET["filtro-curso"])){
+                   isset($_GET["filtro-curso"])    || isset($_GET["filtro-email"])){
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         $query->bindParam(":nome", $filtroNome);
                     }
@@ -1120,6 +1133,9 @@
                         $filtroCpf = str_replace("-","",$filtroCpf);
 
                         $query->bindParam(":cpf", $filtroCpf);
+                    }
+                    if(isset($filtroEmail) && mb_strlen($filtroEmail) > 0){
+                        $query->bindParam(":email", $filtroEmail);
                     }
                     if(isset($filtroStatus) && mb_strlen($filtroStatus) > 0){
                         $query->bindParam(":status", $filtroStatus);
@@ -1358,7 +1374,7 @@
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
                    isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
                    isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])    ||
-                   isset($_GET["filtro-curso"])   ){
+                   isset($_GET["filtro-curso"])    || isset($_GET["filtro-email"])){
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         $query->bindParam(":nome", $filtroNome);
                     }
@@ -1368,6 +1384,9 @@
                         $filtroCpf = str_replace("-","",$filtroCpf);
 
                         $query->bindParam(":cpf", $filtroCpf);
+                    }
+                    if(isset($filtroEmail) && mb_strlen($filtroEmail) > 0){
+                        $query->bindParam(":email", $filtroEmail);
                     }
                     if(isset($filtroStatus) && mb_strlen($filtroStatus) > 0){
                         $query->bindParam(":status", $filtroStatus);
@@ -1465,6 +1484,20 @@
                                     style="display:inline;width:205px"
                                     value= <?= isset($_GET["filtro-nome"]) ? 
                                         htmlspecialchars($_GET["filtro-nome"]) : "" ?> >
+
+                            <a id="label-email" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-email"]) && 
+                                        mb_strlen(($_GET["filtro-email"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >
+                                Email
+                            </a>
+                            <input  type="text" name="filtro-email" id="filtro-email"
+                                    placeholder="Email" class="form-control" autocomplete="off"
+                                    style="display:inline;width:205px"
+                                    value= <?= isset($_GET["filtro-email"]) ? 
+                                        htmlspecialchars($_GET["filtro-email"]) : "" ?> >
                                     
                             <a id="label-cpf" href="#" class="btn" 
                                 style=  <?= (isset($_GET["filtro-cpf"]) && 

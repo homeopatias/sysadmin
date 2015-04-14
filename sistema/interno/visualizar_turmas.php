@@ -48,6 +48,7 @@
                 // esconde inputs de busca
 
                 $("#filtro-nome").hide();
+                $("#filtro-email").hide();
                 $("#filtro-registro").hide();
 
                 // alterna campos de texto com campos de input
@@ -55,6 +56,12 @@
                     $(this).hide();
                     $("#filtro-nome").show(300);
                     $("#filtro-nome").focus();
+                });
+
+                $("#label-email").click(function(){
+                    $(this).hide();
+                    $("#filtro-email").show(300);
+                    $("#filtro-email").focus();
                 });
 
                 $("#label-registro").click(function(){
@@ -71,6 +78,7 @@
                 // se clicou na borracha, apaga todos os campos e envia o formulário limpo
                 $("#limpar").click(function(e){
                     $("#filtro-nome").val("");
+                    $("#filtro-email").val("");
                     $("#filtro-registro").val("");
                     atualizaPagina();
                 });
@@ -220,6 +228,21 @@
                                     value= <?= isset($_GET["filtro-nome"]) ? 
                                         htmlspecialchars($_GET["filtro-nome"]) : "" ?> >
 
+                            <a id="label-email" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-email"]) && 
+                                        mb_strlen(($_GET["filtro-email"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?>
+                                >
+                                Email
+                            </a>
+                            <input  type="text" name="filtro-email" id="filtro-email"
+                                    placeholder="Email do aluno" class="form-control"
+                                    autocomplete="off"
+                                    style="display:inline;width:205px"
+                                    value= <?= isset($_GET["filtro-email"]) ? 
+                                        htmlspecialchars($_GET["filtro-email"]) : "" ?> >
+
                             <a id="label-registro" href="#" class="btn" 
                                 style=  <?= (isset($_GET["filtro-registro"]) && 
                                         mb_strlen(($_GET["filtro-registro"])) > 0) ? 
@@ -258,14 +281,20 @@
 
                         // Se algum filtro foi repassado, altera o query para filtrar
                         $filtroRegistro = $filtroNome = false;
-                        if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-registro"])){
+                        if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-registro"]) ||
+                           isset($_GET["filtro-email"]) ){
 
                             $filtroNome     =  htmlspecialchars($_GET["filtro-nome"]);
+                            $filtroEmail    =  htmlspecialchars($_GET["filtro-email"]);
                             $filtroRegistro =  htmlspecialchars($_GET["filtro-registro"]);
 
                             if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                                 $filtroNome  =  "%".mb_strtoupper($filtroNome)."%";
                                 $textoQuery .= " AND UPPER(U.nome) LIKE :filtronome ";
+                            }        
+                            if(isset($filtroEmail) && mb_strlen($filtroEmail) > 0){
+                                $filtroEmail  =  "%".mb_strtoupper($filtroEmail)."%";
+                                $textoQuery .= " AND UPPER(U.email) LIKE :filtroemail ";
                             }            
                             if(isset($filtroRegistro) && mb_strlen($filtroRegistro) > 0){
                                 $filtroRegistro =  "%".mb_strtoupper($filtroRegistro)."%";
@@ -280,9 +309,13 @@
                         $query->bindParam("etapa", $etapa, PDO::PARAM_INT);
 
                         // seta os parâmetro necessários para exacutar a filtragem de dados
-                        if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-registro"])){
+                        if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-registro"]) ||
+                           isset($_GET["filtro-email"]) ){
                             if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                                 $query->bindParam(":filtronome", $filtroNome);
+                            }
+                            if(isset($filtroEmail) && mb_strlen($filtroEmail) > 0){
+                                $query->bindParam(":filtroemail", $filtroEmail);
                             }
                             if(isset($filtroRegistro) && mb_strlen($filtroRegistro) > 0){
                                 $query->bindParam(":filtroinsc", $filtroRegistro);
