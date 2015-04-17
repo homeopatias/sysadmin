@@ -50,6 +50,7 @@
                 $("#filtro-nome").hide();
                 $("#filtro-email").hide();
                 $("#filtro-registro").hide();
+                $("#filtro-status").hide();
 
                 // alterna campos de texto com campos de input
                 $("#label-nome").click(function(){
@@ -70,6 +71,12 @@
                     $("#filtro-registro").focus();
                 });
 
+                $("#label-status").click(function(){
+                    $(this).hide();
+                    $("#filtro-status").show(300);
+                    $("#filtro-status").focus();
+                });
+
                 // se clicou na lupa, envia o formulário
                 $("#busca").click(function(e){
                     atualizaPagina();
@@ -80,6 +87,7 @@
                     $("#filtro-nome").val("");
                     $("#filtro-email").val("");
                     $("#filtro-registro").val("");
+                    $("#filtro-status").val("");
                     atualizaPagina();
                 });
 
@@ -257,6 +265,49 @@
                                     style="display:inline;width:205px"
                                     value= <?= isset($_GET["filtro-registro"]) ? 
                                         htmlspecialchars($_GET["filtro-registro"]) : "" ?> >
+
+                            <a id="label-status" href="#" class="btn" 
+                                style=  <?= (isset($_GET["filtro-status"]) && 
+                                        mb_strlen(($_GET["filtro-status"])) > 0) ? 
+                                            "display:inline;color:#336600" : "display:inline";
+                                        ?> 
+                                >Status
+                            </a>
+
+                            <select name="filtro-status" id="filtro-status" class="form-control"
+                                    style="display:inline;width:120px">
+                                <option value="" 
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "" ?
+                                        'selected="selected"': '' ;?> >Nenhum
+                                </option>
+                                <option value="preinscrito"
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "preinscrito"?
+                                    'selected="selected"':'';?> >
+                                Pré-inscrito</option>
+                                <option value="inscrito"
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "inscrito"?
+                                    'selected="selected"':'';?> >
+                                Inscrito</option>
+                                <option value="desistente"
+                                   <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "desistente"?
+                                   'selected="selected"':'';?> >
+                                Desistente</option>
+                                <option value="formado"
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "formado"?
+                                   'selected="selected"':'';?> >
+                                Formado</option>
+                                <option value="inativo"
+                                    <?=isset($_GET["filtro-status"]) &&
+                                        htmlspecialchars($_GET["filtro-status"]) == "inativo"?
+                                   'selected="selected"':'';?> >
+                                Inativo</option>
+                            </select>
+
                             <br><br>
                             <a href="#" id="limpar" class="btn btn-info" >
                                 Limpar
@@ -272,7 +323,7 @@
                     <br><br>
                     <?php
 
-                        $textoQuery  = "SELECT U.nome, U.cpf, U.email, A.numeroInscricao,
+                        $textoQuery  = "SELECT U.nome, U.cpf, U.email, A.numeroInscricao, A.status,
                                         M.aprovado FROM Matricula M INNER JOIN Cidade C 
                                         ON C.idCidade = M.chaveCidade INNER JOIN Aluno A ON 
                                         M.chaveAluno = A.numeroInscricao INNER JOIN Usuario U ON 
@@ -280,29 +331,33 @@
                                         C.idCidade = :idcidade AND M.etapa = :etapa";
 
                         // Se algum filtro foi repassado, altera o query para filtrar
-                        $filtroRegistro = $filtroNome = false;
+                        $filtroRegistro = $filtroEmail = $filtroNome = $filtroStatus = false;
                         if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-registro"]) ||
-                           isset($_GET["filtro-email"]) ){
+                           isset($_GET["filtro-email"])|| isset($_GET["filtro-status"])){
 
                             $filtroNome     =  htmlspecialchars($_GET["filtro-nome"]);
                             $filtroEmail    =  htmlspecialchars($_GET["filtro-email"]);
                             $filtroRegistro =  htmlspecialchars($_GET["filtro-registro"]);
+                            $filtroStatus   =  htmlspecialchars($_GET["filtro-status"]);
 
                             if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                                 $filtroNome  =  "%".mb_strtoupper($filtroNome)."%";
                                 $textoQuery .= " AND UPPER(U.nome) LIKE :filtronome ";
-                            }        
+                            }
                             if(isset($filtroEmail) && mb_strlen($filtroEmail) > 0){
                                 $filtroEmail  =  "%".mb_strtoupper($filtroEmail)."%";
                                 $textoQuery .= " AND UPPER(U.email) LIKE :filtroemail ";
-                            }            
+                            }
                             if(isset($filtroRegistro) && mb_strlen($filtroRegistro) > 0){
                                 $filtroRegistro =  "%".mb_strtoupper($filtroRegistro)."%";
                                 $textoQuery    .= " AND UPPER(A.numeroInscricao) LIKE :filtroinsc ";
                             }
+                            if(isset($filtroStatus) && mb_strlen($filtroStatus) > 0){
+                                $textoQuery .= " AND A.status = :filtrostatus ";
+                            }
                         }
 
-												$textoQuery    .= " ORDER BY U.nome ASC";
+						$textoQuery    .= " ORDER BY U.nome ASC";
 
                         $query = $conexao->prepare($textoQuery);
                         $query->bindParam("idcidade", $idCidade, PDO::PARAM_INT);
@@ -310,7 +365,7 @@
 
                         // seta os parâmetro necessários para exacutar a filtragem de dados
                         if(isset($_GET["filtro-nome"]) || isset($_GET["filtro-registro"]) ||
-                           isset($_GET["filtro-email"]) ){
+                           isset($_GET["filtro-email"])|| isset($_GET["filtro-status"])){
                             if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                                 $query->bindParam(":filtronome", $filtroNome);
                             }
@@ -320,14 +375,19 @@
                             if(isset($filtroRegistro) && mb_strlen($filtroRegistro) > 0){
                                 $query->bindParam(":filtroinsc", $filtroRegistro);
                             }
+                            if(isset($filtroStatus) && mb_strlen($filtroStatus) > 0){
+                                $query->bindParam(":filtrostatus", $filtroStatus);
+                            }
                         }
 
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
                         $resultado = '<div class="flip-table"> <table class="table">
+                            <th></th>
                             <th style="font-weight: bold">Registro do aluno</th>
                             <th style="font-weight: bold">Nome do aluno</th>
+                            <th style="font-weight: bold">Status</th>
                             <th style="font-weight: bold">Email</th>
                             <th style="font-weight: bold">CPF do aluno</th>
                             <th style="font-weight: bold">Visualizar pagamentos</th>';
@@ -352,8 +412,14 @@
 
                             $resultado .= '
                         <tr>
+
+                            <td class=\"selc\">
+                                <input type="checkbox" name="inscricoes[]"
+                                value="'.$linha['numeroInscricao'].'"> </td>
                             <td>' . htmlspecialchars($linha['numeroInscricao']). '</td>
                             <td>' . htmlspecialchars($linha['nome']) .'</td>
+                            <td>' . ($linha['status'] == "preinscrito" ?
+                                        "Pré-inscrito" : ucfirst(htmlspecialchars($linha['status']))) .'</td>
                             <td>' . htmlspecialchars($linha['email']) .'</td>
                             <td>' . $cpf .'</td>
                             <td>
@@ -378,6 +444,14 @@
                             $resultado = "<b>Nenhum aluno matrículado nessa cidade nessa etapa.</b>";
                         }
                         echo $resultado;
+
+                        if($numAlunos) {
+                            echo "<b>" . $numAlunos . " aluno";
+                            if($numAlunos != 1) echo "s";
+                            echo " matriculado";
+                            if($numAlunos != 1) echo "s";
+                            echo " nessa turma</b>";
+                        }
                     ?>
 
                     <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-email"
