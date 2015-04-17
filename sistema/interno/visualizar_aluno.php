@@ -44,7 +44,7 @@
                                 CURDATE() < limiteInscricao AND 
                                 tipo_curso = '" .$aluno->getTipoCurso(). "' 
                                 OR tipo_curso = 'todos' AND modalidadeCidade = '".
-                                $aluno->getModalidadeCurso()."'";
+                                $aluno->getModalidadeCurso()."' OR modalidadeCidade = 'ambos'";
 
                 // caso uma cidade tenha valor 0 no preço de determinado tipo de curso,
                 // isso indica que essa cidade não permite matrícula nesse tipo de curso/modalidade
