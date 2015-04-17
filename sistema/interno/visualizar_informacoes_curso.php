@@ -999,7 +999,7 @@
                                 $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
                                                    $pagamentos[$anoPagamento][$i]['valor'] *
                                                    ($pagamentos[$anoPagamento][$i]['desconto']/100);
-                                                   
+
                                 echo '<td><i class="fa fa-ellipsis-h"></i></td>';  
                             } else {
                                 echo '<td><i class="fa fa-check sucesso"></i></td>';                                
