@@ -996,6 +996,10 @@
                                      $valorAcumulado
                                      . '"><i class="fa fa-money"></i></a></td>';
                             } else if (!$pagamentos[$anoPagamento][$i]['fechado'] && $i < $parcelaAtual) {
+                                $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
+                                                   $pagamentos[$anoPagamento][$i]['valor'] *
+                                                   ($pagamentos[$anoPagamento][$i]['desconto']/100);
+                                                   
                                 echo '<td><i class="fa fa-ellipsis-h"></i></td>';  
                             } else {
                                 echo '<td><i class="fa fa-check sucesso"></i></td>';                                
