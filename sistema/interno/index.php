@@ -543,7 +543,7 @@
                 <b>Tipo de certificado:</b>
                 <?= htmlspecialchars($certificado); ?>
             </p>
-            <p style="display: none"> <!-- FIXME: Deixar botão visível -->
+            <p> <!-- FIXME: Deixar botão visível -->
                 <a style="  box-sizing: border-box;
 															padding: 10px;
 															border: 2px dashed green;
