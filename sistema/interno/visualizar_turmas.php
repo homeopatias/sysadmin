@@ -92,6 +92,15 @@
                 });
 
 
+                $('#alunos input[type="checkbox"]').click(function() {
+                    var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
+                    if(numSelecionados)
+                        $("#sendSelecionados").fadeIn();
+                    else
+                        $("#sendSelecionados").fadeOut();
+                });
+
+
                 // atualiza formulário com a busca
                 function atualizaPagina(){
                     $("#form-filtro").submit();
@@ -383,7 +392,7 @@
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
-                        $resultado = '<div class="flip-table"> <table class="table">
+                        $resultado = '<div class="flip-table"> <table class="table" id="alunos">
                             <th></th>
                             <th style="font-weight: bold">Registro do aluno</th>
                             <th style="font-weight: bold">Nome do aluno</th>
@@ -459,7 +468,7 @@
                         <p>Enviar e-mail para todos</p>
                     </a>
                     <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal-email"
-                        id="sendSelecionados" style="margin-right:2em">
+                        id="sendSelecionados" style="margin-right:2em; display:none">
                         <p>Enviar e-mail para os selecionados</p>
                     </a>
 
