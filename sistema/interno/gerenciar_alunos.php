@@ -1228,6 +1228,9 @@
                     if($etapaMatricula == "") {
                         $etapaMatricula = "N/A";
                     }
+                    $tabela .= "<td class=\"cidade\">";
+                    $tabela .= htmlspecialchars($linha["cidade"] . "/" . $linha["estado"]);
+                    $tabela .= "</td>";
                     $tabela .= "    <td class=\"etapa\">";
                     $tabela .= $etapaMatricula ."</td>";
                     $anoMatricula = htmlspecialchars($linha["anoMatricula"]);
@@ -1789,6 +1792,7 @@
                                             <?= $indexHeader == 2 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >E-mail</th>
+                                        <th width="170px">Cidade</th>
                                         <th width="70px">Etapa</th>
                                         <th width="70px">Ano</th>
                                         <th width="100px">Tipo</th>
