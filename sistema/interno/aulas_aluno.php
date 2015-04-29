@@ -96,8 +96,8 @@
                 });
 
                 $("#aulas").tablesorter({ headers: {
-                    3 : { sorter: "datetime" },
-                    4 : { sorter: false }
+                    2 : { sorter: "datetime" },
+                    3 : { sorter: false }
                 }});
 
                 // passa os dados da aula para o modal de visualização
@@ -593,7 +593,7 @@
                         $tabela .= "    <td class=\"cidade\" data-id-cidade=\"";
                         $tabela .= $linha["chaveCidade"]."\">";
                         $tabela .= htmlspecialchars($cidade->getNome())             ."</td>";
-                        $tabela .= "    <td class=\"professor\">";
+                        /*$tabela .= "    <td class=\"professor\">";
                         $tabela .= "<ul>";
                         $tabela .= "<li>".htmlspecialchars($linha["nome"])             ."</li>";
                         if($professorAdicional){
@@ -602,7 +602,7 @@
                         if($professorAdicional2){
                             $tabela .= "<li>".$professorAdicional2->getNome()."</li>";
                         }
-                        $tabela .= "</ul></td>";
+                        $tabela .= "</ul></td>";*/
                         $tabela .= "    <td class=\"etapa\">";
                         $tabela .= htmlspecialchars($linha["etapa"])                ."</td>";
                         $tabela .= "    <td class=\"data\" data-data-html=\"";
@@ -764,9 +764,9 @@
                                         <th width="150px" <?= $indexHeader == 0 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Cidade</th>
-                                        <th width="150px" <?= $indexHeader == 1 ? 
+                                        <!--<th width="150px" <?= $indexHeader == 1 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
-                                                "class =\"headerSortDown\"") : "" ?>>Professor</th>
+                                                "class =\"headerSortDown\"") : "" ?>>Professor</th>-->
                                         <th width="40px" <?= $indexHeader == 2 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?>>Etapa</th>
