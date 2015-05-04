@@ -688,7 +688,7 @@ class Aluno extends Usuario{
             $sucesso = true;
             $textoQuery = "UPDATE PgtoMensalidade
                             SET    desconto = :desconto
-                            WHERE  chaveMatricula = :idMatricula AND valorPago = 0";
+                            WHERE  chaveMatricula = :idMatricula AND valorPago = 0 AND numParcela <> 0";
             $query = $conexao->prepare($textoQuery);
             $query->bindParam(":desconto",$desconto,PDO::PARAM_INT);
             $query->bindParam(":idMatricula",$idMatricula, PDO::PARAM_INT);
@@ -757,7 +757,7 @@ class Aluno extends Usuario{
             $sucesso = true;
             $textoQuery = "UPDATE PgtoMensalidade
                             SET    desconto = :desconto
-                            WHERE  chaveMatricula = :idMatricula AND valorPago = 0";
+                            WHERE  chaveMatricula = :idMatricula AND valorPago = 0 AND numParcela <> 0";
             $query = $conexao->prepare($textoQuery);
             $query->bindParam(":desconto",$desconto,PDO::PARAM_INT);
             $query->bindParam(":idMatricula",$idMatricula, PDO::PARAM_INT);
