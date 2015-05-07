@@ -1205,7 +1205,7 @@
                             $anoPagamento = $_GET["ano"];
                         }
 
-                        $textoQuery  = "SELECT P.idPagMensalidade, P.valorPago, P.valorTotal, P.fechado,
+                        $textoQuery  = "SELECT P.idPagMensalidade, P.valorPago, P.valorTotal, P.fechado, P.metodo,
                                         P.data, P.desconto, P.ano, P.numParcela, M.desconto_individual
                                         FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
@@ -1230,6 +1230,7 @@
                             $pagamentos[$anoPag][$numParcela]['pago']      = $linha['valorPago'];
                             $pagamentos[$anoPag][$numParcela]['data']      = $linha['data'];
                             $pagamentos[$anoPag][$numParcela]['desconto']  = $linha['desconto'];
+                            $pagamentos[$anoPag][$numParcela]['metodo'] = $linha['metodo'];
                             $pagamentos[$anoPag][$numParcela]['fechado']  = $linha['fechado'];
                             $pagamentos[$anoPag][$numParcela]['id']        = $linha['idPagMensalidade'];
 
@@ -1316,6 +1317,17 @@
                                 echo "<td><i class=\"fa fa-minus-square-o warning\"></i></td>";
                             }
                             
+                        }
+                        echo "</tr><tr>";
+                        echo "<td style='background-color: #AAA'><b>Metodo(s)</b></td>";
+                        for($i = 0; $i < 12; $i ++) {
+                            $metodo = $pagamentos[$anoPagamento][$i]['metodo'];
+                            echo "<td> ";
+
+                            echo $metodo
+                                 ? htmlspecialchars(str_replace("|", ", ", $metodo))
+                                 : "N/A";
+                            echo "</td>";
                         }
                         echo "</tr><tr>";
                         echo "<td style='background-color: #AAA'><b>Desconto</b></td>";
