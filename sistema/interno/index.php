@@ -543,7 +543,7 @@
                 <b>Tipo de certificado:</b>
                 <?= htmlspecialchars($certificado); ?>
             </p>
-            <p style="display: none"> <!-- FIXME: Deixar botão visível -->
+            <p>
                 <a style="  box-sizing: border-box;
 															padding: 10px;
 															border: 2px dashed green;
@@ -553,8 +553,32 @@
 															letter-spacing: 1px;
 															border-radius: 5px;
 															display: inline-block;
-															margin: 20px 0;"
+															margin: 10px 0;"
 								 href="rotinas/acessar_moodle.php">Acessar a área do aluno (Moodle)</a>
+            </p>
+            <p>
+                <a style="  box-sizing: border-box;
+															padding: 10px;
+															border: 2px dashed grey;
+															background-color: rgb(251, 62, 62);
+															color: white;
+															font-weight: bold;
+															letter-spacing: 1px;
+															border-radius: 5px;
+															display: inline-block;
+															margin: 10px 0;"
+								 href="https://drive.google.com/file/d/0B2O1a_tc3TRkTTd1QV9POWI3dmc/view?usp=sharing">Instruções primeiro acesso </a><br>
+								 <a style="  box-sizing: border-box;
+															padding: 10px;
+															border: 2px dashed grey;
+															background-color: #428BCA;
+															color: white;
+															font-weight: bold;
+															letter-spacing: 1px;
+															border-radius: 5px;
+															display: inline-block;
+															margin: 10px 0;"
+href="https://drive.google.com/folderview?id=0B2O1a_tc3TRkflhVbkZic2FzUWRPU19hXy1wbkZocW1Fdmppc1A2VHcyN0FLRnlCSEZzWDg&usp=sharing">Imagens do documento</a>
             </p>
                 <?php
                         // agora vamos mostrar os dados de matrícula do aluno, para isso
@@ -608,7 +632,7 @@
 																	letter-spacing: 1px;
 																	border-radius: 5px;
 																	display: inline-block;
-																	margin: 20px 0;"
+																	margin: 10px 0;"
 
                            href= "visualizar_informacoes_curso.php">
                             Visualizar dados de curso
