@@ -492,9 +492,9 @@
                 $('.selc > input[type="checkbox"]').click(function() {
                     var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
                     if(numSelecionados)
-                        $("#send").fadeIn();
+                        $("#sendSelecionados").fadeIn();
                     else
-                        $("#send").fadeOut();
+                        $("#sendSelecionados").fadeOut();
                 });
 
                 checaTamanhoTela();
@@ -1735,7 +1735,7 @@
                                 </a>
                                 <a href="#" class="btn btn-primary pull-right" data-toggle="modal" 
                                     data-target="#modal-email"
-                                    id="send" style="margin-right:2em; display:none">
+                                    id="sendSelecionados" style="margin-right:2em; display:none">
                                     <p>Enviar e-mail para os selecionados</p>
                                 </a>
                                 <a href="#" id="limpar" class="btn btn-info">

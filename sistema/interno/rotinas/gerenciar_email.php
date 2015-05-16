@@ -60,7 +60,7 @@
                 				   FROM Usuario U, Aluno A, Matricula M, Cidade C
                 				   WHERE U.id = A.idUsuario AND M.chaveAluno = A.numeroInscricao AND
                 				    C.idCidade = M.chaveCidade AND M.aprovado IS NULL 
-                				    AND C.idCoordenador = ? AND M.etapa = ?";
+                				    AND C.idCoordenador = ? AND M.etapa = ? AND C.ano = YEAR(CURDATE())";
                 	$query = $conexao->prepare($textoQuery);
                 	$query->bindParam(1, $admin->getIdAdmin(), PDO::PARAM_INT);
                     $query->bindParam(2, $etapa, PDO::PARAM_INT);
@@ -84,7 +84,7 @@
                 // Se o tipo do email e´ para selecionados, buscamos cada aluno selecionado e enciamos o e-mail
                 if( isset($_POST['selecionados']) && mb_strlen($_POST['selecionados']) > 0 
                     && $_POST['sendType'] === "selecionados"){
-                        
+
                     $ids = split(",", $_POST['selecionados']);
                     $tabela = "<table>";
                     foreach($ids as $id){
@@ -98,7 +98,7 @@
                                             FROM Aluno A, Matricula M , Cidade C
                                             WHERE A.numeroInscricao = M.chaveAluno AND
                                             M.chaveCidade = C.idCidade AND C.ano = YEAR(CURDATE())
-                                            AND C.idCoordenador = ? AMD A.numeroInscricao = ?
+                                            AND C.idCoordenador = ? AND A.numeroInscricao = ?
                                             ) as existe";
 
                             $query = $conexao->prepare($textoQuery);
