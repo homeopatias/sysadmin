@@ -16,8 +16,24 @@
                 <a href="index.php" class="navbar-brand">
                     Homeopatias.com - Sistema
                 </a>
-
             <?php
+                if(isset($_SESSION["usuario"])){
+                    if( unserialize($_SESSION["usuario"]) instanceof Aluno &&
+                            (
+                                is_null(unserialize($_SESSION["usuario"])->getRua()) || 
+                                mb_strlen(unserialize($_SESSION["usuario"])->getRua()) == 0
+                            )
+                        ) {
+            ?>
+            <!-- redireciona o usuário para a página de preenchimento de dados restantes -->
+            <meta http-equiv="refresh" content=<?= '"0; url=finalizar_cadastro.php"' ?>>
+            <script type="text/javascript">
+                window.location = "finalizar_cadastro.php";
+            </script>
+            <?php
+                    }
+                }
+
                 if(isset($_SESSION["usuario"])){
             ?>
 
