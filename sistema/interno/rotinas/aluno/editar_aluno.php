@@ -412,5 +412,5 @@ function validaEmail($email, $id){
     return $return;
 }
 
-header('Location: ../../gerenciar_alunos.php?'.$mensagem.'&sucesso='.$sucesso, true, "302");
+header('Location: ../../gerenciar_alunos.php?'.$mensagem.'&sucesso='.$sucesso . "&" . $_POST['filtros'], true, "302");
 die();

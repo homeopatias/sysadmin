@@ -2167,6 +2167,15 @@
                             <!-- o formulário em si fica dentro dessa div -->
                             <input type="hidden" name="insc" id="insc" value="">
                             <input type="hidden" name="id" id="id" value="">
+                            <?php
+                                $filtrosEnviar;
+                                foreach($_GET as $nome => $valor) {
+                                    if(strpos($nome, 'filtro') !== false) {
+                                        $filtrosEnviar[$nome] = $valor;
+                                    }
+                                }
+                            ?>
+                            <input type="hidden" name="filtros" value=<?= '"' . http_build_query($filtrosEnviar) . '"' ?>>
                             <div class="form-group">
                                 <label for="nome">Nome do aluno:</label>
                                 <input type="text" name="nome" id="nome" required
