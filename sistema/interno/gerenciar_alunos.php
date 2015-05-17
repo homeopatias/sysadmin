@@ -785,7 +785,7 @@
                     }
 
                     $telefoneValido = isset($telefone);
-                    $telefonesOpcValidos = (!isset($telefone2) || !isset($telefone3) );
+                    $telefonesOpcValidos = true;
                     
                     $enderecoValido = false;
 
