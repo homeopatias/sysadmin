@@ -993,6 +993,7 @@
                     $filtroAtivo   = htmlspecialchars($_GET["filtro-ativo"]);
                     $filtroCurso   = htmlspecialchars($_GET["filtro-curso"]);
                     $filtroEmail   = htmlspecialchars($_GET["filtro-email"]);
+                    $filtroCidade  = htmlspecialchars($_GET["filtro-cidade"]);
 
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         // prepara o nome para ser colocado na query
@@ -1034,6 +1035,9 @@
                     if(isset($filtroCurso) && mb_strlen($filtroCurso) > 0 && 
                         !is_nan($filtroCurso) && $filtroCurso != "0"){
                         $textoQuery .= " AND A.tipo_curso = :filtrocurso ";
+                    }
+                    if(isset($filtroCidade) && mb_strlen($filtroCidade) > 0) {
+                        $textoQuery .= " AND A.cidade LIKE %:filtrocidade% AND A.estado LIKE %:filtrouf% ";
                     }
 
 
@@ -1440,6 +1444,12 @@
                         }
                         $query->bindParam(":filtrocurso", $nomeCurso);
                     }
+                    if(isset($filtroCidade) && mb_strlen($filtroCidade) > 0) {
+                        $dados = explode("/", $filtroCidade);
+                        $query->bindParam(":filtrocidade", $dados[0]);
+                        $query->bindParam(":filtroestado", $dados[0]);
+                    }
+
                 }
                 
                 $query->execute();
