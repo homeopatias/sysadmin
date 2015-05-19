@@ -986,7 +986,21 @@
                         }
 
                         for($i = 0; $i < 12; $i ++) {
-                            if(!$pagamentos[$anoPagamento][$i]['fechado'] && $i >= $parcelaAtual) {
+                            if(!$pagamentos[$anoPagamento][$i]['fechado'] &&
+                                $pagamentos[$anoPagamento][$i]['pago'] > 0) {
+
+                                $valorPagar = $pagamentos[$anoPagamento][$i]['valor'] -
+                                               ($pagamentos[$anoPagamento][$i]['valor'] *
+                                               ($pagamentos[$anoPagamento][$i]['desconto']/100)) -
+                                               $pagamentos[$anoPagamento][$i]['pago'];
+
+                                $valorAcumulado += $valorPagar;
+
+                                echo '<td><a href="#" class="pgtoParcelas" data-valor="' . 
+                                     $valorPagar
+                                     . '">Pagar restante da parcela</a></td>';
+
+                            }else if(!$pagamentos[$anoPagamento][$i]['fechado'] && $i >= $parcelaAtual) {
 
                                 $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
                                                    $pagamentos[$anoPagamento][$i]['valor'] *
