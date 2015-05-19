@@ -63,7 +63,8 @@
                     11 : { sorter: false },
                     12 : { sorter: false },
                     13 : { sorter: false },
-                    14 : { sorter: false }
+                    14 : { sorter: false },
+                    15 : { sorter: false }
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -423,6 +424,7 @@
                 selecionado = <?= isset($_GET["filtro-cidade"]) ?
                              "\"" . str_replace("+","",$_GET["filtro-cidade"]) . "\"" 
                              : "0"?>;
+                if(selecionado.length > 0) selecionado = selecionado.trim();
 
 
                 // A primeira opção indica nenhuma cidade
@@ -980,7 +982,7 @@
                 if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])      ||
                    isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
-                   isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
+                   isset($_GET["filtro-ano"])      ||
                    isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])   ||
                    isset($_GET["filtro-curso"])    || isset($_GET["filtro-email"]) ){
                     $filtroNome    = htmlspecialchars($_GET["filtro-nome"]);
@@ -993,7 +995,6 @@
                     $filtroAtivo   = htmlspecialchars($_GET["filtro-ativo"]);
                     $filtroCurso   = htmlspecialchars($_GET["filtro-curso"]);
                     $filtroEmail   = htmlspecialchars($_GET["filtro-email"]);
-                    $filtroCidade  = htmlspecialchars($_GET["filtro-cidade"]);
 
                     if(isset($filtroNome) && mb_strlen($filtroNome) > 0){
                         // prepara o nome para ser colocado na query
@@ -1035,9 +1036,6 @@
                     if(isset($filtroCurso) && mb_strlen($filtroCurso) > 0 && 
                         !is_nan($filtroCurso) && $filtroCurso != "0"){
                         $textoQuery .= " AND A.tipo_curso = :filtrocurso ";
-                    }
-                    if(isset($filtroCidade) && mb_strlen($filtroCidade) > 0) {
-                        $textoQuery .= " AND A.cidade LIKE %:filtrocidade% AND A.estado LIKE %:filtrouf% ";
                     }
 
 
