@@ -16,7 +16,6 @@
                 <a href="index.php" class="navbar-brand">
                     Homeopatias.com - Sistema
                 </a>
-
             <?php
                 if(isset($_SESSION["usuario"])){
                     if( unserialize($_SESSION["usuario"]) instanceof Aluno &&
@@ -29,10 +28,13 @@
             <!-- redireciona o usuário para a página de preenchimento de dados restantes -->
             <meta http-equiv="refresh" content=<?= '"0; url=finalizar_cadastro.php"' ?>>
             <script type="text/javascript">
-                window.location.href = "finalizar_cadastro.php";
+                window.location = "finalizar_cadastro.php";
             </script>
             <?php
                     }
+                }
+
+                if(isset($_SESSION["usuario"])){
             ?>
 
                 <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">

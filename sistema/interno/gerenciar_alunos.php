@@ -63,7 +63,8 @@
                     11 : { sorter: false },
                     12 : { sorter: false },
                     13 : { sorter: false },
-                    14 : { sorter: false }
+                    14 : { sorter: false },
+                    15 : { sorter: false }
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -423,6 +424,7 @@
                 selecionado = <?= isset($_GET["filtro-cidade"]) ?
                              "\"" . str_replace("+","",$_GET["filtro-cidade"]) . "\"" 
                              : "0"?>;
+                if(selecionado.length > 0) selecionado = selecionado.trim();
 
 
                 // A primeira opção indica nenhuma cidade
@@ -492,9 +494,9 @@
                 $('.selc > input[type="checkbox"]').click(function() {
                     var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
                     if(numSelecionados)
-                        $("#send").fadeIn();
+                        $("#sendSelecionados").fadeIn();
                     else
-                        $("#send").fadeOut();
+                        $("#sendSelecionados").fadeOut();
                 });
 
                 checaTamanhoTela();
@@ -785,7 +787,7 @@
                     }
 
                     $telefoneValido = isset($telefone);
-                    $telefonesOpcValidos = (!isset($telefone2) || !isset($telefone3) );
+                    $telefonesOpcValidos = true;
                     
                     $enderecoValido = false;
 
@@ -980,7 +982,7 @@
                 if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])      ||
                    isset($_GET["filtro-status"])   || isset($_GET["filtro-numero"])   ||
                    isset($_GET["filtro-data-min"]) || isset($_GET["filtro-data-max"]) ||
-                   isset($_GET["filtro-cidade"])   || isset($_GET["filtro-ano"])      ||
+                   isset($_GET["filtro-ano"])      ||
                    isset($_GET["filtro-etapa"])    || isset($_GET["filtro-ativo"])   ||
                    isset($_GET["filtro-curso"])    || isset($_GET["filtro-email"]) ){
                     $filtroNome    = htmlspecialchars($_GET["filtro-nome"]);
@@ -1440,6 +1442,12 @@
                         }
                         $query->bindParam(":filtrocurso", $nomeCurso);
                     }
+                    if(isset($filtroCidade) && mb_strlen($filtroCidade) > 0) {
+                        $dados = explode("/", $filtroCidade);
+                        $query->bindParam(":filtrocidade", $dados[0]);
+                        $query->bindParam(":filtroestado", $dados[0]);
+                    }
+
                 }
                 
                 $query->execute();
@@ -1735,7 +1743,7 @@
                                 </a>
                                 <a href="#" class="btn btn-primary pull-right" data-toggle="modal" 
                                     data-target="#modal-email"
-                                    id="send" style="margin-right:2em; display:none">
+                                    id="sendSelecionados" style="margin-right:2em; display:none">
                                     <p>Enviar e-mail para os selecionados</p>
                                 </a>
                                 <a href="#" id="limpar" class="btn btn-info">
@@ -2167,6 +2175,15 @@
                             <!-- o formulário em si fica dentro dessa div -->
                             <input type="hidden" name="insc" id="insc" value="">
                             <input type="hidden" name="id" id="id" value="">
+                            <?php
+                                $filtrosEnviar;
+                                foreach($_GET as $nome => $valor) {
+                                    if(strpos($nome, 'filtro') !== false) {
+                                        $filtrosEnviar[$nome] = $valor;
+                                    }
+                                }
+                            ?>
+                            <input type="hidden" name="filtros" value=<?= '"' . http_build_query($filtrosEnviar) . '"' ?>>
                             <div class="form-group">
                                 <label for="nome">Nome do aluno:</label>
                                 <input type="text" name="nome" id="nome" required

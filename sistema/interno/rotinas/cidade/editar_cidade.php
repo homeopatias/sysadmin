@@ -18,6 +18,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $UF          = $_POST["UF"];
         $ano         = $_POST["ano"];
         $local       = $_POST["local"];
+        $mesInicio   = $_POST["mesinicio"];
         $idCoord     = $_POST["coord"];
         $limite      = $_POST["limite"];
         //$nomeEmpresa = $_POST["nomeEmpresa"];
@@ -97,7 +98,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $anoValido     = isset($ano) && intval($ano) < date("Y") + 3;
         $localValido   = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
                          mb_strlen($local, 'UTF-8') <= 200;
-        $idCoordValido = isset($idCoord) && preg_match("/^[0-9]*$/", $idCoord);
+        $mesInicioValido = isset($mesInicio) && intval($mesInicio) >= 1 && intval($mesInicio) <= 12;
+        $idCoordValido   = isset($idCoord) && preg_match("/^[0-9]*$/", $idCoord);
         $limiteValido    = isset($limite) && preg_match("/^\d{4}-\d{2}-\d{2}$/", $limite);
         $empresaValida   = true; /*isset($nomeEmpresa) && mb_strlen($nomeEmpresa, 'UTF-8') <= 100 &&
                            mb_strlen($nomeEmpresa, 'UTF-8') >= 3;*/
@@ -192,7 +194,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
 
         // se todos os dados estão válidos, a cidade é editada
         if($idValido && $nomeValido && $UfValido  && $idCoordValido  && $limiteValido
-           && $tipoCursoValido && $modalidadeCursoValida && $pagamentosValidos){
+           && $tipoCursoValido && $modalidadeCursoValida && $pagamentosValidos && $mesInicio){
 
             require_once("../../entidades/Cidade.php");
 
@@ -202,6 +204,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setUF($UF);
             $atualizar->setAno($ano);
             $atualizar->setLocal($local);
+            $atualizar->setMesInicio($mesInicio);
             $atualizar->setLimiteInscricao($limite);
             //$atualizar->setNomeEmpresa($nomeEmpresa);
             //$atualizar->setCnpjEmpresa($cnpjEmpresa);
@@ -244,6 +247,8 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $mensagem = "Ano inválido!";
         }else if(!$localValido){
             $mensagem = "Local inválido!";
+        }else if(!$mesInicioValido){
+            $mensagem = "Mês de início das aulas inválido!";
         }else if(!$idCoordValido){
             $mensagem = "Coordenador inválido!";
         }else if(!$limiteValido){

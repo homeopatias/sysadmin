@@ -707,3 +707,28 @@
   'Reference' => 'M193',
   'SenderEmail' => 'karinefb@ig.com.br',
 )) - end {1}ABA32AB51212291114A9CF8C3C115E57 
+{2015/04/17 16:35:12} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - begin 
+{2015/04/17 16:35:12} [Error] Exception: PagSeguroLibrary: cURL library is required. 
+{2015/04/17 16:37:09} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - begin 
+{2015/04/17 16:37:09} [Error] Exception: PagSeguroLibrary: cURL library is required. 
+{2015/04/17 16:37:26} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - begin 
+{2015/04/17 16:37:26} [Error] Exception: PagSeguroLibrary: cURL library is required. 
+{2015/04/17 18:49:34} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - begin 
+{2015/04/17 18:49:34} [Error] Exception: PagSeguroLibrary: cURL library is required. 
+{2015/04/17 18:49:39} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M11',
+  'SenderEmail' => 'herc@gmail.com',
+)) - begin 
+{2015/04/17 18:49:39} [Error] Exception: PagSeguroLibrary: cURL library is required. 

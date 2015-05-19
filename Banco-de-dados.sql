@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 21, 2015 at 10:10 PM
+-- Generation Time: Apr 17, 2015 at 05:10 PM
 -- Server version: 5.5.41-0ubuntu0.14.10.1
 -- PHP Version: 5.5.12-2ubuntu4.3
 
@@ -226,6 +226,7 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
   `nome` varchar(100) NOT NULL,
   `idCoordenador` int(11) NOT NULL COMMENT 'Identificador unico do coordenador dessa cidade',
   `local` varchar(200) NOT NULL,
+  `mesInicio` enum('1','2','3','4','5','6','7','8','9','10','11','12') NOT NULL DEFAULT '1' COMMENT 'Mês de início das aulas, no qual a primeira parcela deve ser paga',
   `precoInscricao` float NOT NULL COMMENT 'Valor a ser pago para a inscrição nessa cidade',
   `precoParcela` float NOT NULL COMMENT 'Valor da parcela a ser pago mensalmente por alunos dessa cidade',
   `limiteInscricao` date NOT NULL COMMENT 'Data limite para matrícula nessa cidade',
@@ -253,22 +254,22 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
 -- Dumping data for table `Cidade`
 --
 
-INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`, `precoInscricao`, `precoParcela`, `limiteInscricao`, `nomeEmpresa`, `cnpjEmpresa`, `custoCurso`, `tipo_curso`, `modalidadeCidade`, `cadastro_ativo`, `parcela_extensao_regular`, `inscricao_extensao_regular`, `parcela_extensao_intensivo`, `inscricao_extensao_intensivo`, `parcela_pos_regular`, `inscricao_pos_regular`, `parcela_pos_intensivo`, `inscricao_pos_intensivo`, `inscricao_instituto_regular`, `parcela_instituto_regular`, `inscricao_instituto_intensivo`, `parcela_instituto_intensivo`) VALUES
-(1, 'MG', 2014, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 100, 30, '2014-05-02', 'Homeobrás', '56667868000102', 7500.5, '', 'regular', 1, 150, 155, 0, 0, 150, 200, 0, 0, 0, 0, 0, 0),
-(2, 'RJ', 2014, 'Rio de Janeiro', 2, 'Faculdade de odontologia da UFRJ', 90, 85, '2014-05-02', 'Homeobrás', '56667868000102', 6750, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(5, 'AM', 2014, 'Manaus', 11, 'UFAM', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0, 'extensao', 'regular', 1, 200, 150, 0, 0, 120, 120, 0, 0, 0, 0, 0, 0),
-(7, 'MG', 2014, 'Contagem', 3, 'Curso Homeopático Contagem', 300, 220, '2014-07-07', 'Curso Homeopático Contagem', '44732943000184', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(8, 'TO', 2014, 'Palmas', 3, 'UFT', 300, 170, '2014-02-11', 'UFT', '65563135000100', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(9, 'RN', 2014, 'Natal', 3, 'UFRN', 300, 220, '2014-03-12', 'UFRN', '27266655000162', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(10, 'PA', 2014, 'Belém', 3, 'Homeopatias Paraense', 250, 220, '2014-05-11', 'Homeopatias Paraense', '37156271000140', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(11, 'MG', 2015, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', 250, 220, '2015-03-05', 'Faculdade de odontologia da UFMG', '56667868000102', 0, 'extensao', 'regular', 1, 150, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(12, 'MG', 2015, 'teste', 2, 'Homeos', 0, 0, '2015-03-15', 'Homep', '77974602000174', 15000, '', 'regular', 1, 150, 200, 0, 0, 200, 250, 0, 0, 0, 0, 0, 0),
-(17, 'AC', 2015, 'Testópolis', 4, 'asdf', 0, 0, '2015-04-13', 'disabled', '00000000000000', 0, 'extensao', 'regular', 1, 50, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(18, 'AC', 2015, 'Testando', 8, 'asdfas', 0, 0, '2015-04-30', 'disabled', '00000000000000', 0, 'extensao', 'regular', 1, 100, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(19, 'MA', 2015, 'Institulandia', 11, 'adf', 0, 0, '2015-03-05', 'disabled', '00000000000000', 0, 'instituto', 'ambos', 1, 0, 0, 0, 0, 0, 0, 0, 0, 200, 150, 350, 300);
+INSERT INTO `Cidade` (`idCidade`, `UF`, `ano`, `nome`, `idCoordenador`, `local`, `mesInicio`, `precoInscricao`, `precoParcela`, `limiteInscricao`, `nomeEmpresa`, `cnpjEmpresa`, `custoCurso`, `tipo_curso`, `modalidadeCidade`, `cadastro_ativo`, `parcela_extensao_regular`, `inscricao_extensao_regular`, `parcela_extensao_intensivo`, `inscricao_extensao_intensivo`, `parcela_pos_regular`, `inscricao_pos_regular`, `parcela_pos_intensivo`, `inscricao_pos_intensivo`, `inscricao_instituto_regular`, `parcela_instituto_regular`, `inscricao_instituto_intensivo`, `parcela_instituto_intensivo`) VALUES
+(1, 'MG', 2014, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', '1', 100, 30, '2014-05-02', 'Homeobrás', '56667868000102', 7500.5, '', 'regular', 1, 150, 155, 0, 0, 150, 200, 0, 0, 0, 0, 0, 0),
+(2, 'RJ', 2014, 'Rio de Janeiro', 2, 'Faculdade de odontologia da UFRJ', '1', 90, 85, '2014-05-02', 'Homeobrás', '56667868000102', 6750, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(3, 'SP', 2014, 'São Paulo', 4, 'Faculdade de odontologia da USP', '1', 120, 80, '2014-08-10', 'Homeobrás', '56667868000102', 6750, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(4, 'MG', 2014, 'Sabará', 8, 'Faculdade de Sabará', '1', 150, 220, '2014-11-20', 'Curso de Homeopatias sabará', '63323722000105', 8000, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(5, 'AM', 2014, 'Manaus', 11, 'UFAM', '1', 40, 100, '2013-10-10', 'Homeobrás', '56667868000102', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(6, 'MG', 2015, 'Belo Horizonte', 3, 'UFMG', '1', 100, 80, '2015-05-05', 'Homeobrás', '63323722000105', 0, 'extensao', 'regular', 1, 200, 150, 0, 0, 120, 120, 0, 0, 0, 0, 0, 0),
+(7, 'MG', 2014, 'Contagem', 3, 'Curso Homeopático Contagem', '1', 300, 220, '2014-07-07', 'Curso Homeopático Contagem', '44732943000184', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(8, 'TO', 2014, 'Palmas', 3, 'UFT', '1', 300, 170, '2014-02-11', 'UFT', '65563135000100', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(9, 'RN', 2014, 'Natal', 3, 'UFRN', '1', 300, 220, '2014-03-12', 'UFRN', '27266655000162', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(10, 'PA', 2014, 'Belém', 3, 'Homeopatias Paraense', '1', 250, 220, '2014-05-11', 'Homeopatias Paraense', '37156271000140', 0, 'extensao', 'regular', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(11, 'MG', 2015, 'Belo Horizonte', 3, 'Faculdade de odontologia da UFMG', '1', 250, 220, '2015-03-05', 'Faculdade de odontologia da UFMG', '56667868000102', 0, 'extensao', 'regular', 1, 150, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(12, 'MG', 2015, 'teste', 2, 'Homeos', '1', 0, 0, '2015-03-15', 'Homep', '77974602000174', 15000, '', 'regular', 1, 150, 200, 0, 0, 200, 250, 0, 0, 0, 0, 0, 0),
+(17, 'AC', 2015, 'Testópolis', 4, 'asdf', '1', 0, 0, '2015-04-13', 'disabled', '00000000000000', 0, 'extensao', 'regular', 1, 50, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(18, 'AC', 2015, 'Testando', 8, 'asdfas', '1', 0, 0, '2015-04-30', 'disabled', '00000000000000', 0, 'extensao', 'regular', 1, 100, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(19, 'MA', 2015, 'Institulandia', 11, 'adf', '1', 0, 0, '2015-03-05', 'disabled', '00000000000000', 0, 'instituto', 'ambos', 1, 0, 0, 0, 0, 0, 0, 0, 0, 200, 150, 350, 300);
 
 -- --------------------------------------------------------
 

@@ -126,6 +126,14 @@
                     }
                 });
 
+                // caso o usuário tente pagar todas as parcelas até determinado
+                // mês, preenchemos o formulário de pagamento de valor e o enviamos
+                // com o valor correto
+                $(".pgtoParcelas").click(function() {
+                    $("#pgto-valor").val($(this).data('valor'));
+                    $("#pgto-valor").parent().submit();
+                });
+
             });
         </script>
     </head>
@@ -863,8 +871,8 @@
                             $anoPagamento = $_GET["ano"];
                         }
 
-                        $textoQuery  = "SELECT P.valorPago, P.valorTotal, P.data, P.desconto,
-                                        P.ano, P.numParcela FROM Matricula M, PgtoMensalidade P
+                        $textoQuery  = "SELECT P.valorPago, P.valorTotal, P.data, P.desconto, P.fechado,
+                                        M.chaveCidade, P.ano, P.numParcela FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
                                         AND P.chaveMatricula = M.idMatricula
                                         AND P.ano = ?
@@ -876,14 +884,17 @@
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
+                        $idCidadePag = -1;
                         $pagamentos = array();
                         while($linha = $query->fetch()){
+                            $idCidadePag = $linha["chaveCidade"];
                             $anoPag = $linha['ano'];
                             $numParcela = $linha['numParcela'];
                             $pagamentos[$anoPag][$numParcela]['valor'] = $linha['valorTotal'];
                             $pagamentos[$anoPag][$numParcela]['pago']  = $linha['valorPago'];
                             $pagamentos[$anoPag][$numParcela]['data']  = $linha['data'];
                             $pagamentos[$anoPag][$numParcela]['desconto']  = $linha['desconto'];
+                            $pagamentos[$anoPag][$numParcela]['fechado']   = $linha['fechado'];
                         }
 
                         if($query->rowCount() != 0) {
@@ -949,6 +960,64 @@
                             echo "<td>" .
                                  number_format($pagamentos[$anoPagamento][$i]['desconto'], 2)
                                  . "%</td>";
+                        }
+                        echo "</tr><tr>";
+                        echo "<td style='background-color: #AAA'><b>Efetuar pagamento</b></td>";
+                        $valorAcumulado = 0;
+
+                        $cidadePag = new Cidade();
+                        $cidadePag->setIdCidade($idCidadePag);
+                        $cidadePag->recebeCidadeId($host, "homeopatias", $usuario, $senhaBD);
+
+                        $mesInicio = $cidadePag->getMesInicio();
+                        $anoInicio = $cidadePag->getAno();
+
+                        // caso o mês atual esteja no ano após
+                        // o início das aulas nessa cidade,
+                        // somamos 12 meses, para facilitar os cálculos
+                        $mesCalculo = date("m");
+                        if(date("Y") > $anoInicio) {
+                            $mesCalculo += 12;
+                        }
+
+                        $parcelaAtual = $mesCalculo - $mesInicio + 1;
+                        if($parcelaAtual > 11) {
+                            $parcelaAtual = 11;
+                        }
+
+                        for($i = 0; $i < 12; $i ++) {
+                            if(!$pagamentos[$anoPagamento][$i]['fechado'] &&
+                                $pagamentos[$anoPagamento][$i]['pago'] > 0) {
+
+                                $valorPagar = $pagamentos[$anoPagamento][$i]['valor'] -
+                                               ($pagamentos[$anoPagamento][$i]['valor'] *
+                                               ($pagamentos[$anoPagamento][$i]['desconto']/100)) -
+                                               $pagamentos[$anoPagamento][$i]['pago'];
+
+                                $valorAcumulado += $valorPagar;
+
+                                echo '<td><a href="#" class="pgtoParcelas" data-valor="' . 
+                                     $valorPagar
+                                     . '">Pagar restante da parcela</a></td>';
+
+                            }else if(!$pagamentos[$anoPagamento][$i]['fechado'] && $i >= $parcelaAtual) {
+
+                                $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
+                                                   $pagamentos[$anoPagamento][$i]['valor'] *
+                                                   ($pagamentos[$anoPagamento][$i]['desconto']/100);
+
+                                echo '<td><a href="#" class="pgtoParcelas" data-valor="' . 
+                                     $valorAcumulado
+                                     . '"><i class="fa fa-money"></i></a></td>';
+                            } else if (!$pagamentos[$anoPagamento][$i]['fechado'] && $i < $parcelaAtual) {
+                                $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
+                                                   $pagamentos[$anoPagamento][$i]['valor'] *
+                                                   ($pagamentos[$anoPagamento][$i]['desconto']/100);
+
+                                echo '<td><i class="fa fa-ellipsis-h"></i></td>';  
+                            } else {
+                                echo '<td><i class="fa fa-check sucesso"></i></td>';                                
+                            }
                         }
                     ?>
                             </tr>

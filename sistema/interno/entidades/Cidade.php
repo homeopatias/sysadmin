@@ -23,6 +23,7 @@ class Cidade{
     private $nome;
     private $coordenador;
     private $local;
+    private $mesInicio;
     private $limiteInscricao;
     private $nomeEmpresa;
     private $cnpjEmpresa;
@@ -51,6 +52,7 @@ class Cidade{
         $this->nome            = "";
         $this->coordenador     = new Administrador("");
         $this->local           = "";
+        $this->mesInicio       = 1;
         $this->limiteInscricao = date("0000-00-00");
         $this->nomeEmpresa     = "";
         $this->cnpjEmpresa     = -1;
@@ -90,7 +92,7 @@ class Cidade{
             echo $e->getMessage();
         }
 
-        $textoQuery  = "SELECT idCidade, UF, ano, nome, idCoordenador, local, 
+        $textoQuery  = "SELECT idCidade, UF, ano, nome, idCoordenador, local, mesInicio,
                         limiteInscricao, nomeEmpresa, cnpjEmpresa, custoCurso,
                         cadastro_ativo, tipo_curso, modalidadeCidade, parcela_extensao_regular, 
                         parcela_extensao_intensivo, parcela_pos_regular, parcela_pos_intensivo,
@@ -112,6 +114,7 @@ class Cidade{
             $this->ano               = $linha["ano"];
             $this->nome              = $linha["nome"];
             $this->local             = $linha["local"];
+            $this->mesInicio         = $linha["mesInicio"];
             $this->limiteInscricao   = $linha["limiteInscricao"];
             $this->nomeEmpresa       = $linha["nomeEmpresa"];
             $this->cnpjEmpresa       = $linha["cnpjEmpresa"];
@@ -179,7 +182,7 @@ class Cidade{
         }
 
         $dados  = array($this->UF, $this->ano, $this->nome, $this->coordenador->getIdAdmin(),
-                         $this->local,
+                         $this->local, $date->mesInicio,
                          date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
                          $this->nomeEmpresa, $this->cnpjEmpresa, $this->custoCurso,
                          $this->cadastroAtivo, $this->tipoCurso, $this->modalidadeCidade,
@@ -189,7 +192,7 @@ class Cidade{
                          $this->inscricaoExtensaoRegular, $this->inscricaoPosRegular,
                          $this->inscricaoExtensaoIntensivo, $this->inscricaoPosIntensivo,
                          $this->inscricaoInstitutoRegular, $this->inscricaoInstitutoIntensivo);
-        $textoQuery  = "INSERT INTO Cidade (UF, ano, nome, idCoordenador, local, 
+        $textoQuery  = "INSERT INTO Cidade (UF, ano, nome, idCoordenador, local, mesInicio,
                         limiteInscricao, nomeEmpresa,
                         cnpjEmpresa,custoCurso, cadastro_ativo,tipo_curso,modalidadeCidade,
                         parcela_extensao_regular, parcela_pos_regular, parcela_extensao_intensivo,
@@ -198,7 +201,7 @@ class Cidade{
                         inscricao_pos_regular, inscricao_extensao_intensivo, 
                         inscricao_pos_intensivo, inscricao_instituto_regular,
                         inscricao_instituto_intensivo
-                        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $query  = $conexao->prepare($textoQuery);
         $sucesso = $query->execute($dados);
 
@@ -226,7 +229,7 @@ class Cidade{
         }
 
 
-        $comando  = "UPDATE Cidade SET UF=?, ano=?, nome=?, idCoordenador=?, local=?,
+        $comando  = "UPDATE Cidade SET UF=?, ano=?, nome=?, idCoordenador=?, local=?, mesInicio=?,
                      limiteInscricao=?, cadastro_ativo =?,
                      tipo_curso=?, modalidadeCidade=?,
                       parcela_extensao_regular=?, parcela_pos_regular=?, 
@@ -238,7 +241,7 @@ class Cidade{
                       inscricao_instituto_intensivo=? WHERE idCidade = ?";
         $query = $conexao->prepare($comando);
         $dados  = array($this->UF, $this->ano, $this->nome, $this->coordenador->getIdAdmin(),
-                        $this->local, date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
+                        $this->local, $this->mesInicio, date("Y-m-d H:i:s", strtotime($this->limiteInscricao)),
                         $this->cadastroAtivo, $this->tipoCurso,$this->modalidadeCidade,
                          $this->parcelaExtensaoRegular, $this->parcelaPosRegular,
                          $this->parcelaExtensaoIntensivo, $this->parcelaPosIntensivo,
@@ -350,6 +353,17 @@ class Cidade{
     public function setLocal($local)
     {
         $this->local = $local;
+
+        return $this;
+    }
+
+    public function getMesInicio()
+    {
+        return $this->mesInicio;
+    }
+    public function setMesInicio($mesInicio)
+    {
+        $this->mesInicio = $mesInicio;
 
         return $this;
     }

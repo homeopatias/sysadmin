@@ -82,6 +82,9 @@
                     $(this).find('#local').val(
                         $(e.relatedTarget).parent().siblings('.local').text()
                     );
+                    $(this).find('#mesinicio').val(
+                        $(e.relatedTarget).data('mesinicio')
+                    );
 
                     // carregamos os dados dos coordenadores do ano dessa cidade
                     $.post("rotinas/coordenador/lista_coordenadores_json.php", {
@@ -1078,6 +1081,7 @@
                     $UF          = $_POST["UF"];
                     $ano         = $_POST["ano-nova"];
                     $local       = $_POST["local"];
+                    $mesInicio   = $_POST["mesinicio"];
                     $idCoord     = $_POST["coord"];
                     $limite      = $_POST["limite"];
                     $nomeEmpresa = "disabled";
@@ -1156,6 +1160,8 @@
                     $anoValido       = isset($ano) && intval($ano) >= date("Y") && intval($ano) < date("Y") + 3;
                     $localValido     = isset($local) && mb_strlen($local, 'UTF-8') >= 3 &&
                                        mb_strlen($local, 'UTF-8') <= 200;
+
+                    $mesInicioValido = isset($mesInicio) && intval($mesInicio) >= 1 && intval($mesInicio) <= 12;
                     $modalidadeCursoValida = isset($modalidadeCurso) && ($modalidadeCurso == "regular"
                                         || $modalidadeCurso == "intensivo" || 
                                         $modalidadeCurso == "ambos");
@@ -1260,7 +1266,7 @@
                     // se todos os dados estão válidos, a cidade é cadastrada
                     if($nomeValido && $UfValido && $anoValido && $localValido && $idCoordValido &&
                        $limiteValido && $empresaValida && $pagamentosValidos &&$cnpjValido && 
-                       $custoCursoValido && $tipoCursoValido && $modalidadeCursoValida){
+                       $custoCursoValido && $tipoCursoValido && $modalidadeCursoValida && $mesInicioValido){
 
                         require_once("entidades/Cidade.php");
 
@@ -1269,6 +1275,7 @@
                         $nova->setUF($UF);
                         $nova->setAno($ano);
                         $nova->setLocal($local);
+                        $nova->setMesInicio($mesInicio);
                         $nova->setLimiteInscricao($limite);
                         $nova->setNomeEmpresa($nomeEmpresa);
                         $nova->setCnpjEmpresa($cnpjEmpresa);
@@ -1310,6 +1317,8 @@
                         $mensagem = "Ano inválido!";
                     }else if(!$localValido){
                         $mensagem = "Local inválido!";
+                    }else if(!$mesInicioValido){
+                        $mensagem = "Mês de início das aulas inválido!";
                     }else if(!$idCoordValido){
                         $mensagem = "Id de coordenador inválido!";
                     }else if(!$limiteValido){
@@ -1340,7 +1349,7 @@
 
                 $textoQuery  = "SELECT C.idCidade, C.UF, C.ano, A.idAdmin, C.nome, 
                                 C.precoInscricao, C.precoParcela, C.idCoordenador, 
-                                C.local, C.limiteInscricao, C.nomeEmpresa, C.cnpjEmpresa,
+                                C.local, C.mesInicio, C.limiteInscricao, C.nomeEmpresa, C.cnpjEmpresa,
                                 C.custoCurso, C.cadastro_ativo, C.tipo_curso, C.modalidadeCidade,
                                 C.parcela_extensao_regular, C.parcela_extensao_intensivo, 
                                 C.parcela_pos_regular, C.parcela_pos_intensivo,
@@ -1564,6 +1573,7 @@
                         $tabela .= "\" data-empresa=\"" . $linha['nomeEmpresa'];
                         $tabela .= "\" data-cnpj=\"". $cnpj;
                         $tabela .= "\"href=\"#\" data-toggle=\"modal\"";
+                        $tabela .= " data-mesinicio=\"".$linha["mesInicio"]."\"";
                         $tabela .= " data-custo=\"".$linha["custoCurso"]."\"";
                         $tabela .= " data-target=\"#modal-edita-cidade\"";
                         $tabela .= " data-tipo-curso=\"".$linha["tipo_curso"]."\"";
@@ -1937,6 +1947,23 @@
                                        class="form-control">
                             </div>
                             <div class="form-group">
+                                <label for="mesinicio">Mês de início das aulas:</label>
+                                <select name="mesinicio" id="mesinicio" class="form-control">
+                                    <option value="1">Janeiro</option>
+                                    <option value="2">Fevereiro</option>
+                                    <option value="3">Março</option>
+                                    <option value="4">Abril</option>
+                                    <option value="5">Maio</option>
+                                    <option value="6">Junho</option>
+                                    <option value="7">Julho</option>
+                                    <option value="8">Agosto</option>
+                                    <option value="9">Setembro</option>
+                                    <option value="10">Outubro</option>
+                                    <option value="11">Novembro</option>
+                                    <option value="12">Dezembro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="coord-nova">Coordenador da cidade:</label>
                                 <select name="coord" id="coord-nova" class="form-control" required>
                                     <option value="">Escolha um ano acima...</option>
@@ -2185,6 +2212,23 @@
                                        pattern="^.{3,200}$" placeholder="Nome do local"
                                        title="O local deve ter de 3 a 200 caracteres"
                                        class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="mesinicio">Mês de início das aulas:</label>
+                                <select name="mesinicio" id="mesinicio" class="form-control">
+                                    <option value="1">Janeiro</option>
+                                    <option value="2">Fevereiro</option>
+                                    <option value="3">Março</option>
+                                    <option value="4">Abril</option>
+                                    <option value="5">Maio</option>
+                                    <option value="6">Junho</option>
+                                    <option value="7">Julho</option>
+                                    <option value="8">Agosto</option>
+                                    <option value="9">Setembro</option>
+                                    <option value="10">Outubro</option>
+                                    <option value="11">Novembro</option>
+                                    <option value="12">Dezembro</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-6" style="text-align: left">
