@@ -83,11 +83,17 @@ if(($antigaValida && $novaValida) || ($admin && $novaValida && $idAlunoValido)){
         $aluno = new Aluno("");
         $aluno->setNumeroInscricao($idAluno);
         $sucesso = $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
-        if(!$sucesso) {
-            $aluno = false;
-        } else {
-            $mensagem = "Senha de aluno alterada com sucesso!";
-        }
+
+				if ($sucesso) {
+						$mensagem = "Senha alterada com sucesso!";
+						$sucesso = true;
+				}else {
+						$sucesso = false;
+						$mensagem = "";
+						if(!$sucesso){
+								$mensagem = "Erro ao alterar senha!";
+						}
+				}
     } else {
         $aluno = unserialize($_SESSION["usuario"]);
     }
@@ -99,13 +105,40 @@ if(($antigaValida && $novaValida) || ($admin && $novaValida && $idAlunoValido)){
         $query->bindParam(1, $hasher->HashPassword($senhaNova), PDO::PARAM_INT);
         $query->bindParam(2, $aluno->getId(), PDO::PARAM_INT);
         $sucesso = $query->execute();
-        if($sucesso){
-            $sucesso = true;
-        }else{
-            $mensagem = "Erro!";
-        }
+
+				// altera dados no moodle
+				$usuarioMoodle = $dados["usuario_moodle"];
+				$senhaMoodle   = $dados["senha_moodle"];
+
+				$sucessoMoodle = false;
+
+				$conMoodle = null;
+				try{
+						$conMoodle = new PDO("mysql:host=$host;dbname=moodle;charset=utf8", $usuarioMoodle, $senhaMoodle);
+				}catch (PDOException $e){
+						echo $e->getMessage();
+				}
+				$queryMoodle = "UPDATE mdl_user SET password=MD5(?) WHERE username=?";
+				$query = $conMoodle->prepare($queryMoodle);
+				$dadosMoodle = array($senhaNova, $aluno->getLogin());
+				$sucessoMoodle = $query->execute($dadosMoodle);
+
+				if ($sucesso && $sucessoMoodle) {
+						$mensagem = "Senha alterada com sucesso!";
+						$sucesso = true;
+				}else {
+						$sucesso = false;
+						$mensagem = "";
+						if(!$sucesso){
+								$mensagem = "Erro ao alterar senha!";
+						}
+						if (!$sucessoMoodle) {
+								$mensagem .= "<br>Erro ao alterar no Moodle!";
+						}
+				}
+						
     } else {
-        $mensagem = "Erro!";
+        $mensagem = "Erro ao encontrar usuário no banco de dados!";
     }
 }else{
     // algum valor invalido foi enviado
@@ -125,6 +158,7 @@ if(($antigaValida && $novaValida) || ($admin && $novaValida && $idAlunoValido)){
 
 // fecha a conexão com o bd
 $conexao = null;
+$conMoodle = null;
 
 if($admin) {
     header('Location: ../gerenciar_alunos.php?mensagem='.$mensagem.'&sucesso='.$sucesso, true, "302");

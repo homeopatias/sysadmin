@@ -782,6 +782,10 @@ class Aluno extends Usuario{
 
         return $this;
     }
+    public function getLogin()
+    {
+        return $this->login;
+    }
 
     public function getSenha()
     {
