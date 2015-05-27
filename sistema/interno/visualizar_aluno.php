@@ -154,7 +154,22 @@
                     $("#form-lanca-pagamento").submit();
                 });
 
-                $("form #ano").change();                
+                $("form #ano").change();
+
+                // caso o usuário tente pagar todas as parcelas até determinado
+                // mês, preenchemos o formulário de pagamento de valor e o enviamos
+                // com o valor correto
+                $(".pgtoParcelas").click(function() {
+                    if($(this).data('valor') < 1000) {
+                        alert($(this).data('valor'));
+                        $("#pgto-valor").val($(this).data('valor'));
+                        $("#pgto-valor").parent().submit();
+                    } else {
+                        alert("O sistema PagSeguro não aceita pagamentos com valor de R$ 1000,00 ou superior.\n" +
+                              "\nGentileza pagar as parcelas anteriores, para que o valor acumulado fique\n"+
+                              " inferior a R$ 1000,00.");
+                    }
+                });             
             });
         </script>
     </head>
@@ -1218,7 +1233,7 @@
                         }
 
                         $textoQuery  = "SELECT P.idPagMensalidade, P.valorPago, P.valorTotal, P.fechado, P.metodo,
-                                        P.data, P.desconto, P.ano, P.numParcela, M.desconto_individual
+                                        P.data, P.desconto, P.ano, P.numParcela, M.desconto_individual, M.chaveCidade
                                         FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
                                         AND P.chaveMatricula = M.idMatricula 
@@ -1231,10 +1246,12 @@
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
+                        $idCidadePag = -1;
                         $pagamentos = array();
                         $divida = 0;
                         $desconto_individual = 0;
                         while($linha = $query->fetch()){
+                            $idCidadePag = $linha["chaveCidade"];
                             $anoPag = $linha['ano'];
                             $desconto_individual = $linha["desconto_individual"];
                             $numParcela = $linha['numParcela'];
@@ -1364,6 +1381,64 @@
                             echo "\" data-metodopag=\"";
                             echo $pagamentos[$anoPagamento][$i]['metodo'];
                             echo "\"><i class=\"fa fa-pencil\"></i></a></td>";
+                        }
+                        echo "</tr><tr>";
+                        echo "<td style='background-color: #AAA'><b>Gerar boleto</b></td>";
+                        $valorAcumulado = 0;
+
+                        $cidadePag = new Cidade();
+                        $cidadePag->setIdCidade($idCidadePag);
+                        $cidadePag->recebeCidadeId($host, "homeopatias", $usuario, $senhaBD);
+
+                        $mesInicio = $cidadePag->getMesInicio();
+                        $anoInicio = $cidadePag->getAno();
+
+                        // caso o mês atual esteja no ano após
+                        // o início das aulas nessa cidade,
+                        // somamos 12 meses, para facilitar os cálculos
+                        $mesCalculo = date("m");
+                        if(date("Y") > $anoInicio) {
+                            $mesCalculo += 12;
+                        }
+
+                        $parcelaAtual = $mesCalculo - $mesInicio + 1;
+                        if($parcelaAtual > 11) {
+                            $parcelaAtual = 11;
+                        }
+
+                        for($i = 0; $i < 12; $i ++) {
+                            if(!$pagamentos[$anoPagamento][$i]['fechado'] &&
+                                $pagamentos[$anoPagamento][$i]['pago'] > 0) {
+
+                                $valorPagar = $pagamentos[$anoPagamento][$i]['valor'] -
+                                               ($pagamentos[$anoPagamento][$i]['valor'] *
+                                               ($pagamentos[$anoPagamento][$i]['desconto']/100)) -
+                                               $pagamentos[$anoPagamento][$i]['pago'];
+
+                                $valorAcumulado += $valorPagar;
+
+                                echo '<td><a href="#" class="pgtoParcelas" data-valor="' . 
+                                     $valorPagar
+                                     . '">Pagar restante da parcela</a></td>';
+
+                            }else if(!$pagamentos[$anoPagamento][$i]['fechado'] /*&& $i >= $parcelaAtual*/) {
+
+                                $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
+                                                   $pagamentos[$anoPagamento][$i]['valor'] *
+                                                   ($pagamentos[$anoPagamento][$i]['desconto']/100);
+
+                                echo '<td><a href="#" class="pgtoParcelas" data-valor="' . 
+                                     $valorAcumulado
+                                     . '"><i class="fa fa-money"></i></a></td>';
+                            }/* else if (!$pagamentos[$anoPagamento][$i]['fechado'] && $i < $parcelaAtual) {
+                                $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
+                                                   $pagamentos[$anoPagamento][$i]['valor'] *
+                                                   ($pagamentos[$anoPagamento][$i]['desconto']/100);
+
+                                echo '<td><i class="fa fa-ellipsis-h"></i></td>';  
+                            } */else {
+                                echo '<td><i class="fa fa-check sucesso"></i></td>';                                
+                            }
                         }
                     ?>
                             </tr>
@@ -1764,6 +1839,19 @@
                 </div>
             </div>
         </div>
+        <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST" style="display: none">
+            <a id="label-valor" href="#" class="btn btn-primary" 
+                style="display:block; width:300px">
+                Pagar valor
+            </a>
+            <input type="hidden" id="idAluno" name="idAluno" value=<?= '"' . $idAluno . '"' ?>>
+            <input type="number" name="pgto-valor" id="pgto-valor"
+                   placeholder="Quantidade em R$" class="form-control"
+                   autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
+                   style="display:none;width:205px;"
+                   title="O valor pago deve ser maior que uma parcela e menor que o saldo em aberto e menor que 1000">
+            <input type="submit" value="Gerar" class="btn btn-primary" style="display:none">
+        </form>
         <?php
             }else{
         ?>

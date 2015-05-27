@@ -3,10 +3,10 @@
 session_start();
 
 require('../entidades/Aluno.php');
+require('../entidades/Administrador.php');
 
-if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof Aluno) {
-
-    $aluno = unserialize($_SESSION['usuario']);
+if (isset($_SESSION['usuario']) && (unserialize($_SESSION['usuario']) instanceof Aluno ||
+                                    (unserialize($_SESSION['usuario']) instanceof Administrador && isset($_POST['idAluno']) ) )) {
 
     // lemos as credenciais do banco de dados
     $dados = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/../config.json");
@@ -27,6 +27,15 @@ if (isset($_SESSION['usuario']) && unserialize($_SESSION['usuario']) instanceof 
         $conexao = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $usuario, $senhaBD);
     } catch (PDOException $e) {
         echo $e->getMessage();
+    }
+
+    $aluno = NULL;
+    if(unserialize($_SESSION['usuario']) instanceof Aluno) {
+        $aluno = unserialize($_SESSION['usuario']);
+    } else {
+        $aluno = new Aluno("");
+        $aluno->setNumeroInscricao($_POST['idAluno']);
+        $aluno->recebeAlunoId($host, "homeopatias", $usuario, $senhaBD);
     }
 
     // descobrimos o quanto esse aluno vai pagar, e se os dados recebidos são válidos

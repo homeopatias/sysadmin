@@ -130,8 +130,14 @@
                 // mês, preenchemos o formulário de pagamento de valor e o enviamos
                 // com o valor correto
                 $(".pgtoParcelas").click(function() {
-                    $("#pgto-valor").val($(this).data('valor'));
-                    $("#pgto-valor").parent().submit();
+                    if($(this).data('valor') < 1000) {
+                        $("#pgto-valor").val($(this).data('valor'));
+                        $("#pgto-valor").parent().submit();
+                    } else {
+                        alert("O sistema PagSeguro não aceita pagamentos com valor de R$ 1000,00 ou superior.\n" +
+                              "\nGentileza pagar as parcelas anteriores, para que o valor acumulado fique\n"+
+                              " inferior a R$ 1000,00.");
+                    }
                 });
 
             });
@@ -1000,7 +1006,7 @@
                                      $valorPagar
                                      . '">Pagar restante da parcela</a></td>';
 
-                            }else if(!$pagamentos[$anoPagamento][$i]['fechado'] && $i >= $parcelaAtual) {
+                            }else if(!$pagamentos[$anoPagamento][$i]['fechado'] /*&& $i >= $parcelaAtual*/) {
 
                                 $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
                                                    $pagamentos[$anoPagamento][$i]['valor'] *
@@ -1009,13 +1015,13 @@
                                 echo '<td><a href="#" class="pgtoParcelas" data-valor="' . 
                                      $valorAcumulado
                                      . '"><i class="fa fa-money"></i></a></td>';
-                            } else if (!$pagamentos[$anoPagamento][$i]['fechado'] && $i < $parcelaAtual) {
+                            }/* else if (!$pagamentos[$anoPagamento][$i]['fechado'] && $i < $parcelaAtual) {
                                 $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
                                                    $pagamentos[$anoPagamento][$i]['valor'] *
                                                    ($pagamentos[$anoPagamento][$i]['desconto']/100);
 
                                 echo '<td><i class="fa fa-ellipsis-h"></i></td>';  
-                            } else {
+                            } */else {
                                 echo '<td><i class="fa fa-check sucesso"></i></td>';                                
                             }
                         }
