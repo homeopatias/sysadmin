@@ -25,6 +25,15 @@
 
         <script>
             var podeMudarPagina = true;
+
+            function clickCheckbox() {
+                var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
+                if(numSelecionados)
+                    $("#sendSelecionados").fadeIn();
+                else
+                    $("#sendSelecionados").fadeOut();
+            }
+
             $(document).ready(function(){
 
                 $("#modal-novo-aluno #curso-novo").parent().hide(500);
@@ -492,11 +501,7 @@
                 });
 
                 $('.selc > input[type="checkbox"]').click(function() {
-                    var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
-                    if(numSelecionados)
-                        $("#sendSelecionados").fadeIn();
-                    else
-                        $("#sendSelecionados").fadeOut();
+                    clickCheckbox();
                 });
 
                 checaTamanhoTela();
@@ -1788,7 +1793,7 @@
                             <table class="table table-bordered table-striped" id="alunos">
                                 <thead style="background-color: #AAA">
                                     <tr>
-                                        <th width= "80px">Selecionar</th>
+                                        <th width= "20px"></th>
                                         <th width="90px" <?= $indexHeader == 0 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >Inscrição</th>
