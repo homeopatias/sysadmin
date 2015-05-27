@@ -185,7 +185,7 @@
                     $(this).find('#indicador').val(
                         $(e.relatedTarget).data('indicador')
                     );
-                    var desejaEmail = $(e.relatedTarget).parent().siblings('.recebe-email').data('recebeemail');
+                    var desejaEmail = $(e.relatedTarget).data('quer-email');
                     $(this).find('#deseja-email').prop('checked', desejaEmail);
 
                     $(this).find('#observacoes').html(
@@ -1271,6 +1271,9 @@
                     }
 
                     $tabela .=  "</td>";
+                    $tabela .= "    <td class=\"modcurso\">";
+                    $tabela .= ucfirst(htmlspecialchars($linha['modalidade_curso']));
+                    $tabela .=  "</td>";
                     $tabela .= "    <td class=\"tipocadastro\">";
 
                     $tipocadastro = htmlspecialchars($linha["tipo_cadastro"]);
@@ -1294,19 +1297,6 @@
                         $tabela .= "Formado";
                     } else if($linha["status"] === "inativo"){
                         $tabela .= "Inativo";
-                    }
-                    $tabela .= "</td>";
-
-                    $tabela .= "    <td class=\"recebe-email\" data-recebeemail=\"";
-                    $recebeEmail = false;
-                    if($linha["recebeEmail"]){
-                        $recebeEmail = true;
-                    }
-                    $tabela .= htmlspecialchars($recebeEmail). "\">";
-                    if($recebeEmail){
-                        $tabela .= "<i class=\"fa fa-check sucesso\" ></i>";
-                    } else {
-                        $tabela .= "<i class=\"fa fa-times warning\" ></i>";
                     }
                     $tabela .= "</td>";
 
@@ -1370,6 +1360,8 @@
                     $tabela .= $linha["tipo_cadastro"];
                     $tabela .= "\" data-observacoes=\"";
                     $tabela .= htmlspecialchars($linha['observacao']);
+                    $tabela .= "\" data-quer-email=\"";
+                    $tabela .= $linha["recebeEmail"];
                     $tabela .= "\" href=\"#\" data-toggle=\"modal\"";
                     $tabela .= " data-target=\"#modal-edita-aluno\">";
                     $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
@@ -1823,9 +1815,9 @@
                                         <th width="70px">Etapa</th>
                                         <th width="70px">Ano</th>
                                         <th width="100px">Tipo</th>
+                                        <th width="100px">Modalidade</th>
                                         <th width="100px">Certificado</th>
                                         <th width="100px">Status</th>
-                                        <th width="70px">Deseja emails?</th>
                                         <th width="70px">Alterar senha</th>
                                         <th width="60px">Visualizar</th>
                                         <th width="100px">Documentos</th>
