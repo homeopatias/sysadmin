@@ -25,6 +25,15 @@
 
         <script>
             var podeMudarPagina = true;
+
+            function clickCheckbox() {
+                var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
+                if(numSelecionados)
+                    $("#sendSelecionados").fadeIn();
+                else
+                    $("#sendSelecionados").fadeOut();
+            }
+
             $(document).ready(function(){
 
                 $("#modal-novo-aluno #curso-novo").parent().hide(500);
@@ -492,11 +501,7 @@
                 });
 
                 $('.selc > input[type="checkbox"]').click(function() {
-                    var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
-                    if(numSelecionados)
-                        $("#sendSelecionados").fadeIn();
-                    else
-                        $("#sendSelecionados").fadeOut();
+                    clickCheckbox();
                 });
 
                 checaTamanhoTela();
@@ -949,13 +954,16 @@
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.telefone2, A.telefone3, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
                                 A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
-                                A.modalidade_curso, A.recebeEmail,
-                                MAX(C.ano) as anoMatricula, MAX(M.etapa) as etapaMatricula, A.ativo
+                                A.modalidade_curso, A.recebeEmail, C.nome as nomeCidadeMatricula,
+                                C.UF as nomeEstadoMatricula, C.ano as anoMatricula, M.etapa as etapaMatricula, A.ativo
 
                                 FROM Usuario U, Aluno A
                                 LEFT JOIN Matricula M ON M.chaveAluno = A.numeroInscricao
                                 LEFT JOIN Cidade C ON M.chaveCidade = C.idCidade
-                                WHERE A.idUsuario = U.id ";
+                                WHERE A.idUsuario = U.id AND (M.idMatricula IS NULL OR
+                                                              M.idMatricula = (SELECT Mat.idMatricula FROM Matricula Mat WHERE
+                                                                               Mat.chaveAluno = A.numeroInscricao
+                                                                               ORDER BY Mat.idMatricula DESC LIMIT 1))";
 
                 $textoQuery .= ( mb_strlen($filtroCidade) > 0 || isset($_GET["filtro-etapa"]) 
                                  && $_GET["filtro-etapa"] != "0" || mb_strlen($filtroAnoCidade) >0 
@@ -1231,7 +1239,11 @@
                         $etapaMatricula = "N/A";
                     }
                     $tabela .= "<td class=\"cidade\">";
-                    $tabela .= htmlspecialchars($linha["cidade"] . "/" . $linha["estado"]);
+                    if(mb_strlen(trim($linha["nomeCidadeMatricula"])) > 0)
+                        $tabela .= htmlspecialchars($linha["nomeCidadeMatricula"] . "/" . $linha["nomeEstadoMatricula"]);
+                    else
+                        $tabela .= "N/A";
+
                     $tabela .= "</td>";
                     $tabela .= "    <td class=\"etapa\">";
                     $tabela .= $etapaMatricula ."</td>";
@@ -1788,7 +1800,7 @@
                             <table class="table table-bordered table-striped" id="alunos">
                                 <thead style="background-color: #AAA">
                                     <tr>
-                                        <th width= "80px">Selecionar</th>
+                                        <th width= "20px"></th>
                                         <th width="90px" <?= $indexHeader == 0 ? 
                                             ($direcao == 1? "class =\"headerSortUp\"" : 
                                                 "class =\"headerSortDown\"") : "" ?> >Inscrição</th>

@@ -17,6 +17,8 @@ if( $usuarioLogado && $usuarioLogado instanceof Administrador) {
     $parcela   = $_POST["parcela"];
     $valorPago = $_POST["pago"];
     $desconto  = $_POST["desconto"];
+    $data      = $_POST["data"];
+    $metodo    = $_POST["metodo"];
 
     $idPagValido     = isset($idPag) && preg_match("/^[0-9]*$/", $idPag);
     $parcelaValida   = isset($parcela) && preg_match("/^[0-9]*\.?[0-9]+$/", $parcela);
@@ -50,7 +52,7 @@ if( $usuarioLogado && $usuarioLogado instanceof Administrador) {
             $fechado = true;
         }
 
-        $textoQuery  = "UPDATE PgtoMensalidade SET valorTotal=?, valorPago=?, desconto=?, fechado=? ";
+        $textoQuery  = "UPDATE PgtoMensalidade SET valorTotal=?, valorPago=?, desconto=?, fechado=?, data=?, metodo=? ";
         $textoQuery .= "WHERE idPagMensalidade = ?";
 
         $query = $conexao->prepare($textoQuery);
@@ -59,7 +61,9 @@ if( $usuarioLogado && $usuarioLogado instanceof Administrador) {
         $query->bindParam(2, $valorPago);
         $query->bindParam(3, $desconto);
         $query->bindParam(4, $fechado);
-        $query->bindParam(5, $idPag);
+        $query->bindParam(5, $data);
+        $query->bindParam(6, $metodo);
+        $query->bindParam(7, $idPag);
 
         $sucesso = $query->execute();
         

@@ -8,7 +8,16 @@
     <head>
         <?php include("modulos/head.php"); ?>
         <title>Visualização de turmas - Homeopatias.com</title>
-        <script>
+        <script>   
+
+            function clickCheckbox() {
+                var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
+                if(numSelecionados)
+                    $("#sendSelecionados").fadeIn();
+                else
+                    $("#sendSelecionados").fadeOut();
+            }
+
             $(document).ready(function(){
                 // pequeno script para que o envio do formulário de ano seja feito assim
                 // que a etapa for mudada
@@ -91,13 +100,8 @@
                     atualizaPagina();
                 });
 
-
                 $('#alunos input[type="checkbox"]').click(function() {
-                    var numSelecionados = $("#alunos").find('input[type="checkbox"]:checked').length;
-                    if(numSelecionados)
-                        $("#sendSelecionados").fadeIn();
-                    else
-                        $("#sendSelecionados").fadeOut();
+                    clickCheckbox();
                 });
 
 
@@ -392,7 +396,8 @@
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
-                        $resultado = '<div class="flip-table"> <table class="table" id="alunos">
+                        $resultado = '<div class="flip-table"> <table class="table table-bordered table-striped"
+                                                                      id="alunos">
                             <th></th>
                             <th style="font-weight: bold">Registro do aluno</th>
                             <th style="font-weight: bold">Nome do aluno</th>
