@@ -161,7 +161,6 @@
                 // com o valor correto
                 $(".pgtoParcelas").click(function() {
                     if($(this).data('valor') < 1000) {
-                        alert($(this).data('valor'));
                         $("#pgto-valor").val($(this).data('valor'));
                         $("#pgto-valor").parent().submit();
                     } else {
