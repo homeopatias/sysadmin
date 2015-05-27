@@ -8,7 +8,17 @@
     <head>
         <?php include("modulos/head.php"); ?>
         <title>Visualização de aluno - Homeopatias.com</title>
+        <!-- polyfill para funcionalidades do HTML5 -->
+        <script src="./webshim-1.14.5/polyfiller.js"></script>
         <script>
+            // usamos um polyfill para que os campos de data e hora funcionem mesmo
+            // em navegadores que não implementem essas funcionalidades (você sabe quais)
+
+            webshims.activeLang("pt-BR");
+            webshims.setOptions('waitReady', false);
+            webshims.setOptions('forms-ext', {types: 'date', replaceUI: true});
+            webshims.polyfill('forms forms-ext');
+
             // aqui recebemos os dados das cidades existentes para cada ano
             // assim podemos atualizar a lista de cidades dinamicamente durante a inserção de
             // matrícula
@@ -136,6 +146,8 @@
                     $(this).find('#pago').val($(e.relatedTarget).data('pago'));
                     $(this).find('#parcela').val($(e.relatedTarget).data('parcela'));
                     $(this).find('#desconto').val($(e.relatedTarget).data('desc'));
+                    $(this).find('#data').val($(e.relatedTarget).data('datapag'));
+                    $(this).find('#metodo').val($(e.relatedTarget).data('metodopag'));
                 });
 
                 $("#efetua_pagamento").click(function(){
@@ -1347,6 +1359,10 @@
                             echo "\" data-idpag=\"" . $pagamentos[$anoPagamento][$i]['id'];
                             echo "\" data-desc=\"";
                             echo number_format($pagamentos[$anoPagamento][$i]['desconto'], 2);
+                            echo "\" data-datapag=\"";
+                            echo is_null($pagamentos[$anoPagamento][$i]['data']) ? "" : date("Y-m-d", strtotime($pagamentos[$anoPagamento][$i]['data']));
+                            echo "\" data-metodopag=\"";
+                            echo $pagamentos[$anoPagamento][$i]['metodo'];
                             echo "\"><i class=\"fa fa-pencil\"></i></a></td>";
                         }
                     ?>
@@ -1730,6 +1746,15 @@
                                 pattern="^(\d)+(\.)?(\d)*$" required
                                 placeholder="x.x" title="Insira apenas números e o ponto. Ex: 3.14"
                                 width="100%" class="form-control">
+                            <h3>Data do pagamento</h3>
+                            <input id="data" name="data" type="date"
+                                title="Insira uma data no formato dd/mm/aaaa"
+                                width="100%" class="form-control">
+                            <h3>Método de pagamento</h3>
+                            <select id="metodo" name="metodo" class="form-control">
+                                <option value="Dinheiro">Dinheiro</option>
+                                <option value="Cheque"  >Cheque</option>
+                            </select>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" data-dismiss="modal">Cancelar</button>
