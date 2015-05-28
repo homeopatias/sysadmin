@@ -423,7 +423,7 @@
                             // enviamos um email confirmando o envio do pagamento
                             $quantiaPaga = htmlspecialchars($_POST["valor-pagamento"]);
                             $quantiaPaga = number_format($quantiaPaga, 2);
-                            $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
+                            /*$assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
                             $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
                             $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
                             $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
@@ -434,7 +434,7 @@
                                 "Reply-To: noreply@homeopatias.com" . "\r\n" .
                                 "X-Mailer: PHP/" . phpversion();
 
-                            mail($aluno->getEmail(), $assunto, $msg, $headers);
+                            mail($aluno->getEmail(), $assunto, $msg, $headers);*/
 
                             // agora registramos no sistema uma notificação para o aluno
                             $texto = "Pagamento recebido:\nValor: R$" . $quantiaPaga;

@@ -295,7 +295,7 @@ if ($tipoNotificacao === 'transaction') {
                 // enviamos um email confirmando o envio do pagamento
                 $quantiaPaga = $valorTotalPago;
                 $quantiaPaga = number_format($quantiaPaga, 2);
-                $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
+                /*$assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
                 $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
                 $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
                 $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
@@ -306,7 +306,7 @@ if ($tipoNotificacao === 'transaction') {
                     "Reply-To: noreply@homeopatias.com" . "\r\n" .
                     "X-Mailer: PHP/" . phpversion();
 
-                mail($aluno->getEmail(), $assunto, $msg, $headers);
+                mail($aluno->getEmail(), $assunto, $msg, $headers);*/
 								$conexao->beginTransaction();
 
                 // agora registramos no sistema uma notificação para o aluno
@@ -508,7 +508,7 @@ if ($tipoNotificacao === 'transaction') {
                 // enviamos um email confirmando o envio do pagamento
                 $quantiaPaga = $valorTotalPago;
                 $quantiaPaga = number_format($quantiaPaga, 2);
-                $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
+                /*$assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
                 $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
                 $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
                 $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
@@ -520,6 +520,7 @@ if ($tipoNotificacao === 'transaction') {
                     "X-Mailer: PHP/" . phpversion();
 
                 mail($associado->getEmail(), $assunto, $msg, $headers);
+                */
 
                 $conexao->commit(); 
             }
