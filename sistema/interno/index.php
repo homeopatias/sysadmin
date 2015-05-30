@@ -554,7 +554,7 @@
 															border-radius: 5px;
 															display: inline-block;
 															margin: 10px 0;"
-								 href="rotinas/acessar_moodle.php">Acessar a área do aluno (Moodle)</a>
+								 href="rotinas/acessar_moodle.php">Acessar a área de trabalhos(Moodle)</a>
             </p>
             <p>
                 <a style="  box-sizing: border-box;
