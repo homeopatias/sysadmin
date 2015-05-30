@@ -154,7 +154,11 @@
                     $("#form-lanca-pagamento").submit();
                 });
 
-                $("form #ano").change();                
+                $("form #ano").change();   
+
+                $("#modal-edita-observacao").on('show.bs.modal', function(e) {
+                    $(this).find('#observacoes').val($("#obs").text());
+                });          
             });
         </script>
     </head>
@@ -869,6 +873,23 @@
                             <?= htmlspecialchars($certificado); ?>
                         </p>
                     </div>
+                    <?php
+                        $textoBtn = "Inserir";
+                        if(mb_strlen($aluno->getObservacao()) > 0) {
+                            $textoBtn = "Editar";
+                    ?>
+                    <div class="row">
+                        <p style="display:inline" class="col-sm-12">
+                            <b>Observação:</b><br>
+                            <span id="obs"><?= nl2br(htmlspecialchars($aluno->getObservacao())); ?></span>
+                    </div>
+                    <?php
+                        }
+                    ?>
+                    <div class="btn btn-primary" id="btnObservacao" data-toggle="modal" 
+                         data-target="#modal-edita-observacao">
+                        <?= $textoBtn ?> observação
+                    </div><br>
 
                     <!-- //////////////////////////////////////////////////////////////////////
                          //////////////////////////////////////////////////////////////////////
@@ -1679,6 +1700,40 @@
                             <button type="button" class="btn" data-dismiss="modal">Cancelar</button>
                             <input type="submit" class="btn" id="alterarDesconto" 
                                 name="alterarDesconto" value="Alterar"></input>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- popup "modal" do bootstrap para edição de observação do aluno -->
+        <div class="modal fade" id="modal-edita-observacao" tabindex="-1" role="dialog"
+             aria-labelledby="modal-edita-observacao" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="rotinas/edita_observacao.php" method="POST" id="formObservacao">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Edição de observação de aluno</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id"
+                                   value=<?= '"' . $aluno->getNumeroInscricao() . '"' ?>>
+                            <div class="form-group">
+                                <label for="observacoes">Observações</label>
+                                <textarea name="observacoes" id="observacoes" 
+                                class="form-control" 
+                                cols="100"
+                                rows="5"
+                                placeholder="Observações" maxlength="1000"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="btn btn-primary" id="alterarObs" 
+                                name="alterarObs" value="Alterar"></input>
                         </div>
                     </div>
                 </form>

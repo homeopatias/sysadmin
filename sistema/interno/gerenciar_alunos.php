@@ -187,6 +187,10 @@
                     );
                     var desejaEmail = $(e.relatedTarget).parent().siblings('.recebe-email').data('recebeemail');
                     $(this).find('#deseja-email').prop('checked', desejaEmail);
+
+                    $(this).find('#observacoes').html(
+                        $(e.relatedTarget).data('observacoes')
+                    );
                 });
 
                 $("#modal-novo-aluno #escolaridade-novo").change(function(){
@@ -668,6 +672,7 @@
                     $modalidadeCurso  = $_POST["modalidade-curso"];
                     $tipoCadastro     = $_POST["tipo_cadastro"];
                     $recebeEmail      = isset($_POST["deseja-email"]);
+                    $observacao       = isset($_POST["observacoes"]) ? $_POST["observacoes"] : "";
 
                     $nomeValido     = isset($nome) && mb_strlen($nome, 'UTF-8') >= 3 &&
                                       mb_strlen($nome, 'UTF-8') <= 100 &&
@@ -884,6 +889,7 @@
                         $novo->setModalidadeCurso($modalidadeCurso);
                         $novo->setTipoCadastro($tipoCadastro);
                         $novo->setRecebeEmail($recebeEmail);
+                        $novo->setObservacao($observacao);
                         if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
                            $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){
                             $novo->setCurso(isset($curso) ? $curso : null);
@@ -953,7 +959,7 @@
                 $textoQuery  =  "SELECT U.id, U.cpf, U.dataInscricao, U.email,
                                 U.nome, U.login, A.numeroInscricao, A.status, A.idIndicador, 
                                 A.telefone, A.telefone2, A.telefone3, A.cep, A.rua, A.numero, A.bairro, A.cidade, A.estado,
-                                A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro,
+                                A.complemento, A.escolaridade, A.curso, A.tipo_curso, A.tipo_cadastro, A.observacao,
                                 A.modalidade_curso, A.recebeEmail, C.nome as nomeCidadeMatricula,
                                 C.UF as nomeEstadoMatricula, C.ano as anoMatricula, M.etapa as etapaMatricula, A.ativo
 
@@ -1363,7 +1369,9 @@
                     $tabela .= $linha["modalidade_curso"];
                     $tabela .= "\" data-tipo_cadastro=\"";
                     $tabela .= $linha["tipo_cadastro"];
-                    $tabela .= "\"href=\"#\" data-toggle=\"modal\"";
+                    $tabela .= "\" data-observacoes=\"";
+                    $tabela .= htmlspecialchars($linha['observacao']);
+                    $tabela .= "\" href=\"#\" data-toggle=\"modal\"";
                     $tabela .= " data-target=\"#modal-edita-aluno\">";
                     $tabela .= "<i class=\"fa fa-pencil\"></i></a></td>";
                     $tabela .= "    <td><a data-href=\"rotinas/aluno/";
@@ -2129,6 +2137,14 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label for="observacoes">Observações</label>
+                                <textarea name="observacoes" id="observacoes" 
+                                class="form-control" 
+                                cols="100"
+                                rows="5"
+                                placeholder="Observações" maxlength="1000"></textarea>
+                            </div>
+                            <div class="form-group">
                                 <label for="senha-novo">Senha:</label>
                                 <input type="password" name="senha" id="senha-novo" required
                                        pattern="^.{6,72}$" placeholder="Senha"
@@ -2419,6 +2435,14 @@
                                     <option value="faculdade inspirar">Faculdade Inspirar</option>
                                     <option value="instituto">Instituto Hahnemann</option>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="observacoes">Observações</label>
+                                <textarea name="observacoes" id="observacoes" 
+                                class="form-control" 
+                                cols="100"
+                                rows="5"
+                                placeholder="Observações" maxlength="1000"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="indicador">
