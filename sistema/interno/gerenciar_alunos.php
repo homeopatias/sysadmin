@@ -1320,9 +1320,8 @@
                         $tabela .= "    <td>";
                         $tabela .= "<i class=\"fa fa-check\" style=\"color: #0A0\"></i></td>";
                     } else {
-                        $tabela .= "    <td><a href=\"rotinas/ativar_aluno.php?id=";
-                        $tabela .= $linha["numeroInscricao"] . "&pagina=" . $_GET["pagina"] . "\">";
-                        $tabela .= "<i class=\"fa fa-times\" style=\"color: red\"></i></a></td>";
+                        $tabela .= "    <td>";
+                        $tabela .= "<i class=\"fa fa-times\" style=\"color: red\"></i></td>";
                     }
 
                     $tabela .= "    <td><a data-indicador=\"";

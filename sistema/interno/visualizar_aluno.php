@@ -883,6 +883,24 @@
                             <?= htmlspecialchars($certificado); ?>
                         </p>
                     </div>
+                    <?php
+                        if($aluno->getTipoCurso() === "pos" && !$aluno->getAtivo()) {
+                    ?>
+                    <div class="row">
+                        <p style="display:inline" class="col-sm-12">
+                            <b>Documentos não enviados</b>
+                            <a href=<?= '"rotinas/ativar_aluno.php?id=' . 
+                                          $aluno->getNumeroInscricao() . '"' ?>
+                                style="color: white">
+                                <p class="btn btn-primary" style="margin-left: 15px">
+                                    Clique aqui quando a documentação do aluno for recebida
+                                </p>
+                            </a>
+                        </p>
+                    </div>
+                    <?php
+                        }
+                    ?>
 
                     <!-- //////////////////////////////////////////////////////////////////////
                          //////////////////////////////////////////////////////////////////////
