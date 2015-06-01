@@ -30,6 +30,7 @@ class Aluno extends Usuario{
     private $modalidadeCurso;
     private $ativo;
     private $recebeEmail;
+    private $observacao;
 
     //Variáveis relacionadas ao endereço
     private $cep;
@@ -74,6 +75,7 @@ class Aluno extends Usuario{
         $this->tipoCadastro    = "";
         $this->ativo           = false;
         $this->recebeEmail     = false;
+        $this->observacao      = "";
     }
 
     // Função que confere os dados do aluno no sistema e
@@ -99,7 +101,7 @@ class Aluno extends Usuario{
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.telefone2,
                         A.telefone3, A.escolaridade, A.curso,A.cep, A.rua, A.numero, A.complemento,
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, 
-                        A.modalidade_curso, A.tipo_cadastro, A.ativo, A.recebeEmail
+                        A.modalidade_curso, A.tipo_cadastro, A.ativo, A.recebeEmail, A.observacao
 
                         FROM Usuario U, Aluno A WHERE U.login=? AND A.idUsuario = U.id";
 
@@ -141,6 +143,7 @@ class Aluno extends Usuario{
                 $this->senha           = $senhaUsuario;
                 $this->ativo           = $linha["ativo"];
                 $this->recebeEmail     = $linha["recebeEmail"];
+                $this->observacao      = $linha["observacao"];
 
                 $_SESSION["usuario"] = serialize($this);
 
@@ -180,7 +183,7 @@ class Aluno extends Usuario{
                         U.nome, A.numeroInscricao, A.status, A.idIndicador, A.telefone, A.telefone2, A.telefone3,
                         A.escolaridade, A.curso ,A.cep, A.rua, A.numero, A.complemento,
                         A.bairro, A.cidade, A.estado, A.pais , A.tipo_curso, A.modalidade_curso,
-                        A.tipo_cadastro, A.ativo, A.recebeEmail
+                        A.tipo_cadastro, A.ativo, A.recebeEmail, A.observacao
 
                         FROM Usuario U, Aluno A WHERE A.numeroInscricao=? AND A.idUsuario = U.id";
 
@@ -218,6 +221,7 @@ class Aluno extends Usuario{
             $this->tipoCadastro    = $linha["tipo_cadastro"];
             $this->ativo           = $linha["ativo"];
             $this->recebeEmail     = $linha["recebeEmail"];
+            $this->observacao      = $linha["observacao"];
 
             // encerramos a conexão com o BD
             $conexao = null;
@@ -288,12 +292,13 @@ class Aluno extends Usuario{
                                  $this->curso, $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso,
-                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail);
+                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail,
+                                 $this->observacao);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, telefone2, telefone3, 
                              escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso,modalidade_curso,
-                              tipo_cadastro, ativo, recebeEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?, ?, ?)";
+                              tipo_cadastro, ativo, recebeEmail, observacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                             ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
         }else{
@@ -302,12 +307,13 @@ class Aluno extends Usuario{
                                  $this->cep, $this->rua, $this->numero, 
                                  $this->complemento, $this->bairro,
                                  $this->cidade, $this->estado, $this->pais, $this->tipoCurso, 
-                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail);
+                                 $this->modalidadeCurso, $this->tipoCadastro, $this->ativo, $this->recebeEmail,
+                                 $this->observacao);
             $queryAluno  = "INSERT INTO Aluno (idUsuario, status, telefone, telefone2, telefone3,
                             idIndicador, escolaridade, curso, cep, rua, numero , complemento, bairro,
                              cidade, estado, pais, tipo_curso, modalidade_curso,
-                             tipo_cadastro, ativo, recebeEmail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                             tipo_cadastro, ativo, recebeEmail, observacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         }
         $query = $conexao->prepare($queryAluno);
@@ -380,7 +386,8 @@ class Aluno extends Usuario{
                     cep = :cep, rua = :rua, numero = :numero, complemento = :complemento ,
                     cidade = :cidade, estado = :estado, bairro = :bairro, pais = :pais ,
                     tipo_curso = :tipo_curso, modalidade_curso= :modalidade_curso, 
-                    tipo_cadastro = :tipo_cadastro, ativo = :ativo, recebeEmail = :recebeemail
+                    tipo_cadastro = :tipo_cadastro, ativo = :ativo, recebeEmail = :recebeemail,
+                    observacao = :observacao
 
                     WHERE numeroInscricao = :numInsc";
         $query = $conexao->prepare($comando);
@@ -411,6 +418,7 @@ class Aluno extends Usuario{
         $query->bindParam(":tipo_cadastro", $this->tipoCadastro, PDO::PARAM_STR);
         $query->bindParam(":ativo", $this->ativo, PDO::PARAM_STR);
         $query->bindParam(":recebeemail", $this->recebeEmail);
+        $query->bindParam(":observacao", $this->observacao);
 
         $sucessoAluno = $query->execute();
 
@@ -1077,6 +1085,18 @@ class Aluno extends Usuario{
     public function setRecebeEmail($recebeEmail)
     {
         $this->recebeEmail = $recebeEmail;
+
+        return $this;
+    }
+
+    public function getObservacao()
+    {
+        return $this->observacao;
+    }
+
+    public function setObservacao($observacao)
+    {
+        $this->observacao = $observacao;
 
         return $this;
     }

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.6deb1
+-- version 4.2.12deb2
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 17, 2015 at 05:10 PM
--- Server version: 5.5.41-0ubuntu0.14.10.1
--- PHP Version: 5.5.12-2ubuntu4.3
+-- Generation Time: May 30, 2015 at 01:19 AM
+-- Server version: 5.6.24-0ubuntu2
+-- PHP Version: 5.6.4-4ubuntu6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `Administrador` (
   `nivel` enum('professor','coordenador','administrador') NOT NULL COMMENT 'Nivel de privilegio desse administrador no sistema',
   `corrigeTrabalho` tinyint(1) NOT NULL COMMENT 'Caso esse administrador seja um professor, determina se ele pode corrigir trabalhos ou não',
   `permissoes` int(5) NOT NULL DEFAULT '0' COMMENT 'Bitflag de acesso de admins'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Administradores do sistema' AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='Administradores do sistema';
 
 --
 -- Dumping data for table `Administrador`
@@ -79,40 +79,41 @@ CREATE TABLE IF NOT EXISTS `Aluno` (
   `modalidade_curso` enum('regular','intensivo','','') NOT NULL DEFAULT 'regular',
   `tipo_cadastro` enum('instituto','faculdade inspirar') NOT NULL COMMENT 'tipo de cadastro do aluno',
   `ativo` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determina se esse aluno está ativo (sempre verdadeiro para alunos da extensão, verdadeiro para alunos da pós que já enviaram os documentos)',
-  `recebeEmail` tinyint(1) NOT NULL COMMENT 'Determina se o aluno deseja receber e-mails do curso ou não'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aluno do curso' AUTO_INCREMENT=27 ;
+  `recebeEmail` tinyint(1) NOT NULL COMMENT 'Determina se o aluno deseja receber e-mails do curso ou não',
+  `observacao` varchar(1000) DEFAULT NULL COMMENT 'Observações sobre o aluno'
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COMMENT='Aluno do curso';
 
 --
 -- Dumping data for table `Aluno`
 --
 
-INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `telefone2`, `telefone3`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `modalidade_curso`, `tipo_cadastro`, `ativo`, `recebeEmail`) VALUES
-(1, 2, 'preinscrito', NULL, '1693018232', NULL, NULL, 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'regular', 'instituto', 1, 0),
-(2, 3, 'inscrito', 1, '1961438378', NULL, NULL, 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(3, 4, 'preinscrito', NULL, '8260134527', NULL, NULL, 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(4, 5, 'preinscrito', NULL, '6135342360', NULL, NULL, 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(5, 6, 'preinscrito', 4, '8698463979', NULL, NULL, 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(6, 7, 'preinscrito', NULL, '2169357517', NULL, NULL, 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(7, 8, 'inscrito', NULL, '1184439221', NULL, NULL, 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(8, 9, 'inscrito', NULL, '8498876543', NULL, NULL, 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(9, 10, 'inscrito', NULL, '5787659485', NULL, NULL, 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(10, 11, 'inscrito', 11, '2098764959', NULL, NULL, 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(11, 12, 'inscrito', 9, '3498123232', NULL, NULL, 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'regular', 'instituto', 1, 0),
-(12, 27, 'preinscrito', NULL, '3122334455', NULL, NULL, 'superior completo', 'Abacate', '33884555', 'TWOOOOO', 89, 'So needless to say', 'Say after me', 'AC', 'Don''t let away', '', '', 'regular', '', 1, 0),
-(13, 28, 'preinscrito', NULL, '3399448855', NULL, NULL, 'superior incompleto', 'abastece', '30495454', 'The birds and the bees', 39, 'Sowing the seeds', '', 'AC', 'Derpity derp', '', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(14, 29, 'preinscrito', NULL, '3129394939', NULL, NULL, 'fundamental incompleto', NULL, '93945444', 'tesste', 34, 'marracuda', '', 'AC', 'macarruda', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(15, 30, 'preinscrito', NULL, NULL, NULL, NULL, 'superior completo', 'Farmácia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BRL', 'pos', 'regular', 'faculdade inspirar', 1, 0),
-(16, 31, 'preinscrito', NULL, '9992929292', NULL, NULL, 'fundamental incompleto', NULL, '12345543', 'Armin', 12, 'Bairro', '', 'AC', 'Cidade', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(17, 32, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(18, 33, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 12, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(19, 34, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(20, 35, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(21, 36, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(22, 37, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(23, 38, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(24, 39, 'preinscrito', NULL, '3112344321', NULL, NULL, 'superior completo', 'Homepatias', '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'pos', 'regular', 'faculdade inspirar', 1, 0),
-(25, 41, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'adsf', 21, 'adsfasdf', '', 'AC', 'adsf', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0),
-(26, 42, 'preinscrito', NULL, '3112344321', NULL, NULL, NULL, NULL, '14890470', 'asdf', 21, 'adf', '', 'AC', 'adsf', 'BRL', 'instituto', 'regular', 'instituto', 1, 0);
+INSERT INTO `Aluno` (`numeroInscricao`, `idUsuario`, `status`, `idIndicador`, `telefone`, `telefone2`, `telefone3`, `escolaridade`, `curso`, `cep`, `rua`, `numero`, `bairro`, `complemento`, `estado`, `cidade`, `pais`, `tipo_curso`, `modalidade_curso`, `tipo_cadastro`, `ativo`, `recebeEmail`, `observacao`) VALUES
+(1, 2, 'preinscrito', NULL, '1693018232', NULL, NULL, 'médio completo', NULL, '14890470', 'Rua João Merchiori', 963, 'Jaboticabal', '', 'SP', 'São Paulo', 'BRL', 'pos', 'regular', 'instituto', 1, 0, NULL),
+(2, 3, 'inscrito', 1, '1961438378', NULL, NULL, 'superior completo', 'Ciências Contábeis', '13098603', 'Rua Argeu Pires Neto', 149, 'Santa Amélia', 'Apto 400', 'SP', 'Campinas', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(3, 4, 'preinscrito', NULL, '8260134527', NULL, NULL, 'médio completo', NULL, '57600830', 'Rua Coronel Antônio Pantaleão', 563, 'Monteiro Lobato', 'Apto 501, Bloco B', 'AL', 'Palmeira dos Índios', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(4, 5, 'preinscrito', NULL, '6135342360', NULL, NULL, 'fundamental incompleto', NULL, '70645120', 'Quadra SRES Quadra 10', 1567, 'Maria José', 'Bloco L', 'DF', 'Cruzeiro', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(5, 6, 'preinscrito', 4, '8698463979', NULL, NULL, 'fundamental incompleto', NULL, '64082670', 'Rua Laira', 715, 'Santa Mônica', '', 'PI', 'Teresina', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(6, 7, 'preinscrito', NULL, '2169357517', NULL, NULL, 'fundamental incompleto', NULL, '21735110', 'Rua Professor Carvalho e Melo', 1856, 'Ottawa', '', 'RJ', 'Rio de Janeiro', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(7, 8, 'inscrito', NULL, '1184439221', NULL, NULL, 'fundamental incompleto', NULL, '31314333', 'Avenida São Paulo', 909, 'Hortêncio', 'Bloco A, Apto. 289', 'SP', 'Piracicaba', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(8, 9, 'inscrito', NULL, '8498876543', NULL, NULL, 'doutorado', 'Astrofísica quântica', '45543398', 'Rua Madagascar', 883, 'Alabama', '', 'RN', 'Taboleiro Grande', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(9, 10, 'inscrito', NULL, '5787659485', NULL, NULL, 'fundamental incompleto', NULL, '67754390', 'Rua dos Japoneses', 394, 'Violeta', '', 'AP', 'Macapá', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(10, 11, 'inscrito', 11, '2098764959', NULL, NULL, 'fundamental incompleto', NULL, '98983399', 'Rua Almenara', 874, 'Jorema', '', 'GO', 'Goiânia', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(11, 12, 'inscrito', 9, '3498123232', NULL, NULL, 'fundamental completo', NULL, '88744596', 'Avenida Silveira', 111, 'Capanema', '', 'MG', 'Uberlândia', 'BRL', 'extensao', 'regular', 'instituto', 1, 0, NULL),
+(12, 27, 'preinscrito', NULL, '3122334455', NULL, NULL, 'superior completo', 'Abacate', '33884555', 'TWOOOOO', 89, 'So needless to say', 'Say after me', 'AC', 'Don''t let away', '', '', 'regular', '', 1, 0, NULL),
+(13, 28, 'preinscrito', NULL, '3399448855', NULL, NULL, 'superior incompleto', 'abastece', '30495454', 'The birds and the bees', 39, 'Sowing the seeds', '', 'AC', 'Derpity derp', '', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(14, 29, 'preinscrito', NULL, '3129394939', NULL, NULL, 'fundamental incompleto', NULL, '93945444', 'tesste', 34, 'marracuda', '', 'AC', 'macarruda', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(15, 30, 'preinscrito', NULL, NULL, NULL, NULL, 'superior completo', 'Farmácia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BRL', 'pos', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(16, 31, 'preinscrito', NULL, '9992929292', NULL, NULL, 'fundamental incompleto', NULL, '12345543', 'Armin', 12, 'Bairro', '', 'AC', 'Cidade', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(17, 32, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(18, 33, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 12, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(19, 34, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(20, 35, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(21, 36, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(22, 37, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(23, 38, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(24, 39, 'preinscrito', NULL, '3112344321', NULL, NULL, 'superior completo', 'Homepatias', '14890470', 'teste', 21, 'teste', '', 'MG', 'teste', 'BRL', 'pos', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(25, 41, 'preinscrito', NULL, '3112344321', NULL, NULL, 'fundamental incompleto', NULL, '14890470', 'adsf', 21, 'adsfasdf', '', 'AC', 'adsf', 'BRL', 'extensao', 'regular', 'faculdade inspirar', 1, 0, NULL),
+(26, 42, 'preinscrito', NULL, '3112344321', NULL, NULL, NULL, NULL, '14890470', 'asdf', 21, 'adf', '', 'AC', 'adsf', 'BRL', 'instituto', 'regular', 'instituto', 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -127,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `Artigo` (
   `conteudo` text NOT NULL,
   `dataPublic` datetime NOT NULL COMMENT 'Data de publicacao do artigo',
   `tipo` enum('artigo','noticia') NOT NULL COMMENT 'Determina se é um artigo ou notícia'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Artigo ou noticia a ser mostrada no site' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Artigo ou noticia a ser mostrada no site';
 
 --
 -- Dumping data for table `Artigo`
@@ -164,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `Associado` (
   `complemento` varchar(255) DEFAULT NULL COMMENT 'Complemento do Endereço',
   `pais` varchar(3) NOT NULL COMMENT 'País que o Associado reside',
   `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o associado'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Associado da CONAHOM/ATENEMG' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Associado da CONAHOM/ATENEMG';
 
 --
 -- Dumping data for table `Associado`
@@ -192,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `Aula` (
   `idProfAdicionalSecundario` int(11) DEFAULT NULL,
   `nota` float DEFAULT NULL COMMENT 'Media das notas dadas a essa aula pelos alunos',
   `descricao` varchar(10000) DEFAULT NULL COMMENT 'Descrição do conteúdo que será dado nessa aula'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Aula lancada no sistema' AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='Aula lancada no sistema';
 
 --
 -- Dumping data for table `Aula`
@@ -248,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `Cidade` (
   `parcela_instituto_regular` float NOT NULL DEFAULT '0',
   `inscricao_instituto_intensivo` float NOT NULL DEFAULT '0',
   `parcela_instituto_intensivo` float NOT NULL DEFAULT '0'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período' AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='Oferta de curso em determinada cidade em determinado período';
 
 --
 -- Dumping data for table `Cidade`
@@ -283,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `Compra` (
   `nome` varchar(100) NOT NULL,
   `data` date NOT NULL COMMENT 'Data da compra',
   `contato` varchar(15) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Compra de produtos' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Compra de produtos';
 
 -- --------------------------------------------------------
 
@@ -298,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `Evento` (
   `titulo` varchar(100) NOT NULL,
   `local` varchar(500) NOT NULL,
   `descricao` varchar(3000) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Dados de um evento a serem mostrados no site' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Dados de um evento a serem mostrados no site';
 
 --
 -- Dumping data for table `Evento`
@@ -349,7 +350,7 @@ CREATE TABLE IF NOT EXISTS `Instituicao` (
   `inicioInsc` datetime NOT NULL COMMENT 'Data a partir da qual os associados podem se associar',
   `fimInsc` datetime NOT NULL COMMENT 'Data até qual os associados podem se associar',
   `ano` int(11) NOT NULL COMMENT 'Ano para o qual as inscrições estão/estarão abertas'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Instituição na qual podem ser feitas as associações' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Instituição na qual podem ser feitas as associações';
 
 --
 -- Dumping data for table `Instituicao`
@@ -375,7 +376,7 @@ CREATE TABLE IF NOT EXISTS `Livro` (
   `dataPublic` date NOT NULL COMMENT 'Data da publicacao do livro',
   `edicao` int(10) unsigned NOT NULL COMMENT 'Numero da edicao do livro',
   `fornecedor` varchar(200) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Livros a venda no sistema' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Livros a venda no sistema';
 
 --
 -- Dumping data for table `Livro`
@@ -398,7 +399,7 @@ CREATE TABLE IF NOT EXISTS `Matricula` (
   `aprovado` tinyint(1) DEFAULT NULL COMMENT 'Determina se o aluno (já) foi aprovado ou não',
   `chaveCidade` int(11) NOT NULL COMMENT 'Identificador da cidade a qual essa matrícula se refere',
   `desconto_individual` float NOT NULL DEFAULT '0' COMMENT 'Desconto individual para o aluno'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período' AUTO_INCREMENT=36 ;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='Matrícula de um aluno em uma etapa em determinado período';
 
 --
 -- Dumping data for table `Matricula`
@@ -440,7 +441,7 @@ CREATE TABLE IF NOT EXISTS `Notificacao` (
   `texto` varchar(500) NOT NULL COMMENT 'Texto da notificação a ser dada ao aluno',
   `chaveAluno` int(11) NOT NULL COMMENT 'Número de matrícula do aluno para o qual deve ser mostrada a notificação',
   `lida` tinyint(1) NOT NULL COMMENT 'Determina se a notificação já foi lida ou não'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal' AUTO_INCREMENT=108 ;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8 COMMENT='Representa uma notificação a ser mostrada para o aluno na página principal';
 
 --
 -- Dumping data for table `Notificacao`
@@ -545,7 +546,7 @@ CREATE TABLE IF NOT EXISTS `Pagamento` (
   `objetivo` enum('mensalidade','anuidade','livro','') NOT NULL COMMENT 'Especifica o que esse pagamento está pagando',
   `codigoTransacao` int(11) DEFAULT NULL COMMENT 'Código da transação no Pagseguro, quando houver',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Pagamento genérico no sistema';
 
 --
 -- Dumping data for table `Pagamento`
@@ -585,7 +586,7 @@ CREATE TABLE IF NOT EXISTS `PgtoAnuidade` (
   `data` datetime DEFAULT NULL COMMENT 'Data do pagamento da anuidade',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Pagamento da anuidade de um associado';
 
 --
 -- Dumping data for table `PgtoAnuidade`
@@ -608,7 +609,7 @@ CREATE TABLE IF NOT EXISTS `PgtoCompra` (
   `metodo` int(11) NOT NULL COMMENT 'Método de pagamento utilizado para essa compra',
   `chaveCompra` int(11) NOT NULL COMMENT 'Identificador unico da compra feita, ao qual esse pagamento se refere',
   `data` datetime NOT NULL COMMENT 'Data do pagamento'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Pagamento de algum produto' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Pagamento de algum produto';
 
 -- --------------------------------------------------------
 
@@ -627,7 +628,7 @@ CREATE TABLE IF NOT EXISTS `PgtoMensalidade` (
   `data` datetime DEFAULT NULL COMMENT 'Data na qual essa mensalidade foi paga',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse pagamento se refere (pode ser diferente do ano especificado na data)',
   `fechado` tinyint(1) NOT NULL COMMENT 'Determina se o pagamento integral já foi feito ou não'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno' AUTO_INCREMENT=301 ;
+) ENGINE=InnoDB AUTO_INCREMENT=301 DEFAULT CHARSET=utf8 COMMENT='Pagamento de mensalidade ou inscricao de aluno';
 
 --
 -- Dumping data for table `PgtoMensalidade`
@@ -947,7 +948,7 @@ CREATE TABLE IF NOT EXISTS `Reuniao` (
   `data` datetime NOT NULL COMMENT 'Data em que ocorrera a reuniao',
   `descricao` varchar(3000) NOT NULL,
   `local` varchar(500) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Dados de reunião a serem mostrados no site' AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Dados de reunião a serem mostrados no site';
 
 --
 -- Dumping data for table `Reuniao`
@@ -970,7 +971,7 @@ CREATE TABLE IF NOT EXISTS `Trabalho` (
   `nota` int(10) unsigned DEFAULT NULL COMMENT 'Nota do trabalho',
   `comentarioProfessor` varchar(5000) DEFAULT NULL COMMENT 'Comentário do professor sobre o trabalho do aluno',
   `extensao` char(10) NOT NULL COMMENT 'Tipo de arquivo enviado (pdf, doc, ppt, etc)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Trabalho enviado por aluno' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Trabalho enviado por aluno';
 
 -- --------------------------------------------------------
 
@@ -985,7 +986,7 @@ CREATE TABLE IF NOT EXISTS `TrabalhoDefinicao` (
   `descricao` varchar(10000) NOT NULL,
   `dataLimite` datetime NOT NULL COMMENT 'Data e hora limite de entrega do trabalho',
   `ano` int(11) NOT NULL COMMENT 'Ano ao qual esse trabalho se refere'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Especificacao dada para a confeccao de um trabalho por parte dos alunos' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Especificacao dada para a confeccao de um trabalho por parte dos alunos';
 
 --
 -- Dumping data for table `TrabalhoDefinicao`
@@ -1011,7 +1012,7 @@ CREATE TABLE IF NOT EXISTS `Usuario` (
   `login` varchar(100) NOT NULL,
   `senha` text NOT NULL,
   `nome` varchar(100) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador' AUTO_INCREMENT=43 ;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COMMENT='Usuario do sistema, que pode ser aluno, associado ou administrador';
 
 --
 -- Dumping data for table `Usuario`

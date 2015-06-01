@@ -48,6 +48,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
         $tipoCurso          = $_POST["tipo_curso"];
         $modalidadeCurso    = $_POST["modalidade-curso"];
         $tipoCadastro       = $_POST["tipo_cadastro"];
+        $observacao         = isset($_POST["observacoes"]) ? $_POST["observacoes"] : "";
         $senha              = (!isset($_POST["senha"]) || $_POST["senha"] == "") 
                                         ? false : $_POST["senha"];
         $recebeEmail        = isset($_POST["deseja-email"]);
@@ -193,6 +194,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
             $atualizar->setModalidadeCurso($modalidadeCurso);
             $atualizar->setTipoCadastro($tipoCadastro);
             $atualizar->setRecebeEmail($recebeEmail);
+            $atualizar->setObservacao($observacao);
             
             if($escolaridade === "superior incompleto" || $escolaridade === "superior completo"   ||
                $escolaridade === "mestrado"            || $escolaridade === "doutorado" ){

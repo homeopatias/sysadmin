@@ -54,7 +54,7 @@ if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof A
 
         mail($atualizar->getEmail(), $assunto, $msg, $headers);
 
-        $mensagem = "Aluno ativado!";
+        $mensagem = "Documentação de aluno confirmada!";
     }
 
 }
@@ -63,5 +63,5 @@ if($mensagem !== ""){
     $mensagem = "mensagem=".$mensagem;
 }
 
-header('Location: ../gerenciar_alunos.php?'.$mensagem.'&sucesso='.$sucesso.'&pagina='.htmlentities($_GET["pagina"]), true, "302");
+header('Location: ../gerenciar_alunos.php?'.$mensagem.'&sucesso='.$sucesso, true, "302");
 die();

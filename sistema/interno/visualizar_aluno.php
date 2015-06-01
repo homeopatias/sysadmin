@@ -154,7 +154,29 @@
                     $("#form-lanca-pagamento").submit();
                 });
 
-                $("form #ano").change();                
+                // caso o usuário tente pagar todas as parcelas até determinado
+                // mês, preenchemos o formulário de pagamento de valor e o enviamos
+                // com o valor correto
+                $(".pgtoParcelas").click(function() {
+                    if($(this).data('valor') < 1000) {
+                        $("#pgto-valor").val($(this).data('valor'));
+                        $("#pgto-valor").parent().submit();
+                    } else {
+                        alert("O sistema PagSeguro não aceita pagamentos com valor de R$ 1000,00 ou superior.\n" +
+                              "\nGentileza pagar as parcelas anteriores, para que o valor acumulado fique\n"+
+                              " inferior a R$ 1000,00.");
+                    }
+                });
+                $("form #ano").change();
+
+                $("#modal-edita-observacao").on('show.bs.modal', function(e) {
+                    $(this).find('#observacoes').val($("#obs").text());
+                });
+                $("form #ano").change();   
+
+                $("#modal-edita-observacao").on('show.bs.modal', function(e) {
+                    $(this).find('#observacoes').val($("#obs").text());
+                });          
             });
         </script>
     </head>
@@ -409,7 +431,7 @@
                             // enviamos um email confirmando o envio do pagamento
                             $quantiaPaga = htmlspecialchars($_POST["valor-pagamento"]);
                             $quantiaPaga = number_format($quantiaPaga, 2);
-                            $assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
+                            /*$assunto = "Homeopatias.com - Pagamento recebido - " . date("d/m/Y");
                             $msg = "<b>Essa é uma mensagem automática do sistema Homeopatias.com, favor não respondê-la.</b>";
                             $msg .= "<br><br><b>Pagamento recebido:</b><br><b>Valor:</b> R$" . $quantiaPaga;
                             $msg .= "<br><b>Data:</b> " . date("d/m/Y") . "<br><b>Horário:</b> " . date("H:i");
@@ -420,7 +442,7 @@
                                 "Reply-To: noreply@homeopatias.com" . "\r\n" .
                                 "X-Mailer: PHP/" . phpversion();
 
-                            mail($aluno->getEmail(), $assunto, $msg, $headers);
+                            mail($aluno->getEmail(), $assunto, $msg, $headers);*/
 
                             // agora registramos no sistema uma notificação para o aluno
                             $texto = "Pagamento recebido:\nValor: R$" . $quantiaPaga;
@@ -869,6 +891,36 @@
                             <?= htmlspecialchars($certificado); ?>
                         </p>
                     </div>
+                    <?php
+                        if($aluno->getTipoCurso() === "pos" && !$aluno->getAtivo()) {
+                    ?>
+                    <div class="row">
+                        <p style="display:inline" class="col-sm-12">
+                            <b>Documentos não enviados</b>
+                            <a href=<?= '"rotinas/ativar_aluno.php?id=' . 
+                                          $aluno->getNumeroInscricao() . '"' ?>
+                                style="color: white">
+                                <p class="btn btn-primary" style="margin-left: 15px">
+                                    Clique aqui quando a documentação do aluno for recebida
+                                </p>
+                            </a>
+                        </p>
+                        $textoBtn = "Inserir";
+                        if(mb_strlen($aluno->getObservacao()) > 0) {
+                            $textoBtn = "Editar";
+                    ?>
+                    <div class="row">
+                        <p style="display:inline" class="col-sm-12">
+                            <b>Observação:</b><br>
+                            <span id="obs"><?= nl2br(htmlspecialchars($aluno->getObservacao())); ?></span>
+                    </div>
+                    <?php
+                        }
+                    ?>
+                    <div class="btn btn-primary" id="btnObservacao" data-toggle="modal" 
+                         data-target="#modal-edita-observacao">
+                        <?= $textoBtn ?> observação
+                    </div><br>
 
                     <!-- //////////////////////////////////////////////////////////////////////
                          //////////////////////////////////////////////////////////////////////
@@ -1218,7 +1270,7 @@
                         }
 
                         $textoQuery  = "SELECT P.idPagMensalidade, P.valorPago, P.valorTotal, P.fechado, P.metodo,
-                                        P.data, P.desconto, P.ano, P.numParcela, M.desconto_individual
+                                        P.data, P.desconto, P.ano, P.numParcela, M.desconto_individual, M.chaveCidade
                                         FROM Matricula M, PgtoMensalidade P
                                         WHERE M.chaveAluno = ?
                                         AND P.chaveMatricula = M.idMatricula 
@@ -1231,10 +1283,12 @@
                         $query->setFetchMode(PDO::FETCH_ASSOC);
                         $query->execute();
 
+                        $idCidadePag = -1;
                         $pagamentos = array();
                         $divida = 0;
                         $desconto_individual = 0;
                         while($linha = $query->fetch()){
+                            $idCidadePag = $linha["chaveCidade"];
                             $anoPag = $linha['ano'];
                             $desconto_individual = $linha["desconto_individual"];
                             $numParcela = $linha['numParcela'];
@@ -1364,6 +1418,64 @@
                             echo "\" data-metodopag=\"";
                             echo $pagamentos[$anoPagamento][$i]['metodo'];
                             echo "\"><i class=\"fa fa-pencil\"></i></a></td>";
+                        }
+                        echo "</tr><tr>";
+                        echo "<td style='background-color: #AAA'><b>Gerar boleto</b></td>";
+                        $valorAcumulado = 0;
+
+                        $cidadePag = new Cidade();
+                        $cidadePag->setIdCidade($idCidadePag);
+                        $cidadePag->recebeCidadeId($host, "homeopatias", $usuario, $senhaBD);
+
+                        $mesInicio = $cidadePag->getMesInicio();
+                        $anoInicio = $cidadePag->getAno();
+
+                        // caso o mês atual esteja no ano após
+                        // o início das aulas nessa cidade,
+                        // somamos 12 meses, para facilitar os cálculos
+                        $mesCalculo = date("m");
+                        if(date("Y") > $anoInicio) {
+                            $mesCalculo += 12;
+                        }
+
+                        $parcelaAtual = $mesCalculo - $mesInicio + 1;
+                        if($parcelaAtual > 11) {
+                            $parcelaAtual = 11;
+                        }
+
+                        for($i = 0; $i < 12; $i ++) {
+                            if(!$pagamentos[$anoPagamento][$i]['fechado'] &&
+                                $pagamentos[$anoPagamento][$i]['pago'] > 0) {
+
+                                $valorPagar = $pagamentos[$anoPagamento][$i]['valor'] -
+                                               ($pagamentos[$anoPagamento][$i]['valor'] *
+                                               ($pagamentos[$anoPagamento][$i]['desconto']/100)) -
+                                               $pagamentos[$anoPagamento][$i]['pago'];
+
+                                $valorAcumulado += $valorPagar;
+
+                                echo '<td><a href="#" class="pgtoParcelas" data-valor="' . 
+                                     $valorPagar
+                                     . '">Pagar restante da parcela</a></td>';
+
+                            }else if(!$pagamentos[$anoPagamento][$i]['fechado'] /*&& $i >= $parcelaAtual*/) {
+
+                                $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
+                                                   $pagamentos[$anoPagamento][$i]['valor'] *
+                                                   ($pagamentos[$anoPagamento][$i]['desconto']/100);
+
+                                echo '<td><a href="#" class="pgtoParcelas" data-valor="' . 
+                                     $valorAcumulado
+                                     . '"><i class="fa fa-money"></i></a></td>';
+                            }/* else if (!$pagamentos[$anoPagamento][$i]['fechado'] && $i < $parcelaAtual) {
+                                $valorAcumulado += $pagamentos[$anoPagamento][$i]['valor'] -
+                                                   $pagamentos[$anoPagamento][$i]['valor'] *
+                                                   ($pagamentos[$anoPagamento][$i]['desconto']/100);
+
+                                echo '<td><i class="fa fa-ellipsis-h"></i></td>';  
+                            } */else {
+                                echo '<td><i class="fa fa-check sucesso"></i></td>';                                
+                            }
                         }
                     ?>
                             </tr>
@@ -1685,6 +1797,40 @@
             </div>
         </div>
 
+        <!-- popup "modal" do bootstrap para edição de observação do aluno -->
+        <div class="modal fade" id="modal-edita-observacao" tabindex="-1" role="dialog"
+             aria-labelledby="modal-edita-observacao" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="rotinas/edita_observacao.php" method="POST" id="formObservacao">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            X
+                        </button>
+                        <h4 class="modal-title">Edição de observação de aluno</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id"
+                                   value=<?= '"' . $aluno->getNumeroInscricao() . '"' ?>>
+                            <div class="form-group">
+                                <label for="observacoes">Observações</label>
+                                <textarea name="observacoes" id="observacoes" 
+                                class="form-control" 
+                                cols="100"
+                                rows="5"
+                                placeholder="Observações" maxlength="1000"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="btn btn-primary" id="alterarObs" 
+                                name="alterarObs" value="Alterar"></input>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- popup "modal" do bootstrap para mudança de presença de aluno em aula -->
         <div class="modal fade" id="modal-muda-frequencia" tabindex="-1" role="dialog"
              aria-labelledby="modal-muda-frequencia" aria-hidden="true">
@@ -1764,6 +1910,19 @@
                 </div>
             </div>
         </div>
+        <form action="rotinas/gerar_pagamento_mensalidade.php" method="POST" style="display: none">
+            <a id="label-valor" href="#" class="btn btn-primary" 
+                style="display:block; width:300px">
+                Pagar valor
+            </a>
+            <input type="hidden" id="idAluno" name="idAluno" value=<?= '"' . $idAluno . '"' ?>>
+            <input type="number" name="pgto-valor" id="pgto-valor"
+                   placeholder="Quantidade em R$" class="form-control"
+                   autocomplete="off" pattern="^[0-9]*\.?[0-9]+$"
+                   style="display:none;width:205px;"
+                   title="O valor pago deve ser maior que uma parcela e menor que o saldo em aberto e menor que 1000">
+            <input type="submit" value="Gerar" class="btn btn-primary" style="display:none">
+        </form>
         <?php
             }else{
         ?>
