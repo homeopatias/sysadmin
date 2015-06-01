@@ -172,6 +172,11 @@
                 $("#modal-edita-observacao").on('show.bs.modal', function(e) {
                     $(this).find('#observacoes').val($("#obs").text());
                 });
+                $("form #ano").change();   
+
+                $("#modal-edita-observacao").on('show.bs.modal', function(e) {
+                    $(this).find('#observacoes').val($("#obs").text());
+                });          
             });
         </script>
     </head>
