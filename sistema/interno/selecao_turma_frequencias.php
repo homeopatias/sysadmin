@@ -43,7 +43,9 @@
                 $textoQuery  = "SELECT C.UF, C.nome, A.idAula, A.etapa,
                                 UNIX_TIMESTAMP(A.data) as dataAula FROM Cidade C
                                 INNER JOIN Aula A ON A.chaveCidade = C.idCidade
-                                WHERE A.data < NOW() AND C.idCidade = ?";
+                                WHERE ".
+                                //"A.data < NOW() AND ".
+                                "C.idCidade = ?";
 
                 $query = $conexao->prepare($textoQuery);
                 $query->bindParam(1, $idCidade);
@@ -146,7 +148,6 @@
                             echo "<p class=\"warning\">$mensagem</p>";
                         }
                     ?>
-                    <p>Na lista de etapas constam apenas as etapas em que já ocorreram aulas</p>
                     <form class="form-inline" id="form-turma"
                           action="lancar_frequencias.php" method="GET">
                         <br>

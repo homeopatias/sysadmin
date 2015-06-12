@@ -258,6 +258,7 @@
 
                     $numeroRegistros++;
                 }
+
         ?>
         <div class="col-sm-12">
             <div class="center-block col-sm-12 no-float">
@@ -266,7 +267,36 @@
                         htmlspecialchars($_GET["idCidade"]) . "\"" ?>>
                         Voltar para seleção de aula
                     </a>
-                    <h1>Lançar frequências</h1><br>    
+                    <h1>Lançar frequências / Gerar lista de presença</h1>
+                    <div class="pull-right" style="width:20%">
+                        <a href=<?= "\"impressao_chamada_admin.php?etapa=" .
+                                     htmlspecialchars($_GET['etapa']) . "&idCidade=" .
+                                     htmlspecialchars($_GET['idCidade']) . "&idAula=" . $idAula . "&tipo=" .
+                                     "extensao"
+                                     . "\"" ?>
+                           target="_blank" style="text-decoration:none" id="btn-imprimir">
+                            <b class="pull-left">Lista de chamada (Extensão)</b>
+                            <i class="fa fa-lg fa-print pull-right"></i>
+                        </a>
+                        <a href=<?= "\"impressao_chamada_admin.php?etapa=" .
+                                     htmlspecialchars($_GET['etapa']) . "&idCidade=" .
+                                     htmlspecialchars($_GET['idCidade']) . "&idAula=" . $idAula . "&tipo=" .
+                                     "pos"
+                                     . "\"" ?>
+                           target="_blank" style="text-decoration:none" id="btn-imprimir">
+                            <b class="pull-left">Lista de chamada (Pós-Graduação)</b>
+                            <i class="fa fa-lg fa-print pull-right"></i>
+                        </a>
+                        <a href=<?= "\"impressao_chamada_admin.php?etapa=" .
+                                     htmlspecialchars($_GET['etapa']) . "&idCidade=" .
+                                     htmlspecialchars($_GET['idCidade']) . "&idAula=" . $idAula . "&tipo=" .
+                                     "instituto"
+                                     . "\"" ?>
+                           target="_blank" style="text-decoration:none" id="btn-imprimir">
+                            <b class="pull-left">Lista de chamada (Instituto)</b>
+                            <i class="fa fa-lg fa-print pull-right"></i>
+                        </a>
+                    </div>
                     <?php 
                         if(mb_strlen($mensagem, 'UTF-8') !== 0){
                             echo "<p class=\"warning\">$mensagem</p>";
