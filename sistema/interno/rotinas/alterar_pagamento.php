@@ -61,7 +61,11 @@ if( $usuarioLogado && $usuarioLogado instanceof Administrador) {
         $query->bindParam(2, $valorPago);
         $query->bindParam(3, $desconto);
         $query->bindParam(4, $fechado);
-        $query->bindParam(5, $data);
+        if(mb_strlen($data) > 0) {
+            $query->bindParam(5, $data);
+        } else {
+            $query->bindValue(5, null);
+        }
         $query->bindParam(6, $metodo);
         $query->bindParam(7, $idPag);
 

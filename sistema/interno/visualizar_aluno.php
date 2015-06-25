@@ -1898,6 +1898,7 @@
                                 width="100%" class="form-control">
                             <h3>Método de pagamento</h3>
                             <select id="metodo" name="metodo" class="form-control">
+                                <option value=""></option>
                                 <option value="Dinheiro">Dinheiro</option>
                                 <option value="Cheque"  >Cheque</option>
                             </select>
