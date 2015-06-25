@@ -911,10 +911,42 @@
                         $novo->setIdIndicador($idIndicador);
 
                         $sucesso  = $novo->cadastrar($host, "homeopatias", $usuario, $senhaBD, $senha);
+
+                        $sucessoMoodle = false;
+
+                        if($sucesso) {
+                            // criamos o aluno no Moodle
+                            $usuarioMoodle = $dados["usuario_moodle"];
+                            $senhaMoodle   = $dados["senha_moodle"];
+
+                            $conMoodle = null;
+                            try{
+                                $conMoodle = new PDO("mysql:host=$host;dbname=moodle;charset=utf8",
+                                                     $usuarioMoodle, $senhaMoodle);
+
+                                $queryMoodle = "INSERT INTO mdl_user
+                                                (firstname,lastname,email,username,password,
+                                                 confirmed,mnethostid) VALUES
+                                               (?,?,?,?,MD5(?),1,1)";
+
+                                $arrayNome = split(" ", $novo->getNome());
+                                $dadosMoodle = array($arrayNome[0], array_pop($arrayNome), $novo->getEmail(),
+                                                     $novo->getLogin(), $senha);
+
+                                $query = $conMoodle->prepare($queryMoodle);
+                                $sucessoMoodle = $query->execute($dadosMoodle);
+
+                            }catch (PDOException $e){
+                                // echo $e->getMessage();
+                            }
+                        }
+
                         $mensagem = "Usuário cadastrado com sucesso";
                         if(!$sucesso){
                             $mensagem = "Já existe um usuário com esse nome 
                                          de usuário no sistema";
+                        } else if(!$sucessoMoodle) {
+                            $mensagem = "O registro foi efetuado, porém não foi possível registrar no Moodle";
                         }
 
                     }else if(!$nomeValido){
