@@ -742,20 +742,33 @@
                                 $query->setFetchMode(PDO::FETCH_ASSOC);
                                 $query->execute();
 
-                                // dados para extensão
-                                $enrollid = -1;
+                                $enrolid = -1;
                                 $contexid = -1;
 
                                 $tipoCurso = $aluno->getTipoCurso();
-                                if($tipoCurso === "pos") {
-                                    $enrollid = 4;
-                                    $contexid = 26;
-                                } else if($tipoCurso === "instituto") {
-                                    $enrollid = 22;
-                                    $contexid = 87;
-                                } else if($tipoCurso === "extensao") {
-                                    $enrollid = 1;
-                                    $contexid = 18;
+                                $modalidadeCurso = $aluno->getModalidadeCurso();
+                                if($modalidadeCurso === "regular") {
+                                    if($tipoCurso === "pos") {
+                                        $enrolid = 34;
+                                        $contexid = 135;
+                                    } else if($tipoCurso === "instituto") {
+                                        $enrolid = 40;
+                                        $contexid = 145;
+                                    } else if($tipoCurso === "extensao") {
+                                        $enrolid = 28;
+                                        $contexid = 123;
+                                    }
+                                } else if($modalidadeCurso === "intensivo") {
+                                    if($tipoCurso === "pos") {
+                                        $enrolid = 31;
+                                        $contexid = 130;
+                                    } else if($tipoCurso === "instituto") {
+                                        $enrolid = 37;
+                                        $contexid = 140;
+                                    } else if($tipoCurso === "extensao") {
+                                        $enrolid = 25;
+                                        $contexid = 118;
+                                    }
                                 }
 
                                 $idUsuarioMoodle = false;
