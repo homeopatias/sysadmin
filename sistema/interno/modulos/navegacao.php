@@ -325,10 +325,24 @@
                     ?>
 
                     <li>
+                        <?php
+                            if(!(unserialize($_SESSION["usuario"]) instanceof Aluno) ||
+                               unserialize($_SESSION["usuario"])->getIdAdminLogado() == -1 ) {
+                        ?>
                         <a href="rotinas/logout.php">
                             <i class="fa fa-power-off"></i>
                             <p style="display:inline">Logout</p>
                         </a>
+                        <?php
+                            } else {
+                        ?>
+                        <a href="rotinas/logout.php">
+                            <i class="fa fa-power-off"></i>
+                            <p style="display:inline">Retornar à conta de administrador</p>
+                        </a>
+                        <?php
+                            }
+                        ?>
                     </li>
                 </ul>
             </div>

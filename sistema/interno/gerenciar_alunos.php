@@ -73,7 +73,8 @@
                     12 : { sorter: false },
                     13 : { sorter: false },
                     14 : { sorter: false },
-                    15 : { sorter: false }
+                    15 : { sorter: false },
+                    16 : { sorter: false }
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -616,6 +617,15 @@
 
             if(isset($_GET["erro"])){
                 $mensagem = $_GET["erro"];
+            }
+
+            // lista de filtros presentes na página, para envio para outras páginas
+            // que devam manter a busca intacta quando voltarem
+            $filtrosEnviar;
+            foreach($_GET as $nome => $valor) {
+                if(strpos($nome, 'filtro') !== false) {
+                    $filtrosEnviar[$nome] = $valor;
+                }
             }
 
             // exibe alunos apenas para administradores logados
@@ -1305,6 +1315,16 @@
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-lock\"></i></a></td>";
 
+                    $tabela .= "    <td><a href=\"rotinas/acessar_tela_aluno.php?idAluno=";
+                    $tabela .= $linha["numeroInscricao"];
+                    
+                    if(http_build_query($filtrosEnviar)) {
+                        $tabela .= "&filtros=" . urlencode(http_build_query($filtrosEnviar));
+                    }
+
+                    $tabela .= "\">";
+                    $tabela .= "<i class=\"fa fa-user\"></i></a></td>";
+
                     $tabela .= "    <td><a href=\"visualizar_aluno.php?id=";
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-eye\"></i></a></td>";
@@ -1819,6 +1839,7 @@
                                         <th width="100px">Certificado</th>
                                         <th width="100px">Status</th>
                                         <th width="70px">Alterar senha</th>
+                                        <th width="60px">Tela do aluno</th>
                                         <th width="60px">Visualizar</th>
                                         <th width="100px">Documentos</th>
                                         <th width="60px">Editar</th>
@@ -2194,14 +2215,6 @@
                             <!-- o formulário em si fica dentro dessa div -->
                             <input type="hidden" name="insc" id="insc" value="">
                             <input type="hidden" name="id" id="id" value="">
-                            <?php
-                                $filtrosEnviar;
-                                foreach($_GET as $nome => $valor) {
-                                    if(strpos($nome, 'filtro') !== false) {
-                                        $filtrosEnviar[$nome] = $valor;
-                                    }
-                                }
-                            ?>
                             <input type="hidden" name="filtros" value=<?= '"' . http_build_query($filtrosEnviar) . '"' ?>>
                             <div class="form-group">
                                 <label for="nome">Nome do aluno:</label>

@@ -768,7 +768,7 @@
                             }
                            ?>
                            width="150px" height="200px">
-                    </div>
+                    </div><br><br>
                     
                     <div class="row">
                         <p style="display:inline" class="col-sm-3">
@@ -919,7 +919,7 @@
                     ?>
                     <div class="btn btn-primary" id="btnObservacao" data-toggle="modal" 
                          data-target="#modal-edita-observacao">
-                        <?= $textoBtn ?> observação
+                        <?= $textoBtn ?> Observação
                     </div><br>
 
                     <!-- //////////////////////////////////////////////////////////////////////

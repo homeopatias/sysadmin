@@ -32,7 +32,7 @@ class Aluno extends Usuario{
     private $recebeEmail;
     private $observacao;
 
-    //Variáveis relacionadas ao endereço
+    // variáveis relacionadas ao endereço
     private $cep;
     private $rua;
     private $numero;
@@ -41,6 +41,13 @@ class Aluno extends Usuario{
     private $cidade;
     private $estado;
     private $pais;
+
+    // variável que permite a um administrador vendo o
+    // sistema como aluno voltar para o estado de admin
+    private $idAdminLogado;
+    // variável que armazena as buscas existentes antes de o
+    // admin entrar na tela desse aluno
+    private $dadosBusca;
 
     // Construtor
     // Recebe: 
@@ -76,6 +83,8 @@ class Aluno extends Usuario{
         $this->ativo           = false;
         $this->recebeEmail     = false;
         $this->observacao      = "";
+        $this->idAdminLogado   = -1;
+        $this->dadosBusca      = '';
     }
 
     // Função que confere os dados do aluno no sistema e
@@ -1097,6 +1106,30 @@ class Aluno extends Usuario{
     public function setObservacao($observacao)
     {
         $this->observacao = $observacao;
+
+        return $this;
+    }
+
+    public function getIdAdminLogado()
+    {
+        return $this->idAdminLogado;
+    }
+
+    public function setIdAdminLogado($idAdminLogado)
+    {
+        $this->idAdminLogado = $idAdminLogado;
+
+        return $this;
+    }
+
+    public function getDadosBusca()
+    {
+        return $this->dadosBusca;
+    }
+
+    public function setDadosBusca($dadosBusca)
+    {
+        $this->dadosBusca = $dadosBusca;
 
         return $this;
     }
