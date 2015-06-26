@@ -1382,7 +1382,7 @@
 
                 // agora contamos quantos alunos essa pesquisa conseguiria, sem o LIMIT
                 $textoQueryCount = explode("LIMIT", $textoQuery);
-                $query = $conexao->prepare($textoQueryCount[0]);
+                $query = $conexao->prepare($textoQueryCount[0] . "LIMIT" . $textoQueryCount[1]);
 
                 // repetimos a passagem de parâmetros
                 if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])      ||
