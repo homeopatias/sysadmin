@@ -787,3 +787,8 @@
   'SenderEmail' => 'miguelsilvamartins@rhyta.com',
 )) - begin 
 {2015/05/27 16:29:30} [Error] Exception: PagSeguroLibrary: cURL library is required. 
+{2015/06/26 21:56:36} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M1',
+  'SenderEmail' => 'victorcastrocarvalho@armyspy.com',
+)) - begin 
+{2015/06/26 21:56:36} [Error] Exception: PagSeguroLibrary: cURL library is required. 
