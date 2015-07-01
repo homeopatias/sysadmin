@@ -73,7 +73,8 @@
                     12 : { sorter: false },
                     13 : { sorter: false },
                     14 : { sorter: false },
-                    15 : { sorter: false }
+                    15 : { sorter: false },
+                    16 : { sorter: false }
                 }});
 
                 // passa os dados do href para o modal de confirmação de deleção quando
@@ -618,6 +619,15 @@
                 $mensagem = $_GET["erro"];
             }
 
+            // lista de filtros presentes na página, para envio para outras páginas
+            // que devam manter a busca intacta quando voltarem
+            $filtrosEnviar;
+            foreach($_GET as $nome => $valor) {
+                if(strpos($nome, 'filtro') !== false) {
+                    $filtrosEnviar[$nome] = $valor;
+                }
+            }
+
             // exibe alunos apenas para administradores logados
             if(isset($_SESSION["usuario"]) && unserialize($_SESSION["usuario"]) instanceof Administrador
                && unserialize($_SESSION["usuario"])->getNivelAdmin() === "administrador" && 
@@ -901,10 +911,42 @@
                         $novo->setIdIndicador($idIndicador);
 
                         $sucesso  = $novo->cadastrar($host, "homeopatias", $usuario, $senhaBD, $senha);
+
+                        $sucessoMoodle = false;
+
+                        if($sucesso) {
+                            // criamos o aluno no Moodle
+                            $usuarioMoodle = $dados["usuario_moodle"];
+                            $senhaMoodle   = $dados["senha_moodle"];
+
+                            $conMoodle = null;
+                            try{
+                                $conMoodle = new PDO("mysql:host=$host;dbname=moodle;charset=utf8",
+                                                     $usuarioMoodle, $senhaMoodle);
+
+                                $queryMoodle = "INSERT INTO mdl_user
+                                                (firstname,lastname,email,username,password,
+                                                 confirmed,mnethostid) VALUES
+                                               (?,?,?,?,MD5(?),1,1)";
+
+                                $arrayNome = split(" ", $novo->getNome());
+                                $dadosMoodle = array($arrayNome[0], array_pop($arrayNome), $novo->getEmail(),
+                                                     $novo->getLogin(), $senha);
+
+                                $query = $conMoodle->prepare($queryMoodle);
+                                $sucessoMoodle = $query->execute($dadosMoodle);
+
+                            }catch (PDOException $e){
+                                // echo $e->getMessage();
+                            }
+                        }
+
                         $mensagem = "Usuário cadastrado com sucesso";
                         if(!$sucesso){
                             $mensagem = "Já existe um usuário com esse nome 
                                          de usuário no sistema";
+                        } else if(!$sucessoMoodle) {
+                            $mensagem = "O registro foi efetuado, porém não foi possível registrar no Moodle";
                         }
 
                     }else if(!$nomeValido){
@@ -1305,6 +1347,16 @@
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-lock\"></i></a></td>";
 
+                    $tabela .= "    <td><a href=\"rotinas/acessar_tela_aluno.php?idAluno=";
+                    $tabela .= $linha["numeroInscricao"];
+                    
+                    if(http_build_query($filtrosEnviar)) {
+                        $tabela .= "&filtros=" . urlencode(http_build_query($filtrosEnviar));
+                    }
+
+                    $tabela .= "\">";
+                    $tabela .= "<i class=\"fa fa-user\"></i></a></td>";
+
                     $tabela .= "    <td><a href=\"visualizar_aluno.php?id=";
                     $tabela .= $linha["numeroInscricao"] . "\">";
                     $tabela .= "<i class=\"fa fa-eye\"></i></a></td>";
@@ -1382,7 +1434,7 @@
 
                 // agora contamos quantos alunos essa pesquisa conseguiria, sem o LIMIT
                 $textoQueryCount = explode("LIMIT", $textoQuery);
-                $query = $conexao->prepare($textoQueryCount[0]);
+                $query = $conexao->prepare($textoQueryCount[0] . "LIMIT" . $textoQueryCount[1]);
 
                 // repetimos a passagem de parâmetros
                 if(isset($_GET["filtro-nome"])     || isset($_GET["filtro-cpf"])      ||
@@ -1819,6 +1871,7 @@
                                         <th width="100px">Certificado</th>
                                         <th width="100px">Status</th>
                                         <th width="70px">Alterar senha</th>
+                                        <th width="60px">Tela do aluno</th>
                                         <th width="60px">Visualizar</th>
                                         <th width="100px">Documentos</th>
                                         <th width="60px">Editar</th>
@@ -2194,14 +2247,6 @@
                             <!-- o formulário em si fica dentro dessa div -->
                             <input type="hidden" name="insc" id="insc" value="">
                             <input type="hidden" name="id" id="id" value="">
-                            <?php
-                                $filtrosEnviar;
-                                foreach($_GET as $nome => $valor) {
-                                    if(strpos($nome, 'filtro') !== false) {
-                                        $filtrosEnviar[$nome] = $valor;
-                                    }
-                                }
-                            ?>
                             <input type="hidden" name="filtros" value=<?= '"' . http_build_query($filtrosEnviar) . '"' ?>>
                             <div class="form-group">
                                 <label for="nome">Nome do aluno:</label>

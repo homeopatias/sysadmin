@@ -197,7 +197,7 @@
                         </ul>
                     </li>
                     <?php  }
-                        if(4 & $permissoes){
+                        if(4 & $permissoes || 32 & $permissoes){
                         ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle btn-toggle-dropdown"
@@ -227,12 +227,22 @@
                                 </a>
                             </li>
                             -->
+                            <?php if(4 & $permissoes) { ?>
                             <li>
                                 <a href="gerenciar_reunioes.php">
                                     <i class="fa fa-fw fa-suitcase"></i>
                                     <p style="display:inline">Reuniões</p>
                                 </a>
                             </li>
+                            <?php
+                            } if(32 & $permissoes) { ?>
+                            <li>
+                                <a href="lista_pagamentos.php">
+                                    <i class="fa fa-fw fa-money"></i>
+                                    <p style="display:inline">Pagamentos</p>
+                                </a>
+                            </li>
+                            <?php } ?>
                         </ul>
                     </li>
                     <?php  }
@@ -325,10 +335,24 @@
                     ?>
 
                     <li>
+                        <?php
+                            if(!(unserialize($_SESSION["usuario"]) instanceof Aluno) ||
+                               unserialize($_SESSION["usuario"])->getIdAdminLogado() == -1 ) {
+                        ?>
                         <a href="rotinas/logout.php">
                             <i class="fa fa-power-off"></i>
                             <p style="display:inline">Logout</p>
                         </a>
+                        <?php
+                            } else {
+                        ?>
+                        <a href="rotinas/logout.php">
+                            <i class="fa fa-power-off"></i>
+                            <p style="display:inline">Retornar à conta de administrador</p>
+                        </a>
+                        <?php
+                            }
+                        ?>
                     </li>
                 </ul>
             </div>

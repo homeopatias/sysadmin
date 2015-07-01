@@ -12,13 +12,6 @@
  *                                       *
  *****************************************/
 
-/*******************************************************************
-
-Se você vai mexer nesse sistema, eu sinto muito, eu realmente sinto
-muito.
-
-********************************************************************/
-
 require_once(dirname(__FILE__)."/../phpass-0.3/PasswordHash.php");
 require_once(dirname(__FILE__)."/../entidades/Usuario.php");
 

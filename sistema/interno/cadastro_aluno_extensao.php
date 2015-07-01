@@ -574,6 +574,19 @@
                         if(!$sucessoMoodle){
                             $mensagem = "O registro foi efetuado, porém não foi possível registrar no Moodle";
                         } else {
+
+
+                            $enrolid = -1;
+                            $contexid = -1;
+
+                            if($modalidade === "regular") {
+                                $enrolid = 28;
+                                $contexid = 123;
+                            } else if($modalidade === "intensivo") {
+                                $enrolid = 25;
+                                $contexid = 118;
+                            }
+
                             $queryMoodle = "SELECT id FROM mdl_user WHERE username = ?";
 
                             $query = $conMoodle->prepare($queryMoodle);
@@ -582,26 +595,29 @@
                             $query->execute();
 
                             $idUsuarioMoodle = false;
+
                             if($linha = $query->fetch()) {
                                 $idUsuarioMoodle = $linha["id"];
 
                                 $queryMoodle = "INSERT INTO mdl_user_enrolments
                                                 (status,enrolid,userid,timecreated,
-                                                 timemodified) VALUES (0,1,?,NOW(),NOW())";
+                                                 timemodified) VALUES (0,?,?,NOW(),NOW())";
 
 
                                 $query = $conMoodle->prepare($queryMoodle);
-                                $query->bindParam(1, $idUsuarioMoodle);
+                                $query->bindParam(1, $enrolid);
+                                $query->bindParam(2, $idUsuarioMoodle);
                                 $sucessoMoodle = $query->execute();
 
                                 if($sucessoMoodle) {
                                     $queryMoodle = "INSERT INTO mdl_role_assignments
                                                     (roleid,contextid,userid,timemodified)
-                                                    VALUES (5,18,?,NOW())";
+                                                    VALUES (5,?,?,NOW())";
 
 
                                     $query = $conMoodle->prepare($queryMoodle);
-                                    $query->bindParam(1, $idUsuarioMoodle);
+                                    $query->bindParam(1, $contextid);
+                                    $query->bindParam(2, $idUsuarioMoodle);
                                     $sucessoMoodle = $query->execute();
                                 }
                             } else {

@@ -722,7 +722,91 @@
                             $mensagem = "Erro na criação dos pagamentos do ano";
                         } else {
                             // tudo certo, confirmamos as mudanças
-                            $conexao->commit();                            
+                            $conexao->commit();
+
+                            // agora matriculamos no Moodle
+                            $usuarioMoodle = $dados["usuario_moodle"];
+                            $senhaMoodle   = $dados["senha_moodle"];
+
+                            $sucessoMoodle = false;
+
+                            $conMoodle = null;
+                            try{
+                                $conMoodle = new PDO("mysql:host=$host;dbname=moodle;charset=utf8",
+                                                     $usuarioMoodle, $senhaMoodle);
+
+                                $queryMoodle = "SELECT id FROM mdl_user WHERE username = ?";
+
+                                $query = $conMoodle->prepare($queryMoodle);
+                                $query->bindParam(1, $aluno->getLogin());
+                                $query->setFetchMode(PDO::FETCH_ASSOC);
+                                $query->execute();
+
+                                $enrolid = -1;
+                                $contexid = -1;
+
+                                $tipoCurso = $aluno->getTipoCurso();
+                                $modalidadeCurso = $aluno->getModalidadeCurso();
+                                if($modalidadeCurso === "regular") {
+                                    if($tipoCurso === "pos") {
+                                        $enrolid = 34;
+                                        $contexid = 135;
+                                    } else if($tipoCurso === "instituto") {
+                                        $enrolid = 40;
+                                        $contexid = 145;
+                                    } else if($tipoCurso === "extensao") {
+                                        $enrolid = 28;
+                                        $contexid = 123;
+                                    }
+                                } else if($modalidadeCurso === "intensivo") {
+                                    if($tipoCurso === "pos") {
+                                        $enrolid = 31;
+                                        $contexid = 130;
+                                    } else if($tipoCurso === "instituto") {
+                                        $enrolid = 37;
+                                        $contexid = 140;
+                                    } else if($tipoCurso === "extensao") {
+                                        $enrolid = 25;
+                                        $contexid = 118;
+                                    }
+                                }
+
+                                $idUsuarioMoodle = false;
+                                if($linha = $query->fetch()) {
+                                    $idUsuarioMoodle = $linha["id"];
+
+                                    $queryMoodle = "INSERT INTO mdl_user_enrolments
+                                                    (status,enrolid,userid,timecreated,
+                                                     timemodified) VALUES (0,?,?,NOW(),NOW())";
+
+
+                                    $query = $conMoodle->prepare($queryMoodle);
+                                    $query->bindParam(1, $enrolid);
+                                    $query->bindParam(2, $idUsuarioMoodle);
+                                    $sucessoMoodle = $query->execute();
+
+                                    if($sucessoMoodle) {
+                                        $queryMoodle = "INSERT INTO mdl_role_assignments
+                                                        (roleid,contextid,userid,timemodified)
+                                                        VALUES (5,?,?,NOW())";
+
+
+                                        $query = $conMoodle->prepare($queryMoodle);
+                                        $query->bindParam(1, $contextid);
+                                        $query->bindParam(2, $idUsuarioMoodle);
+                                        $sucessoMoodle = $query->execute();
+                                    }
+                                } else {
+                                    $sucessoMoodle = false;
+                                }
+
+                            }catch (PDOException $e){
+                                // echo $e->getMessage();
+                            }
+
+                            if(!$sucessoMoodle) {
+                                $mensagem = "Matrícula efetuada no sistema, mas falhou no Moodle";
+                            }
                         }
 
                     }else if(!$idValido){
@@ -768,7 +852,7 @@
                             }
                            ?>
                            width="150px" height="200px">
-                    </div>
+                    </div><br><br>
                     
                     <div class="row">
                         <p style="display:inline" class="col-sm-3">
@@ -919,7 +1003,7 @@
                     ?>
                     <div class="btn btn-primary" id="btnObservacao" data-toggle="modal" 
                          data-target="#modal-edita-observacao">
-                        <?= $textoBtn ?> observação
+                        <?= $textoBtn ?> Observação
                     </div><br>
 
                     <!-- //////////////////////////////////////////////////////////////////////
@@ -1898,6 +1982,7 @@
                                 width="100%" class="form-control">
                             <h3>Método de pagamento</h3>
                             <select id="metodo" name="metodo" class="form-control">
+                                <option value=""></option>
                                 <option value="Dinheiro">Dinheiro</option>
                                 <option value="Cheque"  >Cheque</option>
                             </select>
