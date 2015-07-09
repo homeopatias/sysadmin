@@ -190,7 +190,7 @@
                                     "From: Sistema Homeopatias.com <sistema@homeopatias.com>" . "\r\n" .
                                     "Reply-To: noreply@homeopatias.com" . "\r\n" .
                                     "X-Mailer: PHP/" . phpversion();
-                                mail($emailAluno, $assunto, $msg, $headers);
+                                // FIXME: Remoção do envio de email # mail($emailAluno, $assunto, $msg, $headers);
 
                                 // agora registramos no sistema uma notificação para o aluno
                                 $textoNotificacao = "Uma ausência sua foi registrada para a aula do dia " . $dataAula;
