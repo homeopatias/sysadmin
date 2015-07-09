@@ -707,6 +707,7 @@
   'Reference' => 'M193',
   'SenderEmail' => 'karinefb@ig.com.br',
 )) - end {1}ABA32AB51212291114A9CF8C3C115E57 
+<<<<<<< Updated upstream
 {2015/04/17 16:35:12} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
   'Reference' => 'M11',
   'SenderEmail' => 'herc@gmail.com',
@@ -732,63 +733,21 @@
   'SenderEmail' => 'herc@gmail.com',
 )) - begin 
 {2015/04/17 18:49:39} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 15:49:52} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
+=======
+{2015/03/27 11:33:27} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M481',
+  'SenderEmail' => 'lia.moliveira@hotmail.com',
 )) - begin 
-{2015/05/27 15:49:52} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:05:51} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
+{2015/03/27 11:33:29} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M481',
+  'SenderEmail' => 'lia.moliveira@hotmail.com',
+)) - end {1}06669A968D8D8816642C4FAE0A378BE7 
+{2015/03/28 19:16:47} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M491',
+  'SenderEmail' => 'denisecherulli@gmail.com',
 )) - begin 
-{2015/05/27 16:05:51} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:05:55} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:05:55} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:06:09} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:06:09} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:06:35} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:06:35} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:06:46} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:06:46} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:27:27} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:27:27} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:27:34} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:27:34} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:27:37} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:27:37} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:27:45} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:27:45} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/05/27 16:29:30} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M6',
-  'SenderEmail' => 'miguelsilvamartins@rhyta.com',
-)) - begin 
-{2015/05/27 16:29:30} [Error] Exception: PagSeguroLibrary: cURL library is required. 
-{2015/06/26 21:56:36} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
-  'Reference' => 'M1',
-  'SenderEmail' => 'victorcastrocarvalho@armyspy.com',
-)) - begin 
-{2015/06/26 21:56:36} [Error] Exception: PagSeguroLibrary: cURL library is required. 
+{2015/03/28 19:16:49} [Info] PagSeguroPaymentService.Register(PagSeguroPaymentRequest: array (
+  'Reference' => 'M491',
+  'SenderEmail' => 'denisecherulli@gmail.com',
+)) - end {1}8FA2BBFA1717300BB4199FA6E72CE392 
+>>>>>>> Stashed changes

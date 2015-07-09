@@ -420,7 +420,7 @@
                     $aluno->setStatus("preinscrito");
                     $aluno->setPais("BRL");
                     $aluno->setTipoCurso("instituto");
-                    $aluno->setTipoCadastro("faculdade inspirar");
+                    $aluno->setTipoCadastro("instituto hahnemann");
                     $aluno->setRecebeEmail($recebeEmail);
                     $aluno->setCpf($cpf);
                     $aluno->setTelefone($telefone);
